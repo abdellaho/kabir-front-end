@@ -1,4 +1,4 @@
-import { environment } from "src/environments/environment";
+import { environment } from "src/environments/environment.development";
 
 const BASE_URL = environment.production ? 'http://localhost:3000/api' : 'http://localhost:3000/api';
 
