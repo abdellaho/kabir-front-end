@@ -1,0 +1,111 @@
+export interface AchatFacture {
+  id: bigint;
+  codeAF: string;
+  numAchat: number;
+  dateAF: Date;
+  sysDate: Date;
+  dateAvances: Date;
+  mantantAvancs: number;
+  prixNormalAchatHt: number;
+  numeroFacExterne: string;
+  numeroIF: string;
+  mantantAF: number;
+  mantantBFBenefice: number;
+  montantNonTaxable: number;
+  dateReglement: Date;
+  typeReglment: number;
+  typePaiement: string;
+  numCheque: string;
+  mantantTotHT: number;
+  mantantTotHTVA: number;
+  mantantTotTTC: number;
+  tva20: number;
+  tva7: number;
+  tvaArbtraire: number;
+  manuelAutoMatique: number;
+  mntManuelTva7: number;
+  mntManuelTva10: number;
+  mntManuelTva12: number;
+  mntManuelTva13: number;
+  mntManuelTva14: number;
+  mntManuelTva20: number;
+  montantTVA7: number;
+  montantTVA10: number;
+  montantTVA12: number;
+  montantTVA13: number;
+  montantTVA14: number;
+  montantTVA20: number;
+  mntHtTVA7: number;
+  mntHtTVA10: number;
+  mntHtTVA12: number;
+  mntHtTVA13: number;
+  mntHtTVA14: number;
+  mntHtTVA20: number;
+  mntTtcTVA7: number;
+  mntTtcTVA10: number;
+  mntTtcTVA12: number;
+  mntTtcTVA13: number;
+  mntTtcTVA14: number;
+  mntTtcTVA20: number;
+  mntTtc: number;
+  montantDroitSupplementaire: number;
+  disabledHT: boolean;
+  disabledManuel: boolean;
+}
+
+export function initObjectAchatFacture(): AchatFacture {
+  return {
+    id: BigInt(0),
+    codeAF: '',
+    numAchat: 0,
+    dateAF: new Date(),
+    sysDate: new Date(),
+    dateAvances: new Date(),
+    mantantAvancs: 0,
+    prixNormalAchatHt: 0,
+    numeroFacExterne: '',
+    numeroIF: '',
+    mantantAF: 0,
+    mantantBFBenefice: 0,
+    montantNonTaxable: 0,
+    dateReglement: new Date(),
+    typeReglment: 0,
+    typePaiement: '',
+    numCheque: '',
+    mantantTotHT: 0,
+    mantantTotHTVA: 0,
+    mantantTotTTC: 0,
+    tva20: 0,
+    tva7: 0,
+    tvaArbtraire: 0,
+    manuelAutoMatique: 0,
+    mntManuelTva7: 0,
+    mntManuelTva10: 0,
+    mntManuelTva12: 0,
+    mntManuelTva13: 0,
+    mntManuelTva14: 0,
+    mntManuelTva20: 0,
+    montantTVA7: 0,
+    montantTVA10: 0,
+    montantTVA12: 0,
+    montantTVA13: 0,
+    montantTVA14: 0,
+    montantTVA20: 0,
+    mntHtTVA7: 0,
+    mntHtTVA10: 0,
+    mntHtTVA12: 0,
+    mntHtTVA13: 0,
+    mntHtTVA14: 0,
+    mntHtTVA20: 0,
+    mntTtcTVA7: 0,
+    mntTtcTVA10: 0,
+    mntTtcTVA12: 0,
+    mntTtcTVA13: 0,
+    mntTtcTVA14: 0,
+    mntTtcTVA20: 0,
+    mntTtc: 0,
+    montantDroitSupplementaire: 0,
+    disabledHT: false,
+    disabledManuel: false,
+  };
+}
