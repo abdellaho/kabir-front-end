@@ -1,0 +1,225 @@
+import { Pays } from '@/models/pays';
+import { initObjectVille, Ville } from '@/models/ville';
+import { PaysService } from '@/services/pays/pays-service';
+import { VilleService } from '@/services/ville/ville-service';
+import { OperationType } from '@/shared/enums/operation-type';
+import { LoadingService } from '@/shared/services/loading-service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from "primeng/toast";
+import { ToolbarModule } from "primeng/toolbar";
+import { Table, TableModule } from "primeng/table";
+import { DialogModule } from "primeng/dialog";
+import { CommonModule } from '@angular/common';
+import { Select } from "primeng/select";
+import { arrayToMap, getAttribut } from '@/shared/classes/generic-methods';
+@Component({
+  standalone: true,
+  selector: 'app-ville-component',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    DialogModule,
+    Select
+],
+  templateUrl: './ville-component.html',
+  styleUrl: './ville-component.scss'
+})
+export class VilleComponent implements OnInit {
+
+  constructor(
+    private villeService: VilleService,
+    private paysService: PaysService,
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    private loadingService: LoadingService,
+  ) { }
+
+  cols: any[] = [];
+  listPays: Pays[] = [];
+  listVille: Ville[] = [];
+  ville: Ville = initObjectVille();
+  dialogSupprimer: boolean = false;
+  dialogAjouter: boolean = false;
+  submitted: boolean = false;
+  formGroup!: FormGroup;
+  mapOfPays: Map<bigint, string> = new Map<bigint, string>();
+
+  ngOnInit(): void {
+    this.getAllPays();
+    this.getAllVilles();
+    this.initFormGroup();
+  }
+
+  buildCols(): void {
+    this.cols = [
+      { field: 'nomVille', header: 'Ville' },
+      { field: 'pays.pays', header: 'Pays' }
+    ];
+  }
+
+  onGlobalFilter(table: Table, event: Event) {
+    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+
+  initFormGroup() {
+    this.formGroup = this.formBuilder.group({
+      paysId: [0, [Validators.required, Validators.min(0)]],
+      nomVille: ['', [Validators.required]],
+    });
+  }
+
+  getAllVilles(): void {
+    this.villeService.getVilles().subscribe({
+      next: (data: Ville[]) => {
+        this.listVille = data;
+      }, error: (error: any) => {
+        console.error(error);
+      }
+    });
+  }
+
+  getAllPays(): void {
+    this.paysService.getPays().subscribe({
+      next: (data: Pays[]) => {
+        this.listPays = data;
+        this.mapOfPays = arrayToMap(this.listPays, 'id', ['pays'], ['']);
+      }, error: (error: any) => {
+        console.error(error);
+      }
+    });
+  }
+
+  getPaysLib(id: bigint): string {
+    return getAttribut(id, this.mapOfPays);
+  }
+
+  openCloseDialogAjouter(openClose: boolean): void {
+    this.dialogAjouter = openClose;
+  }
+
+  openCloseDialogSupprimer(openClose: boolean): void {
+    this.dialogSupprimer = openClose;
+  }
+
+  viderAjouter() {
+    this.openCloseDialogAjouter(true);
+    this.submitted = false;
+    this.ville = initObjectVille();
+    this.initFormGroup();
+  }
+
+  recupperer(operation: number, villeEdit: Ville) {
+    if(villeEdit && villeEdit.id) {
+        this.ville = villeEdit;
+        if(operation === 1) {
+            this.formGroup.patchValue({
+                paysId: this.ville.paysId, 
+                nomVille: this.ville.nomVille
+            });
+
+            this.openCloseDialogAjouter(true);
+        } else {
+            this.openCloseDialogSupprimer(true);
+        }
+    } else {
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
+    }
+  }
+
+  updateList(ville: Ville, list: Ville[], operationType: OperationType, id?: bigint): Ville[] {
+    if(operationType === OperationType.ADD) {
+        list = [ ...list, ville ];
+    } else if(operationType === OperationType.MODIFY) {
+        let index = list.findIndex(x => x.id === ville.id);
+        if(index > -1) {
+            list[index] = ville;
+        }
+    } else if(operationType === OperationType.DELETE) {
+        list = list.filter(x => x.id !== id);
+    }
+    return list;
+  }
+
+  checkIfListIsNull() {
+    if(null == this.listVille) {
+        this.listVille = [];
+    }
+  }
+
+  mapFormGroupToObject(formGroup: FormGroup, ville: Ville): Ville {
+    ville.nomVille = formGroup.get('nomVille')?.value;
+    ville.paysId = formGroup.get('paysId')?.value;
+
+    return ville;
+  }
+
+  async miseAjour(): Promise<void> {
+    let trvErreur = false;
+    if(!trvErreur){
+      this.loadingService.show();
+      this.submitted = true;
+
+
+      if(this.ville.id) {
+        this.villeService.updateVille(this.ville.id, this.ville).subscribe({
+          next: (data) => {
+              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+              this.checkIfListIsNull();
+              this.listVille = this.updateList(data, this.listVille, OperationType.MODIFY);
+              this.openCloseDialogAjouter(false);
+          }, error: (err) => {
+              console.log(err);
+              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+          }, complete: () => {
+            this.loadingService.hide();
+          }
+        });
+      } else {
+        this.villeService.createVille(this.ville).subscribe({
+            next: (data: Ville) => {
+                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+                this.checkIfListIsNull();
+                this.listVille = this.updateList(data, this.listVille, OperationType.ADD);
+                this.openCloseDialogAjouter(false);
+            }, error: (err) => {
+                console.log(err);
+                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            }, complete: () => {
+              this.loadingService.hide();
+            }
+        });
+      }
+    }
+  }
+
+  supprimer(): void {
+    if(this.ville && this.ville.id) {
+      this.loadingService.show();
+      let id = this.ville.id;
+      this.villeService.deleteVille(this.ville.id).subscribe({
+        next: (data) => {
+            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
+            this.checkIfListIsNull();
+            this.listVille = this.updateList(initObjectVille(), this.listVille, OperationType.DELETE, id);
+            this.ville = initObjectVille() ;
+        }, error: (err) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+        }, complete: () => {
+          this.loadingService.hide();
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+    }
+
+    this.openCloseDialogSupprimer(false);
+  }
+
+}

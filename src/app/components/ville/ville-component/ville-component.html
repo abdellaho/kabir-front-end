@@ -1,0 +1,209 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar class="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button
+              pButton
+              pRipple
+              label="Ajouter"
+              icon="pi pi-plus"
+              class="p-button-success mr-2"
+              (click)="viderAjouter()"
+            ></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button
+            pButton
+            pRipple
+            label="Export"
+            icon="pi pi-upload"
+            class="p-button-help"
+            (click)="dt.exportCSV()"
+          ></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table
+        #dt
+        [value]="listVille"
+        dataKey="id"
+        [columns]="cols"
+        [rows]="10"
+        [globalFilterFields]="['nomVille', 'pays.pays']"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="caption">
+          <div
+            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+          >
+            <h5 class="m-0">Liste Villes</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalFilter(dt, $event)"
+                placeholder="Search..."
+                class="w-full sm:w-auto"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <th pSortableColumn="nomVille">
+              Ville <p-sortIcon field="nomVille"></p-sortIcon>
+            </th>
+            <th pSortableColumn="pays.pays">
+              Pays <p-sortIcon field="pays.pays"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-p>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="p" />
+            </td>
+            <td style="width: 14%; min-width: 10rem">
+              <div class="flex">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-success mr-2"
+                  (click)="recupperer(1, p)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-warning"
+                  (click)="recupperer(2, p)"
+                ></button>
+              </div>
+            </td>
+            <td>
+              <span class="p-column-title">Ville</span>
+              {{ p.nomVille }}
+            </td>
+            <td>
+              <span class="p-column-title">Pays</span>
+              {{ getPaysLib(p.paysId) }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog
+      [(visible)]="dialogAjouter"
+      [style]="{ width: '700px' }"
+      header="Mise à jour Ville"
+      [modal]="true"
+      class="p-fluid"
+      [closable]="false"
+    >
+      <!-- Form content must go inside ng-template -->
+      <ng-template pTemplate="content">
+        <div [formGroup]="formGroup">
+            <div class="field">
+            <label for="paysId">Pays</label>
+            <div class="input-button-group">
+              <input
+                id="paysId"
+                formControlName="paysId"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    submitted && formGroup.get('paysId')?.invalid
+                }"
+              />
+            </div>
+            @if (submitted && formGroup.get('paysId')?.invalid) {
+              <small class="ng-dirty ng-invalid p-error">
+                Pays obligatoire.
+              </small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="paysId">Ville</label>
+            <div class="input-button-group">
+                <p-select [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
+            </div>
+            @if (submitted && formGroup.get('paysId')?.invalid) {
+              <small class="ng-dirty ng-invalid p-error">
+                Ville obligatoire.
+              </small>
+            }
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Footer template -->
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          label="Fermer"
+          icon="pi pi-times"
+          class="p-button-outlined p-button-info"
+          (click)="openCloseDialogAjouter(false)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Valider"
+          icon="pi pi-check"
+          class="p-button-info"
+          (click)="miseAjour()"
+          [disabled]="!formGroup.valid"
+        ></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog
+      [(visible)]="dialogSupprimer"
+      header="Confirm"
+      [modal]="true"
+      [style]="{ width: '450px' }"
+      [closable]="false"
+    >
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (ville) {
+          <span>Are you sure you want to delete this Pays ?</span>
+        }
+      </div>
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          type="button"
+          label="Fermer"
+          class="p-button-outlined p-button-info"
+          (click)="dialogSupprimer = false"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Valider"
+          icon="pi pi-check"
+          class="p-button-info"
+          (click)="supprimer()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>
