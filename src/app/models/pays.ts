@@ -1,11 +1,11 @@
 export interface Pays {
-  id: bigint;
+  id: bigint | null;
   pays: string;
 }
 
 export function initObjectPays(): Pays {
   return {
-    id: BigInt(0),
+    id: null,
     pays: "",
   };
 }

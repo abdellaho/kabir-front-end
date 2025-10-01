@@ -4,7 +4,7 @@ const BASE_URL = environment.production ? 'http://localhost:3000/api' : 'http://
 
 export const ENDPOINTS = {
   VILLE: {
-    getAll: `${BASE_URL}/villes`,
+    getAll: `${BASE_URL}/ville`,
     getById: (id: bigint) => `${BASE_URL}/ville/${id}`,
     create: `${BASE_URL}/ville`,
     update: (id: bigint) => `${BASE_URL}/ville/${id}`,

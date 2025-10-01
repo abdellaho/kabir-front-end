@@ -20,15 +20,25 @@ export class PaysService {
   }
 
   createPays(pays: Pays): Observable<Pays> {
-    return this.http.post<Pays>(ENDPOINTS.PAYS.create, pays);
+    console.log("Pays Object : " + pays.id + " - " + pays.pays);
+    const obj = this.convertObjectToPays(pays);
+    return this.http.post<Pays>(ENDPOINTS.PAYS.create, obj);
   }
 
   updatePays(id: bigint, pays: Pays): Observable<Pays> {
-    return this.http.put<Pays>(ENDPOINTS.PAYS.update(id), pays);
+    const obj = this.convertObjectToPays(pays);
+    return this.http.put<Pays>(ENDPOINTS.PAYS.update(id), obj);
   }
 
   deletePays(id: bigint): Observable<void> {
     return this.http.delete<void>(ENDPOINTS.PAYS.delete(id));
+  }
+
+  convertObjectToPays(pays: Pays): any {
+    return {
+      ...pays,
+      id: pays.id?.toString()
+    };
   }
   
 }

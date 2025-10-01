@@ -12,8 +12,12 @@ import { ToolbarModule } from "primeng/toolbar";
 import { Table, TableModule } from "primeng/table";
 import { DialogModule } from "primeng/dialog";
 import { CommonModule } from '@angular/common';
-import { Select } from "primeng/select";
+import { SelectModule } from "primeng/select";
 import { arrayToMap, getAttribut } from '@/shared/classes/generic-methods';
+import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
+import { InputTextModule } from "primeng/inputtext";
 @Component({
   standalone: true,
   selector: 'app-ville-component',
@@ -21,11 +25,15 @@ import { arrayToMap, getAttribut } from '@/shared/classes/generic-methods';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ButtonModule,
     ToastModule,
     ToolbarModule,
     TableModule,
     DialogModule,
-    Select
+    SelectModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
 ],
   templateUrl: './ville-component.html',
   styleUrl: './ville-component.scss'
@@ -47,6 +55,7 @@ export class VilleComponent implements OnInit {
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;
   submitted: boolean = false;
+  loading: boolean = true;
   formGroup!: FormGroup;
   mapOfPays: Map<bigint, string> = new Map<bigint, string>();
 
@@ -61,6 +70,10 @@ export class VilleComponent implements OnInit {
       { field: 'nomVille', header: 'Ville' },
       { field: 'pays.pays', header: 'Pays' }
     ];
+  }
+
+  clear(table: Table) {
+    table.clear();
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -78,6 +91,7 @@ export class VilleComponent implements OnInit {
     this.villeService.getVilles().subscribe({
       next: (data: Ville[]) => {
         this.listVille = data;
+        this.loading = false;
       }, error: (error: any) => {
         console.error(error);
       }

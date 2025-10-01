@@ -13,22 +13,27 @@ import {ToastModule} from "primeng/toast";
 import {ToolbarModule} from "primeng/toolbar";
 import {InputTextModule} from "primeng/inputtext";
 import {DialogModule} from "primeng/dialog";
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
 
 @Component({
     standalone: true,
   selector: 'app-pays-component',
   imports: [
-      CommonModule,
-      TableModule,
-      FormsModule,
-      ButtonModule,
-      RippleModule,
-      ToastModule,
-      ToolbarModule,
-      InputTextModule,
-      ReactiveFormsModule,
-      DialogModule,
-  ],
+    CommonModule,
+    TableModule,
+    FormsModule,
+    ButtonModule,
+    RippleModule,
+    ToastModule,
+    ToolbarModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    DialogModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
+],
   templateUrl: './pays-component.html',
   styleUrl: './pays-component.scss'
 })
@@ -58,6 +63,10 @@ export class PaysComponent implements OnInit {
       this.cols = [
           { field: 'pays', header: 'Pays' }
       ];
+    }
+
+    clear(table: Table) {
+      table.clear();
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -140,6 +149,7 @@ export class PaysComponent implements OnInit {
 
     async miseAjour(): Promise<void> {
       let trvErreur = false;
+      this.mapFormGroupToObject(this.formGroup, this.pays);
       if(!trvErreur){
         this.loadingService.show();
         this.submitted = true;

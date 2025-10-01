@@ -1,4 +1,4 @@
-<div class="grid">
+<div class="card">
   <div class="col-12">
     <div class="card px-6 py-6">
       <p-toast></p-toast>
@@ -29,51 +29,52 @@
       </p-toolbar>
 
       <p-table
-        #dt
-        [value]="listVille"
-        dataKey="id"
-        [columns]="cols"
-        [rows]="10"
-        [globalFilterFields]="['nomVille', 'pays.pays']"
-        [paginator]="true"
-        [rowsPerPageOptions]="[10, 20, 30]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowHover]="true"
-      >
-        <ng-template pTemplate="caption">
-          <div
-            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-          >
-            <h5 class="m-0">Liste Villes</h5>
-            <span class="block mt-2 md:mt-0 p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                pInputText
-                type="text"
-                (input)="onGlobalFilter(dt, $event)"
-                placeholder="Search..."
-                class="w-full sm:w-auto"
-              />
-            </span>
-          </div>
+            #dt
+            [value]="listVille"
+            dataKey="id"
+            [rows]="10"
+            [rowHover]="true"
+            [showGridlines]="true"
+            [paginator]="true"
+            [globalFilterFields]="['nomVille', 'pays.pays']"
+            [rowsPerPageOptions]="[10, 20, 30]"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowHover]="true"
+            responsiveLayout="scroll"
+        >
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
+                </p-iconfield>
+            </div>
         </ng-template>
-        <ng-template pTemplate="header">
+
+        <ng-template #header>
           <tr>
             <th></th>
-            <th pSortableColumn="nomVille">
-              Ville <p-sortIcon field="nomVille"></p-sortIcon>
+            <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Ville
+                    <p-columnFilter type="text" field="nomVille" display="menu" placeholder="Search by ville"></p-columnFilter>
+                </div>
             </th>
-            <th pSortableColumn="pays.pays">
-              Pays <p-sortIcon field="pays.pays"></p-sortIcon>
+
+            <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Pays
+                    <p-columnFilter type="text" field="pays.pays" display="menu" placeholder="Search by ville"></p-columnFilter>
+                </div>
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-p>
+        <ng-template #body let-p>
           <tr>
-            <td>
-              <p-tableCheckbox [value]="p" />
-            </td>
             <td style="width: 14%; min-width: 10rem">
               <div class="flex">
                 <button
@@ -93,14 +94,23 @@
               </div>
             </td>
             <td>
-              <span class="p-column-title">Ville</span>
               {{ p.nomVille }}
             </td>
             <td>
-              <span class="p-column-title">Pays</span>
               {{ getPaysLib(p.paysId) }}
             </td>
           </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="3">No Villes found.</td>
+            </tr>
+        </ng-template>
+        <ng-template #loadingbody>
+            <tr>
+                <td colspan="3">Loading villes data. Please wait.</td>
+            </tr>
         </ng-template>
       </p-table>
     </div>
@@ -117,35 +127,36 @@
       <ng-template pTemplate="content">
         <div [formGroup]="formGroup">
             <div class="field">
-            <label for="paysId">Pays</label>
-            <div class="input-button-group">
-              <input
-                id="paysId"
-                formControlName="paysId"
-                required
-                [ngClass]="{
-                  'ng-invalid ng-dirty':
-                    submitted && formGroup.get('paysId')?.invalid
-                }"
-              />
+              <label for="paysId">Pays</label>
+              <div class="input-button-group">
+                  <p-select appendTo="body" [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
+              </div>
+              @if (submitted && formGroup.get('paysId')?.invalid) {
+                <small class="ng-dirty ng-invalid p-error">
+                  Pays obligatoire.
+                </small>
+              }
             </div>
-            @if (submitted && formGroup.get('paysId')?.invalid) {
-              <small class="ng-dirty ng-invalid p-error">
-                Pays obligatoire.
-              </small>
-            }
-          </div>
 
-          <div class="field">
-            <label for="paysId">Ville</label>
-            <div class="input-button-group">
-                <p-select [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
-            </div>
-            @if (submitted && formGroup.get('paysId')?.invalid) {
-              <small class="ng-dirty ng-invalid p-error">
-                Ville obligatoire.
-              </small>
-            }
+            <div class="field">
+              <label for="nomVille">Ville</label>
+              <div class="input-button-group">
+                <input 
+                  pInputText
+                  id="nomVille"
+                  formControlName="nomVille"
+                  required
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      submitted && formGroup.get('nomVille')?.invalid
+                  }"
+                />
+              </div>
+              @if (submitted && formGroup.get('nomVille')?.invalid) {
+                <small class="ng-dirty ng-invalid p-error">
+                  Ville obligatoire.
+                </small>
+              }
           </div>
         </div>
       </ng-template>
@@ -182,7 +193,7 @@
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         @if (ville) {
-          <span>Are you sure you want to delete this Pays ?</span>
+          <span>Are you sure you want to delete this ville ?</span>
         }
       </div>
       <ng-template pTemplate="footer">
