@@ -153,8 +153,7 @@ export class PaysComponent implements OnInit {
       if(!trvErreur){
         this.loadingService.show();
         this.submitted = true;
-
-
+        
         if(this.pays.id) {
           this.paysService.updatePays(this.pays.id, this.pays).subscribe({
             next: (data) => {

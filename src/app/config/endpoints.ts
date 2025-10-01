@@ -16,5 +16,6 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/pays`,
     update: (id: bigint) => `${BASE_URL}/pays/${id}`,
     delete: (id: bigint) => `${BASE_URL}/pays/${id}`,
+    search: `${BASE_URL}/pays/search`
   }
 };

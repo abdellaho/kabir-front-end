@@ -1,5 +1,6 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Pays } from '@/models/pays';
+import { PaysSearch } from '@/shared/searchModels/pays-search';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -25,16 +26,21 @@ export class PaysService {
     return this.http.post<Pays>(ENDPOINTS.PAYS.create, obj);
   }
 
+  search(pays: PaysSearch): Observable<Pays> {
+    const obj = this.convertObjectToPays(pays);
+    return this.http.post<Pays>(ENDPOINTS.PAYS.create, obj);
+  }
+
   updatePays(id: bigint, pays: Pays): Observable<Pays> {
     const obj = this.convertObjectToPays(pays);
-    return this.http.put<Pays>(ENDPOINTS.PAYS.update(id), obj);
+    return this.http.patch<Pays>(ENDPOINTS.PAYS.update(id), obj);
   }
 
   deletePays(id: bigint): Observable<void> {
     return this.http.delete<void>(ENDPOINTS.PAYS.delete(id));
   }
 
-  convertObjectToPays(pays: Pays): any {
+  convertObjectToPays(pays: Pays | PaysSearch): any {
     return {
       ...pays,
       id: pays.id?.toString()

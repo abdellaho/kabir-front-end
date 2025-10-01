@@ -69,22 +69,10 @@
         </ng-template>
         <ng-template #body let-p>
           <tr>
-            <td style="width: 14%; min-width: 10rem">
-              <div class="flex">
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-pencil"
-                  class="p-button-rounded p-button-success mr-2"
-                  (click)="recupperer(1, p)"
-                ></button>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-warning"
-                  (click)="recupperer(2, p)"
-                ></button>
+            <td style="width: 10%; min-width: 7rem">
+              <div class="flex gap-2">
+                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
               </div>
             </td>
             <td>
@@ -117,25 +105,20 @@
       <!-- Form content must go inside ng-template -->
       <ng-template pTemplate="content">
         <div [formGroup]="formGroup">
-            <div class="field">
-            <label for="pays">Pays</label>
-            <div class="input-button-group">
-              <input
-                pInputText
-                id="pays"
-                formControlName="pays"
-                required
-                [ngClass]="{
-                  'ng-invalid ng-dirty':
-                    submitted && formGroup.get('pays')?.invalid
-                }"
-              />
+          <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="pays">Pays</label>
+                <input
+                  pInputText
+                  id="pays"
+                  formControlName="pays"
+                  required
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      submitted && formGroup.get('pays')?.invalid
+                  }"
+                />
             </div>
-            @if (submitted && formGroup.get('pays')?.invalid) {
-              <small class="ng-dirty ng-invalid p-error">
-                Pays obligatoire.
-              </small>
-            }
           </div>
         </div>
       </ng-template>
