@@ -1,4 +1,4 @@
 export interface PaysSearch {
-    id?: bigint;
+    id?: bigint | null;
     pays?: string;
 }

@@ -15,6 +15,8 @@ import {InputTextModule} from "primeng/inputtext";
 import {DialogModule} from "primeng/dialog";
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
+import { PaysSearch } from '@/shared/searchModels/pays-search';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
     standalone: true,
@@ -147,11 +149,28 @@ export class PaysComponent implements OnInit {
       return pays;
     }
 
+    async checkIfPaysExists(pays: PaysSearch): Promise<boolean> {
+      try {
+        const existsObservable = this.paysService.exist(pays).pipe(
+          catchError(error => {
+            console.error('Error in pays existence observable:', error);
+            return of(false); // Gracefully handle observable errors by returning false
+          })
+        );
+        return await firstValueFrom(existsObservable);
+      } catch (error) {
+        console.error('Unexpected error checking if pays exists:', error);
+        return false;
+      }
+    }
+
     async miseAjour(): Promise<void> {
-      let trvErreur = false;
+      this.loadingService.show();
       this.mapFormGroupToObject(this.formGroup, this.pays);
+      let paysSearch: PaysSearch = { id: this.pays.id , pays: this.pays.pays };
+      let trvErreur = await this.checkIfPaysExists(paysSearch);
+      
       if(!trvErreur){
-        this.loadingService.show();
         this.submitted = true;
         
         if(this.pays.id) {
@@ -183,6 +202,9 @@ export class PaysComponent implements OnInit {
               }
           });
         }
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le pays existe deja" });
+        this.loadingService.hide();
       }
     }
 

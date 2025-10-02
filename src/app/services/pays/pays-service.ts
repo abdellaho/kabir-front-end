@@ -28,7 +28,12 @@ export class PaysService {
 
   search(pays: PaysSearch): Observable<Pays> {
     const obj = this.convertObjectToPays(pays);
-    return this.http.post<Pays>(ENDPOINTS.PAYS.create, obj);
+    return this.http.post<Pays>(ENDPOINTS.PAYS.search, obj);
+  }
+
+  exist(pays: PaysSearch): Observable<boolean> {
+    const obj = this.convertObjectToPays(pays);
+    return this.http.post<boolean>(ENDPOINTS.PAYS.exist, obj);
   }
 
   updatePays(id: bigint, pays: Pays): Observable<Pays> {
