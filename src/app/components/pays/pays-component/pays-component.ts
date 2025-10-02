@@ -166,11 +166,13 @@ export class PaysComponent implements OnInit {
 
     async miseAjour(): Promise<void> {
       this.loadingService.show();
-      this.mapFormGroupToObject(this.formGroup, this.pays);
-      let paysSearch: PaysSearch = { id: this.pays.id , pays: this.pays.pays };
+      let paysEdit: Pays = { ...this.pays };
+      this.mapFormGroupToObject(this.formGroup, paysEdit);
+      let paysSearch: PaysSearch = { id: paysEdit.id , pays: paysEdit.pays };
       let trvErreur = await this.checkIfPaysExists(paysSearch);
       
-      if(!trvErreur){
+      if(!trvErreur) {
+        this.mapFormGroupToObject(this.formGroup, this.pays);
         this.submitted = true;
         
         if(this.pays.id) {
