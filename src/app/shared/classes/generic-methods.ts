@@ -7,38 +7,45 @@ export interface Message {
   detail?: string;
 }
 
-export function arrayToMap<T>(array: T[], keyAttr: keyof T, valueAttrs: (keyof T)[], separators: string[]): Map<bigint, string> {
-    const result = new Map<bigint, string>();
+export function arrayToMap<T>(array: T[], keyAttr: keyof T, valueAttrs: (keyof T)[], separators: string[]): Map<number, string> {
+    const result = new Map<number, string>();
 
     if(array && array.length > 0) {
       array.forEach(item => {
-        const key = item[keyAttr];
-    
-        if (typeof key !== 'bigint') {
-          throw new Error('The key attribute must be a number (bigint).');
+        try {
+          const key = Number(item[keyAttr]);
+      
+          // Concatenate values from the specified attributes with corresponding separators
+          const value = valueAttrs
+            .map((attr, index) => {
+              const attrValue = item[attr];
+              return attrValue !== undefined && attrValue !== null ? String(attrValue) : '';
+            })
+            .reduce((acc, curr, index) => {
+              const separator = separators[index] || ''; // Use the separator if provided, or empty string
+              const returnedValue : string = index === 0 ? (curr + separator) : (acc + (acc && curr ? separator : '') + curr);
+              return returnedValue;
+            }, '');
+      
+          result.set(key, value);
+        } catch (error) {
+          throw new Error('Failed to convert key attribute to BigInt: ' + error);
         }
-    
-        // Concatenate values from the specified attributes with corresponding separators
-        const value = valueAttrs
-          .map((attr, index) => {
-            const attrValue = item[attr];
-            return attrValue !== undefined && attrValue !== null ? String(attrValue) : '';
-          })
-          .reduce((acc, curr, index) => {
-            const separator = separators[index] || ''; // Use the separator if provided, or empty string
-            const returnedValue : string = index === 0 ? (curr + separator) : (acc + (acc && curr ? separator : '') + curr);
-            return returnedValue;
-          }, '');
-    
-        result.set(key, value);
       });
     }
   
     return result;
 }
 
-export function getElementFromMap(map: Map<bigint, string>, id: bigint){
-    return map.get(id) || '';
+export function getElementFromMap(map: Map<number, string>, key: number): string {
+  const keyNumber = typeof key === 'string' ? Number(key) : key;
+  const value = map.get(keyNumber);
+  return value !== undefined ? value : '';
+}
+
+export function getElementFromMap1(map: Map<number, string>, id: number){
+    const value = map.get(id) || '';
+    return value;
 }
 
 export function mapToDateBackEnd(dateToMap: Date): Date {
@@ -64,11 +71,11 @@ export function mapToDateTimeBackEnd(dateToMap: Date): Date {
   return adjustedDate;
 }
 
-export function getDRPP(id: bigint, mapOfDRPPOfEmployees: Map<bigint, string>): string {
+export function getDRPP(id: number, mapOfDRPPOfEmployees: Map<number, string>): string {
   return getElementFromMap(mapOfDRPPOfEmployees, id);
 }
 
-export function getAttribut(id: bigint, map: Map<bigint, string>): string {
+export function getAttribut(id: number, map: Map<number, string>): string {
   return getElementFromMap(map, id);
 }
 
@@ -101,9 +108,6 @@ export function convertTypeEmploye(typeEmploye: TypeEmploye): TypeEmploye {
   }else if (typeEmploye.toLocaleString() === 'SOFT') {
     typeEmployeReturn = TypeEmploye.SOFT;
   }
-
-  console.log(typeEmploye);
-  console.log(typeEmployeReturn);
 
   return typeEmployeReturn;
 }

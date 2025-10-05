@@ -1,0 +1,52 @@
+<div class="flex mt-8">
+    <div class="card flex flex-col gap-6 w-full">
+        <div class="font-semibold text-xl">Etablissement</div>
+        
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="villeId" class="font-semibold">Ville</label>
+                <div class="input-button-group">
+                    <p-select appendTo="body" [options]="listVille" formControlName="villeId" optionValue="id" optionLabel="nomVille" placeholder="Selectionné Ville" class="w-full md:w-56"></p-select>
+                </div>
+                @if (submitted && formGroup.get('villeId')?.invalid) {
+                  <small class="ng-dirty ng-invalid p-error">
+                    Ville obligatoire.
+                  </small>
+                }
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="nom" class="font-semibold">Nom Etablissement</label>
+                <div class="input-button-group">
+                  <input pInputText id="nom" formControlName="nom" required
+                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nom')?.invalid }"
+                  />
+                </div>
+                @if (submitted && formGroup.get('nom')?.invalid) {
+                  <small class="ng-dirty ng-invalid p-error">
+                    Nom Etablissement obligatoire.
+                  </small>
+                }
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="adresse" class="font-semibold">Adresse</label>
+                <div class="input-button-group">
+                  <input pInputText id="adresse" formControlName="adresse" />
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="capitale" class="font-semibold">capitale</label>
+                <div class="input-button-group">
+                  <input pInputText type="number" id="capitale" formControlName="capitale" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap">
+            <label for="address">Address</label>
+            <textarea pTextarea id="address" rows="4"></textarea>
+        </div>
+    </div>
+</div>

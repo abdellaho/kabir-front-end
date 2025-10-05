@@ -18,5 +18,12 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/pays/${id}`,
     search: `${BASE_URL}/pays/search`,
     exist: `${BASE_URL}/pays/exist`
+  },
+  ETABLISSEMENT: {
+    getAll: `${BASE_URL}/etablissement`,
+    getById: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
+    create: `${BASE_URL}/etablissement`,
+    update: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
   }
 };

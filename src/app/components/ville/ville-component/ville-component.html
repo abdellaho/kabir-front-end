@@ -76,21 +76,9 @@
         <ng-template #body let-p>
           <tr>
             <td style="width: 14%; min-width: 10rem">
-              <div class="flex">
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-pencil"
-                  class="p-button-rounded p-button-success mr-2"
-                  (click)="recupperer(1, p)"
-                ></button>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-warning"
-                  (click)="recupperer(2, p)"
-                ></button>
+              <div class="flex gap-2">
+                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
               </div>
             </td>
             <td>
@@ -125,39 +113,41 @@
     >
       <!-- Form content must go inside ng-template -->
       <ng-template pTemplate="content">
-        <div [formGroup]="formGroup">
-            <div class="field">
-              <label for="paysId">Pays</label>
-              <div class="input-button-group">
-                  <p-select appendTo="body" [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
+        <div [formGroup]="formGroup" class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="field col">
+                <label for="paysId" class="font-semibold">Pays</label>
+                <div class="input-button-group">
+                    <p-select appendTo="body" [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
+                </div>
+                @if (submitted && formGroup.get('paysId')?.invalid) {
+                  <small class="ng-dirty ng-invalid p-error">
+                    Pays obligatoire.
+                  </small>
+                }
               </div>
-              @if (submitted && formGroup.get('paysId')?.invalid) {
-                <small class="ng-dirty ng-invalid p-error">
-                  Pays obligatoire.
-                </small>
-              }
-            </div>
 
-            <div class="field">
-              <label for="nomVille">Ville</label>
-              <div class="input-button-group">
-                <input 
-                  pInputText
-                  id="nomVille"
-                  formControlName="nomVille"
-                  required
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      submitted && formGroup.get('nomVille')?.invalid
-                  }"
-                />
-              </div>
-              @if (submitted && formGroup.get('nomVille')?.invalid) {
-                <small class="ng-dirty ng-invalid p-error">
-                  Ville obligatoire.
-                </small>
-              }
-          </div>
+              <div class="field col">
+                <label for="nomVille" class="font-semibold">Ville</label>
+                <div class="input-button-group">
+                  <input 
+                    pInputText
+                    id="nomVille"
+                    formControlName="nomVille"
+                    required
+                    [ngClass]="{
+                      'ng-invalid ng-dirty':
+                        submitted && formGroup.get('nomVille')?.invalid
+                    }"
+                  />
+                </div>
+                @if (submitted && formGroup.get('nomVille')?.invalid) {
+                  <small class="ng-dirty ng-invalid p-error">
+                    Ville obligatoire.
+                  </small>
+                }
+            </div>
+            </div>
         </div>
       </ng-template>
 

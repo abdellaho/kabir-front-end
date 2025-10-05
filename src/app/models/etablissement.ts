@@ -21,8 +21,8 @@ export interface Etablissement {
   paswordMailFake: string;
   fromMail: string;
   userMail: string;
-  capitale: string;
-  pourcentageLiv: string;
+  capitale: number;
+  pourcentageLiv: number;
   lienDbDump: string;
   lienBackupDB: string;
   lundi: boolean;
@@ -61,8 +61,8 @@ export function initObjectEtablissement(): Etablissement {
     paswordMailFake: "",
     fromMail: "",
     userMail: "",
-    capitale: "",
-    pourcentageLiv: "",
+    capitale: 0,
+    pourcentageLiv: 0,
     lienDbDump: "",
     lienBackupDB: "",
     lundi: false,

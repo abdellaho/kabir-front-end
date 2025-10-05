@@ -57,7 +57,7 @@ export class VilleComponent implements OnInit {
   submitted: boolean = false;
   loading: boolean = true;
   formGroup!: FormGroup;
-  mapOfPays: Map<bigint, string> = new Map<bigint, string>();
+  mapOfPays: Map<number, string> = new Map<number, string>();
 
   ngOnInit(): void {
     this.getAllPays();
@@ -82,7 +82,7 @@ export class VilleComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      paysId: [0, [Validators.required, Validators.min(0)]],
+      paysId: ['', [Validators.required, Validators.minLength(1)]],
       nomVille: ['', [Validators.required]],
     });
   }
@@ -109,7 +109,7 @@ export class VilleComponent implements OnInit {
     });
   }
 
-  getPaysLib(id: bigint): string {
+  getPaysLib(id: number): string {
     return getAttribut(id, this.mapOfPays);
   }
 
@@ -175,10 +175,10 @@ export class VilleComponent implements OnInit {
 
   async miseAjour(): Promise<void> {
     let trvErreur = false;
-    if(!trvErreur){
+    if(!trvErreur) {
+      this.ville = this.mapFormGroupToObject(this.formGroup, this.ville);
       this.loadingService.show();
       this.submitted = true;
-
 
       if(this.ville.id) {
         this.villeService.updateVille(this.ville.id, this.ville).subscribe({

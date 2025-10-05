@@ -24,7 +24,7 @@ export class VilleService {
   }
 
   updateVille(id: bigint, ville: Ville): Observable<Ville> {
-    return this.http.put<Ville>(ENDPOINTS.VILLE.update(id), ville);
+    return this.http.patch<Ville>(ENDPOINTS.VILLE.update(id), ville);
   }
 
   deleteVille(id: bigint): Observable<void> {
