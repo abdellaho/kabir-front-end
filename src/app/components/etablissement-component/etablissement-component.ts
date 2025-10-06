@@ -16,6 +16,8 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
+import { Checkbox, CheckboxModule } from "primeng/checkbox";
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
   selector: 'app-etablissement-component',
@@ -31,15 +33,19 @@ import { ToolbarModule } from 'primeng/toolbar';
     SelectModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
-  ],
+    InputTextModule,
+    CheckboxModule,
+    RadioButtonModule
+],
   templateUrl: './etablissement-component.html',
   styleUrl: './etablissement-component.scss'
 })
 export class EtablissementComponent implements OnInit {
 
   listVille: Ville[] = [];
+  typeExecutions: {label: string, value: number}[] = [{label: 'Chaque Jour', value: 0}, {label: 'Chaque Semaine', value: 1}, {label: 'Chaque Mois', value: 2}]; 
   etablissement: Etablissement = initObjectEtablissement();
+  days: number[] = [];
   submitted: boolean = false;
   loading: boolean = true;
   formGroup!: FormGroup;
@@ -69,14 +75,11 @@ export class EtablissementComponent implements OnInit {
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
       adresse: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      capitale: [0, [Validators.required, Validators.min(0)]],
-      cheminBD: [''],
-      cnss: [''],
       email: [''],
-      fax: [''],
-      fromMail: [''],
       nom: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      tel: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      tel1: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      tel2: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      tel3: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       hostmail: [''],
       ife: [''],
       ice: [''],
@@ -87,23 +90,31 @@ export class EtablissementComponent implements OnInit {
       vendredi: [false],
       samedi: [false],
       dimanche: [false],
-      userMail: [''],
       paswordMail: [''],
-      paswordMailFake: [''],
       lienDbDump: [''],
       lienBackupDB: [''],
+      cheminBD: [''],
       pourcentageLiv: [0, [Validators.required, Validators.min(0)]],
       patente: [''],
-      raisonSocial: [''],
       siteweb: [''],
-      gsm: [''],
-      userMailFake: [''],
       port: [''],
       hostMail: [''],
-      numJour: [0, [Validators.required, Validators.min(0)]],
+      numJour: [1, [Validators.required, Validators.min(0)]],
       typeExec: [0, [Validators.required, Validators.min(0)]],
-      villeId: [0, [Validators.required, Validators.min(0)]],
+      dateTime: [new Date()]
     });
+  }
+
+  onChangeTypeExecution(event: any) {
+    if(this.formGroup.get('typeExec')?.value == 1 || this.formGroup.get('typeExec')?.value == 2) {
+      if(this.formGroup.get('numJour')?.value == 0) {
+        this.days = [1, 2, 3, 4, 5, 6, 7];
+      } else {
+        this.days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+      }
+
+      this.formGroup.get('numJour')?.setValue(1);
+    }
   }
 
   getAllVilles(): void {
@@ -122,6 +133,8 @@ export class EtablissementComponent implements OnInit {
         let list: Etablissement[] = data;
         if(list && list.length > 0) {
           this.etablissement = list[0];
+
+          this.formGroup.patchValue(this.etablissement);
         }
         this.loading = false;
       }, error: (error: any) => {
@@ -132,12 +145,8 @@ export class EtablissementComponent implements OnInit {
 
   mapFormGroupToObject(formGroup: FormGroup, etablissement: Etablissement): Etablissement {
     etablissement.adresse = formGroup.get('adresse')?.value;
-    etablissement.capitale = formGroup.get('capitale')?.value;
     etablissement.cheminBD = formGroup.get('cheminBD')?.value;
-    etablissement.cnss = formGroup.get('cnss')?.value;
     etablissement.email = formGroup.get('email')?.value;
-    etablissement.fax = formGroup.get('fax')?.value;
-    etablissement.fromMail = formGroup.get('fromMail')?.value;
     etablissement.hostMail = formGroup.get('hostMail')?.value;
     etablissement.ife = formGroup.get('ife')?.value;
     etablissement.ice = formGroup.get('ice')?.value;
@@ -149,22 +158,19 @@ export class EtablissementComponent implements OnInit {
     etablissement.samedi = formGroup.get('samedi')?.value;
     etablissement.dimanche = formGroup.get('dimanche')?.value;
     etablissement.nom = formGroup.get('nom')?.value;
-    etablissement.userMail = formGroup.get('userMail')?.value;
     etablissement.paswordMail = formGroup.get('paswordMail')?.value;
-    etablissement.paswordMailFake = formGroup.get('paswordMailFake')?.value;
     etablissement.patente = formGroup.get('patente')?.value;
     etablissement.port = formGroup.get('port')?.value;
     etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value;
-    etablissement.raisonSocial = formGroup.get('raisonSocial')?.value;
     etablissement.siteweb = formGroup.get('siteweb')?.value;
-    etablissement.tel = formGroup.get('tel')?.value;
-    etablissement.userMail = formGroup.get('userMail')?.value;
-    etablissement.gsm = formGroup.get('gsm')?.value;
+    etablissement.tel1 = formGroup.get('tel1')?.value;
+    etablissement.tel2 = formGroup.get('tel2')?.value;
+    etablissement.tel3 = formGroup.get('tel3')?.value;
     etablissement.lienDbDump = formGroup.get('lienDbDump')?.value;
     etablissement.lienBackupDB = formGroup.get('lienBackupDB')?.value; 
     etablissement.numJour = formGroup.get('numJour')?.value;
     etablissement.typeExec = formGroup.get('typeExec')?.value;
-    etablissement.villeId = formGroup.get('villeId')?.value;
+    etablissement.dateTime = formGroup.get('dateTime')?.value;
 
     return etablissement;
   }

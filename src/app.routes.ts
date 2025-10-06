@@ -6,6 +6,7 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { PaysComponent } from '@/components/pays/pays-component/pays-component';
 import { VilleComponent } from '@/components/ville/ville-component/ville-component';
+import { EtablissementComponent } from '@/components/etablissement-component/etablissement-component';
 
 export const appRoutes: Routes = [
     {
@@ -16,6 +17,7 @@ export const appRoutes: Routes = [
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'pays', component: PaysComponent },
             { path: 'ville', component: VilleComponent },
+            { path: 'etablissement', component: EtablissementComponent },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]

@@ -4,7 +4,9 @@ export interface Etablissement {
   id: bigint;
   nom: string;
   cheminBD: string;
-  tel: string;
+  tel1: string;
+  tel2: string;
+  tel3: string;
   fax: string;
   gsm: string;
   email: string;
@@ -44,7 +46,9 @@ export function initObjectEtablissement(): Etablissement {
     id: BigInt(0),
     nom: "",
     cheminBD: "",
-    tel: "",
+    tel1: "",
+    tel2: "",
+    tel3: "",
     fax: "",
     gsm: "",
     email: "",
