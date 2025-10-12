@@ -34,7 +34,6 @@ import { catchError, firstValueFrom, of } from 'rxjs';
     DialogModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
 ],
   templateUrl: './pays-component.html',
   styleUrl: './pays-component.scss'

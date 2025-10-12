@@ -1,0 +1,194 @@
+<div class="card">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <p-toolbar class="mb-4">
+          <ng-template pTemplate="left">
+            <div class="my-2">
+              <button
+                pButton
+                pRipple
+                label="Ajouter"
+                icon="pi pi-plus"
+                class="p-button-success mr-2"
+                (click)="viderAjouter()"
+              ></button>
+            </div>
+          </ng-template>
+  
+          <ng-template pTemplate="right">
+            <button
+              pButton
+              pRipple
+              label="Export"
+              icon="pi pi-upload"
+              class="p-button-help"
+              (click)="dt.exportCSV()"
+            ></button>
+          </ng-template>
+        </p-toolbar>
+  
+        <p-table
+              #dt
+              [value]="listPersonnel"
+              dataKey="id"
+              [rows]="10"
+              [rowHover]="true"
+              [showGridlines]="true"
+              [paginator]="true"
+              [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']"
+              [rowsPerPageOptions]="[10, 20, 30]"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [rowHover]="true"
+              responsiveLayout="scroll"
+          >
+          <ng-template #caption>
+              <div class="flex justify-between items-center flex-column sm:flex-row">
+                  <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
+                  <p-iconfield iconPosition="left" class="ml-auto">
+                      <p-inputicon>
+                          <i class="pi pi-search"></i>
+                      </p-inputicon>
+                      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
+                  </p-iconfield>
+              </div>
+          </ng-template>
+  
+          <ng-template #header>
+            <tr>
+              <th></th>
+  
+              <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                      Pays
+                      <p-columnFilter type="text" field="pays" display="menu" placeholder="Search by pays"></p-columnFilter>
+                  </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-p>
+            <tr>
+              <td style="width: 10%; min-width: 7rem">
+                <div class="flex gap-2">
+                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
+                </div>
+              </td>
+              <td>
+                {{ p.pays }}
+              </td>
+            </tr>
+          </ng-template>
+  
+          <ng-template #emptymessage>
+              <tr>
+                  <td colspan="3">No Pays found.</td>
+              </tr>
+          </ng-template>
+          <ng-template #loadingbody>
+              <tr>
+                  <td colspan="3">Loading pays data. Please wait.</td>
+              </tr>
+          </ng-template>
+        </p-table>
+      </div>
+  
+      <p-dialog
+        [(visible)]="dialogAjouter"
+        [style]="{ width: '700px' }"
+        header="Mise à jour Personnel"
+        [modal]="true"
+        class="p-fluid"
+        [closable]="false"
+      >
+        <!-- Form content must go inside ng-template -->
+        <ng-template pTemplate="content">
+            <div [formGroup]="formGroup">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="designation">Désignation</label>
+                        <input pInputText id="designation" formControlName="designation" required
+                            [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }"
+                        />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="cin">CIN</label>
+                        <input pInputText id="cin" formControlName="cin" required
+                            [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }"
+                        />
+                    </div>
+
+                    <div>
+                        <p-floatlabel class="w-full md:w-56" variant="on">
+                            <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel" optionLabel="label" optionValue="value" class="w-full" />
+                            <label for="typePersonnel">Type Personnel</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="login">Login</label>
+                        <input pInputText id="login" formControlName="login" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="password">Password</label>
+                        <p-password id="password" formControlName="password" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="dateEntrer">Date Entrée</label>
+                        <p-date-picker id="dateEntrer" formControlName="dateEntrer" />
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="tel1">Tel1</label>
+                        <input pInputText id="tel1" formControlName="tel1" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="tel2">Tel2</label>
+                        <input pInputText id="tel2" formControlName="tel2" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="adresse">Adresse</label>
+                        <input pInputText id="adresse" formControlName="adresse" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="salaire">Salaire</label>
+                        <p-input-number id="salaire" formControlName="salaire" [min]="0" />
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <p-togglebutton name="etatComptePersonnel" formControlName="etatComptePersonnel" onLabel="Activé" offLabel="Désactivé" />
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+  
+        <!-- Footer template -->
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Fermer" icon="pi pi-times" class="p-button-outlined p-button-info" (click)="openCloseDialogAjouter(false)"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+        </ng-template>
+      </p-dialog>
+  
+      <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (personnel) {
+            <span>Are you sure you want to delete this Personnel ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="supprimer()"></button>
+        </ng-template>
+      </p-dialog>
+    </div>
+  </div>
+  

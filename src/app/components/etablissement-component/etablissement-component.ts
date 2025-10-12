@@ -16,8 +16,15 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
-import { Checkbox, CheckboxModule } from "primeng/checkbox";
+import { CheckboxModule } from "primeng/checkbox";
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { FluidModule } from 'primeng/fluid';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { PasswordModule } from 'primeng/password';
+import { DatePickerModule } from "primeng/datepicker";
 
 @Component({
   selector: 'app-etablissement-component',
@@ -33,9 +40,16 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     SelectModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule,
     CheckboxModule,
-    RadioButtonModule
+    RadioButtonModule,
+    FluidModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputNumberModule,
+    InputTextModule,
+    PasswordModule,
+    DatePickerModule
 ],
   templateUrl: './etablissement-component.html',
   styleUrl: './etablissement-component.scss'
@@ -81,6 +95,7 @@ export class EtablissementComponent implements OnInit {
       tel2: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       tel3: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       hostmail: [''],
+      rc: [''],
       ife: [''],
       ice: [''],
       lundi: [false],
@@ -106,13 +121,15 @@ export class EtablissementComponent implements OnInit {
   }
 
   onChangeTypeExecution(event: any) {
-    if(this.formGroup.get('typeExec')?.value == 1 || this.formGroup.get('typeExec')?.value == 2) {
-      if(this.formGroup.get('numJour')?.value == 0) {
+    console.log(this.formGroup.get('typeExec')?.value);
+    if(this.formGroup.get('typeExec')?.value === "1" || this.formGroup.get('typeExec')?.value === "2") {
+      if(this.formGroup.get('typeExec')?.value === "1") {
         this.days = [1, 2, 3, 4, 5, 6, 7];
       } else {
         this.days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
       }
 
+      console.log(this.days);
       this.formGroup.get('numJour')?.setValue(1);
     }
   }

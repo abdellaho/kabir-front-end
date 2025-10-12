@@ -1,8 +1,12 @@
+import { TypePersonnel } from "@/shared/enums/type-personnel";
 import { Ville } from "./ville";
 
 export interface Repertoire {
   id: bigint;
   designation: string;
+  login: string;
+  password: string;
+  cin: string;
   contact1: string;
   contact2: string;
   tel1: string;
@@ -10,6 +14,8 @@ export interface Repertoire {
   tel3: string;
   adresse: string;
   email: string;
+  typePersonnel: TypePersonnel;
+  etatComptePersonnel: boolean;
   typeRepertoire: number;
   typeReglment: number;
   ife: string;
@@ -19,7 +25,7 @@ export interface Repertoire {
   dateEntrer: Date;
   dateValidation: Date;
   observation: string;
-  salaireParDefaut: number;
+  salaire: number;
   nbrOperationClient: number;
   bloquer: number;
   mntCnss: number;
@@ -36,6 +42,9 @@ export function initObjectRepertoire(): Repertoire {
   return {
     id: BigInt(0),
     designation: "",
+    cin: "",
+    login: "",
+    password: "",
     contact1: "",
     contact2: "",
     tel1: "",
@@ -43,6 +52,8 @@ export function initObjectRepertoire(): Repertoire {
     tel3: "",
     adresse: "",
     email: "",
+    typePersonnel: TypePersonnel.NONE,
+    etatComptePersonnel: false,
     typeRepertoire: 0,
     typeReglment: 0,
     ife: "",
@@ -52,7 +63,7 @@ export function initObjectRepertoire(): Repertoire {
     dateEntrer: new Date(),
     dateValidation: new Date(),
     observation: "",
-    salaireParDefaut: 0,
+    salaire: 0,
     nbrOperationClient: 0,
     bloquer: 0,
     mntCnss: 0,

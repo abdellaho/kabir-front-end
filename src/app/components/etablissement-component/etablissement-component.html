@@ -1,221 +1,212 @@
-<div class="flex mt-8">
-    <div class="card flex flex-col gap-6 w-full">
-        <div class="font-semibold text-xl">Etablissement</div>
-        
-        <div class="flex flex-col md:flex-row gap-6">
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="nom" class="font-semibold">Nom Etablissement</label>
-                <div class="input-button-group">
-                  <input pInputText id="nom" formControlName="nom" required
-                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nom')?.invalid }"
-                  />
-                </div>
-                @if (submitted && formGroup.get('nom')?.invalid) {
-                  <small class="ng-dirty ng-invalid p-error">
-                    Nom Etablissement obligatoire.
-                  </small>
-                }
-            </div>
+<p-fluid class="flex mt-8" [formGroup]="formGroup">
+  <div class="card flex flex-col gap-6 w-full">
+    <div class="font-semibold text-xl">Etablissement</div>
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="nom" formControlName="nom" />
+          <label for="nom">Nom Etablissement</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="ice" class="font-semibold">ICE</label>
-                <div class="input-button-group">
-                  <input pInputText id="ice" formControlName="ice" />
-                </div>
-            </div>
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="ice" formControlName="ice" />
+          <label for="ice">ICE</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="ife" class="font-semibold">IF</label>
-                <div class="input-button-group">
-                  <input pInputText id="ife" formControlName="ife" />
-                </div>
-            </div>
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="ife" formControlName="ife" />
+          <label for="ife">IF</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="rc" class="font-semibold">RC</label>
-                <div class="input-button-group">
-                  <input pInputText id="rc" formControlName="rc" />
-                </div>
-            </div>
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="rc" formControlName="rc" />
+          <label for="rc">RC</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="patente" class="font-semibold">Patente</label>
-                <div class="input-button-group">
-                  <input pInputText id="patente" formControlName="patente" />
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap">
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="tel1" class="font-semibold">Tel1</label>
-                <div class="input-button-group">
-                  <input pInputText id="tel1" formControlName="tel1" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="tel2" class="font-semibold">Tel2</label>
-                <div class="input-button-group">
-                  <input pInputText id="tel2" formControlName="tel2" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="tel3" class="font-semibold">Tel3</label>
-                <div class="input-button-group">
-                  <input pInputText id="tel3" formControlName="tel3" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="adresse" class="font-semibold">Adresse</label>
-                <div class="input-button-group">
-                  <input pInputText id="adresse" formControlName="adresse" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="email" class="font-semibold">Email</label>
-                <div class="input-button-group">
-                  <input pInputText id="email" formControlName="email" />
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap">
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="siteweb" class="font-semibold">Site Web</label>
-                <div class="input-button-group">
-                  <input pInputText id="siteweb" formControlName="siteweb" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="lienBackupDB" class="font-semibold">Lien Backup DB</label>
-                <div class="input-button-group">
-                  <input pInputText id="lienBackupDB" formControlName="lienBackupDB" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="hostmail" class="font-semibold">Serveur (SMTP)</label>
-                <div class="input-button-group">
-                  <input pInputText id="hostmail" formControlName="hostmail" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="port" class="font-semibold">Port</label>
-                <div class="input-button-group">
-                  <input pInputText id="port" formControlName="port" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="paswordMail" class="font-semibold">Mot de Passe</label>
-                <div class="input-button-group">
-                  <input pInputText id="paswordMail" formControlName="paswordMail" />
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap">
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="lienDbDump" class="font-semibold">Lien Db Dump</label>
-                <div class="input-button-group">
-                  <input pInputText id="lienDbDump" formControlName="lienDbDump" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="cheminBD" class="font-semibold">Chemin BD</label>
-                <div class="input-button-group">
-                  <input pInputText id="cheminBD" formControlName="cheminBD" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="pourcentageLiv" class="font-semibold">Taux de risque</label>
-                <div class="input-button-group">
-                  <input pInputText id="pourcentageLiv" formControlName="pourcentageLiv" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-              <label for="typeExec" class="font-semibold">Execution</label>
-              @for (typeE of typeExecutions; track typeE.value) {
-                <div class="flex items-center">
-                  <p-radiobutton formControlName="typeExec" value="{{typeE.value}}" [inputId]="'typeExec' + typeE.value" onchange="onChangeTypeExecution(event)" />
-                  <label [for]="'typeExec' + typeE.value" class="ml-2">{{typeE.label}}</label>
-                </div>
-              }
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="adresse" class="font-semibold">Adresse</label>
-                <div class="input-button-group">
-                  <input pInputText id="adresse" formControlName="adresse" />
-                </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="dateTime" class="font-semibold">Date Time</label>
-                <div class="input-button-group">
-                  <input pInputText id="dateTime" formControlName="dateTime" />
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap">
-          @if (formGroup.get('typeExec')?.value == 0) {
-            <div class="flex flex-wrap gap-2 w-full">
-              <div class="flex items-center">
-                <p-checkbox inputId="lundi" name="lundi" [binary]="true" formControlName="lundi" />
-                <label for="lundi" class="ml-2"> Lundi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="mardi" name="mardi" [binary]="true" formControlName="mardi" />
-                <label for="mardi" class="ml-2"> Mardi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="mercredi" name="mercredi" [binary]="true" formControlName="mercredi" />
-                <label for="mercredi" class="ml-2"> Mercredi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="jeudi" name="jeudi" [binary]="true" formControlName="jeudi" />
-                <label for="jeudi" class="ml-2"> Jeudi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="vendredi" name="vendredi" [binary]="true" formControlName="vendredi" />
-                <label for="vendredi" class="ml-2"> Vendredi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="samedi" name="samedi" [binary]="true" formControlName="samedi" />
-                <label for="samedi" class="ml-2"> Samedi </label>
-              </div>
-
-              <div class="flex items-center">
-                <p-checkbox inputId="dimanche" name="dimanche" [binary]="true" formControlName="dimanche" />
-                <label for="dimanche" class="ml-2"> Dimanche </label>
-              </div>
-            </div>
-          }
-
-          @if (formGroup.get('typeExec')?.value !== 0) {
-            <div class="flex flex-wrap gap-2 w-full">
-              <label for="numJour" class="font-semibold">N° Jour</label>
-              <div class="input-button-group">
-                <p-select appendTo="body" [options]="days" formControlName="numJour" [optionValue]="'value'" [optionLabel]="'value'" class="w-full md:w-56"></p-select>
-              </div>
-            </div>
-          }
-        </div>
-      
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="patente" formControlName="patente" />
+          <label for="patente">Patente</label>
+        </p-floatlabel>
+      </div>
     </div>
-</div>
+
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="tel1" formControlName="tel1" />
+          <label for="tel1">Tel1</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="tel2" formControlName="tel2" />
+          <label for="tel2">Tel2</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="tel3" formControlName="tel3" />
+          <label for="tel3">Tel3</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="email" formControlName="email" />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="adresse" formControlName="adresse" />
+          <label for="adresse">Adresse</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="siteweb" formControlName="siteweb" />
+          <label for="siteweb">Site Web</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="lienBackupDB" formControlName="lienBackupDB" />
+          <label for="lienBackupDB">Lien Backup DB</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="hostmail" formControlName="hostmail" />
+          <label for="hostmail">Serveur (SMTP)</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <p-input-number id="port" formControlName="port" />
+          <label for="port">Port</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <p-password id="paswordMail" formControlName="paswordMail" />
+          <label for="paswordMail">Mot de Passe</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="lienDbDump" formControlName="lienDbDump" />
+          <label for="lienDbDump">Lien Db Dump</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="cheminBD" formControlName="cheminBD" />
+          <label for="cheminBD">Chemin BD</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="pourcentageLiv" formControlName="pourcentageLiv" />
+          <label for="pourcentageLiv">Taux de risque</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <p-date-picker id="dateTime" formControlName="dateTime" />
+          <label for="dateTime">Date Time</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4"></div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex flex-col gap-4">
+        @for (typeE of typeExecutions; track typeE.value) {
+          <div class="flex items-center">
+            <p-radiobutton formControlName="typeExec" value="{{typeE.value}}" [inputId]="'typeExec' + typeE.value" (change)="onChangeTypeExecution($event)" />
+            <label [for]="'typeExec' + typeE.value" class="ml-2">{{typeE.label}}</label>
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col gap-4">
+        @if (formGroup.get('typeExec')?.value !== "0") {
+          <div class="flex flex-wrap gap-2 w-full">
+            <label for="numJour" class="font-semibold">N° Jour</label>
+            <div class="input-button-group">
+              <p-select appendTo="body" [options]="days" formControlName="numJour" class="w-full md:w-56"></p-select>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="flex flex-col gap-4">
+        @if (formGroup.get('typeExec')?.value === "0") {
+          <div class="flex flex-wrap gap-2 w-full">
+            <div class="flex items-center">
+              <p-checkbox inputId="lundi" name="lundi" [binary]="true" formControlName="lundi" />
+              <label for="lundi" class="ml-2"> Lundi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="mardi" name="mardi" [binary]="true" formControlName="mardi" />
+              <label for="mardi" class="ml-2"> Mardi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="mercredi" name="mercredi" [binary]="true" formControlName="mercredi" />
+              <label for="mercredi" class="ml-2"> Mercredi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="jeudi" name="jeudi" [binary]="true" formControlName="jeudi" />
+              <label for="jeudi" class="ml-2"> Jeudi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="vendredi" name="vendredi" [binary]="true" formControlName="vendredi" />
+              <label for="vendredi" class="ml-2"> Vendredi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="samedi" name="samedi" [binary]="true" formControlName="samedi" />
+              <label for="samedi" class="ml-2"> Samedi </label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="dimanche" name="dimanche" [binary]="true" formControlName="dimanche" />
+              <label for="dimanche" class="ml-2"> Dimanche </label>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</p-fluid>

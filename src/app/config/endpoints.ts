@@ -25,5 +25,13 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/etablissement`,
     update: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
     delete: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
+  },
+  REPERTOIRE: {
+    getAll: `${BASE_URL}/repertoire`,
+    getById: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
+    create: `${BASE_URL}/repertoire`,
+    update: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
+    searchPersonnel: `${BASE_URL}/repertoire/personnel`,
   }
 };
