@@ -1,10 +1,45 @@
 import { TypeEmploye } from "../enums/type-employe";
+import { TypePersonnel } from "../enums/type-personnel";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
   severity?: string;
   summary?: string;
   detail?: string;
+}
+
+export function omit(obj: any, ...propsToOmit: any[]): any {
+  const newObj = { ...obj }; // Create a shallow copy of the original object
+
+  for (const prop of propsToOmit) {
+    delete newObj[prop]; // Delete each specified property from the copy
+  }
+
+  return newObj; // Return the new object without the omitted properties
+}
+
+export function mapTypePersonnel(value: number): string {
+  const mapping: { [key: number]: string } = {
+    0: 'NONE',
+    1: 'ADMINISTRATEUR',
+    2: 'GERANT',
+    3: 'COMPATBLE',
+    4: 'MAGASINIER',
+    5: 'COMMERCIAL_INTERNE',
+    6: 'COMMERCIAL_EXTERNE',
+  };
+  return mapping[value as keyof typeof mapping] ?? 'NONE';
+}
+
+export function mapTypeRepertoire(value: number): string {
+  const mapping: { [key: number]: string } = {
+    0: 'NONE',
+    1: 'EMPLOYE',
+    2: 'PHARMACIE',
+    3: 'FOURNISSEUR',
+    4: 'REVENDEUR',
+  };
+  return mapping[value as keyof typeof mapping] ?? 'NONE';
 }
 
 export function arrayToMap<T>(array: T[], keyAttr: keyof T, valueAttrs: (keyof T)[], separators: string[]): Map<number, string> {

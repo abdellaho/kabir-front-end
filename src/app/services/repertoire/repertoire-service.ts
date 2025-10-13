@@ -1,5 +1,6 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Repertoire } from '@/models/Repertoire';
+import { mapTypePersonnel, mapTypeRepertoire, omit } from '@/shared/classes/generic-methods';
 import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -20,12 +21,16 @@ export class RepertoireService {
     return this.http.get<Repertoire>(ENDPOINTS.REPERTOIRE.getById(id));
   }
 
-  create(ville: Repertoire): Observable<Repertoire> {
-    return this.http.post<Repertoire>(ENDPOINTS.REPERTOIRE.create, ville);
+  create(repertoire: Repertoire): Observable<Repertoire> {
+    const serializedObj = this.serialization(repertoire);
+    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    return this.http.post<Repertoire>(ENDPOINTS.REPERTOIRE.create, obj);
   }
 
-  update(id: bigint, ville: Repertoire): Observable<Repertoire> {
-    return this.http.patch<Repertoire>(ENDPOINTS.REPERTOIRE.update(id), ville);
+  update(id: bigint, repertoire: Repertoire): Observable<Repertoire> {
+    const serializedObj = this.serialization(repertoire);
+    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    return this.http.patch<Repertoire>(ENDPOINTS.REPERTOIRE.update(id), obj);
   }
 
   delete(id: bigint): Observable<void> {
@@ -34,6 +39,17 @@ export class RepertoireService {
 
   searchPersonnel(personnelSearch: PersonnelSearch): Observable<boolean> {
     return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.searchPersonnel, personnelSearch);
+  }
+
+  serialization(repertoire: Repertoire): any {
+    return {
+      ...repertoire,
+      typePersonnel: mapTypePersonnel(repertoire.typePersonnel),
+      typeRepertoire: mapTypeRepertoire(repertoire.typeRepertoire),
+      id: repertoire.id?.toString(),
+      villeId: repertoire.villeId?.toString(),
+      repertoireId: repertoire.repertoireId?.toString(),
+    };
   }
   
 }

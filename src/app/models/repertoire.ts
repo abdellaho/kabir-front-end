@@ -2,7 +2,7 @@ import { TypePersonnel } from "@/shared/enums/type-personnel";
 import { Ville } from "./ville";
 
 export interface Repertoire {
-  id: bigint;
+  id: bigint | null;
   designation: string;
   login: string;
   password: string;
@@ -34,13 +34,13 @@ export interface Repertoire {
   contactTel3: string;
   repertoireId?: bigint | null;
   repertoire?: Repertoire | null;
-  villeId: bigint;
+  villeId: bigint | null;
   ville?: Ville | null;
 }
 
 export function initObjectRepertoire(): Repertoire {
   return {
-    id: BigInt(0),
+    id: null,
     designation: "",
     cin: "",
     login: "",
@@ -70,9 +70,9 @@ export function initObjectRepertoire(): Repertoire {
     commercialExterne: false,
     contactTel2: "",
     contactTel3: "",
-    repertoireId: BigInt(0),
+    repertoireId: null,
     repertoire: null,
-    villeId: BigInt(0),
+    villeId: null,
     ville: null,
   };
 }

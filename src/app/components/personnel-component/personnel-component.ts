@@ -211,6 +211,7 @@ export class PersonnelComponent implements OnInit {
     if(!trvErreur) {
       this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel);
       this.submitted = true;
+      console.log('Personnel : ', this.personnel);
       
       if(this.personnel.id) {
         this.repertoireService.update(this.personnel.id, this.personnel).subscribe({

@@ -32,6 +32,6 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/repertoire`,
     update: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
     delete: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
-    searchPersonnel: `${BASE_URL}/repertoire/personnel`,
+    searchPersonnel: `${BASE_URL}/repertoire/search-personnel`,
   }
 };
