@@ -7,6 +7,7 @@ import { Notfound } from './app/pages/notfound/notfound';
 import { PaysComponent } from '@/components/pays/pays-component/pays-component';
 import { VilleComponent } from '@/components/ville/ville-component/ville-component';
 import { EtablissementComponent } from '@/components/etablissement-component/etablissement-component';
+import { PersonnelComponent } from '@/components/personnel-component/personnel-component';
 
 export const appRoutes: Routes = [
     {
@@ -18,6 +19,7 @@ export const appRoutes: Routes = [
             { path: 'pays', component: PaysComponent },
             { path: 'ville', component: VilleComponent },
             { path: 'etablissement', component: EtablissementComponent },
+            { path: 'personnel', component: PersonnelComponent },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]

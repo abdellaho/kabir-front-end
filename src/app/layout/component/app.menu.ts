@@ -37,6 +37,10 @@ export class AppMenu {
                 items: [{ label: 'Etablissement', icon: 'pi pi-fw pi-home', routerLink: ['/etablissement'] }]
             },
             {
+                label: 'Personnel',
+                items: [{ label: 'Personnel', icon: 'pi pi-fw pi-home', routerLink: ['/personnel'] }]
+            },
+            {
                 label: 'UI Components',
                 items: [
                     { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },

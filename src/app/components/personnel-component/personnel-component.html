@@ -61,9 +61,37 @@
   
               <th style="min-width: 12rem">
                   <div class="flex justify-between items-center">
-                      Pays
-                      <p-columnFilter type="text" field="pays" display="menu" placeholder="Search by pays"></p-columnFilter>
+                      Designation
+                      <p-columnFilter type="text" field="designation" display="menu" placeholder="Search by designation"></p-columnFilter>
                   </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    CIN
+                    <p-columnFilter type="text" field="cin" display="menu" placeholder="Search by cin"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                      Login
+                      <p-columnFilter type="text" field="login" display="menu" placeholder="Search by login"></p-columnFilter>
+                  </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Tel1
+                    <p-columnFilter type="text" field="tel1" display="menu" placeholder="Search by tel1"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Tel2
+                    <p-columnFilter type="text" field="tel2" display="menu" placeholder="Search by tel2"></p-columnFilter>
+                </div>
               </th>
             </tr>
           </ng-template>
@@ -75,98 +103,123 @@
                   <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
                 </div>
               </td>
-              <td>
-                {{ p.pays }}
-              </td>
+
+              <td>{{ p.designation }}</td>
+              <td>{{ p.cin }}</td>
+              <td>{{ p.login }}</td>
+              <td>{{ p.tel1 }}</td>
+              <td>{{ p.tel2 }}</td>
             </tr>
           </ng-template>
   
           <ng-template #emptymessage>
               <tr>
-                  <td colspan="3">No Pays found.</td>
+                  <td colspan="6">No Personnel found.</td>
               </tr>
           </ng-template>
           <ng-template #loadingbody>
               <tr>
-                  <td colspan="3">Loading pays data. Please wait.</td>
+                  <td colspan="6">Loading personnels data. Please wait.</td>
               </tr>
           </ng-template>
         </p-table>
       </div>
   
-      <p-dialog
-        [(visible)]="dialogAjouter"
-        [style]="{ width: '700px' }"
-        header="Mise à jour Personnel"
-        [modal]="true"
-        class="p-fluid"
-        [closable]="false"
-      >
+      <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
         <!-- Form content must go inside ng-template -->
         <ng-template pTemplate="content">
-            <div [formGroup]="formGroup">
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="designation">Désignation</label>
-                        <input pInputText id="designation" formControlName="designation" required
-                            [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }"
-                        />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="cin">CIN</label>
-                        <input pInputText id="cin" formControlName="cin" required
-                            [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }"
-                        />
-                    </div>
-
-                    <div>
-                        <p-floatlabel class="w-full md:w-56" variant="on">
-                            <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel" optionLabel="label" optionValue="value" class="w-full" />
-                            <label for="typePersonnel">Type Personnel</label>
-                        </p-floatlabel>
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="login">Login</label>
-                        <input pInputText id="login" formControlName="login" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="password">Password</label>
-                        <p-password id="password" formControlName="password" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="dateEntrer">Date Entrée</label>
-                        <p-date-picker id="dateEntrer" formControlName="dateEntrer" />
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="tel1">Tel1</label>
-                        <input pInputText id="tel1" formControlName="tel1" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="tel2">Tel2</label>
-                        <input pInputText id="tel2" formControlName="tel2" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="adresse">Adresse</label>
-                        <input pInputText id="adresse" formControlName="adresse" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="salaire">Salaire</label>
-                        <p-input-number id="salaire" formControlName="salaire" [min]="0" />
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <p-togglebutton name="etatComptePersonnel" formControlName="etatComptePersonnel" onLabel="Activé" offLabel="Désactivé" />
-                    </div>
+          <div [formGroup]="formGroup" class="p-fluid">
+            <div class="card flex flex-col gap-4">
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="designation" formControlName="designation" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
+                    <label for="designation">Désignation</label>
+                  </p-floatlabel>
                 </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="cin" formControlName="cin" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
+                    <label for="cin">CIN</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel" appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;" class="w-full md:w-56" />
+                    <label for="typePersonnel">Type Personnel</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="login" formControlName="login" />
+                    <label for="login">Login</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <p-password id="password" formControlName="password" />
+                    <label for="password">Password</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body"/>
+                    <label for="dateEntrer">Date Entrée</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="tel1" formControlName="tel1" />
+                    <label for="tel1">Tel1</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="tel2" formControlName="tel2" />
+                    <label for="tel2">Tel2</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="adresse" formControlName="adresse" />
+                    <label for="adresse">Adresse</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <p-input-number id="salaire" formControlName="salaire" [min]="0" />
+                    <label for="salaire">Salaire</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-togglebutton name="etatComptePersonnel" formControlName="etatComptePersonnel" onLabel="Activé" offLabel="Désactivé" />
+                </div>
+
+                <div class="flex flex-col grow basis-0"></div>
+              </div>
             </div>
+          </div>
         </ng-template>
   
         <!-- Footer template -->

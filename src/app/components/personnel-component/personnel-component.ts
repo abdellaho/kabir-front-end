@@ -1,7 +1,6 @@
-import { initObjectRepertoire, Repertoire } from '@/models/Repertoire';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypePersonnel, filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
+import { filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
 import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
@@ -24,6 +23,7 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { ToggleButtonModule } from "primeng/togglebutton";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { SelectModule } from "primeng/select";
+import { initObjectRepertoire, Repertoire } from '@/models/Repertoire';
 
 @Component({
   selector: 'app-personnel-component',
