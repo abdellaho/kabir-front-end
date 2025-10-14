@@ -131,7 +131,7 @@ export class PersonnelComponent implements OnInit {
               designation: this.personnel.designation,
               cin: this.personnel.cin,
               login: this.personnel.login,
-              password: this.personnel.password,
+              password: '', //this.personnel.password,
               typePersonnel: this.personnel.typePersonnel,
               dateEntrer: this.personnel.dateEntrer,
               tel1: this.personnel.tel1,
