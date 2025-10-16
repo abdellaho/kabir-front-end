@@ -8,6 +8,7 @@ import { PaysComponent } from '@/components/pays/pays-component/pays-component';
 import { VilleComponent } from '@/components/ville/ville-component/ville-component';
 import { EtablissementComponent } from '@/components/etablissement-component/etablissement-component';
 import { PersonnelComponent } from '@/components/personnel-component/personnel-component';
+import { ParametrageComponent } from '@/components/parametrage-component/parametrage-component';
 
 export const appRoutes: Routes = [
     {
@@ -16,6 +17,7 @@ export const appRoutes: Routes = [
         children: [
             { path: '', component: Dashboard },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
+            { path: 'parametrage', component: ParametrageComponent },
             { path: 'pays', component: PaysComponent },
             { path: 'ville', component: VilleComponent },
             { path: 'etablissement', component: EtablissementComponent },

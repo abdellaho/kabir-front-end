@@ -16,6 +16,7 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
 import { InputTextModule } from "primeng/inputtext";
+import { FloatLabelModule } from 'primeng/floatlabel';
 @Component({
   standalone: true,
   selector: 'app-ville-component',
@@ -31,6 +32,7 @@ import { InputTextModule } from "primeng/inputtext";
     SelectModule,
     IconFieldModule,
     InputIconModule,
+    FloatLabelModule,
     InputTextModule
 ],
   templateUrl: './ville-component.html',

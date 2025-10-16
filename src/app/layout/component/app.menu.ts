@@ -25,20 +25,8 @@ export class AppMenu {
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
             },
             {
-                label: 'Pays',
-                items: [{ label: 'Pays', icon: 'pi pi-fw pi-home', routerLink: ['/pays'] }]
-            },
-            {
-                label: 'Ville',
-                items: [{ label: 'Ville', icon: 'pi pi-fw pi-home', routerLink: ['/ville'] }]
-            },
-            {
-                label: 'Etablissement',
-                items: [{ label: 'Etablissement', icon: 'pi pi-fw pi-home', routerLink: ['/etablissement'] }]
-            },
-            {
-                label: 'Personnel',
-                items: [{ label: 'Personnel', icon: 'pi pi-fw pi-home', routerLink: ['/personnel'] }]
+                label: 'Paramétrage',
+                items: [{ label: 'Paramétrage', icon: 'pi pi-fw pi-home', routerLink: ['/parametrage'] }]
             },
             {
                 label: 'UI Components',

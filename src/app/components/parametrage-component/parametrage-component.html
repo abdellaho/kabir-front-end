@@ -1,0 +1,30 @@
+<p-tabs value="0" scrollable>
+    <p-tablist>
+        <ng-template #previcon>
+            <i class="pi pi-minus"></i>
+        </ng-template>
+        <p-tab value="0" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">Etablissement</span>
+        </p-tab>
+        <p-tab value="1" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">Ville</span>
+        </p-tab>
+        <p-tab value="2" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">Personnel</span>
+        </p-tab>
+        <ng-template #nexticon>
+            <i class="pi pi-plus"></i>
+        </ng-template>
+    </p-tablist>
+    <p-tabpanels>
+        <p-tabpanel value="0">
+            <app-etablissement-component></app-etablissement-component>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+            <app-ville-component></app-ville-component>
+        </p-tabpanel>
+        <p-tabpanel value="2">
+            <app-personnel-component></app-personnel-component>
+        </p-tabpanel>
+    </p-tabpanels>
+</p-tabs>
