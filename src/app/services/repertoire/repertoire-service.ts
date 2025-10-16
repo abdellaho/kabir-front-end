@@ -44,8 +44,6 @@ export class RepertoireService {
   serialization(repertoire: Repertoire): any {
     return {
       ...repertoire,
-      typePersonnel: mapTypePersonnel(repertoire.typePersonnel),
-      typeRepertoire: mapTypeRepertoire(repertoire.typeRepertoire),
       id: repertoire.id?.toString(),
       villeId: repertoire.villeId?.toString(),
       repertoireId: repertoire.repertoireId?.toString(),
