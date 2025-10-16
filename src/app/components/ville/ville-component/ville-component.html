@@ -36,7 +36,7 @@
             [rowHover]="true"
             [showGridlines]="true"
             [paginator]="true"
-            [globalFilterFields]="['nomVille', 'pays.pays']"
+            [globalFilterFields]="['nomVille']"
             [rowsPerPageOptions]="[10, 20, 30]"
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -64,13 +64,6 @@
                     <p-columnFilter type="text" field="nomVille" display="menu" placeholder="Search by ville"></p-columnFilter>
                 </div>
             </th>
-
-            <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Pays
-                    <p-columnFilter type="text" field="pays.pays" display="menu" placeholder="Search by ville"></p-columnFilter>
-                </div>
-            </th>
           </tr>
         </ng-template>
         <ng-template #body let-p>
@@ -78,14 +71,11 @@
             <td style="width: 14%; min-width: 10rem">
               <div class="flex gap-2">
                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
-                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
+                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
               </div>
             </td>
             <td>
               {{ p.nomVille }}
-            </td>
-            <td>
-              {{ getPaysLib(p.paysId) }}
             </td>
           </tr>
         </ng-template>
@@ -97,7 +87,7 @@
         </ng-template>
         <ng-template #loadingbody>
             <tr>
-                <td colspan="3">Loading villes data. Please wait.</td>
+                <td colspan="3">Loading Villes data. Please wait.</td>
             </tr>
         </ng-template>
       </p-table>
@@ -115,18 +105,6 @@
       <ng-template pTemplate="content">
         <div [formGroup]="formGroup" class="flex flex-col gap-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="field col">
-                <label for="paysId" class="font-semibold">Pays</label>
-                <div class="input-button-group">
-                    <p-select appendTo="body" [options]="listPays" formControlName="paysId" optionValue="id" optionLabel="pays" placeholder="Selectionné pays" class="w-full md:w-56"></p-select>
-                </div>
-                @if (submitted && formGroup.get('paysId')?.invalid) {
-                  <small class="ng-dirty ng-invalid p-error">
-                    Pays obligatoire.
-                  </small>
-                }
-              </div>
-
               <div class="field col">
                 <label for="nomVille" class="font-semibold">Ville</label>
                 <div class="input-button-group">

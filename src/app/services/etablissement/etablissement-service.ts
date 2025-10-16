@@ -19,15 +19,24 @@ export class EtablissementService {
     return this.http.get<Etablissement>(ENDPOINTS.ETABLISSEMENT.getById(id));
   }
 
-  create(ville: Etablissement): Observable<Etablissement> {
-    return this.http.post<Etablissement>(ENDPOINTS.ETABLISSEMENT.create, ville);
+  create(etablissement: Etablissement): Observable<Etablissement> {
+    const obj = this.serialization(etablissement);
+    return this.http.post<Etablissement>(ENDPOINTS.ETABLISSEMENT.create, obj);
   }
 
-  update(id: bigint, ville: Etablissement): Observable<Etablissement> {
-    return this.http.patch<Etablissement>(ENDPOINTS.ETABLISSEMENT.update(id), ville);
+  update(id: bigint, etablissement: Etablissement): Observable<Etablissement> {
+    const obj = this.serialization(etablissement);
+    return this.http.patch<Etablissement>(ENDPOINTS.ETABLISSEMENT.update(id), obj);
   }
 
   delete(id: bigint): Observable<void> {
     return this.http.delete<void>(ENDPOINTS.ETABLISSEMENT.delete(id));
+  }
+
+  serialization(obj: Etablissement): any {
+    return {
+      ...obj,
+      id: obj.id?.toString(),
+    };
   }
 }

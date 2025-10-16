@@ -20,15 +20,24 @@ export class VilleService {
   }
 
   createVille(ville: Ville): Observable<Ville> {
-    return this.http.post<Ville>(ENDPOINTS.VILLE.create, ville);
+    const obj = this.serialization(ville);
+    return this.http.post<Ville>(ENDPOINTS.VILLE.create, obj);
   }
 
   updateVille(id: bigint, ville: Ville): Observable<Ville> {
-    return this.http.patch<Ville>(ENDPOINTS.VILLE.update(id), ville);
+    const obj = this.serialization(ville);
+    return this.http.patch<Ville>(ENDPOINTS.VILLE.update(id), obj);
   }
 
   deleteVille(id: bigint): Observable<void> {
     return this.http.delete<void>(ENDPOINTS.VILLE.delete(id));
+  }
+
+  serialization(obj: Ville): any {
+    return {
+      ...obj,
+      id: obj.id?.toString(),
+    };
   }
 
 }

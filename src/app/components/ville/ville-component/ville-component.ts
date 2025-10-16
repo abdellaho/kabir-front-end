@@ -42,14 +42,12 @@ export class VilleComponent implements OnInit {
 
   constructor(
     private villeService: VilleService,
-    private paysService: PaysService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private loadingService: LoadingService,
   ) { }
 
   cols: any[] = [];
-  listPays: Pays[] = [];
   listVille: Ville[] = [];
   ville: Ville = initObjectVille();
   dialogSupprimer: boolean = false;
@@ -60,7 +58,6 @@ export class VilleComponent implements OnInit {
   mapOfPays: Map<number, string> = new Map<number, string>();
 
   ngOnInit(): void {
-    this.getAllPays();
     this.getAllVilles();
     this.initFormGroup();
   }
@@ -68,7 +65,6 @@ export class VilleComponent implements OnInit {
   buildCols(): void {
     this.cols = [
       { field: 'nomVille', header: 'Ville' },
-      { field: 'pays.pays', header: 'Pays' }
     ];
   }
 
@@ -82,7 +78,6 @@ export class VilleComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      paysId: ['', [Validators.required, Validators.minLength(1)]],
       nomVille: ['', [Validators.required]],
     });
   }
@@ -92,17 +87,6 @@ export class VilleComponent implements OnInit {
       next: (data: Ville[]) => {
         this.listVille = data;
         this.loading = false;
-      }, error: (error: any) => {
-        console.error(error);
-      }
-    });
-  }
-
-  getAllPays(): void {
-    this.paysService.getPays().subscribe({
-      next: (data: Pays[]) => {
-        this.listPays = data;
-        this.mapOfPays = arrayToMap(this.listPays, 'id', ['pays'], ['']);
       }, error: (error: any) => {
         console.error(error);
       }
@@ -133,7 +117,6 @@ export class VilleComponent implements OnInit {
         this.ville = villeEdit;
         if(operation === 1) {
             this.formGroup.patchValue({
-                paysId: this.ville.paysId, 
                 nomVille: this.ville.nomVille
             });
 
@@ -168,7 +151,6 @@ export class VilleComponent implements OnInit {
 
   mapFormGroupToObject(formGroup: FormGroup, ville: Ville): Ville {
     ville.nomVille = formGroup.get('nomVille')?.value;
-    ville.paysId = formGroup.get('paysId')?.value;
 
     return ville;
   }
