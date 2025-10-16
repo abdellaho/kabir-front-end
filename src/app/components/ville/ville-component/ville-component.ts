@@ -1,6 +1,4 @@
-import { Pays } from '@/models/pays';
 import { initObjectVille, Ville } from '@/models/ville';
-import { PaysService } from '@/services/pays/pays-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { LoadingService } from '@/shared/services/loading-service';
@@ -13,7 +11,7 @@ import { Table, TableModule } from "primeng/table";
 import { DialogModule } from "primeng/dialog";
 import { CommonModule } from '@angular/common';
 import { SelectModule } from "primeng/select";
-import { arrayToMap, getAttribut } from '@/shared/classes/generic-methods';
+import { getAttribut } from '@/shared/classes/generic-methods';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
