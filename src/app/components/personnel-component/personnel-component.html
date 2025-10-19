@@ -75,8 +75,8 @@
 
               <th style="min-width: 12rem">
                   <div class="flex justify-between items-center">
-                      Login
-                      <p-columnFilter type="text" field="login" display="menu" placeholder="Search by login"></p-columnFilter>
+                      Type
+                      <p-columnFilter type="text" field="typePersonnel" display="menu" placeholder="Search by typePersonnel"></p-columnFilter>
                   </div>
               </th>
 
@@ -100,13 +100,13 @@
               <td style="width: 10%; min-width: 7rem">
                 <div class="flex gap-2">
                   <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
-                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="warn" rounded />
+                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
                 </div>
               </td>
 
               <td>{{ p.designation }}</td>
               <td>{{ p.cin }}</td>
-              <td>{{ p.login }}</td>
+              <td>{{ p.typePersonnel | typePersonnelPipe }}</td>
               <td>{{ p.tel1 }}</td>
               <td>{{ p.tel2 }}</td>
             </tr>

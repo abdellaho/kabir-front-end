@@ -24,6 +24,7 @@ import { ToggleButtonModule } from "primeng/togglebutton";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { SelectModule } from "primeng/select";
 import { initObjectRepertoire, Repertoire } from '@/models/Repertoire';
+import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 
 @Component({
   selector: 'app-personnel-component',
@@ -45,7 +46,8 @@ import { initObjectRepertoire, Repertoire } from '@/models/Repertoire';
     InputNumberModule,
     ToggleButtonModule,
     FloatLabelModule,
-    SelectModule
+    SelectModule,
+    TypePersonnelPipe
 ],
   templateUrl: './personnel-component.html',
   styleUrl: './personnel-component.scss'

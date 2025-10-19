@@ -1,5 +1,6 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Etablissement } from '@/models/etablissement';
+import { omit } from '@/shared/classes/generic-methods';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -20,12 +21,14 @@ export class EtablissementService {
   }
 
   create(etablissement: Etablissement): Observable<Etablissement> {
-    const obj = this.serialization(etablissement);
+    const serializedObj = this.serialization(etablissement);
+    const obj = omit(serializedObj, 'villeId', 'ville');
     return this.http.post<Etablissement>(ENDPOINTS.ETABLISSEMENT.create, obj);
   }
 
   update(id: bigint, etablissement: Etablissement): Observable<Etablissement> {
-    const obj = this.serialization(etablissement);
+    const serializedObj = this.serialization(etablissement);
+    const obj = omit(serializedObj, 'villeId', 'ville');
     return this.http.patch<Etablissement>(ENDPOINTS.ETABLISSEMENT.update(id), obj);
   }
 

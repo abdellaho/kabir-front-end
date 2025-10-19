@@ -1,7 +1,7 @@
 import { Ville } from "./ville";
 
 export interface Etablissement {
-  id: bigint;
+  id: bigint | null;
   nom: string;
   cheminBD: string;
   tel1: string;
@@ -37,13 +37,13 @@ export interface Etablissement {
   dateTime: Date;
   typeExec: number;
   numJour: number;
-  villeId: bigint;
+  villeId: bigint | null;
   ville?: Ville | null;
 }
 
 export function initObjectEtablissement(): Etablissement {
   return {
-    id: BigInt(0),
+    id: null,
     nom: "",
     cheminBD: "",
     tel1: "",
@@ -79,7 +79,7 @@ export function initObjectEtablissement(): Etablissement {
     dateTime: new Date(),
     typeExec: 0,
     numJour: 0,
-    villeId: BigInt(0),
+    villeId: null,
     ville: null,
   };
 }

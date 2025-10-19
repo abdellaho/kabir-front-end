@@ -88,12 +88,12 @@ export class EtablissementComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      adresse: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      adresse: [''],
       email: [''],
       nom: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      tel1: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      tel2: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      tel3: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      tel1: [''],
+      tel2: [''],
+      tel3: [''],
       hostmail: [''],
       rc: [''],
       ife: [''],
@@ -109,27 +109,26 @@ export class EtablissementComponent implements OnInit {
       lienDbDump: [''],
       lienBackupDB: [''],
       cheminBD: [''],
-      pourcentageLiv: [0, [Validators.required, Validators.min(0)]],
+      pourcentageLiv: [0],
       patente: [''],
       siteweb: [''],
       port: [''],
       hostMail: [''],
-      numJour: [1, [Validators.required, Validators.min(0)]],
-      typeExec: [0, [Validators.required, Validators.min(0)]],
+      numJour: [1],
+      typeExec: [0],
       dateTime: [new Date()]
     });
   }
 
   onChangeTypeExecution(event: any) {
-    console.log(this.formGroup.get('typeExec')?.value);
-    if(this.formGroup.get('typeExec')?.value === "1" || this.formGroup.get('typeExec')?.value === "2") {
-      if(this.formGroup.get('typeExec')?.value === "1") {
+    let typeExec = Number(this.formGroup.get('typeExec')?.value);
+    if(typeExec === 1 || typeExec === 2) {
+      if(typeExec === 1) {
         this.days = [1, 2, 3, 4, 5, 6, 7];
       } else {
         this.days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
       }
-
-      console.log(this.days);
+      
       this.formGroup.get('numJour')?.setValue(1);
     }
   }
@@ -151,7 +150,20 @@ export class EtablissementComponent implements OnInit {
         if(list && list.length > 0) {
           this.etablissement = list[0];
 
-          this.formGroup.patchValue(this.etablissement);
+          const patchedEtablissement = {
+            ...this.etablissement,
+            dateTime: this.etablissement.dateTime ? new Date(this.etablissement.dateTime) : null,
+          };
+
+          this.formGroup.patchValue(patchedEtablissement);
+
+          if(this.etablissement.typeExec !== 0) {
+            if(this.etablissement.typeExec === 1) {
+              this.days = [1, 2, 3, 4, 5, 6, 7];
+            } else {
+              this.days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+            }
+          }
         }
         this.loading = false;
       }, error: (error: any) => {
@@ -177,7 +189,7 @@ export class EtablissementComponent implements OnInit {
     etablissement.nom = formGroup.get('nom')?.value;
     etablissement.paswordMail = formGroup.get('paswordMail')?.value;
     etablissement.patente = formGroup.get('patente')?.value;
-    etablissement.port = formGroup.get('port')?.value;
+    //etablissement.port = formGroup.get('port')?.value;
     etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value;
     etablissement.siteweb = formGroup.get('siteweb')?.value;
     etablissement.tel1 = formGroup.get('tel1')?.value;
@@ -186,8 +198,20 @@ export class EtablissementComponent implements OnInit {
     etablissement.lienDbDump = formGroup.get('lienDbDump')?.value;
     etablissement.lienBackupDB = formGroup.get('lienBackupDB')?.value; 
     etablissement.numJour = formGroup.get('numJour')?.value;
-    etablissement.typeExec = formGroup.get('typeExec')?.value;
+    etablissement.typeExec = Number(formGroup.get('typeExec')?.value);
     etablissement.dateTime = formGroup.get('dateTime')?.value;
+
+    if(etablissement.typeExec === 0) {
+      etablissement.numJour = 1;
+    } else {
+      etablissement.lundi = false;
+      etablissement.mardi = false;
+      etablissement.mercredi = false;
+      etablissement.jeudi = false;
+      etablissement.vendredi = false;
+      etablissement.samedi = false;
+      etablissement.dimanche = false;
+    }
 
     return etablissement;
   }
@@ -207,6 +231,7 @@ export class EtablissementComponent implements OnInit {
           }, error: (err) => {
               console.log(err);
               this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.loadingService.hide();
           }, complete: () => {
             this.loadingService.hide();
           }
@@ -219,6 +244,7 @@ export class EtablissementComponent implements OnInit {
             }, error: (err) => {
                 console.log(err);
                 this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.loadingService.hide();
             }, complete: () => {
               this.loadingService.hide();
             }

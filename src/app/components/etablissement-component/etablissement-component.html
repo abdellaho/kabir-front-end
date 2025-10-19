@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-fluid class="flex mt-8" [formGroup]="formGroup">
   <div class="card flex flex-col gap-6 w-full">
     <div class="font-semibold text-xl">Etablissement</div>
@@ -136,7 +137,7 @@
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <p-date-picker id="dateTime" formControlName="dateTime" />
+          <p-date-picker id="dateTime" formControlName="dateTime" [timeOnly]="true" />
           <label for="dateTime">Date Time</label>
         </p-floatlabel>
       </div>
@@ -155,7 +156,10 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        @if (formGroup.get('typeExec')?.value !== "0") {
+        @if (formGroup.get('typeExec')?.value === "1" 
+          || formGroup.get('typeExec')?.value === 1 
+          || formGroup.get('typeExec')?.value === 2 
+          || formGroup.get('typeExec')?.value === "2") {
           <div class="flex flex-wrap gap-2 w-full">
             <label for="numJour" class="font-semibold">N° Jour</label>
             <div class="input-button-group">
@@ -168,7 +172,7 @@
 
     <div class="flex flex-col md:flex-row gap-6">
       <div class="flex flex-col gap-4">
-        @if (formGroup.get('typeExec')?.value === "0") {
+        @if (formGroup.get('typeExec')?.value === "0" || formGroup.get('typeExec')?.value === 0) {
           <div class="flex flex-wrap gap-2 w-full">
             <div class="flex items-center">
               <p-checkbox inputId="lundi" name="lundi" [binary]="true" formControlName="lundi" />
@@ -206,6 +210,20 @@
             </div>
           </div>
         }
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center" style="justify-content: center;">
+      <div class="flex">
+        <button
+          pButton
+          pRipple
+          label="Valider"
+          icon="pi pi-check"
+          class="p-button-info"
+          (click)="miseAjour()"
+          [disabled]="!formGroup.valid"
+        ></button>
       </div>
     </div>
   </div>
