@@ -1,0 +1,14 @@
+/* In global styles.css or styles.scss */
+.p-datatable.p-datatable-sm .p-datatable-tbody > tr > td,
+.p-datatable.p-datatable-sm .p-datatable-thead > tr > th {
+    font-size: 0.55rem; /* Smaller font size */
+    padding: .0rem 0.5rem !important; /* Adjust padding for a more compact look */
+}
+
+.p-datatable-header-cell-sm-padding {
+    padding: .0rem 0.5rem;
+}
+
+::ng-deep .p-datatable .p-datatable-thead > tr > th.p-datatable-header-cell-sm-padding {
+    padding: 0.0rem 0.5rem;
+}
