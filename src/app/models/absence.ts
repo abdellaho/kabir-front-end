@@ -1,30 +1,27 @@
-import { Employe } from "./employe";
-import { Repertoire } from "./Repertoire";
+import { Personnel } from "./personnel";
 
 export interface Absence {
-  id: bigint;
+  id: bigint | null;
   dateAbsence: Date;
   matin: boolean;
   apresMidi: boolean;
   dateOperation: Date;
-  employeOperationId: bigint;
-  employeOperation?: Employe | null;
-  penalite: number;
-  repertoireId: bigint;
-  repertoire?: Repertoire | null;
+  personnelOperationId: bigint | null;
+  personnelOperation?: Personnel | null;
+  personnelId: bigint;
+  personnel?: Personnel | null;
 }
 
 export function initObjectAbsence(): Absence {
   return {
-    id: BigInt(0),
+    id: null,
     dateAbsence: new Date(),
     matin: false,
     apresMidi: false,
     dateOperation: new Date(),
-    employeOperationId: BigInt(0),
-    employeOperation: null,
-    penalite: 0,
-    repertoireId: BigInt(0),
-    repertoire: null,
+    personnelOperationId: null,
+    personnelOperation: null,
+    personnelId: BigInt(0),
+    personnel: null,
   };
 }

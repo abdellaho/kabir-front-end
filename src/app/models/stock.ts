@@ -1,4 +1,4 @@
-import { Repertoire } from "./Repertoire";
+import { Fournisseur } from "./fournisseur";
 
 export interface Stock {
   id: bigint;
@@ -12,7 +12,8 @@ export interface Stock {
   pvaht: number;
   benifice: number;
   qteStock: number;
-  qtePVMin: number;
+  qtePVMin1: number;
+  qtePVMin2: number;
   qtePVMin3: number;
   qtePVMin4: number;
   qteFacturer: number;
@@ -20,21 +21,22 @@ export interface Stock {
   prixVentMin2: number;
   prixVentMin3: number;
   prixVentMin4: number;
-  remiseMax: number;
+  remiseMax1: number;
   remiseMax2: number;
   remiseMax3: number;
   remiseMax4: number;
   prixImport: number;
   commission: number;
-  archiver: number;
+  archiver: boolean;
   qteStockImport: number;
-  avecRemise: boolean;
-  prixAchatBiggerPrixVente: boolean;
-  facturer100: boolean;
-  promotion1: string;
-  promotion2: string;
-  repertoireId: bigint;
-  repertoire?: Repertoire | null;
+  montant1: number;
+  montant2: number;
+  montant3: number;
+  prime1: number;
+  prime2: number;
+  prime3: number;
+  fournisseurId: bigint;
+  fournisseur?: Fournisseur | null;
 }
 
 export function initObjectStock(): Stock {
@@ -50,7 +52,8 @@ export function initObjectStock(): Stock {
     pvaht: 0,
     benifice: 0,
     qteStock: 0,
-    qtePVMin: 0,
+    qtePVMin1: 0,
+    qtePVMin2: 0,
     qtePVMin3: 0,
     qtePVMin4: 0,
     qteFacturer: 0,
@@ -58,20 +61,21 @@ export function initObjectStock(): Stock {
     prixVentMin2: 0,
     prixVentMin3: 0,
     prixVentMin4: 0,
-    remiseMax: 0,
+    remiseMax1: 0,
     remiseMax2: 0,
     remiseMax3: 0,
     remiseMax4: 0,
+    prime1: 0,
+    prime2: 0,
+    prime3: 0,
+    montant1: 0,
+    montant2: 0,
+    montant3: 0,
     prixImport: 0,
     commission: 0,
-    archiver: 0,
+    archiver: false,
     qteStockImport: 0,
-    avecRemise: false,
-    prixAchatBiggerPrixVente: false,
-    facturer100: false,
-    promotion1: "",
-    promotion2: "",
-    repertoireId: BigInt(0),
-    repertoire: null,
+    fournisseurId: BigInt(0),
+    fournisseur: null,
   };
 }

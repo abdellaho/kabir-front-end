@@ -224,6 +224,7 @@ export class PersonnelComponent implements OnInit {
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
+              this.loadingService.hide();
               this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
           }, complete: () => {
             this.loadingService.hide();
@@ -238,6 +239,7 @@ export class PersonnelComponent implements OnInit {
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
+                this.loadingService.hide();
                 this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
             }, complete: () => {
               this.loadingService.hide();
@@ -262,6 +264,7 @@ export class PersonnelComponent implements OnInit {
             this.personnel = initObjectRepertoire() ;
         }, error: (err) => {
             console.log(err);
+            this.loadingService.hide();
             this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
         }, complete: () => {
           this.loadingService.hide();

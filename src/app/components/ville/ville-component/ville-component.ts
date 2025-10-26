@@ -171,6 +171,7 @@ export class VilleComponent implements OnInit {
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
+              this.loadingService.hide();
               this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
           }, complete: () => {
             this.loadingService.hide();
@@ -185,6 +186,7 @@ export class VilleComponent implements OnInit {
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
+                this.loadingService.hide();
                 this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
             }, complete: () => {
               this.loadingService.hide();
@@ -206,6 +208,7 @@ export class VilleComponent implements OnInit {
             this.ville = initObjectVille() ;
         }, error: (err) => {
             console.log(err);
+            this.loadingService.hide();
             this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
         }, complete: () => {
           this.loadingService.hide();

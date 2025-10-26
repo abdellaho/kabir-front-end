@@ -1,7 +1,6 @@
 import { ENDPOINTS } from '@/config/endpoints';
-import { Repertoire } from '@/models/Repertoire';
-import { mapTypePersonnel, mapTypeRepertoire, omit } from '@/shared/classes/generic-methods';
-import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
+import { Repertoire } from '@/models/repertoire';
+import { omit } from '@/shared/classes/generic-methods';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -37,8 +36,14 @@ export class RepertoireService {
     return this.http.delete<void>(ENDPOINTS.REPERTOIRE.delete(id));
   }
 
-  searchPersonnel(personnelSearch: PersonnelSearch): Observable<boolean> {
-    return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.searchPersonnel, personnelSearch);
+  search(repertoire: Repertoire): Observable<boolean> {
+    const serializedObj = this.serialization(repertoire);
+    return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.searchPersonnel, serializedObj);
+  }
+
+  exist(repertoire: Repertoire): Observable<boolean> {
+    const serializedObj = this.serialization(repertoire);
+    return this.http.patch<boolean>(ENDPOINTS.PRIME.search, serializedObj);
   }
 
   serialization(repertoire: Repertoire): any {
@@ -46,7 +51,7 @@ export class RepertoireService {
       ...repertoire,
       id: repertoire.id?.toString(),
       villeId: repertoire.villeId?.toString(),
-      repertoireId: repertoire.repertoireId?.toString(),
+      personnelId: repertoire.personnelId?.toString(),
     };
   }
   
