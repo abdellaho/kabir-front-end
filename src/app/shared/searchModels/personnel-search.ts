@@ -5,5 +5,4 @@ export interface PersonnelSearch {
     cin: string;
     tel1: string;
     tel2: string;
-    tel3: string;
 }

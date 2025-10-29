@@ -2,15 +2,37 @@ import { initObjectVoiture, Voiture } from '@/models/voiture';
 import { VoitureService } from '@/services/voiture/voiture-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { LoadingService } from '@/shared/services/loading-service';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { Table, TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-voiture-component',
-  imports: [],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputNumberModule
+  ],
   templateUrl: './voiture-component.html',
   styleUrl: './voiture-component.scss'
 })

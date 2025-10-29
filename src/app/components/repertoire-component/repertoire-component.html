@@ -1,1 +1,282 @@
-<p>repertoire-component works!</p>
+<div class="card">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <p-toolbar class="mb-4">
+          <ng-template pTemplate="left">
+            <div class="my-2">
+              <button
+                pButton
+                pRipple
+                label="Ajouter"
+                icon="pi pi-plus"
+                class="p-button-success mr-2"
+                (click)="viderAjouter()"
+              ></button>
+            </div>
+          </ng-template>
+  
+          <ng-template pTemplate="right">
+            <button
+              pButton
+              pRipple
+              label="Export"
+              icon="pi pi-upload"
+              class="p-button-help"
+              (click)="dt.exportCSV()"
+            ></button>
+          </ng-template>
+        </p-toolbar>
+        
+        <p-table
+              #dt
+              size="small"
+              class="p-datatable-sm"
+              [value]="listPersonnel"
+              dataKey="id"
+              [rows]="10"
+              [rowHover]="true"
+              [showGridlines]="true"
+              [paginator]="true"
+              [globalFilterFields]="['typeRepertoire', 'designation', 'villeId', 'ice', 'tel1', 'tel2', 'tel3', 'personnelId', 'observation', 'nbrOperationClient']"
+              [rowsPerPageOptions]="[10, 20, 30]"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [rowHover]="true"
+              responsiveLayout="scroll"
+          >
+          <ng-template #caption>
+              <div class="flex justify-between items-center flex-column sm:flex-row">
+                  <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
+                  <p-iconfield iconPosition="left" class="ml-auto">
+                      <p-inputicon>
+                          <i class="pi pi-search"></i>
+                      </p-inputicon>
+                      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
+                  </p-iconfield>
+              </div>
+          </ng-template>
+  
+          <ng-template #header>
+            <tr>
+              <th></th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Type
+                    <p-columnFilter type="text" field="typeRepertoire" display="menu" placeholder="Search by Type Repertoire"></p-columnFilter>
+                </div>
+              </th>
+  
+              <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                      Designation
+                      <p-columnFilter type="text" field="designation" display="menu" placeholder="Search by designation"></p-columnFilter>
+                  </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Ville
+                    <p-columnFilter type="text" field="villeId" display="menu" placeholder="Search by Ville"></p-columnFilter>
+                </div>
+            </th>
+
+              <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                      ICE
+                      <p-columnFilter type="text" field="ice" display="menu" placeholder="Search by ice"></p-columnFilter>
+                  </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Tel1
+                    <p-columnFilter type="text" field="tel1" display="menu" placeholder="Search by tel1"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Tel2
+                    <p-columnFilter type="text" field="tel2" display="menu" placeholder="Search by tel2"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Tel3
+                    <p-columnFilter type="text" field="tel3" display="menu" placeholder="Search by tel3"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Personnel
+                    <p-columnFilter type="text" field="personnelId" display="menu" placeholder="Search by Personnel"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Commentaire
+                    <p-columnFilter type="text" field="observation" display="menu" placeholder="Search by observation"></p-columnFilter>
+                </div>
+              </th>
+
+              <th style="min-width: 12rem">
+                <div class="flex justify-between items-center">
+                    Nbr O.C
+                    <p-columnFilter type="text" field="nbrOperationClient" display="menu" placeholder="Search by Nbr Operation Client"></p-columnFilter>
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-p>
+            <tr>
+              <td style="width: 10%; min-width: 7rem">
+                <div class="flex gap-2">
+                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
+                </div>
+              </td>
+
+              <td>{{ p.typeRepertoire | typeRepertoirePipe }}</td>
+              <td>{{ p.designation }}</td>
+              <td>{{ p.villeId }}</td>
+              <td>{{ p.ice }}</td>
+              <td>{{ p.tel1 }}</td>
+              <td>{{ p.tel2 }}</td>
+              <td>{{ p.tel3 }}</td>
+              <td>{{ p.personnelId }}</td>
+              <td>{{ p.observation }}</td>
+              <td>{{ p.nbrOperationClient }}</td>
+            </tr>
+          </ng-template>
+  
+          <ng-template #emptymessage>
+              <tr>
+                  <td colspan="6">No Personnel found.</td>
+              </tr>
+          </ng-template>
+          <ng-template #loadingbody>
+              <tr>
+                  <td colspan="6">Loading personnels data. Please wait.</td>
+              </tr>
+          </ng-template>
+        </p-table>
+      </div>
+  
+      <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
+        <!-- Form content must go inside ng-template -->
+        Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
+        <ng-template pTemplate="content">
+          <div [formGroup]="formGroup" class="p-fluid">
+            <div class="card flex flex-col gap-4">
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="typeRepertoire" inputId="typeRepertoire" [options]="typeRepertoire" appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;" class="w-full md:w-56" />
+                    <label for="typeRepertoire">Type</label>
+                  </p-floatlabel>
+                </div>
+                
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="designation" formControlName="designation" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
+                    <label for="designation">Désignation</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="villeId" inputId="villeId" [options]="listVille" appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                    <label for="villeId">Ville</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="tel1" formControlName="tel1" />
+                    <label for="tel1">Tel 1</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="tel2" formControlName="tel2" />
+                    <label for="tel2">Tel 2</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="tel3" formControlName="tel3" />
+                    <label for="tel1">Tel 3</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="ice" formControlName="ice" />
+                    <label for="ice">ICE</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="observation" formControlName="observation" />
+                    <label for="observation">Commentaire</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                    <label for="personnelId">Personnel</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <p-input-number id="plafond" formControlName="plafond" [min]="0" />
+                    <label for="plafond">Plafond</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+  
+        <!-- Footer template -->
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Fermer" icon="pi pi-times" class="p-button-outlined p-button-info" (click)="openCloseDialogAjouter(false)"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+        </ng-template>
+      </p-dialog>
+  
+      <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (repertoire) {
+            <span>Êtes-vous sûr de vouloir supprimer ce repertoire ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="supprimer()"></button>
+        </ng-template>
+      </p-dialog>
+    </div>
+  </div>

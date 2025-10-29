@@ -1,4 +1,4 @@
-import { RepertoireService } from '@/services/repertoire/repertoire-service';
+import { PersonnelService } from '@/services/personnel/personnel-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
 import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
@@ -23,21 +23,21 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { ToggleButtonModule } from "primeng/togglebutton";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { SelectModule } from "primeng/select";
-import { initObjectRepertoire, Repertoire } from '@/models/Repertoire';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 
 @Component({
   selector: 'app-personnel-component',
   imports: [
     CommonModule,
-    TableModule,
     FormsModule,
+    ReactiveFormsModule,
+    TableModule,
     ButtonModule,
     RippleModule,
     ToastModule,
     ToolbarModule,
     InputTextModule,
-    ReactiveFormsModule,
     DialogModule,
     IconFieldModule,
     InputIconModule,
@@ -54,8 +54,8 @@ import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 })
 export class PersonnelComponent implements OnInit {
 
-  personnel: Repertoire = initObjectRepertoire();
-  listPersonnel: Repertoire[] = [];
+  personnel: Personnel = initObjectPersonnel();
+  listPersonnel: Personnel[] = [];
   typePersonnel: { label: string, value: TypePersonnel }[] = filteredTypePersonnelAll;
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;
@@ -64,7 +64,7 @@ export class PersonnelComponent implements OnInit {
   formGroup!: FormGroup;
 
   constructor(
-    private repertoireService: RepertoireService,
+    private personnelService: PersonnelService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private loadingService: LoadingService,
@@ -92,8 +92,8 @@ export class PersonnelComponent implements OnInit {
   }
 
   getAll(): void {
-    this.repertoireService.getAll().subscribe({
-      next: (data: Repertoire[]) => {
+    this.personnelService.getAll().subscribe({
+      next: (data: Personnel[]) => {
         this.listPersonnel = data;
         this.loading = false;
       }, error: (error: any) => {
@@ -114,18 +114,18 @@ export class PersonnelComponent implements OnInit {
       tel2: [''],
       adresse: [''],
       salaire: [0],
-      etatComptePersonnel: [false],
+      etatComptePersonnel: [true],
     });
   }
 
   viderAjouter() {
     this.openCloseDialogAjouter(true);
     this.submitted = false;
-    this.personnel = initObjectRepertoire();
+    this.personnel = initObjectPersonnel();
     this.initFormGroup();
   }
 
-  recupperer(operation: number, personnelEdit: Repertoire) {
+  recupperer(operation: number, personnelEdit: Personnel) {
     if(personnelEdit && personnelEdit.id) {
         this.personnel = personnelEdit;
         if(operation === 1) {
@@ -152,7 +152,7 @@ export class PersonnelComponent implements OnInit {
     }
   }
 
-  updateList(personnel: Repertoire, list: Repertoire[], operationType: OperationType, id?: bigint): Repertoire[] {
+  updateList(personnel: Personnel, list: Personnel[], operationType: OperationType, id?: bigint): Personnel[] {
     if(operationType === OperationType.ADD) {
         list = [ ...list, personnel ];
     } else if(operationType === OperationType.MODIFY) {
@@ -172,7 +172,7 @@ export class PersonnelComponent implements OnInit {
     }
   }
 
-  mapFormGroupToObject(formGroup: FormGroup, personnel: Repertoire): Repertoire {
+  mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel): Personnel {
     personnel.designation = formGroup.get('designation')?.value;
     personnel.cin = formGroup.get('cin')?.value;
     personnel.login = formGroup.get('login')?.value;
@@ -190,7 +190,7 @@ export class PersonnelComponent implements OnInit {
 
   async checkIfExists(personnel: PersonnelSearch): Promise<boolean> {
     try {
-      const existsObservable = this.repertoireService.searchPersonnel(personnel).pipe(
+      const existsObservable = this.personnelService.search(personnel).pipe(
         catchError(error => {
           console.error('Error in personnel existence observable:', error);
           return of(false); // Gracefully handle observable errors by returning false
@@ -205,7 +205,7 @@ export class PersonnelComponent implements OnInit {
 
   async miseAjour(): Promise<void> {
     this.loadingService.show();
-    let personnelEdit: Repertoire = { ...this.personnel };
+    let personnelEdit: Personnel = { ...this.personnel };
     personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit);
     let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
     let trvErreur = await this.checkIfExists(personnelSearch);
@@ -216,7 +216,7 @@ export class PersonnelComponent implements OnInit {
       console.log('Personnel : ', this.personnel);
       
       if(this.personnel.id) {
-        this.repertoireService.update(this.personnel.id, this.personnel).subscribe({
+        this.personnelService.update(this.personnel.id, this.personnel).subscribe({
           next: (data) => {
               this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
               this.checkIfListIsNull();
@@ -231,8 +231,8 @@ export class PersonnelComponent implements OnInit {
           }
         });
       } else {
-        this.repertoireService.create(this.personnel).subscribe({
-            next: (data: Repertoire) => {
+        this.personnelService.create(this.personnel).subscribe({
+            next: (data: Personnel) => {
                 this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
                 this.checkIfListIsNull();
                 this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.ADD);
@@ -247,7 +247,7 @@ export class PersonnelComponent implements OnInit {
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le personnel existe deja" });
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le personnel existe déjà" });
       this.loadingService.hide();
     }
   }
@@ -256,12 +256,12 @@ export class PersonnelComponent implements OnInit {
     if(this.personnel && this.personnel.id) {
       this.loadingService.show();
       let id = this.personnel.id;
-      this.repertoireService.delete(this.personnel.id).subscribe({
+      this.personnelService.delete(this.personnel.id).subscribe({
         next: (data) => {
             this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
             this.checkIfListIsNull();
-            this.listPersonnel = this.updateList(initObjectRepertoire(), this.listPersonnel, OperationType.DELETE, id);
-            this.personnel = initObjectRepertoire() ;
+            this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
+            this.personnel = initObjectPersonnel() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();

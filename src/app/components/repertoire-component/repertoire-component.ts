@@ -1,20 +1,47 @@
 import { Personnel } from '@/models/personnel';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { Ville } from '@/models/ville';
+import { TypeRepertoirePipe } from '@/pipes/type-repertoire-pipe';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
+import { filteredTypeRepertoire } from '@/shared/enums/type-repertoire';
 import { LoadingService } from '@/shared/services/loading-service';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
+import { Table, TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-repertoire-component',
-  imports: [],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputNumberModule,
+    SelectModule,
+    TypeRepertoirePipe
+  ],
   templateUrl: './repertoire-component.html',
   styleUrl: './repertoire-component.scss'
 })
@@ -30,6 +57,7 @@ export class RepertoireComponent {
   //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl 
   //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+  typeRepertoire: { label: string, value: number }[] = filteredTypeRepertoire;
   listVille: Ville[] = [];
   listPersonnel: Personnel[] = [];
   listRepertoire: Repertoire[] = [];

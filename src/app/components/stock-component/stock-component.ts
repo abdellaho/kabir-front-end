@@ -4,15 +4,39 @@ import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { StockService } from '@/services/stock/stock-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { LoadingService } from '@/shared/services/loading-service';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
+import { Table, TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-stock-component',
-  imports: [],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputNumberModule,
+    SelectModule
+  ],
   templateUrl: './stock-component.html',
   styleUrl: './stock-component.scss'
 })
@@ -74,6 +98,7 @@ export class StockComponent {
       designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       fournisseurId: [0, [Validators.required, Validators.min(1)]],
       prixCommercial: [0, [Validators.required, Validators.min(0)]],
+      pvttc: [0, [Validators.required, Validators.min(0)]],
       pattc: [0, [Validators.required, Validators.min(0)]],
       tva: [20, [Validators.required, Validators.min(0)]],
       benifice: [0, [Validators.required, Validators.min(0)]],
@@ -146,6 +171,7 @@ export class StockComponent {
             fournisseurId: this.stock.fournisseurId,
             prixCommercial: this.stock.prixCommercial,
             pattc: this.stock.pattc,
+            pvttc: this.stock.pvttc,
             tva: this.stock.tva,
             benifice: this.stock.benifice,
             qteStock: this.stock.qteStock,
