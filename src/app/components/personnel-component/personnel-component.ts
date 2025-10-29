@@ -135,7 +135,7 @@ export class PersonnelComponent implements OnInit {
               login: this.personnel.login,
               password: '', //this.personnel.password,
               typePersonnel: this.personnel.typePersonnel,
-              dateEntrer: this.personnel.dateEntrer,
+              dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
               tel1: this.personnel.tel1,
               tel2: this.personnel.tel2,
               adresse: this.personnel.adresse,

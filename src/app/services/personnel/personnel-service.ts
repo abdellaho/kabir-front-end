@@ -46,7 +46,7 @@ export class PersonnelService {
   serialization(obj: Personnel | PersonnelSearch): any {
     return {
       ...obj,
-      id: obj.id?.toString(),
+      id: Number(obj.id?.toString()),
     };
   }
   

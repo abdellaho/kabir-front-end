@@ -29,6 +29,30 @@ export class AppMenu {
                 items: [{ label: 'Paramétrage', icon: 'pi pi-fw pi-home', routerLink: ['/parametrage'] }]
             },
             {
+                label: 'Absence',
+                items: [{ label: 'Absence', icon: 'pi pi-fw pi-home', routerLink: ['/absence'] }]
+            },
+            {
+                label: 'Fournisseur',
+                items: [{ label: 'Fournisseur', icon: 'pi pi-fw pi-home', routerLink: ['/fournisseur'] }]
+            },
+            {
+                label: 'Repertoire',
+                items: [{ label: 'Repertoire', icon: 'pi pi-fw pi-home', routerLink: ['/repertoire'] }]
+            },
+            {
+                label: 'Stock',
+                items: [{ label: 'Stock', icon: 'pi pi-fw pi-home', routerLink: ['/stock'] }]
+            },
+            {
+                label: 'Voiture',
+                items: [{ label: 'Voiture', icon: 'pi pi-fw pi-home', routerLink: ['/voiture'] }]
+            },
+            {
+                label: 'Prime',
+                items: [{ label: 'Prime', icon: 'pi pi-fw pi-home', routerLink: ['/prime'] }]
+            },
+            {
                 label: 'UI Components',
                 items: [
                     { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },

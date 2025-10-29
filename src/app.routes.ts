@@ -9,6 +9,12 @@ import { VilleComponent } from '@/components/ville/ville-component/ville-compone
 import { EtablissementComponent } from '@/components/etablissement-component/etablissement-component';
 import { PersonnelComponent } from '@/components/personnel-component/personnel-component';
 import { ParametrageComponent } from '@/components/parametrage-component/parametrage-component';
+import { AbsenceComponent } from '@/components/absence-component/absence-component';
+import { FournisseurComponent } from '@/components/fournisseur-component/fournisseur-component';
+import { RepertoireComponent } from '@/components/repertoire-component/repertoire-component';
+import { StockComponent } from '@/components/stock-component/stock-component';
+import { VoitureComponent } from '@/components/voiture-component/voiture-component';
+import { PrimeComponent } from '@/components/prime-component/prime-component';
 
 export const appRoutes: Routes = [
     {
@@ -20,7 +26,13 @@ export const appRoutes: Routes = [
             { path: 'parametrage', component: ParametrageComponent },
             { path: 'pays', component: PaysComponent },
             { path: 'ville', component: VilleComponent },
+            { path: 'absence', component: AbsenceComponent },
+            { path: 'fournisseur', component: FournisseurComponent },
+            { path: 'repertoire', component: RepertoireComponent },
+            { path: 'stock', component: StockComponent },
+            { path: 'voiture', component: VoitureComponent },
             { path: 'etablissement', component: EtablissementComponent },
+            { path: 'prime', component: PrimeComponent },
             { path: 'personnel', component: PersonnelComponent },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

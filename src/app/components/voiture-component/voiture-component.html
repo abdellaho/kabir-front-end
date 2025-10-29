@@ -104,7 +104,7 @@
       </div>
   
       <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
+        header="Mise à jour Voiture" [modal]="true" class="p-fluid" [closable]="false">
         <!-- Form content must go inside ng-template -->
         <ng-template pTemplate="content">
           <div [formGroup]="formGroup" class="p-fluid">
@@ -119,7 +119,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel variant="on">
-                    <p-input-number pInputText id="kmMax" formControlName="kmMax" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('kmMax')?.invalid }" />
+                    <p-input-number id="kmMax" formControlName="kmMax" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('kmMax')?.invalid }" />
                     <label for="kmMax">KM Max</label>
                   </p-floatlabel>
                 </div>

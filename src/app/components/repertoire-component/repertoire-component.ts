@@ -18,6 +18,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
@@ -39,6 +40,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
     DialogModule,
     FloatLabelModule,
     InputNumberModule,
+    InputTextModule,
     SelectModule,
     TypeRepertoirePipe
   ],

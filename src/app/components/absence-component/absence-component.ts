@@ -21,6 +21,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { DatePickerModule } from "primeng/datepicker";
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-absence-component',
@@ -37,8 +38,10 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
     DialogModule,
     FloatLabelModule,
     InputNumberModule,
+    InputTextModule,
     DatePickerModule,
     SelectModule,
+    IconFieldModule,
     ToggleSwitchModule
 ],
   templateUrl: './absence-component.html',

@@ -12,6 +12,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -31,7 +32,8 @@ import { catchError, firstValueFrom, of } from 'rxjs';
     ButtonModule,
     DialogModule,
     FloatLabelModule,
-    InputNumberModule
+    InputNumberModule,
+    InputTextModule
   ],
   templateUrl: './voiture-component.html',
   styleUrl: './voiture-component.scss'
