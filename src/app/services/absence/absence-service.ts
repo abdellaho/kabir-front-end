@@ -22,13 +22,13 @@ export class AbsenceService {
 
   create(absence: Absence): Observable<Absence> {
     const serializedObj = this.serialization(absence);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = omit(serializedObj, 'personnelOperation', 'personnel');
     return this.http.post<Absence>(ENDPOINTS.ABSENCE.create, obj);
   }
 
   update(id: bigint, absence: Absence): Observable<Absence> {
     const serializedObj = this.serialization(absence);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = omit(serializedObj, 'personnelOperation', 'personnel');
     return this.http.patch<Absence>(ENDPOINTS.ABSENCE.update(id), obj);
   }
 
@@ -42,6 +42,7 @@ export class AbsenceService {
   }
 
   serialization(obj: Absence): any {
+    console.log(obj)
     return {
       ...obj,
       id: obj.id?.toString(),

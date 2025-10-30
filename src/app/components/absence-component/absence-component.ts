@@ -170,7 +170,7 @@ export class AbsenceComponent implements OnInit {
 
   mapFormGroupToObject(formGroup: FormGroup, absence: Absence): Absence {
     absence.dateAbsence = formGroup.get('dateAbsence')?.value;
-    absence.personnelId = formGroup.get('dateAbsence')?.value;
+    absence.personnelId = formGroup.get('personnelId')?.value;
     absence.matin = formGroup.get('matin')?.value;
     absence.apresMidi = formGroup.get('apresMidi')?.value;
 
@@ -194,13 +194,13 @@ export class AbsenceComponent implements OnInit {
 
   async miseAjour(): Promise<void> {
     this.loadingService.show();
-    let paysEdit: Absence = { ...this.absence };
-    this.mapFormGroupToObject(this.formGroup, paysEdit);
+    let absenceEdit: Absence = { ...this.absence };
+    this.mapFormGroupToObject(this.formGroup, absenceEdit);
     let absenceSearch: Absence = { ...this.absence };
     let trvErreur = await this.checkIfPaysExists(absenceSearch);
     
     if(!trvErreur) {
-      this.mapFormGroupToObject(this.formGroup, this.absence);
+      this.absence = this.mapFormGroupToObject(this.formGroup, this.absence);
       this.submitted = true;
       
       if(this.absence.id) {

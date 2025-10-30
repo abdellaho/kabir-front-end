@@ -32,7 +32,7 @@
               #dt
               size="small"
               class="p-datatable-sm my-custom-datatable"
-              [value]="listPersonnel"
+              [value]="listAbsence"
               dataKey="id"
               [rows]="10"
               [rowHover]="true"
@@ -135,7 +135,7 @@
 
                 <div class="flex flex-col grow basis-0">
                     <p-floatlabel class="w-full md:w-56" variant="on">
-                        <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel" appendTo="designation" optionLabel="label" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                        <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
                         <label for="personnelId">Personnel</label>
                     </p-floatlabel>
                 </div>
