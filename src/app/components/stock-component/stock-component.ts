@@ -4,6 +4,7 @@ import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { StockService } from '@/services/stock/stock-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { LoadingService } from '@/shared/services/loading-service';
+import { StockValidator } from '@/validators/stock-validator';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -67,9 +68,14 @@ export class StockComponent {
   listFournisseur: Fournisseur[] = [];
   listStock: Stock[] = [];
   stock: Stock = initObjectStock();
+  typeOfList: number = 0;
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;
+  dialogArchiver: boolean = false;
+  dialogCorbeille: boolean = false;
+  dialogAnnulerArchiver: boolean = false;
+  dialogAnnulerCorbeille: boolean = false;
   submitted: boolean = false;
   formGroup!: FormGroup;
 
@@ -82,7 +88,8 @@ export class StockComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getAllStock();
+    this.typeOfList = 0;
+    this.search();
     this.getAllFournisseur();
     this.initFormGroup();
   }
@@ -103,14 +110,14 @@ export class StockComponent {
       pvttc: [0, [Validators.required, Validators.min(0)]],
       pattc: [0, [Validators.required, Validators.min(0)]],
       tva: [20, [Validators.required, Validators.min(0)]],
-      benifice: [0, [Validators.required, Validators.min(0)]],
+      benifice: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
       qteStock: [0, [Validators.required, Validators.min(0)]],
       qteFacturer: [0, [Validators.required, Validators.min(0)]],
       qteStockImport: [0, [Validators.required, Validators.min(0)]],
-      prixVentMin1: [0, [Validators.required, Validators.min(0)]],
-      prixVentMin2: [0, [Validators.required, Validators.min(0)]],
-      prixVentMin3: [0, [Validators.required, Validators.min(0)]],
-      prixVentMin4: [0, [Validators.required, Validators.min(0)]],
+      prixVentMin1: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
+      prixVentMin2: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
+      prixVentMin3: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
+      prixVentMin4: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
       qtePVMin1: [0, [Validators.required, Validators.min(0)]],
       qtePVMin2: [0, [Validators.required, Validators.min(0)]],
       qtePVMin3: [0, [Validators.required, Validators.min(0)]],
@@ -125,15 +132,80 @@ export class StockComponent {
       prime1: [0, [Validators.required, Validators.min(0)]],
       prime2: [0, [Validators.required, Validators.min(0)]],
       prime3: [0, [Validators.required, Validators.min(0)]],
-    });
+    }, { validators: [StockValidator] });
+  }
+
+  archiveListe(): void {
+    this.typeOfList = 1;
+    this.search();
+  }
+
+  corbeilleListe(): void {
+    this.typeOfList = 2;
+    this.search();
+  }
+
+  listOfStock(): void {
+    this.typeOfList = 0;
+    this.search();
+  }
+
+  search() {
+    if(this.typeOfList === 1) {
+      this.getAllStockArchive();
+    } else if(this.typeOfList === 2) {
+      this.getAllStockCorbeille();
+    } else {
+      this.getAllStock();
+    }
+  }
+
+  initStockSearch(archiver: boolean, supprimer: boolean): Stock {
+    let stockSearch: Stock = initObjectStock();
+    
+    stockSearch.archiver = archiver;
+    stockSearch.supprimer = supprimer;
+    
+    return stockSearch;
   }
 
   getAllStock(): void {
-    this.stockService.getAll().subscribe({
+    let stockSearch: Stock = this.initStockSearch(false, false);
+    this.stockService.search(stockSearch).subscribe({
       next: (data: Stock[]) => {
         this.listStock = data;
       }, error: (error: any) => {
         console.error(error);
+      }, complete: () => {
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  getAllStockArchive(): void {
+    let stockSearch: Stock = this.initStockSearch(true, false);
+
+    this.stockService.search(stockSearch).subscribe({
+      next: (data: Stock[]) => {
+        this.listStock = data;
+      }, error: (error: any) => {
+        console.error(error);
+      }, complete: () => {
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  getAllStockCorbeille(): void {
+    let stockSearch: Stock = this.initStockSearch(false, true);
+
+    this.stockService.search(stockSearch).subscribe({
+      next: (data: Stock[]) => {
+        this.listStock = data;
+      }, error: (error: any) => {
+        console.error(error);
+      }, complete: () => {
+        this.loadingService.hide();
       }
     });
   }
@@ -157,6 +229,22 @@ export class StockComponent {
     this.dialogSupprimer = openClose;
   }
 
+  openCloseDialogArchiver(openClose: boolean): void {
+    this.dialogArchiver = openClose;
+  }
+
+  openCloseDialogCorbeille(openClose: boolean): void {
+    this.dialogCorbeille = openClose;
+  }
+
+  openCloseDialogAnnulerArchiver(openClose: boolean): void {
+    this.dialogAnnulerArchiver = openClose;
+  }
+
+  openCloseDialogAnnulerCorbeille(openClose: boolean): void {
+    this.dialogAnnulerCorbeille = openClose;
+  }
+
   viderAjouter() {
     this.openCloseDialogAjouter(true);
     this.submitted = false;
@@ -166,47 +254,117 @@ export class StockComponent {
 
   recupperer(operation: number, stockEdit: Stock) {
     if(stockEdit && stockEdit.id) {
-        this.stock = stockEdit;
-        if(operation === 1) {
-          this.formGroup.patchValue({
-            designation: this.stock.designation,
-            fournisseurId: this.stock.fournisseurId,
-            prixCommercial: this.stock.prixCommercial,
-            pattc: this.stock.pattc,
-            pvttc: this.stock.pvttc,
-            tva: this.stock.tva,
-            benifice: this.stock.benifice,
-            qteStock: this.stock.qteStock,
-            qteFacturer: this.stock.qteFacturer,
-            qteStockImport: this.stock.qteStockImport,
-            prixVentMin1: this.stock.prixVentMin1,
-            prixVentMin2: this.stock.prixVentMin2,
-            prixVentMin3: this.stock.prixVentMin3,
-            prixVentMin4: this.stock.prixVentMin4,
-            qtePVMin1: this.stock.qtePVMin1,
-            qtePVMin2: this.stock.qtePVMin2,
-            qtePVMin3: this.stock.qtePVMin3,
-            qtePVMin4: this.stock.qtePVMin4,
-            remiseMax1: this.stock.remiseMax1,
-            remiseMax2: this.stock.remiseMax2,
-            remiseMax3: this.stock.remiseMax3,
-            remiseMax4: this.stock.remiseMax4,
-            montant1: this.stock.montant1,
-            montant2: this.stock.montant2,
-            montant3: this.stock.montant3,
-            prime1: this.stock.prime1,
-            prime2: this.stock.prime2,
-            prime3: this.stock.prime3,
-          });
+      this.stock = stockEdit;
+      if(operation === 1) {
+        this.formGroup.patchValue({
+          designation: this.stock.designation,
+          fournisseurId: this.stock.fournisseurId,
+          prixCommercial: this.stock.prixCommercial,
+          pattc: this.stock.pattc,
+          pvttc: this.stock.pvttc,
+          tva: this.stock.tva,
+          benifice: this.stock.benifice,
+          qteStock: this.stock.qteStock,
+          qteFacturer: this.stock.qteFacturer,
+          qteStockImport: this.stock.qteStockImport,
+          prixVentMin1: this.stock.prixVentMin1,
+          prixVentMin2: this.stock.prixVentMin2,
+          prixVentMin3: this.stock.prixVentMin3,
+          prixVentMin4: this.stock.prixVentMin4,
+          qtePVMin1: this.stock.qtePVMin1,
+          qtePVMin2: this.stock.qtePVMin2,
+          qtePVMin3: this.stock.qtePVMin3,
+          qtePVMin4: this.stock.qtePVMin4,
+          remiseMax1: this.stock.remiseMax1,
+          remiseMax2: this.stock.remiseMax2,
+          remiseMax3: this.stock.remiseMax3,
+          remiseMax4: this.stock.remiseMax4,
+          montant1: this.stock.montant1,
+          montant2: this.stock.montant2,
+          montant3: this.stock.montant3,
+          prime1: this.stock.prime1,
+          prime2: this.stock.prime2,
+          prime3: this.stock.prime3,
+        });
 
-          this.openCloseDialogAjouter(true);
-        } else {
-            this.openCloseDialogSupprimer(true);
-        }
+        this.openCloseDialogAjouter(true);
+      } else if(operation === 2) {
+          this.openCloseDialogSupprimer(true);
+      } else if(operation === 3) {
+          this.openCloseDialogArchiver(true);
+      } else if(operation === 4) {
+          this.openCloseDialogCorbeille(true);
+      } else if(operation === 5) {
+        this.openCloseDialogAnnulerArchiver(true);
+      } else if(operation === 6) {
+        this.openCloseDialogAnnulerCorbeille(true);
+      }
     } else {
         this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
     }
   }
+
+  calculerBenefice() {
+    let pvMin: number = 0.0;
+    let pattc: number = this.formGroup.get('pattc')?.value ?? 0;
+    let benifice: number = 0.0;
+    
+    this.onChangeRemise(null);
+    
+    pvMin = this.formGroup.get('prixVentMin4')?.value > 0 ? this.formGroup.get('prixVentMin4')?.value
+        : this.formGroup.get('prixVentMin3')?.value > 0 ? this.formGroup.get('prixVentMin3')?.value
+            : this.formGroup.get('prixVentMin2')?.value > 0 ? this.formGroup.get('prixVentMin2')?.value 
+                : this.formGroup.get('prixVentMin1')?.value > 0 ? this.formGroup.get('prixVentMin1')?.value : this.formGroup.get('pvttc')?.value;
+    
+    if(pvMin == 0.00) benifice = 100.00;
+    else benifice = (((pvMin - pattc) / pvMin) * 100);
+
+    console.log('PrixVenteMin : ', pvMin, ' - PATTC : ', pattc, ' - PVTTC : ', this.formGroup.get('pvttc')?.value, ' - BENEFICE : ', benifice);
+
+    this.formGroup.patchValue({ benifice });
+	}
+
+  onChangeRemise(i: number | null) {
+    if(null == i || i == 1) {
+      let prixVentMin1 = 0;
+      if(this.formGroup.get('remiseMax1') && this.formGroup.get('remiseMax1')?.value != 0) {
+        prixVentMin1 = this.formGroup.get('pvttc')?.value - (this.formGroup.get('pvttc')?.value * this.formGroup.get('remiseMax1')?.value * 0.01);
+      }
+
+      this.formGroup.patchValue({ prixVentMin1 });
+    }
+
+    if(null == i || i == 2) {
+      let prixVentMin2 = 0;
+      if(this.formGroup.get('remiseMax2') && this.formGroup.get('remiseMax2')?.value != 0) {
+        prixVentMin2 = this.formGroup.get('pvttc')?.value - (this.formGroup.get('pvttc')?.value * this.formGroup.get('remiseMax2')?.value * 0.01);
+      }
+
+      this.formGroup.patchValue({ prixVentMin2 });
+    }
+
+    if(null == i || i == 3) {
+      let prixVentMin3 = 0;
+      if(this.formGroup.get('remiseMax3') && this.formGroup.get('remiseMax3')?.value != 0) {
+        prixVentMin3 = this.formGroup.get('pvttc')?.value - (this.formGroup.get('pvttc')?.value * this.formGroup.get('remiseMax3')?.value * 0.01);
+      }
+
+      this.formGroup.patchValue({ prixVentMin3 });
+    }
+
+    if(null == i || i == 4) {
+      let prixVentMin4 = 0;
+      if(this.formGroup.get('remiseMax4') && this.formGroup.get('remiseMax4')?.value != 0) {
+        prixVentMin4 = this.formGroup.get('pvttc')?.value - (this.formGroup.get('pvttc')?.value * this.formGroup.get('remiseMax4')?.value * 0.01);
+      }
+
+      this.formGroup.patchValue({ prixVentMin4 });
+    }
+
+    if(null != i) {
+      this.calculerBenefice();
+    }
+	}
 
   updateList(stock: Stock, list: Stock[], operationType: OperationType, id?: bigint): Stock[] {
     if(operationType === OperationType.ADD) {
@@ -260,7 +418,7 @@ export class StockComponent {
     return stock;
   }
 
-  async checkIfPaysExists(stock: Stock): Promise<boolean> {
+  async checkIfExists(stock: Stock): Promise<boolean> {
     try {
       const existsObservable = this.stockService.exist(stock).pipe(
         catchError(error => {
@@ -279,8 +437,7 @@ export class StockComponent {
     this.loadingService.show();
     let stockEdit: Stock = { ...this.stock };
     this.mapFormGroupToObject(this.formGroup, stockEdit);
-    let absenceSearch: Stock = { ...this.stock };
-    let trvErreur = await this.checkIfPaysExists(absenceSearch);
+    let trvErreur = await this.checkIfExists(stockEdit);
     
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.stock);
@@ -318,7 +475,7 @@ export class StockComponent {
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le stock existe deja" });
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Stock existe deja" });
       this.loadingService.hide();
     }
   }
@@ -346,6 +503,68 @@ export class StockComponent {
     }
 
     this.openCloseDialogSupprimer(false);
+  }
+
+  archiver(archiver: boolean): void {
+    if(this.stock && this.stock.id) {
+      this.loadingService.show();
+      let id = this.stock.id;
+      this.stock.archiver = archiver;
+
+      this.stockService.update(this.stock.id, this.stock).subscribe({
+        next: (data) => {
+            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Opération effectuée avec succès' });
+            this.checkIfListIsNull();
+            this.listStock = this.updateList(initObjectStock(), this.listStock, OperationType.DELETE, id);
+            this.stock = initObjectStock() ;
+        }, error: (err) => {
+            console.log(err);
+            this.loadingService.hide();
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+        }, complete: () => {
+          this.loadingService.hide();
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+    }
+
+    if(archiver) {
+      this.openCloseDialogArchiver(false);
+    } else {
+      this.openCloseDialogAnnulerArchiver(false);
+    }
+  }
+
+  corbeille(corbeille: boolean): void {
+    if(this.stock && this.stock.id) {
+      this.loadingService.show();
+      let id = this.stock.id;
+      this.stock.supprimer = corbeille;
+
+      this.stockService.update(this.stock.id, this.stock).subscribe({
+        next: (data) => {
+            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Opération effectuée avec succès' });
+            this.checkIfListIsNull();
+            this.listStock = this.updateList(initObjectStock(), this.listStock, OperationType.DELETE, id);
+            this.stock = initObjectStock() ;
+        }, error: (err) => {
+            console.log(err);
+            this.loadingService.hide();
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+        }, complete: () => {
+          this.loadingService.hide();
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+    }
+
+    if(corbeille) {
+      this.openCloseDialogCorbeille(false);
+    } else {
+      this.openCloseDialogAnnulerCorbeille(false);
+    }
   }
 
 }

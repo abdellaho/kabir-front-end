@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
-import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Documentation } from './app/pages/documentation/documentation';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
@@ -15,13 +14,14 @@ import { RepertoireComponent } from '@/components/repertoire-component/repertoir
 import { StockComponent } from '@/components/stock-component/stock-component';
 import { VoitureComponent } from '@/components/voiture-component/voiture-component';
 import { PrimeComponent } from '@/components/prime-component/prime-component';
+import { AcceuilComponent } from '@/components/acceuil-component/acceuil-component';
 
 export const appRoutes: Routes = [
     {
         path: '',
         component: AppLayout,
         children: [
-            { path: '', component: Dashboard },
+            { path: '', component: AcceuilComponent },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'parametrage', component: ParametrageComponent },
             { path: 'pays', component: PaysComponent },

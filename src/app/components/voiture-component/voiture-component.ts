@@ -147,7 +147,7 @@ export class VoitureComponent implements OnInit {
     return voiture;
   }
 
-  async checkIfPaysExists(voiture: Voiture): Promise<boolean> {
+  async checkIfExists(voiture: Voiture): Promise<boolean> {
     try {
       const existsObservable = this.voitureService.exist(voiture).pipe(
         catchError(error => {
@@ -166,8 +166,8 @@ export class VoitureComponent implements OnInit {
     this.loadingService.show();
     let voitureEdit: Voiture = { ...this.voiture };
     this.mapFormGroupToObject(this.formGroup, voitureEdit);
-    let absenceSearch: Voiture = { ...this.voiture };
-    let trvErreur = await this.checkIfPaysExists(absenceSearch);
+    let trvErreur = await this.checkIfExists(voitureEdit);
+    console.log(voitureEdit, trvErreur);
     
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.voiture);
@@ -205,7 +205,7 @@ export class VoitureComponent implements OnInit {
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le voiture existe deja" });
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "voiture existe deja" });
       this.loadingService.hide();
     }
   }

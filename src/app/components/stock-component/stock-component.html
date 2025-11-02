@@ -3,7 +3,7 @@
       <div class="card px-6 py-6">
         <p-toast></p-toast>
         <p-toolbar class="mb-4">
-          <ng-template pTemplate="left">
+          <ng-template pTemplate="left" class="gap-2">
             <div class="my-2">
               <button
                 pButton
@@ -14,6 +14,45 @@
                 (click)="viderAjouter()"
               ></button>
             </div>
+
+            @if (typeOfList !== 0) {
+              <div class="my-2">
+                <p-button
+                  pRipple
+                  icon="pi pi-crown"
+                  label="Stock"
+                  severity="contrast"
+                  class="mr-2"
+                  (click)="listOfStock()"
+                ></p-button>
+              </div>
+            }
+
+            @if (typeOfList !== 1) {
+              <div class="my-2">
+                <p-button
+                  pRipple
+                  icon="pi pi-warehouse"
+                  label="Archive"
+                  severity="info"
+                  class="mr-2"
+                  (click)="archiveListe()"
+                ></p-button>
+              </div>
+            }
+
+            @if (typeOfList !== 2) {
+              <div class="my-2">
+                <p-button
+                  pRipple
+                  label="Corbeille"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  class="mr-2"
+                  (click)="corbeilleListe()"
+                ></p-button>
+              </div>
+            }
           </ng-template>
   
           <ng-template pTemplate="right">
@@ -143,8 +182,18 @@
             <tr>
               <td style="width: 10%; min-width: 7rem">
                 <div class="flex gap-2">
-                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
-                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
+                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded title="Modifier"/>
+                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded title="Supprimer"/>
+                  @if (typeOfList === 0) {
+                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="help" rounded title="Archiver"/>
+                    <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="warn" rounded title="Corbeille"/>
+                  }
+                  @if (typeOfList === 1) {
+                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded title="Annuler Archiver"/>
+                  }
+                  @if (typeOfList === 2) {
+                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded title="Annuler Corbeille"/>
+                  }
                 </div>
               </td>
               <td>{{ p.designation }}</td>
@@ -175,7 +224,7 @@
       </div>
   
       <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
+        header="Mise à jour Stock" [modal]="true" class="p-fluid" [closable]="false">
         <!-- Form content must go inside ng-template -->
         <ng-template pTemplate="content">
           <div [formGroup]="formGroup" class="p-fluid">
@@ -199,14 +248,14 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="pattc" inputId="pattc" allowEmpty="false" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }"/>
+                    <p-input-number formControlName="pattc" inputId="pattc" allowEmpty="false" (onBlur)="calculerBenefice()" [min]="0" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }"/>
                     <label for="pattc">Prix Achat TTC</label>
                   </p-floatlabel>
                 </div>
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixCommercial" inputId="prixCommercial" />
+                    <p-input-number formControlName="prixCommercial" allowEmpty="false" inputId="prixCommercial" [min]="0" />
                     <label for="prixCommercial">Prix Commercial</label>
                   </p-floatlabel>
                 </div>
@@ -215,14 +264,14 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="pattc" inputId="pvttc" allowEmpty="false" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pvttc')?.invalid }"/>
+                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false" (onBlur)="calculerBenefice()" [min]="0" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pvttc')?.invalid }"/>
                     <label for="pvttc">Prix Vente TTC</label>
                   </p-floatlabel>
                 </div>
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="tva" inputId="tva" />
+                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
                     <label for="tva">TVA</label>
                   </p-floatlabel>
                 </div>
@@ -231,7 +280,7 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="benifice" inputId="benifice" allowEmpty="false" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('benifice')?.invalid }"/>
+                    <p-input-number formControlName="benifice" inputId="benifice" />
                     <label for="benifice">Bénéfice</label>
                   </p-floatlabel>
                 </div>
@@ -277,7 +326,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1" />
+                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1" (onBlur)="onChangeRemise(1)" />
                     <label for="remiseMax1">Remise Max 1</label>
                   </p-floatlabel>
                 </div>
@@ -300,7 +349,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax2" inputId="remiseMax2" />
+                    <p-input-number formControlName="remiseMax2" inputId="remiseMax2" (onBlur)="onChangeRemise(2)"/>
                     <label for="remiseMax2">Remise Max 2</label>
                   </p-floatlabel>
                 </div>
@@ -323,7 +372,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3" />
+                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3" (onBlur)="onChangeRemise(3)" />
                     <label for="remiseMax3">Remise Max 3</label>
                   </p-floatlabel>
                 </div>
@@ -346,7 +395,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4" />
+                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4" (onBlur)="onChangeRemise(4)" />
                     <label for="remiseMax4">Remise Max 4</label>
                   </p-floatlabel>
                 </div>
@@ -355,14 +404,14 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant1" inputId="montant1" allowEmpty="false" />
+                    <p-input-number formControlName="montant1" inputId="montant1" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
                     <label for="montant1">Montant 1</label>
                   </p-floatlabel>
                 </div>
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime1" inputId="prime1" />
+                    <p-input-number formControlName="prime1" inputId="prime1" [min]="0" />
                     <label for="prime1">Prime 1</label>
                   </p-floatlabel>
                 </div>
@@ -371,14 +420,14 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant2" inputId="montant2" allowEmpty="false" />
+                    <p-input-number formControlName="montant2" inputId="montant2" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
                     <label for="montant2">Montant 2</label>
                   </p-floatlabel>
                 </div>
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime2" inputId="prime2" />
+                    <p-input-number formControlName="prime2" inputId="prime2" [min]="0" />
                     <label for="prime2">Prime 2</label>
                   </p-floatlabel>
                 </div>
@@ -387,14 +436,14 @@
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant3" inputId="montant3" allowEmpty="false" />
+                    <p-input-number formControlName="montant3" inputId="montant3" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
                     <label for="montant3">Montant 3</label>
                   </p-floatlabel>
                 </div>
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime3" inputId="prime3" />
+                    <p-input-number formControlName="prime3" inputId="prime3" [min]="0" />
                     <label for="prime3">Prime 3</label>
                   </p-floatlabel>
                 </div>
@@ -406,7 +455,7 @@
         <!-- Footer template -->
         <ng-template pTemplate="footer">
           <button pButton pRipple label="Fermer" icon="pi pi-times" class="p-button-outlined p-button-info" (click)="openCloseDialogAjouter(false)"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="formGroup.invalid"></button>
         </ng-template>
       </p-dialog>
   
@@ -421,6 +470,62 @@
         <ng-template pTemplate="footer">
           <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
           <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="supprimer()"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (stock) {
+            <span>Êtes-vous sûr de vouloir archiver ce stock ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogArchiver = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="archiver(true)"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (stock) {
+            <span>Êtes-vous sûr de vouloir placer ce stock dans la corbeille ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogCorbeille = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(true)"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (stock) {
+            <span>Êtes-vous sûr de vouloir annuler archiver ce stock ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogAnnulerArchiver = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="archiver(false)"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          @if (stock) {
+            <span>Êtes-vous sûr de vouloir annuler suppression ce stock ?</span>
+          }
+        </div>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogAnnulerCorbeille = false"></button>
+          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(false)"></button>
         </ng-template>
       </p-dialog>
     </div>

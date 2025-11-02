@@ -177,7 +177,7 @@ export class AbsenceComponent implements OnInit {
     return absence;
   }
 
-  async checkIfPaysExists(absence: Absence): Promise<boolean> {
+  async checkIfExists(absence: Absence): Promise<boolean> {
     try {
       const existsObservable = this.absenceService.exist(absence).pipe(
         catchError(error => {
@@ -196,8 +196,8 @@ export class AbsenceComponent implements OnInit {
     this.loadingService.show();
     let absenceEdit: Absence = { ...this.absence };
     this.mapFormGroupToObject(this.formGroup, absenceEdit);
-    let absenceSearch: Absence = { ...this.absence };
-    let trvErreur = await this.checkIfPaysExists(absenceSearch);
+    let trvErreur = await this.checkIfExists(absenceEdit);
+    console.log(absenceEdit, trvErreur);
     
     if(!trvErreur) {
       this.absence = this.mapFormGroupToObject(this.formGroup, this.absence);
@@ -235,7 +235,7 @@ export class AbsenceComponent implements OnInit {
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le absence existe deja" });
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Absence existe deja" });
       this.loadingService.hide();
     }
   }

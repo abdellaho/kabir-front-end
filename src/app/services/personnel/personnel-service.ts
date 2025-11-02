@@ -37,17 +37,17 @@ export class PersonnelService {
     return this.http.delete<void>(ENDPOINTS.PERSONNEL.delete(id));
   }
 
-  search(personnel: PersonnelSearch): Observable<boolean> {
+  search(personnel: Personnel): Observable<boolean> {
     const serializedObj = this.serialization(personnel);
     const obj = omit(serializedObj, 'villeId', 'ville');
-    return this.http.patch<boolean>(ENDPOINTS.PERSONNEL.search, obj);
+    return this.http.post<boolean>(ENDPOINTS.PERSONNEL.exist, obj);
   }
 
   serialization(obj: Personnel | PersonnelSearch): any {
     return {
       ...obj,
-      id: Number(obj.id?.toString()),
+      id: obj.id?.toString(),
     };
   }
-  
+   
 }

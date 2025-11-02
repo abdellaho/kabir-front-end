@@ -36,14 +36,15 @@ export class RepertoireService {
     return this.http.delete<void>(ENDPOINTS.REPERTOIRE.delete(id));
   }
 
-  search(repertoire: Repertoire): Observable<boolean> {
+  search(repertoire: Repertoire): Observable<Repertoire[]> {
     const serializedObj = this.serialization(repertoire);
-    return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.searchPersonnel, serializedObj);
+    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    return this.http.post<Repertoire[]>(ENDPOINTS.REPERTOIRE.search, obj);
   }
 
   exist(repertoire: Repertoire): Observable<boolean> {
     const serializedObj = this.serialization(repertoire);
-    return this.http.patch<boolean>(ENDPOINTS.PRIME.search, serializedObj);
+    return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
   }
 
   serialization(repertoire: Repertoire): any {

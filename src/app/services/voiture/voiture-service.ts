@@ -37,7 +37,7 @@ export class VoitureService {
   }
 
   exist(voiture: Voiture): Observable<boolean> {
-    return this.http.put<boolean>(ENDPOINTS.VOITURE.search, voiture);
+    return this.http.post<boolean>(ENDPOINTS.VOITURE.exist, voiture);
   }
 
   serialization(obj: Voiture): any {

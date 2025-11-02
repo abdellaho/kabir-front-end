@@ -188,7 +188,7 @@ export class PersonnelComponent implements OnInit {
     return personnel;
   }
 
-  async checkIfExists(personnel: PersonnelSearch): Promise<boolean> {
+  async checkIfExists(personnel: Personnel): Promise<boolean> {
     try {
       const existsObservable = this.personnelService.search(personnel).pipe(
         catchError(error => {
@@ -207,8 +207,8 @@ export class PersonnelComponent implements OnInit {
     this.loadingService.show();
     let personnelEdit: Personnel = { ...this.personnel };
     personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit);
-    let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
-    let trvErreur = await this.checkIfExists(personnelSearch);
+    //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
+    let trvErreur = await this.checkIfExists(personnelEdit);
     
     if(!trvErreur) {
       this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel);

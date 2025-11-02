@@ -7,7 +7,7 @@ import { OperationType } from '@/shared/enums/operation-type';
 import { filteredTypeFourniseur, TypeFourniseur } from '@/shared/enums/type-fournisseur';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -45,7 +45,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
   templateUrl: './fournisseur-component.html',
   styleUrl: './fournisseur-component.scss'
 })
-export class FournisseurComponent {
+export class FournisseurComponent implements OnInit {
 
   //Buttons ---> Ajouter + Rechercher + Actualiser + Archiver + Corbeille
   //Tableau ---> Designation + Type + Tel1 + Tel2 
@@ -78,7 +78,7 @@ export class FournisseurComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getAllAbsence();
+    this.getAll();
     this.getAllVille();
     this.initFormGroup();
   }
@@ -102,7 +102,7 @@ export class FournisseurComponent {
     });
   }
 
-  getAllAbsence(): void {
+  getAll(): void {
     this.fournisseurService.getAll().subscribe({
       next: (data: Fournisseur[]) => {
         this.listFournisseur = data;
@@ -190,7 +190,7 @@ export class FournisseurComponent {
     return fournisseur;
   }
 
-  async checkIfPaysExists(fournisseur: Fournisseur): Promise<boolean> {
+  async checkIfExists(fournisseur: Fournisseur): Promise<boolean> {
     try {
       const existsObservable = this.fournisseurService.exist(fournisseur).pipe(
         catchError(error => {
@@ -207,10 +207,9 @@ export class FournisseurComponent {
 
   async miseAjour(): Promise<void> {
     this.loadingService.show();
-    let paysEdit: Fournisseur = { ...this.fournisseur };
-    this.mapFormGroupToObject(this.formGroup, paysEdit);
-    let absenceSearch: Fournisseur = { ...this.fournisseur };
-    let trvErreur = await this.checkIfPaysExists(absenceSearch);
+    let fournisseurEdit: Fournisseur = { ...this.fournisseur };
+    this.mapFormGroupToObject(this.formGroup, fournisseurEdit);
+    let trvErreur = await this.checkIfExists(fournisseurEdit);
     
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.fournisseur);
@@ -248,7 +247,7 @@ export class FournisseurComponent {
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le fournisseur existe deja" });
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Fournisseur existe deja" });
       this.loadingService.hide();
     }
   }

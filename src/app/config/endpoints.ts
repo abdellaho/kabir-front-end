@@ -9,6 +9,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/ville`,
     update: (id: bigint) => `${BASE_URL}/ville/${id}`,
     delete: (id: bigint) => `${BASE_URL}/ville/${id}`,
+    exist: `${BASE_URL}/ville/exist`,
   }, 
   PAYS: {
     getAll: `${BASE_URL}/pays`,
@@ -32,6 +33,8 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/repertoire`,
     update: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
     delete: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
+    exist: `${BASE_URL}/repertoire/exist`,
+    search: `${BASE_URL}/repertoire/search`,
     searchPersonnel: `${BASE_URL}/repertoire/search-personnel`,
   },
   ABSENCE: {
@@ -40,6 +43,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/absence`,
     update: (id: bigint) => `${BASE_URL}/absence/${id}`,
     delete: (id: bigint) => `${BASE_URL}/absence/${id}`,
+    exist: `${BASE_URL}/absence/exist`,
     search: `${BASE_URL}/absence/search`,
   },
   FOURNISSEUR: {
@@ -48,6 +52,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/fournisseur`,
     update: (id: bigint) => `${BASE_URL}/fournisseur/${id}`,
     delete: (id: bigint) => `${BASE_URL}/fournisseur/${id}`,
+    exist: `${BASE_URL}/fournisseur/exist`,
     search: `${BASE_URL}/fournisseur/search`,
   },
   COMPTE: {
@@ -64,6 +69,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/personnel`,
     update: (id: bigint) => `${BASE_URL}/personnel/${id}`,
     delete: (id: bigint) => `${BASE_URL}/personnel/${id}`,
+    exist: `${BASE_URL}/personnel/exist`,
     search: `${BASE_URL}/personnel/search`,
   },
   PRIME: {
@@ -80,6 +86,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/stock`,
     update: (id: bigint) => `${BASE_URL}/stock/${id}`,
     delete: (id: bigint) => `${BASE_URL}/stock/${id}`,
+    exist: `${BASE_URL}/stock/exist`,
     search: `${BASE_URL}/stock/search`,
   },
   VOITURE: {
@@ -88,6 +95,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/voiture`,
     update: (id: bigint) => `${BASE_URL}/voiture/${id}`,
     delete: (id: bigint) => `${BASE_URL}/voiture/${id}`,
+    exist: `${BASE_URL}/voiture/exist`,
     search: `${BASE_URL}/voiture/search`,
   }
 };

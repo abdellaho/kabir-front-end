@@ -22,7 +22,7 @@ export class AppMenu {
         this.model = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                items: [{ label: 'Acceuil', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
             },
             {
                 label: 'Paramétrage',
@@ -52,7 +52,7 @@ export class AppMenu {
                 label: 'Prime',
                 items: [{ label: 'Prime', icon: 'pi pi-fw pi-home', routerLink: ['/prime'] }]
             },
-            {
+            /* {
                 label: 'UI Components',
                 items: [
                     { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
@@ -179,7 +179,7 @@ export class AppMenu {
                         target: '_blank'
                     }
                 ]
-            }
+            } */
         ];
     }
 }

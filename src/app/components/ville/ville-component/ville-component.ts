@@ -17,6 +17,7 @@ import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { catchError, firstValueFrom, of } from 'rxjs';
 @Component({
   standalone: true,
   selector: 'app-ville-component',
@@ -155,13 +156,28 @@ export class VilleComponent implements OnInit {
     return ville;
   }
 
-  async miseAjour(): Promise<void> {
-    let trvErreur = false;
-    if(!trvErreur) {
-      this.ville = this.mapFormGroupToObject(this.formGroup, this.ville);
-      this.loadingService.show();
-      this.submitted = true;
+  async checkIfExists(ville: Ville): Promise<boolean> {
+    try {
+      const existsObservable = this.villeService.exist(ville).pipe(
+        catchError(error => {
+          console.error('Error in Ville existence observable:', error);
+          return of(false); // Gracefully handle observable errors by returning false
+        })
+      );
+      return await firstValueFrom(existsObservable);
+    } catch (error) {
+      console.error('Unexpected error checking if ville exists:', error);
+      return false;
+    }
+  }
 
+  async miseAjour(): Promise<void> {
+    this.ville = this.mapFormGroupToObject(this.formGroup, this.ville);
+    let trvErreur = await this.checkIfExists(this.ville);
+    this.loadingService.show();
+    this.submitted = true;
+
+    if(!trvErreur) {
       if(this.ville.id) {
         this.villeService.updateVille(this.ville.id, this.ville).subscribe({
           next: (data) => {
@@ -193,6 +209,10 @@ export class VilleComponent implements OnInit {
             }
         });
       }
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Ville existe deja" });
+      this.loadingService.hide();
+      this.submitted = false;
     }
   }
 

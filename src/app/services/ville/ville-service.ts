@@ -33,6 +33,11 @@ export class VilleService {
     return this.http.delete<void>(ENDPOINTS.VILLE.delete(id));
   }
 
+  exist(ville: Ville): Observable<boolean> {
+    const obj = this.serialization(ville);
+    return this.http.post<boolean>(ENDPOINTS.VILLE.exist, obj);
+  }
+
   serialization(obj: Ville): any {
     return {
       ...obj,

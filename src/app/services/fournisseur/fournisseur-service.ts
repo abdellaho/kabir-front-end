@@ -13,32 +13,32 @@ export class FournisseurService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Fournisseur[]> {
-    return this.http.get<Fournisseur[]>(ENDPOINTS.STOCK.getAll);
+    return this.http.get<Fournisseur[]>(ENDPOINTS.FOURNISSEUR.getAll);
   }
 
   getById(id: bigint): Observable<Fournisseur> {
-    return this.http.get<Fournisseur>(ENDPOINTS.STOCK.getById(id));
+    return this.http.get<Fournisseur>(ENDPOINTS.FOURNISSEUR.getById(id));
   }
 
   create(fournisseur: Fournisseur): Observable<Fournisseur> {
     const serializedObj = this.serialization(fournisseur);
-    const obj = omit(serializedObj, 'villeId', 'ville');
-    return this.http.post<Fournisseur>(ENDPOINTS.STOCK.create, obj);
+    const obj = omit(serializedObj, 'ville');
+    return this.http.post<Fournisseur>(ENDPOINTS.FOURNISSEUR.create, obj);
   }
 
   update(id: bigint, fournisseur: Fournisseur): Observable<Fournisseur> {
     const serializedObj = this.serialization(fournisseur);
-    const obj = omit(serializedObj, 'villeId', 'ville');
-    return this.http.patch<Fournisseur>(ENDPOINTS.STOCK.update(id), obj);
+    const obj = omit(serializedObj, 'ville');
+    return this.http.patch<Fournisseur>(ENDPOINTS.FOURNISSEUR.update(id), obj);
   }
 
   delete(id: bigint): Observable<void> {
-    return this.http.delete<void>(ENDPOINTS.STOCK.delete(id));
+    return this.http.delete<void>(ENDPOINTS.FOURNISSEUR.delete(id));
   }
 
   exist(fournisseur: Fournisseur): Observable<boolean> {
     const serializedObj = this.serialization(fournisseur);
-    return this.http.put<boolean>(ENDPOINTS.STOCK.search, serializedObj);
+    return this.http.post<boolean>(ENDPOINTS.FOURNISSEUR.exist, serializedObj);
   }
 
   serialization(obj: Fournisseur): any {

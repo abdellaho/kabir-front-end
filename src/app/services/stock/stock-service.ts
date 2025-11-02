@@ -22,13 +22,19 @@ export class StockService {
 
   create(stock: Stock): Observable<Stock> {
     const serializedObj = this.serialization(stock);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = omit(serializedObj, 'fournisseur', 'ville');
     return this.http.post<Stock>(ENDPOINTS.STOCK.create, obj);
+  }
+
+  search(stock: Stock): Observable<Stock[]> {
+    const serializedObj = this.serialization(stock);
+    const obj = omit(serializedObj, 'fournisseur', 'ville');
+    return this.http.post<Stock[]>(ENDPOINTS.STOCK.search, obj);
   }
 
   update(id: bigint, stock: Stock): Observable<Stock> {
     const serializedObj = this.serialization(stock);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = omit(serializedObj, 'fournisseur', 'ville');
     return this.http.patch<Stock>(ENDPOINTS.STOCK.update(id), obj);
   }
 
@@ -38,13 +44,14 @@ export class StockService {
 
   exist(stock: Stock): Observable<boolean> {
     const serializedObj = this.serialization(stock);
-    return this.http.put<boolean>(ENDPOINTS.STOCK.search, serializedObj);
+    return this.http.post<boolean>(ENDPOINTS.STOCK.exist, serializedObj);
   }
 
   serialization(obj: Stock): any {
     return {
       ...obj,
       id: obj.id?.toString(),
+      fournisseurId: obj.fournisseurId?.toString(),
     };
   }
   

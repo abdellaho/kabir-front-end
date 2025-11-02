@@ -120,7 +120,7 @@
       </div>
   
       <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
+        header="Mise à jour Fournisseur" [modal]="true" class="p-fluid" [closable]="false">
         <!-- Form content must go inside ng-template -->
         <ng-template pTemplate="content">
           <div [formGroup]="formGroup" class="p-fluid">
@@ -143,6 +143,22 @@
 
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
+                  <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="villeId" inputId="villeId" [options]="listVille" appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                    <label for="villeId">Ville</label>
+                  </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col grow basis-0">
+                  <p-floatlabel variant="on">
+                    <input pInputText id="ice" formControlName="ice" />
+                    <label for="ice">ICE</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
                   <p-floatlabel variant="on">
                     <input pInputText id="tel1" formControlName="tel1" />
                     <label for="tel1">Tel1</label>
@@ -154,18 +170,6 @@
                     <input pInputText id="tel2" formControlName="tel2" />
                     <label for="tel2">Tel2</label>
                   </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="ice" formControlName="ice" />
-                    <label for="ice">ICE</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
                 </div>
               </div>
             </div>

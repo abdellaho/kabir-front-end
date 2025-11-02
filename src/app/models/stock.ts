@@ -1,7 +1,7 @@
 import { Fournisseur } from "./fournisseur";
 
 export interface Stock {
-  id: bigint;
+  id: bigint | null;
   designation: string;
   sysDate: Date;
   pahtGrossiste: number;
@@ -28,6 +28,7 @@ export interface Stock {
   prixImport: number;
   commission: number;
   archiver: boolean;
+  supprimer: boolean;
   qteStockImport: number;
   montant1: number;
   montant2: number;
@@ -41,7 +42,7 @@ export interface Stock {
 
 export function initObjectStock(): Stock {
   return {
-    id: BigInt(0),
+    id: null,
     designation: "",
     sysDate: new Date(),
     pahtGrossiste: 0,
@@ -74,6 +75,7 @@ export function initObjectStock(): Stock {
     prixImport: 0,
     commission: 0,
     archiver: false,
+    supprimer: false,
     qteStockImport: 0,
     fournisseurId: BigInt(0),
     fournisseur: null,

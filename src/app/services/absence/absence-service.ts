@@ -37,8 +37,9 @@ export class AbsenceService {
   }
 
   exist(absence: Absence): Observable<boolean> {
-    const obj = this.serialization(absence);
-    return this.http.put<boolean>(ENDPOINTS.ABSENCE.search, obj);
+    const serializedObj = this.serialization(absence);
+    const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'personnelOperationId');
+    return this.http.post<boolean>(ENDPOINTS.ABSENCE.exist, obj);
   }
 
   serialization(obj: Absence): any {
