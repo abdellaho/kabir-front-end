@@ -82,10 +82,15 @@ export class PrimeComponent {
     this.primeService.getAll().subscribe({
       next: (data: Prime[]) => {
         this.listPrime = data;
+        this.sortList();
       }, error: (error: any) => {
         console.error(error);
       }
     });
+  }
+
+  sortList(): void {
+    this.listPrime.sort((a: Prime, b: Prime) => a.montant - b.montant);
   }
 
   openCloseDialogAjouter(openClose: boolean): void {
@@ -180,6 +185,7 @@ export class PrimeComponent {
               this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
               this.checkIfListIsNull();
               this.listPrime = this.updateList(data, this.listPrime, OperationType.MODIFY);
+              this.sortList();
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
@@ -195,6 +201,7 @@ export class PrimeComponent {
                 this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
                 this.checkIfListIsNull();
                 this.listPrime = this.updateList(data, this.listPrime, OperationType.ADD);
+                this.sortList();
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
@@ -220,6 +227,7 @@ export class PrimeComponent {
             this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
             this.checkIfListIsNull();
             this.listPrime = this.updateList(initObjectPrime(), this.listPrime, OperationType.DELETE, id);
+            this.sortList();
             this.prime = initObjectPrime() ;
         }, error: (err) => {
             console.log(err);

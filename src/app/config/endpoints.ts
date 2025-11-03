@@ -1,6 +1,6 @@
-import { environment } from "src/environments/environment.development";
+import { environment } from "src/environments/environment";
 
-const BASE_URL = environment.production ? 'http://localhost:3000/api' : 'http://localhost:3000/api';
+const BASE_URL = environment.production ? 'https://kabir-backend-nest-js.vercel.app/api' : 'http://localhost:3000/api';
 
 export const ENDPOINTS = {
   VILLE: {

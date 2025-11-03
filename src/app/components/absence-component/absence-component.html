@@ -52,44 +52,67 @@
                       <p-inputicon>
                           <i class="pi pi-search"></i>
                       </p-inputicon>
-                      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
+                      <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
                   </p-iconfield>
               </div>
           </ng-template>
   
           <ng-template #header>
             <tr>
+              <th style="width:5%"></th>
+              <th style="width:20%">Date</th>
+              <th style="width:45%">Personnel</th>
+              <th style="width:15%">Matin</th>
+              <th style="width:15%">Soir</th>
+            </tr>
+
+            <tr>
               <th></th>
-  
-              <th style="min-width: 12rem">
-                  <div class="flex justify-between items-center">
-                        Date
-                      <p-columnFilter type="text" field="dateAbsence" display="menu" placeholder="Search by dateAbsence"></p-columnFilter>
-                  </div>
+
+              <th>
+                <p-columnFilter type="date" field="dateAbsence" matchMode="dateIs" [showMenu]="false" ariaLabel="Filter Date Absence">
+                  <ng-template #filter let-value let-filter="filterCallback">
+                    <p-date-picker [ngModel]="value" (ngModelChange)="filter($event)" appendTo="body" dateFormat="dd/mm/yy" />
+                  </ng-template>
+                </p-columnFilter>
               </th>
 
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                        Personnel
-                    <p-columnFilter type="text" field="personnelId" display="menu" placeholder="Search by personnelId"></p-columnFilter>
-                </div>
+              <th>
+                <p-columnFilter field="personnelId" matchMode="in" [showMenu]="false">
+                  <ng-template #filter let-value let-filter="filterCallback">
+                    <p-multiselect [ngModel]="value" [options]="listPersonnel" appendTo="body" placeholder="" (onChange)="filter($event.value)" optionLabel="designation" optionValue="id" style="min-width: 14rem" [panelStyle]="{ minWidth: '16rem' }">
+                      <ng-template let-option #item>
+                        <div class="flex items-center gap-2">
+                          <span>{{ option.designation }}</span>
+                        </div>
+                      </ng-template>
+                    </p-multiselect>
+                  </ng-template>
+                </p-columnFilter>
               </th>
 
-              <th style="min-width: 12rem">
-                  <div class="flex justify-between items-center">
-                        Matin
-                      <p-columnFilter type="text" field="matin" display="menu" placeholder="Search by matin"></p-columnFilter>
-                  </div>
+              <th>
+                <p-columnFilter field="matin" matchMode="equals" [showMenu]="false" ariaLabel="Filter Matin">
+                  <ng-template #filter let-value let-filter="filterCallback">
+                    <p-select [ngModel]="value" (ngModelChange)="filter($event)" appendTo="body"
+                              [options]="[{ label: 'Tous', value: null }, { label: 'Oui', value: true }, { label: 'Non', value: false }]"
+                              optionLabel="label" optionValue="value" style="min-width: 8rem" />
+                  </ng-template>
+                </p-columnFilter>
               </th>
 
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                        Soir
-                    <p-columnFilter type="text" field="apresMidi" display="menu" placeholder="Search by apresMidi"></p-columnFilter>
-                </div>
+              <th>
+                <p-columnFilter field="apresMidi" matchMode="equals" [showMenu]="false" ariaLabel="Filter Apres Midi">
+                  <ng-template #filter let-value let-filter="filterCallback">
+                    <p-select [ngModel]="value" (ngModelChange)="filter($event)" appendTo="body"
+                              [options]="[{ label: 'Tous', value: null }, { label: 'Oui', value: true }, { label: 'Non', value: false }]"
+                              optionLabel="label" optionValue="value" style="min-width: 8rem" />
+                  </ng-template>
+                </p-columnFilter>
               </th>
             </tr>
           </ng-template>
+
           <ng-template #body let-p>
             <tr>
               <td style="width: 10%; min-width: 7rem">
@@ -99,8 +122,8 @@
                 </div>
               </td>
 
-              <td>{{ p.dateAbsence | date }}</td>
-              <td>{{ p.personnelId }}</td>
+              <td>{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
+              <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
               <td><p-toggleswitch [(ngModel)]="p.matin" disabled="true" /></td>
               <td><p-toggleswitch [(ngModel)]="p.apresMidi" disabled="true" /></td>
             </tr>

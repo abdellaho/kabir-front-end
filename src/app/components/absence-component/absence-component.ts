@@ -22,6 +22,8 @@ import { DatePickerModule } from "primeng/datepicker";
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
+import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-absence-component',
@@ -42,7 +44,8 @@ import { InputTextModule } from 'primeng/inputtext';
     DatePickerModule,
     SelectModule,
     IconFieldModule,
-    ToggleSwitchModule
+    ToggleSwitchModule,
+    MultiSelectModule
 ],
   templateUrl: './absence-component.html',
   styleUrl: './absence-component.scss'
@@ -51,7 +54,6 @@ export class AbsenceComponent implements OnInit {
   //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
   //Tableau ---> Date + Personnel + Matin + Soir
   //Ajouter ---> Date + Personnel + Matin + Soir
-
   listPersonnel: Personnel[] = [];
   listAbsence: Absence[] = [];
   absence: Absence = initObjectAbsence();
@@ -95,7 +97,10 @@ export class AbsenceComponent implements OnInit {
   getAllAbsence(): void {
     this.absenceService.getAll().subscribe({
       next: (data: Absence[]) => {
-        this.listAbsence = data;
+        this.listAbsence = (data || []).map(a => ({
+          ...a,
+          dateAbsence: a && (a as any).dateAbsence ? new Date((a as any).dateAbsence) : new Date()
+        }));
       }, error: (error: any) => {
         console.error(error);
       }
@@ -106,11 +111,16 @@ export class AbsenceComponent implements OnInit {
     this.personnelService.getAll().subscribe({
       next: (data: Personnel[]) => {
         this.listPersonnel = data;
+        this.mapOfPersonnels = arrayToMap(this.listPersonnel, 'id', ['designation'], ['']);
       },
       error: (error: any) => {
         console.error(error);
       }
     });
+  }
+
+  getDesignationPersonnel(id: number): string {
+    return getElementFromMap(this.mapOfPersonnels, id);
   }
 
   openCloseDialogAjouter(openClose: boolean): void {

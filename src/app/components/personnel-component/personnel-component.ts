@@ -1,7 +1,6 @@
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
-import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -25,6 +24,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { SelectModule } from "primeng/select";
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-personnel-component',
@@ -47,6 +47,7 @@ import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
     ToggleButtonModule,
     FloatLabelModule,
     SelectModule,
+    ToggleSwitchModule,
     TypePersonnelPipe
 ],
   templateUrl: './personnel-component.html',
