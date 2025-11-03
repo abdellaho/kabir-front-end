@@ -2,7 +2,6 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const StockValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
 
-    console.log('StockValidator started ......');
   // Helper to get form controls safely
   const get = (name: string) => control.get(name);
 

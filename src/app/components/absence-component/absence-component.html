@@ -131,7 +131,7 @@
   
           <ng-template #emptymessage>
               <tr>
-                  <td colspan="6">No Absence found.</td>
+                <td colspan="6">No Absence found.</td>
               </tr>
           </ng-template>
           <ng-template #loadingbody>
@@ -158,21 +158,21 @@
 
                 <div class="flex flex-col grow basis-0">
                     <p-floatlabel class="w-full md:w-56" variant="on">
-                        <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                        <label for="personnelId">Personnel</label>
+                      <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                      <label for="personnelId">Personnel</label>
                     </p-floatlabel>
                 </div>
               </div>
 
               <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0">
-                    <span id="apresMidiSpan">Soir</span>
-                    <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi" />
+                  <span id="apresMidiSpan">Soir</span>
+                  <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi" />
                 </div>
 
                 <div class="flex flex-col grow basis-0">
-                    <span id="matinSpan">Matin</span>
-                    <p-toggleswitch name="matin" id="matin" formControlName="matin" />
+                  <span id="matinSpan">Matin</span>
+                  <p-toggleswitch name="matin" id="matin" formControlName="matin" />
                 </div>
               </div>
             </div>

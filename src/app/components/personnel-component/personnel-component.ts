@@ -25,6 +25,7 @@ import { SelectModule } from "primeng/select";
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { PersonnelValidator } from '@/validators/personnel-validator';
 
 @Component({
   selector: 'app-personnel-component',
@@ -116,7 +117,7 @@ export class PersonnelComponent implements OnInit {
       adresse: [''],
       salaire: [0],
       etatComptePersonnel: [true],
-    });
+    }, { validators: [PersonnelValidator]});
   }
 
   viderAjouter() {

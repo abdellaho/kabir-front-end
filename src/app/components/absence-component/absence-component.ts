@@ -24,6 +24,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { AbsencelValidator } from '@/validators/absence-validator';
 
 @Component({
   selector: 'app-absence-component',
@@ -91,7 +92,7 @@ export class AbsenceComponent implements OnInit {
       dateAbsence: [new Date(), Validators.required],
       matin: [false],
       apresMidi: [false]
-    });
+    }, { validators: AbsencelValidator });
   }
 
   getAllAbsence(): void {
