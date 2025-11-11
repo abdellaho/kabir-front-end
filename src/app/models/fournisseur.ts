@@ -7,6 +7,7 @@ export interface Fournisseur {
     tel1: string;
     tel2: string;
     ice: string;
+    adresse: string;
     archiver: boolean;
     supprimer: boolean;
     ville: Ville | null;
@@ -21,6 +22,7 @@ export function initObjectFournisseur(): Fournisseur {
         tel1: '',
         tel2: '',
         ice: '',
+        adresse: '',
         archiver: false,
         supprimer: false,
         ville: null,

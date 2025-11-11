@@ -41,11 +41,16 @@ export class FournisseurService {
     return this.http.post<boolean>(ENDPOINTS.FOURNISSEUR.exist, serializedObj);
   }
 
+  search(fournisseur: Fournisseur): Observable<Fournisseur[]> {
+    const serializedObj = this.serialization(fournisseur);
+    return this.http.post<Fournisseur[]>(ENDPOINTS.FOURNISSEUR.search, serializedObj);
+  }
+
   serialization(obj: Fournisseur): any {
     return {
       ...obj,
       id: obj.id?.toString(),
     };
   }
-  
+
 }

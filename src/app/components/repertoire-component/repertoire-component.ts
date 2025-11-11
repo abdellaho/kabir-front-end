@@ -24,6 +24,7 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
   selector: 'app-repertoire-component',
@@ -50,13 +51,13 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 export class RepertoireComponent {
 
   types: any = [
-    { key: 'Pharmacie', value: 0}, 
-    { key: 'Revendeur', value: 1}, 
+    { key: 'Pharmacie', value: 0},
+    { key: 'Revendeur', value: 1},
     { key: 'Transport', value: 2},
   ]
 
   //Buttons ---> Ajouter + Rexchercher + Actualiser + Archiver + Corbeille
-  //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl 
+  //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
   //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
   typeOfList: number = 0;
@@ -74,6 +75,7 @@ export class RepertoireComponent {
   dialogAnnulerCorbeille: boolean = false;
   submitted: boolean = false;
   formGroup!: FormGroup;
+  msg = APP_MESSAGES;
 
   constructor(
     private villeService: VilleService,
@@ -142,10 +144,10 @@ export class RepertoireComponent {
 
   initSearch(archiver: boolean, bloquer: boolean): Repertoire {
     let search: Repertoire = initObjectRepertoire();
-    
+
     search.archiver = archiver;
     search.bloquer = bloquer;
-    
+
     return search;
   }
 
@@ -253,7 +255,7 @@ export class RepertoireComponent {
           ice: this.repertoire.ice,
           observation: this.repertoire.observation,
           personnelId: this.repertoire.personnelId,
-          plafond: this.repertoire.plafond,              
+          plafond: this.repertoire.plafond,
         });
 
         this.openCloseDialogAjouter(true);
@@ -269,7 +271,7 @@ export class RepertoireComponent {
         this.openCloseDialogAnnulerCorbeille(true);
       }
     } else {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
   }
 
@@ -329,22 +331,22 @@ export class RepertoireComponent {
     this.mapFormGroupToObject(this.formGroup, repertoireEdit);
     let absenceSearch: Repertoire = { ...this.repertoire };
     let trvErreur = await this.checkIfPaysExists(absenceSearch);
-    
+
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.repertoire);
       this.submitted = true;
-      
+
       if(this.repertoire.id) {
         this.repertoireService.update(this.repertoire.id, this.repertoire).subscribe({
           next: (data) => {
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
               this.checkIfListIsNull();
               this.listRepertoire = this.updateList(data, this.listRepertoire, OperationType.MODIFY);
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
               this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
           }, complete: () => {
             this.loadingService.hide();
           }
@@ -352,21 +354,21 @@ export class RepertoireComponent {
       } else {
         this.repertoireService.create(this.repertoire).subscribe({
             next: (data: Repertoire) => {
-                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+                this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
                 this.checkIfListIsNull();
                 this.listRepertoire = this.updateList(data, this.listRepertoire, OperationType.ADD);
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
                 this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
             }, complete: () => {
               this.loadingService.hide();
             }
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le repertoire existe deja" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.repertoire.label} ${this.msg.messages.messageExistDeja}` });
       this.loadingService.hide();
     }
   }
@@ -377,20 +379,20 @@ export class RepertoireComponent {
       let id = this.repertoire.id;
       this.repertoireService.delete(this.repertoire.id).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
             this.checkIfListIsNull();
             this.listRepertoire = this.updateList(initObjectRepertoire(), this.listRepertoire, OperationType.DELETE, id);
             this.repertoire = initObjectRepertoire() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     this.openCloseDialogSupprimer(false);
@@ -404,20 +406,20 @@ export class RepertoireComponent {
 
       this.repertoireService.update(this.repertoire.id, this.repertoire).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Opération effectuée avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageSuccess });
             this.checkIfListIsNull();
             this.listRepertoire = this.updateList(initObjectRepertoire(), this.listRepertoire, OperationType.DELETE, id);
             this.repertoire = initObjectRepertoire() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     if(archiver) {
@@ -435,20 +437,20 @@ export class RepertoireComponent {
 
       this.repertoireService.update(this.repertoire.id, this.repertoire).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Opération effectuée avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageSuccess });
             this.checkIfListIsNull();
             this.listRepertoire = this.updateList(initObjectRepertoire(), this.listRepertoire, OperationType.DELETE, id);
             this.repertoire = initObjectRepertoire() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     if(corbeille) {

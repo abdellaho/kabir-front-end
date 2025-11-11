@@ -25,44 +25,48 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { DatePickerModule } from "primeng/datepicker";
+import { RippleModule } from 'primeng/ripple';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
   selector: 'app-etablissement-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    DialogModule,
-    SelectModule,
-    IconFieldModule,
-    InputIconModule,
-    CheckboxModule,
-    RadioButtonModule,
-    FluidModule,
-    FloatLabelModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    InputNumberModule,
-    InputTextModule,
-    PasswordModule,
-    DatePickerModule
-],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ButtonModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        DialogModule,
+        SelectModule,
+        IconFieldModule,
+        InputIconModule,
+        CheckboxModule,
+        RadioButtonModule,
+        FluidModule,
+        FloatLabelModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        InputNumberModule,
+        InputTextModule,
+        PasswordModule,
+        DatePickerModule,
+        RippleModule
+    ],
   templateUrl: './etablissement-component.html',
   styleUrl: './etablissement-component.scss'
 })
 export class EtablissementComponent implements OnInit {
 
   listVille: Ville[] = [];
-  typeExecutions: {label: string, value: number}[] = [{label: 'Chaque Jour', value: 0}, {label: 'Chaque Semaine', value: 1}, {label: 'Chaque Mois', value: 2}]; 
+  typeExecutions: {label: string, value: number}[] = [{label: 'Chaque Jour', value: 0}, {label: 'Chaque Semaine', value: 1}, {label: 'Chaque Mois', value: 2}];
   etablissement: Etablissement = initObjectEtablissement();
   days: number[] = [];
   submitted: boolean = false;
   loading: boolean = true;
   formGroup!: FormGroup;
+  msg = APP_MESSAGES;
 
   constructor(
     private villeService: VilleService,
@@ -128,7 +132,7 @@ export class EtablissementComponent implements OnInit {
       } else {
         this.days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
       }
-      
+
       this.formGroup.get('numJour')?.setValue(1);
     }
   }
@@ -196,7 +200,7 @@ export class EtablissementComponent implements OnInit {
     etablissement.tel2 = formGroup.get('tel2')?.value;
     etablissement.tel3 = formGroup.get('tel3')?.value;
     etablissement.lienDbDump = formGroup.get('lienDbDump')?.value;
-    etablissement.lienBackupDB = formGroup.get('lienBackupDB')?.value; 
+    etablissement.lienBackupDB = formGroup.get('lienBackupDB')?.value;
     etablissement.numJour = formGroup.get('numJour')?.value;
     etablissement.typeExec = Number(formGroup.get('typeExec')?.value);
     etablissement.dateTime = formGroup.get('dateTime')?.value;

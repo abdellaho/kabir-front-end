@@ -17,6 +17,7 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
   selector: 'app-voiture-component',
@@ -49,6 +50,7 @@ export class VoitureComponent implements OnInit {
   dialogAjouter: boolean = false;
   submitted: boolean = false;
   formGroup!: FormGroup;
+  msg = APP_MESSAGES;
 
   constructor(
     private voitureService: VoitureService,
@@ -116,7 +118,7 @@ export class VoitureComponent implements OnInit {
             this.openCloseDialogSupprimer(true);
         }
     } else {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
   }
 
@@ -168,22 +170,22 @@ export class VoitureComponent implements OnInit {
     this.mapFormGroupToObject(this.formGroup, voitureEdit);
     let trvErreur = await this.checkIfExists(voitureEdit);
     console.log(voitureEdit, trvErreur);
-    
+
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.voiture);
       this.submitted = true;
-      
+
       if(this.voiture.id) {
         this.voitureService.update(this.voiture.id, this.voiture).subscribe({
           next: (data) => {
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
               this.checkIfListIsNull();
               this.listVoiture = this.updateList(data, this.listVoiture, OperationType.MODIFY);
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
               this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
           }, complete: () => {
             this.loadingService.hide();
           }
@@ -191,21 +193,21 @@ export class VoitureComponent implements OnInit {
       } else {
         this.voitureService.create(this.voiture).subscribe({
             next: (data: Voiture) => {
-                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+                this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
                 this.checkIfListIsNull();
                 this.listVoiture = this.updateList(data, this.listVoiture, OperationType.ADD);
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
                 this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
             }, complete: () => {
               this.loadingService.hide();
             }
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "voiture existe deja" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.voiture.label} ${this.msg.messages.messageExistDeja}` });
       this.loadingService.hide();
     }
   }
@@ -216,20 +218,20 @@ export class VoitureComponent implements OnInit {
       let id = this.voiture.id;
       this.voitureService.delete(this.voiture.id).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
             this.checkIfListIsNull();
             this.listVoiture = this.updateList(initObjectVoiture(), this.listVoiture, OperationType.DELETE, id);
             this.voiture = initObjectVoiture() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     this.openCloseDialogSupprimer(false);

@@ -19,7 +19,6 @@ export const filteredTypePersonnel = [
 
 export const filteredTypePersonnelAll = [
     { label: '', value: TypePersonnel.NONE },
-    { label: 'Administrateur', value: TypePersonnel.ADMINISTRATEUR },
     { label: 'Gérant', value: TypePersonnel.GERANT },
     { label: 'Comptable', value: TypePersonnel.COMPATBLE },
     { label: 'Magasinier', value: TypePersonnel.MAGASINIER },

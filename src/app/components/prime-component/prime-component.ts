@@ -17,6 +17,7 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
   selector: 'app-prime-component',
@@ -50,6 +51,7 @@ export class PrimeComponent {
   dialogAjouter: boolean = false;
   submitted: boolean = false;
   formGroup!: FormGroup;
+  msg = APP_MESSAGES;
 
   constructor(
     private primeService: PrimeService,
@@ -122,7 +124,7 @@ export class PrimeComponent {
             this.openCloseDialogSupprimer(true);
         }
     } else {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
   }
 
@@ -174,15 +176,15 @@ export class PrimeComponent {
     primeEdit = this.mapFormGroupToObject(this.formGroup, primeEdit);
     let primeSearch: Prime = { ...this.prime };
     let trvErreur = await this.checkIfPaysExists(primeSearch);
-    
+
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.prime);
       this.submitted = true;
-      
+
       if(this.prime.id) {
         this.primeService.update(this.prime.id, this.prime).subscribe({
           next: (data) => {
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
               this.checkIfListIsNull();
               this.listPrime = this.updateList(data, this.listPrime, OperationType.MODIFY);
               this.sortList();
@@ -190,7 +192,7 @@ export class PrimeComponent {
           }, error: (err) => {
               console.log(err);
               this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
           }, complete: () => {
             this.loadingService.hide();
           }
@@ -198,7 +200,7 @@ export class PrimeComponent {
       } else {
         this.primeService.create(this.prime).subscribe({
             next: (data: Prime) => {
-                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+                this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
                 this.checkIfListIsNull();
                 this.listPrime = this.updateList(data, this.listPrime, OperationType.ADD);
                 this.sortList();
@@ -206,14 +208,14 @@ export class PrimeComponent {
             }, error: (err) => {
                 console.log(err);
                 this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
             }, complete: () => {
               this.loadingService.hide();
             }
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le prime existe deja" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.prime.label} ${this.msg.messages.messageExistDeja}` });
       this.loadingService.hide();
     }
   }
@@ -224,7 +226,7 @@ export class PrimeComponent {
       let id = this.prime.id;
       this.primeService.delete(this.prime.id).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
             this.checkIfListIsNull();
             this.listPrime = this.updateList(initObjectPrime(), this.listPrime, OperationType.DELETE, id);
             this.sortList();
@@ -232,13 +234,13 @@ export class PrimeComponent {
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     this.openCloseDialogSupprimer(false);

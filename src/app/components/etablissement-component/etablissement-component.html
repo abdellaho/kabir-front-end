@@ -1,19 +1,19 @@
 <p-toast></p-toast>
 <p-fluid class="flex mt-8" [formGroup]="formGroup">
   <div class="card flex flex-col gap-6 w-full">
-    <div class="font-semibold text-xl">Etablissement</div>
+    <div class="font-semibold text-xl">{{ msg.components.etablissement.label }}</div>
     <div class="flex flex-col md:flex-row gap-2">
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="nom" formControlName="nom" />
-          <label for="nom">Nom Etablissement</label>
+          <label for="nom">{{ msg.components.etablissement.nomEtablissement }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="ice" formControlName="ice" />
-          <label for="ice">ICE</label>
+          <label for="ice">{{ msg.components.etablissement.ice }}</label>
         </p-floatlabel>
       </div>
 
@@ -27,14 +27,14 @@
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="rc" formControlName="rc" />
-          <label for="rc">RC</label>
+          <label for="rc">{{ msg.components.etablissement.rc }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="patente" formControlName="patente" />
-          <label for="patente">Patente</label>
+          <label for="patente">{{ msg.components.etablissement.patente }}</label>
         </p-floatlabel>
       </div>
     </div>
@@ -42,36 +42,36 @@
     <div class="flex flex-col md:flex-row gap-2">
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="tel1" formControlName="tel1" />
-          <label for="tel1">Tel1</label>
+          <input pInputText id="tel1" formControlName="tel1" [maxLength]="10"/>
+          <label for="tel1">{{ msg.components.etablissement.tel1 }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="tel2" formControlName="tel2" />
-          <label for="tel2">Tel2</label>
+          <input pInputText id="tel2" formControlName="tel2" [maxLength]="10"/>
+          <label for="tel2">{{ msg.components.etablissement.tel2 }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="tel3" formControlName="tel3" />
-          <label for="tel3">Tel3</label>
+          <input pInputText id="tel3" formControlName="tel3" [maxLength]="10"/>
+          <label for="tel3">{{ msg.components.etablissement.tel3 }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="email" formControlName="email" />
-          <label for="email">Email</label>
+          <label for="email">{{ msg.components.etablissement.email }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="adresse" formControlName="adresse" />
-          <label for="adresse">Adresse</label>
+          <label for="adresse">{{ msg.components.etablissement.adresse }}</label>
         </p-floatlabel>
       </div>
     </div>
@@ -80,35 +80,35 @@
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="siteweb" formControlName="siteweb" />
-          <label for="siteweb">Site Web</label>
+          <label for="siteweb">{{ msg.components.etablissement.siteWeb }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="lienBackupDB" formControlName="lienBackupDB" />
-          <label for="lienBackupDB">Lien Backup DB</label>
+          <label for="lienBackupDB">{{ msg.components.etablissement.lienBackupDB }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="hostmail" formControlName="hostmail" />
-          <label for="hostmail">Serveur (SMTP)</label>
+          <label for="hostmail">{{ msg.components.etablissement.hostMail }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <p-input-number id="port" formControlName="port" />
-          <label for="port">Port</label>
+          <label for="port">{{ msg.components.etablissement.port }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <p-password id="paswordMail" formControlName="paswordMail" />
-          <label for="paswordMail">Mot de Passe</label>
+          <label for="paswordMail">{{ msg.components.etablissement.passwordMail }}</label>
         </p-floatlabel>
       </div>
     </div>
@@ -117,25 +117,25 @@
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="lienDbDump" formControlName="lienDbDump" />
-          <label for="lienDbDump">Lien Db Dump</label>
+          <label for="lienDbDump">{{ msg.components.etablissement.lienDbDump }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="cheminBD" formControlName="cheminBD" />
-          <label for="cheminBD">Chemin BD</label>
+          <label for="cheminBD">{{ msg.components.etablissement.cheminBD }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="pourcentageLiv" formControlName="pourcentageLiv" />
-          <label for="pourcentageLiv">Taux de risque</label>
+          <label for="pourcentageLiv">{{ msg.components.etablissement.pourcentageLiv }}</label>
         </p-floatlabel>
       </div>
 
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4" style="display: none;">
         <p-floatlabel variant="on">
           <p-date-picker id="dateTime" formControlName="dateTime" [timeOnly]="true" />
           <label for="dateTime">Date Time</label>
@@ -145,20 +145,20 @@
       <div class="flex flex-col gap-4"></div>
     </div>
 
-    <div class="flex flex-col md:flex-row gap-2">
+    <div class="flex flex-col md:flex-row gap-2" style="display: none;">
       <div class="flex flex-col gap-4">
         @for (typeE of typeExecutions; track typeE.value) {
           <div class="flex items-center">
-            <p-radiobutton formControlName="typeExec" value="{{typeE.value}}" [inputId]="'typeExec' + typeE.value" (change)="onChangeTypeExecution($event)" />
+              <p-radiobutton formControlName="typeExec" value="{{typeE.value}}" [inputId]="'typeExec' + typeE.value" (change)="onChangeTypeExecution($event)"></p-radiobutton>
             <label [for]="'typeExec' + typeE.value" class="ml-2">{{typeE.label}}</label>
           </div>
         }
       </div>
 
       <div class="flex flex-col gap-4">
-        @if (formGroup.get('typeExec')?.value === "1" 
-          || formGroup.get('typeExec')?.value === 1 
-          || formGroup.get('typeExec')?.value === 2 
+        @if (formGroup.get('typeExec')?.value === "1"
+          || formGroup.get('typeExec')?.value === 1
+          || formGroup.get('typeExec')?.value === 2
           || formGroup.get('typeExec')?.value === "2") {
           <div class="flex flex-wrap gap-2 w-full">
             <label for="numJour" class="font-semibold">N° Jour</label>
@@ -170,7 +170,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row gap-6">
+    <div class="flex flex-col md:flex-row gap-6" style="display: none;">
       <div class="flex flex-col gap-4">
         @if (formGroup.get('typeExec')?.value === "0" || formGroup.get('typeExec')?.value === 0) {
           <div class="flex flex-wrap gap-2 w-full">
@@ -215,15 +215,14 @@
 
     <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center" style="justify-content: center;">
       <div class="flex">
-        <button
-          pButton
+        <p-button
           pRipple
-          label="Valider"
+          [label]="msg.buttons.valider"
           icon="pi pi-check"
           class="p-button-info"
           (click)="miseAjour()"
           [disabled]="!formGroup.valid"
-        ></button>
+        ></p-button>
       </div>
     </div>
   </div>

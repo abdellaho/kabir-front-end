@@ -18,6 +18,7 @@ import { InputIconModule } from "primeng/inputicon";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 @Component({
   standalone: true,
   selector: 'app-ville-component',
@@ -57,6 +58,7 @@ export class VilleComponent implements OnInit {
   loading: boolean = true;
   formGroup!: FormGroup;
   mapOfPays: Map<number, string> = new Map<number, string>();
+  msg = APP_MESSAGES;
 
   ngOnInit(): void {
     this.getAllVilles();
@@ -126,7 +128,7 @@ export class VilleComponent implements OnInit {
             this.openCloseDialogSupprimer(true);
         }
     } else {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
   }
 
@@ -181,14 +183,14 @@ export class VilleComponent implements OnInit {
       if(this.ville.id) {
         this.villeService.updateVille(this.ville.id, this.ville).subscribe({
           next: (data) => {
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
               this.checkIfListIsNull();
               this.listVille = this.updateList(data, this.listVille, OperationType.MODIFY);
               this.openCloseDialogAjouter(false);
           }, error: (err) => {
               console.log(err);
               this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
           }, complete: () => {
             this.loadingService.hide();
           }
@@ -196,21 +198,21 @@ export class VilleComponent implements OnInit {
       } else {
         this.villeService.createVille(this.ville).subscribe({
             next: (data: Ville) => {
-                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+                this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
                 this.checkIfListIsNull();
                 this.listVille = this.updateList(data, this.listVille, OperationType.ADD);
                 this.openCloseDialogAjouter(false);
             }, error: (err) => {
                 console.log(err);
                 this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
             }, complete: () => {
               this.loadingService.hide();
             }
         });
       }
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Ville existe deja" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.ville.label} ${this.msg.messages.messageExistDeja}` });
       this.loadingService.hide();
       this.submitted = false;
     }
@@ -222,20 +224,20 @@ export class VilleComponent implements OnInit {
       let id = this.ville.id;
       this.villeService.deleteVille(this.ville.id).subscribe({
         next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
             this.checkIfListIsNull();
             this.listVille = this.updateList(initObjectVille(), this.listVille, OperationType.DELETE, id);
             this.ville = initObjectVille() ;
         }, error: (err) => {
             console.log(err);
             this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }, complete: () => {
           this.loadingService.hide();
         }
       });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
     this.openCloseDialogSupprimer(false);

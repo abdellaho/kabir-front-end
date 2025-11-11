@@ -17,14 +17,6 @@
         </ng-template>
 
         <ng-template pTemplate="right">
-          <button
-            pButton
-            pRipple
-            label="Export"
-            icon="pi pi-upload"
-            class="p-button-help"
-            (click)="dt.exportCSV()"
-          ></button>
         </ng-template>
       </p-toolbar>
 
@@ -40,43 +32,28 @@
             [globalFilterFields]="['nomVille']"
             [rowsPerPageOptions]="[10, 20, 30]"
             [showCurrentPageReport]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [rowHover]="true"
-            responsiveLayout="scroll"
+            currentPageReportTemplate="({first} of {totalRecords})"
         >
         <ng-template #caption>
-            <div class="flex justify-between items-center flex-column sm:flex-row">
-                <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
-                <p-iconfield iconPosition="left" class="ml-auto">
-                    <p-inputicon>
-                        <i class="pi pi-search"></i>
-                    </p-inputicon>
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
-                </p-iconfield>
-            </div>
         </ng-template>
 
         <ng-template #header>
           <tr>
-            <th></th>
-            <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Ville
-                    <p-columnFilter type="text" field="nomVille" display="menu" placeholder="Search by ville"></p-columnFilter>
-                </div>
-            </th>
+              <th pSortableColumn="nomVille">Ville <p-sortIcon field="nomVille" /></th>
+              <th></th>
           </tr>
         </ng-template>
         <ng-template #body let-p>
           <tr>
-            <td style="width: 14%; min-width: 10rem">
-              <div class="flex gap-2">
-                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
-                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
-              </div>
-            </td>
             <td>
-              {{ p.nomVille }}
+                {{ p.nomVille }}
+            </td>
+
+            <td style="width: 14%; min-width: 10rem">
+                <div class="flex gap-2">
+                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                    <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
+                </div>
             </td>
           </tr>
         </ng-template>

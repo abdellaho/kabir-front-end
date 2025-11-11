@@ -33,7 +33,6 @@
             [value]="listPays"
             dataKey="id"
             [rows]="10"
-            [rowHover]="true"
             [showGridlines]="true"
             [paginator]="true"
             [globalFilterFields]="['pays']"
@@ -41,7 +40,6 @@
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [rowHover]="true"
-            responsiveLayout="scroll"
         >
         <ng-template #caption>
             <div class="flex justify-between items-center flex-column sm:flex-row">

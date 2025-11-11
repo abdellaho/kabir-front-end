@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
     selector: 'app-menu',
@@ -17,40 +18,29 @@ import { AppMenuitem } from './app.menuitem';
 })
 export class AppMenu {
     model: MenuItem[] = [];
+    msg = APP_MESSAGES;
 
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
-                items: [{ label: 'Acceuil', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                label: '',
+                items: [{ label: this.msg.menu.acceuil, icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
             },
             {
-                label: 'Paramétrage',
-                items: [{ label: 'Paramétrage', icon: 'pi pi-fw pi-home', routerLink: ['/parametrage'] }]
+                label: '',
+                items: [{ label: this.msg.menu.parametrage, icon: 'pi pi-fw pi-home', routerLink: ['/parametrage'] }]
             },
             {
-                label: 'Absence',
-                items: [{ label: 'Absence', icon: 'pi pi-fw pi-home', routerLink: ['/absence'] }]
+                label: '',
+                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-home', routerLink: ['/absence'] }]
             },
             {
-                label: 'Fournisseur',
-                items: [{ label: 'Fournisseur', icon: 'pi pi-fw pi-home', routerLink: ['/fournisseur'] }]
+                label: '',
+                items: [{ label: this.msg.menu.repertoire, icon: 'pi pi-fw pi-home', routerLink: ['/repertoire'] }]
             },
             {
-                label: 'Repertoire',
-                items: [{ label: 'Repertoire', icon: 'pi pi-fw pi-home', routerLink: ['/repertoire'] }]
-            },
-            {
-                label: 'Stock',
-                items: [{ label: 'Stock', icon: 'pi pi-fw pi-home', routerLink: ['/stock'] }]
-            },
-            {
-                label: 'Voiture',
-                items: [{ label: 'Voiture', icon: 'pi pi-fw pi-home', routerLink: ['/voiture'] }]
-            },
-            {
-                label: 'Prime',
-                items: [{ label: 'Prime', icon: 'pi pi-fw pi-home', routerLink: ['/prime'] }]
+                label: '',
+                items: [{ label: this.msg.menu.stock, icon: 'pi pi-fw pi-home', routerLink: ['/stock'] }]
             },
             /* {
                 label: 'UI Components',

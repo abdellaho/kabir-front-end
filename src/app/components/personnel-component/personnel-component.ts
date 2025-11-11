@@ -16,267 +16,474 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
-import { PasswordModule } from "primeng/password";
-import { DatePickerModule } from "primeng/datepicker";
-import { InputNumberModule } from "primeng/inputnumber";
-import { ToggleButtonModule } from "primeng/togglebutton";
-import { FloatLabelModule } from "primeng/floatlabel";
-import { SelectModule } from "primeng/select";
+import { PasswordModule } from 'primeng/password';
+import { DatePickerModule } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { SelectModule } from 'primeng/select';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { PersonnelValidator } from '@/validators/personnel-validator';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
-  selector: 'app-personnel-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TableModule,
-    ButtonModule,
-    RippleModule,
-    ToastModule,
-    ToolbarModule,
-    InputTextModule,
-    DialogModule,
-    IconFieldModule,
-    InputIconModule,
-    PasswordModule,
-    DatePickerModule,
-    InputNumberModule,
-    ToggleButtonModule,
-    FloatLabelModule,
-    SelectModule,
-    ToggleSwitchModule,
-    TypePersonnelPipe
-],
-  templateUrl: './personnel-component.html',
-  styleUrl: './personnel-component.scss'
+    selector: 'app-personnel-component',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TableModule,
+        ButtonModule,
+        RippleModule,
+        ToastModule,
+        ToolbarModule,
+        InputTextModule,
+        DialogModule,
+        IconFieldModule,
+        InputIconModule,
+        PasswordModule,
+        DatePickerModule,
+        InputNumberModule,
+        ToggleButtonModule,
+        FloatLabelModule,
+        SelectModule,
+        ToggleSwitchModule,
+        TypePersonnelPipe
+    ],
+    templateUrl: './personnel-component.html',
+    styleUrl: './personnel-component.scss'
 })
 export class PersonnelComponent implements OnInit {
 
-  personnel: Personnel = initObjectPersonnel();
-  listPersonnel: Personnel[] = [];
-  typePersonnel: { label: string, value: TypePersonnel }[] = filteredTypePersonnelAll;
-  dialogSupprimer: boolean = false;
-  dialogAjouter: boolean = false;
-  submitted: boolean = false;
-  loading: boolean = true;
-  formGroup!: FormGroup;
+    personnel: Personnel = initObjectPersonnel();
+    listPersonnel: Personnel[] = [];
+    typePersonnel: { label: string, value: TypePersonnel }[] = filteredTypePersonnelAll;
+    dialogSupprimer: boolean = false;
+    dialogAjouter: boolean = false;
+    dialogArchiver: boolean = false;
+    dialogCorbeille: boolean = false;
+    dialogAnnulerArchiver: boolean = false;
+    dialogAnnulerCorbeille: boolean = false;
+    submitted: boolean = false;
+    loading: boolean = true;
+    formGroup!: FormGroup;
+    typeOfList: number = 0;
+    msg = APP_MESSAGES;
 
-  constructor(
-    private personnelService: PersonnelService,
-    private formBuilder: FormBuilder,
-    private messageService: MessageService,
-    private loadingService: LoadingService,
-  ) {}
+    constructor(
+        private personnelService: PersonnelService,
+        private formBuilder: FormBuilder,
+        private messageService: MessageService,
+        private loadingService: LoadingService
+    ) {
+    }
 
-  ngOnInit(): void {
-    this.getAll();
-    this.initFormGroup();
-  }
+    ngOnInit(): void {
+        this.typeOfList = 0;
+        this.search();
+        this.initFormGroup();
+    }
 
-  clear(table: Table) {
-    table.clear();
-  }
+    archiveListe(): void {
+        this.typeOfList = 1;
+        this.search();
+    }
 
-  onGlobalFilter(table: Table, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
+    corbeilleListe(): void {
+        this.typeOfList = 2;
+        this.search();
+    }
 
-  openCloseDialogAjouter(openClose: boolean): void {
-    this.dialogAjouter = openClose;
-  }
+    listOfAll(): void {
+        this.typeOfList = 0;
+        this.search();
+    }
 
-  openCloseDialogSupprimer(openClose: boolean): void {
-    this.dialogSupprimer = openClose;
-  }
-
-  getAll(): void {
-    this.personnelService.getAll().subscribe({
-      next: (data: Personnel[]) => {
-        this.listPersonnel = data;
-        this.loading = false;
-      }, error: (error: any) => {
-        console.error(error);
-      }
-    });
-  }
-
-  initFormGroup() {
-    this.formGroup = this.formBuilder.group({
-      designation: ['', [Validators.required, Validators.min(1)]],
-      cin: ['', [Validators.required, Validators.min(1)]],
-      login: [''],
-      password: [''],
-      typePersonnel: [0],
-      dateEntrer: [new Date()],
-      tel1: [''],
-      tel2: [''],
-      adresse: [''],
-      salaire: [0],
-      etatComptePersonnel: [true],
-    }, { validators: [PersonnelValidator]});
-  }
-
-  viderAjouter() {
-    this.openCloseDialogAjouter(true);
-    this.submitted = false;
-    this.personnel = initObjectPersonnel();
-    this.initFormGroup();
-  }
-
-  recupperer(operation: number, personnelEdit: Personnel) {
-    if(personnelEdit && personnelEdit.id) {
-        this.personnel = personnelEdit;
-        if(operation === 1) {
-            this.formGroup.patchValue({
-              designation: this.personnel.designation,
-              cin: this.personnel.cin,
-              login: this.personnel.login,
-              password: '', //this.personnel.password,
-              typePersonnel: this.personnel.typePersonnel,
-              dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
-              tel1: this.personnel.tel1,
-              tel2: this.personnel.tel2,
-              adresse: this.personnel.adresse,
-              salaire: this.personnel.salaire,
-              etatComptePersonnel: this.personnel.etatComptePersonnel
-            });
-
-            this.openCloseDialogAjouter(true);
+    search() {
+        if (this.typeOfList === 1) {
+            this.getAllArchive();
+        } else if (this.typeOfList === 2) {
+            this.getAllCorbeille();
         } else {
-            this.openCloseDialogSupprimer(true);
+            this.getAll();
         }
-    } else {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Veuillez réessayer l'opération" });
     }
-  }
 
-  updateList(personnel: Personnel, list: Personnel[], operationType: OperationType, id?: bigint): Personnel[] {
-    if(operationType === OperationType.ADD) {
-        list = [ ...list, personnel ];
-    } else if(operationType === OperationType.MODIFY) {
-        let index = list.findIndex(x => x.id === personnel.id);
-        if(index > -1) {
-            list[index] = personnel;
-        }
-    } else if(operationType === OperationType.DELETE) {
-        list = list.filter(x => x.id !== id);
+    initObjectSearch(archiver: boolean, supprimer: boolean): Personnel {
+        let objectSearch: Personnel = initObjectPersonnel();
+
+        objectSearch.archiver = archiver;
+        objectSearch.supprimer = supprimer;
+
+        return objectSearch;
     }
-    return list;
-  }
 
-  checkIfListIsNull() {
-    if(null == this.listPersonnel) {
-        this.listPersonnel = [];
-    }
-  }
-
-  mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel): Personnel {
-    personnel.designation = formGroup.get('designation')?.value;
-    personnel.cin = formGroup.get('cin')?.value;
-    personnel.login = formGroup.get('login')?.value;
-    personnel.password = formGroup.get('password')?.value;
-    personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
-    personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
-    personnel.tel1 = formGroup.get('tel1')?.value;
-    personnel.tel2 = formGroup.get('tel2')?.value;
-    personnel.adresse = formGroup.get('adresse')?.value;
-    personnel.salaire = formGroup.get('salaire')?.value;
-    personnel.etatComptePersonnel= formGroup.get('etatComptePersonnel')?.value;
-
-    return personnel;
-  }
-
-  async checkIfExists(personnel: Personnel): Promise<boolean> {
-    try {
-      const existsObservable = this.personnelService.search(personnel).pipe(
-        catchError(error => {
-          console.error('Error in personnel existence observable:', error);
-          return of(false); // Gracefully handle observable errors by returning false
-        })
-      );
-      return await firstValueFrom(existsObservable);
-    } catch (error) {
-      console.error('Unexpected error checking if personnel exists:', error);
-      return false;
-    }
-  }
-
-  async miseAjour(): Promise<void> {
-    this.loadingService.show();
-    let personnelEdit: Personnel = { ...this.personnel };
-    personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit);
-    //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
-    let trvErreur = await this.checkIfExists(personnelEdit);
-    
-    if(!trvErreur) {
-      this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel);
-      this.submitted = true;
-      console.log('Personnel : ', this.personnel);
-      
-      if(this.personnel.id) {
-        this.personnelService.update(this.personnel.id, this.personnel).subscribe({
-          next: (data) => {
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
-              this.checkIfListIsNull();
-              this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY);
-              this.openCloseDialogAjouter(false);
-          }, error: (err) => {
-              console.log(err);
-              this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
-          }, complete: () => {
-            this.loadingService.hide();
-          }
-        });
-      } else {
-        this.personnelService.create(this.personnel).subscribe({
-            next: (data: Personnel) => {
-                this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
-                this.checkIfListIsNull();
-                this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.ADD);
-                this.openCloseDialogAjouter(false);
-            }, error: (err) => {
-                console.log(err);
-                this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+    getAll(): void {
+        let objectSearch: Personnel = this.initObjectSearch(false, false);
+        this.personnelService.search(objectSearch).subscribe({
+            next: (data: Personnel[]) => {
+                this.listPersonnel = data;
+            }, error: (error: any) => {
+                console.error(error);
             }, complete: () => {
-              this.loadingService.hide();
+                this.loadingService.hide();
             }
         });
-      }
-    } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Le personnel existe déjà" });
-      this.loadingService.hide();
     }
-  }
 
-  supprimer(): void {
-    if(this.personnel && this.personnel.id) {
-      this.loadingService.show();
-      let id = this.personnel.id;
-      this.personnelService.delete(this.personnel.id).subscribe({
-        next: (data) => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Suppression avec succès' });
-            this.checkIfListIsNull();
-            this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
-            this.personnel = initObjectPersonnel() ;
-        }, error: (err) => {
-            console.log(err);
-            this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
-        }, complete: () => {
-          this.loadingService.hide();
+    getAllArchive(): void {
+        let objectSearch: Personnel = this.initObjectSearch(true, false);
+
+        this.personnelService.search(objectSearch).subscribe({
+            next: (data: Personnel[]) => {
+                this.listPersonnel = data;
+            }, error: (error: any) => {
+                console.error(error);
+            }, complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    getAllCorbeille(): void {
+        let objectSearch: Personnel = this.initObjectSearch(false, true);
+
+        this.personnelService.search(objectSearch).subscribe({
+            next: (data: Personnel[]) => {
+                this.listPersonnel = data;
+            }, error: (error: any) => {
+                console.error(error);
+            }, complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    clear(table: Table) {
+        table.clear();
+    }
+
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    openCloseDialogAjouter(openClose: boolean): void {
+        this.dialogAjouter = openClose;
+    }
+
+    openCloseDialogSupprimer(openClose: boolean): void {
+        this.dialogSupprimer = openClose;
+    }
+
+    openCloseDialogArchiver(openClose: boolean): void {
+        this.dialogArchiver = openClose;
+    }
+
+    openCloseDialogCorbeille(openClose: boolean): void {
+        this.dialogCorbeille = openClose;
+    }
+
+    openCloseDialogAnnulerArchiver(openClose: boolean): void {
+        this.dialogAnnulerArchiver = openClose;
+    }
+
+    openCloseDialogAnnulerCorbeille(openClose: boolean): void {
+        this.dialogAnnulerCorbeille = openClose;
+    }
+
+    initFormGroup() {
+        this.formGroup = this.formBuilder.group({
+            designation: ['', [Validators.required, Validators.min(1)]],
+            cin: ['', [Validators.required, Validators.min(1)]],
+            login: [''],
+            password: [''],
+            typePersonnel: [0],
+            dateEntrer: [new Date()],
+            tel1: [''],
+            tel2: [''],
+            adresse: [''],
+            salaire: [0],
+            etatComptePersonnel: [true]
+        }, { validators: [PersonnelValidator] });
+    }
+
+    viderAjouter() {
+        this.openCloseDialogAjouter(true);
+        this.submitted = false;
+        this.personnel = initObjectPersonnel();
+        this.initFormGroup();
+    }
+
+    recupperer(operation: number, personnelEdit: Personnel) {
+        if (personnelEdit && personnelEdit.id) {
+            this.personnel = personnelEdit;
+            if (operation === 1) {
+                this.formGroup.patchValue({
+                    designation: this.personnel.designation,
+                    cin: this.personnel.cin,
+                    login: this.personnel.login,
+                    password: '', //this.personnel.password,
+                    typePersonnel: this.personnel.typePersonnel,
+                    dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
+                    tel1: this.personnel.tel1,
+                    tel2: this.personnel.tel2,
+                    adresse: this.personnel.adresse,
+                    salaire: this.personnel.salaire,
+                    etatComptePersonnel: this.personnel.etatComptePersonnel
+                });
+
+                this.openCloseDialogAjouter(true);
+            } else if(operation === 2) {
+                this.openCloseDialogSupprimer(true);
+            } else if (operation === 3) {
+                this.openCloseDialogArchiver(true);
+            } else if (operation === 4) {
+                this.openCloseDialogCorbeille(true);
+            } else if (operation === 5) {
+                this.openCloseDialogAnnulerArchiver(true);
+            } else if (operation === 6) {
+                this.openCloseDialogAnnulerCorbeille(true);
+            }
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Erreur',
+                detail: 'Veuillez réessayer l\'opération'
+            });
         }
-      });
-    } else {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
     }
 
-    this.openCloseDialogSupprimer(false);
-  }
+    updateList(personnel: Personnel, list: Personnel[], operationType: OperationType, id?: bigint): Personnel[] {
+        if (operationType === OperationType.ADD) {
+            list = [...list, personnel];
+        } else if (operationType === OperationType.MODIFY) {
+            let index = list.findIndex(x => x.id === personnel.id);
+            if (index > -1) {
+                list[index] = personnel;
+            }
+        } else if (operationType === OperationType.DELETE) {
+            list = list.filter(x => x.id !== id);
+        }
+        return list;
+    }
+
+    checkIfListIsNull() {
+        if (null == this.listPersonnel) {
+            this.listPersonnel = [];
+        }
+    }
+
+    mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel): Personnel {
+        personnel.designation = formGroup.get('designation')?.value;
+        personnel.cin = formGroup.get('cin')?.value;
+        personnel.login = formGroup.get('login')?.value;
+        personnel.password = formGroup.get('password')?.value;
+        personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
+        personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
+        personnel.tel1 = formGroup.get('tel1')?.value;
+        personnel.tel2 = formGroup.get('tel2')?.value;
+        personnel.adresse = formGroup.get('adresse')?.value;
+        personnel.salaire = formGroup.get('salaire')?.value;
+        personnel.etatComptePersonnel = formGroup.get('etatComptePersonnel')?.value;
+
+        return personnel;
+    }
+
+    async checkIfExists(personnel: Personnel): Promise<boolean> {
+        try {
+            const existsObservable = this.personnelService.exist(personnel).pipe(
+                catchError(error => {
+                    console.error('Error in personnel existence observable:', error);
+                    return of(false); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if personnel exists:', error);
+            return false;
+        }
+    }
+
+    async miseAjour(): Promise<void> {
+        this.loadingService.show();
+        let personnelEdit: Personnel = { ...this.personnel };
+        personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit);
+        //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
+        let trvErreur = await this.checkIfExists(personnelEdit);
+
+        if (!trvErreur) {
+            this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel);
+            this.submitted = true;
+
+            if (this.personnel.id) {
+                this.personnelService.update(this.personnel.id, this.personnel).subscribe({
+                    next: (data) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Succès',
+                            closable: true,
+                            detail: 'Mise à jour effectué avec succès'
+                        });
+                        this.checkIfListIsNull();
+                        this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY);
+                        this.openCloseDialogAjouter(false);
+                    }, error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Erreur',
+                            detail: 'Une erreur s\'est produite'
+                        });
+                    }, complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            } else {
+                this.personnelService.create(this.personnel).subscribe({
+                    next: (data: Personnel) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Succès',
+                            closable: true,
+                            detail: 'Ajout effectué avec succès'
+                        });
+                        this.checkIfListIsNull();
+                        this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.ADD);
+                        this.openCloseDialogAjouter(false);
+                    }, error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Erreur',
+                            detail: 'Une erreur s\'est produite'
+                        });
+                    }, complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Le personnel existe déjà' });
+            this.loadingService.hide();
+        }
+    }
+
+    supprimer(): void {
+        if (this.personnel && this.personnel.id) {
+            this.loadingService.show();
+            let id = this.personnel.id;
+            this.personnelService.delete(this.personnel.id).subscribe({
+                next: (data) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Succès',
+                        closable: true,
+                        detail: 'Suppression avec succès'
+                    });
+                    this.checkIfListIsNull();
+                    this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
+                    this.personnel = initObjectPersonnel();
+                }, error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erreur',
+                        detail: 'Une erreur s\'est produite'
+                    });
+                }, complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+        }
+
+        this.openCloseDialogSupprimer(false);
+    }
+
+    archiver(archiver: boolean): void {
+        if (this.personnel && this.personnel.id) {
+            this.loadingService.show();
+            let id = this.personnel.id;
+            this.personnel.archiver = archiver;
+
+            this.personnelService.update(this.personnel.id, this.personnel).subscribe({
+                next: (data) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Succès',
+                        closable: true,
+                        detail: 'Opération effectuée avec succès'
+                    });
+                    this.checkIfListIsNull();
+                    this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
+                    this.personnel = initObjectPersonnel();
+                }, error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erreur',
+                        detail: 'Une erreur s\'est produite'
+                    });
+                }, complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+        }
+
+        if (archiver) {
+            this.openCloseDialogArchiver(false);
+        } else {
+            this.openCloseDialogAnnulerArchiver(false);
+        }
+    }
+
+    corbeille(corbeille: boolean): void {
+        if (this.personnel && this.personnel.id) {
+            this.loadingService.show();
+            let id = this.personnel.id;
+            this.personnel.supprimer = corbeille;
+
+            this.personnelService.update(this.personnel.id, this.personnel).subscribe({
+                next: (data) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Succès',
+                        closable: true,
+                        detail: 'Opération effectuée avec succès'
+                    });
+                    this.checkIfListIsNull();
+                    this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
+                    this.personnel = initObjectPersonnel();
+                }, error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erreur',
+                        detail: 'Une erreur s\'est produite'
+                    });
+                }, complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+        }
+
+        if (corbeille) {
+            this.openCloseDialogCorbeille(false);
+        } else {
+            this.openCloseDialogAnnulerCorbeille(false);
+        }
+    }
 
 }

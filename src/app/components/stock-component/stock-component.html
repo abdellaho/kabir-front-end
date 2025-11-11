@@ -1,533 +1,556 @@
 <div class="card">
     <div class="col-12">
-      <div class="card px-6 py-6">
-        <p-toast></p-toast>
-        <p-toolbar class="mb-4">
-          <ng-template pTemplate="left" class="gap-2">
-            <div class="my-2">
-              <button
-                pButton
-                pRipple
-                label="Ajouter"
-                icon="pi pi-plus"
-                class="p-button-success mr-2"
-                (click)="viderAjouter()"
-              ></button>
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left" class="gap-2">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            [label]="msg.buttons.ajouter"
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                            (click)="viderAjouter()"
+                        ></button>
+                    </div>
+
+                    @if (typeOfList !== 0) {
+                        <div class="my-2">
+                            <p-button
+                                pRipple
+                                icon="pi pi-crown"
+                                [label]="msg.components.stock.label"
+                                severity="contrast"
+                                class="mr-2"
+                                (click)="listOfStock()"
+                            ></p-button>
+                        </div>
+                    }
+
+                    @if (typeOfList !== 1) {
+                        <div class="my-2">
+                            <p-button
+                                pRipple
+                                icon="pi pi-warehouse"
+                                [label]="msg.buttons.archive"
+                                severity="info"
+                                class="mr-2"
+                                (click)="archiveListe()"
+                            ></p-button>
+                        </div>
+                    }
+
+                    @if (typeOfList !== 2) {
+                        <div class="my-2">
+                            <p-button
+                                pRipple
+                                [label]="msg.buttons.corbeille"
+                                icon="pi pi-trash"
+                                severity="danger"
+                                class="mr-2"
+                                (click)="corbeilleListe()"
+                            ></p-button>
+                        </div>
+                    }
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                size="small"
+                class="p-datatable-sm"
+                [value]="listStock"
+                dataKey="id"
+                [rows]="10"
+                [rowHover]="true"
+                [showGridlines]="true"
+                [paginator]="true"
+                [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurId']"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="({first} of {totalRecords})"
+            >
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="designation" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.designation }}
+                                <p-sortIcon field="designation"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="qteStock" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.qteStockTable }}
+                                <p-sortIcon field="qteStock"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="qteFacturer" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.qteFacturerTable }}
+                                <p-sortIcon field="qteFacturer"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="qteStockImport" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.qteStockImportTable }}
+                                <p-sortIcon field="qteStockImport"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="pattc" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.pattc }}
+                                <p-sortIcon field="pattc"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="pvttc" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.pvttc }}
+                                <p-sortIcon field="pvttc"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="prixCommercial" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.prixCommercial }}
+                                <p-sortIcon field="prixCommercial"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="prixVentMin1" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.prixVentMin }}
+                                <p-sortIcon field="prixVentMin1"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="remiseMax1" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.remiseMax }}
+                                <p-sortIcon field="remiseMax1"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="benifice" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.benifice }}
+                                <p-sortIcon field="benifice"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="fournisseurId" style="width: 15%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stock.fournisseurId }}
+                                <p-sortIcon field="fournisseurId"/>
+                            </div>
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-p>
+                    <tr>
+                        <td>{{ p.designation }}</td>
+                        <td>{{ p.qteStock }}</td>
+                        <td>{{ p.qteFacturer }}</td>
+                        <td>{{ p.qteStockImport }}</td>
+                        <td>{{ p.pattc }}</td>
+                        <td>{{ p.pvttc }}</td>
+                        <td>{{ p.prixCommercial }}</td>
+                        <td>{{ p.prixVentMin1 }}</td>
+                        <td>{{ p.remiseMax1 }}</td>
+                        <td>{{ p.benifice }}</td>
+                        <td>{{ p.fournisseurId }}</td>
+                        <td style="width: 10%; min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                                          title="Modifier"/>
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                                          title="Supprimer"/>
+                                @if (typeOfList === 0) {
+                                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="help" rounded
+                                              title="Archiver"/>
+                                    <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="warn" rounded
+                                              title="Corbeille"/>
+                                }
+                                @if (typeOfList === 1) {
+                                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help"
+                                              rounded title="Annuler Archiver"/>
+                                }
+                                @if (typeOfList === 2) {
+                                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help"
+                                              rounded title="Annuler Corbeille"/>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="12">No Stock found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="12">Loading Stocks data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
+                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+                  [header]="`${msg.messages.miseAJour} ${msg.components.stock.label}`" [modal]="true" class="p-fluid" [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="fournisseurId" inputId="fournisseurId"
+                                              [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                              optionValue="id" style="height: 30px;" class="w-full md:w-56"/>
+                                    <label for="fournisseurId">{{ msg.components.stock.fournisseurId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="designation" formControlName="designation" required
+                                           [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }"/>
+                                    <label for="designation">{{ msg.components.stock.designation }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="pattc" inputId="pattc" allowEmpty="false"
+                                                    (onBlur)="calculerBenefice()" [min]="0" required
+                                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }"/>
+                                    <label for="pattc">{{ msg.components.stock.pattc }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prixCommercial" allowEmpty="false"
+                                                    inputId="prixCommercial" [min]="0"/>
+                                    <label for="prixCommercial">{{ msg.components.stock.prixCommercialMAj }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false"
+                                                    (onBlur)="calculerBenefice()" [min]="0" required
+                                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pvttc')?.invalid }"/>
+                                    <label for="pvttc">{{ msg.components.stock.pvttcMAJ }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0"/>
+                                    <label for="tva">{{ msg.components.stock.tva }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="benifice" inputId="benifice"/>
+                                    <label for="benifice">{{ msg.components.stock.benifice }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qteStock" inputId="qteStock"/>
+                                    <label for="qteStock">{{ msg.components.stock.qteStock }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer"
+                                                    allowEmpty="false" required
+                                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('qteFacturer')?.invalid }"/>
+                                    <label for="qteFacturer">{{ msg.components.stock.qteFacturer }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport"/>
+                                    <label for="qteStockImport">{{ msg.components.stock.qteStockImport }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prixVentMin1" inputId="prixVentMin1"
+                                                    allowEmpty="false"/>
+                                    <label for="prixVentMin1">{{ msg.components.stock.prixVentMin1 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1"/>
+                                    <label for="qtePVMin1">{{ msg.components.stock.qtePVMin1 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1"
+                                                    (onBlur)="onChangeRemise(1)"/>
+                                    <label for="remiseMax1">{{ msg.components.stock.remiseMax1 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prixVentMin2" inputId="prixVentMin2"
+                                                    allowEmpty="false"/>
+                                    <label for="prixVentMin2">{{ msg.components.stock.prixVentMin2 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qtePVMin2" inputId="qtePVMin2"/>
+                                    <label for="qtePVMin2">{{ msg.components.stock.qtePVMin2 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="remiseMax2" inputId="remiseMax2"
+                                                    (onBlur)="onChangeRemise(2)"/>
+                                    <label for="remiseMax2">{{ msg.components.stock.remiseMax2 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prixVentMin3" inputId="prixVentMin3"
+                                                    allowEmpty="false"/>
+                                    <label for="prixVentMin3">{{ msg.components.stock.prixVentMin3 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qtePVMin3" inputId="qtePVMin3"/>
+                                    <label for="qtePVMin3">{{ msg.components.stock.qtePVMin3 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3"
+                                                    (onBlur)="onChangeRemise(3)"/>
+                                    <label for="remiseMax3">{{ msg.components.stock.remiseMax3 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prixVentMin4" inputId="prixVentMin4"
+                                                    allowEmpty="false"/>
+                                    <label for="prixVentMin4">{{ msg.components.stock.prixVentMin4 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qtePVMin4" inputId="qtePVMin4"/>
+                                    <label for="qtePVMin4">{{ msg.components.stock.qtePVMin4 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4"
+                                                    (onBlur)="onChangeRemise(4)"/>
+                                    <label for="remiseMax4">{{ msg.components.stock.remiseMax4 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="montant1" inputId="montant1" allowEmpty="false"
+                                                    [min]="0" [maxFractionDigits]="1"/>
+                                    <label for="montant1">{{ msg.components.stock.montant1 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prime1" inputId="prime1" [min]="0"/>
+                                    <label for="prime1">{{ msg.components.stock.prime1 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="montant2" inputId="montant2" allowEmpty="false"
+                                                    [min]="0" [maxFractionDigits]="1"/>
+                                    <label for="montant2">{{ msg.components.stock.montant2 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prime2" inputId="prime2" [min]="0"/>
+                                    <label for="prime2">{{ msg.components.stock.prime2 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="montant3" inputId="montant3" allowEmpty="false"
+                                                    [min]="0" [maxFractionDigits]="1"/>
+                                    <label for="montant3">{{ msg.components.stock.montant3 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="prime3" inputId="prime3" [min]="0"/>
+                                    <label for="prime3">{{ msg.components.stock.prime3 }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-info"
+                        (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()"
+                        [disabled]="formGroup.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+                  [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stock) {
+                    <span>{{ msg.components.stock.messageDeleteAreYouSure }}</span>
+                }
             </div>
 
-            @if (typeOfList !== 0) {
-              <div class="my-2">
-                <p-button
-                  pRipple
-                  icon="pi pi-crown"
-                  label="Stock"
-                  severity="contrast"
-                  class="mr-2"
-                  (click)="listOfStock()"
-                ></p-button>
-              </div>
-            }
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                        class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                        (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
 
-            @if (typeOfList !== 1) {
-              <div class="my-2">
-                <p-button
-                  pRipple
-                  icon="pi pi-warehouse"
-                  label="Archive"
-                  severity="info"
-                  class="mr-2"
-                  (click)="archiveListe()"
-                ></p-button>
-              </div>
-            }
-
-            @if (typeOfList !== 2) {
-              <div class="my-2">
-                <p-button
-                  pRipple
-                  label="Corbeille"
-                  icon="pi pi-trash"
-                  severity="danger"
-                  class="mr-2"
-                  (click)="corbeilleListe()"
-                ></p-button>
-              </div>
-            }
-          </ng-template>
-  
-          <ng-template pTemplate="right">
-            <button
-              pButton
-              pRipple
-              label="Export"
-              icon="pi pi-upload"
-              class="p-button-help"
-              (click)="dt.exportCSV()"
-            ></button>
-          </ng-template>
-        </p-toolbar>
-  
-        <p-table
-              #dt
-              size="small"
-              class="p-datatable-sm"
-              [value]="listStock"
-              dataKey="id"
-              [rows]="10"
-              [rowHover]="true"
-              [showGridlines]="true"
-              [paginator]="true"
-              [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurId']"
-              [rowsPerPageOptions]="[10, 20, 30]"
-              [showCurrentPageReport]="true"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              [rowHover]="true"
-              responsiveLayout="scroll"
-          >
-          <ng-template #caption>
-              <div class="flex justify-between items-center flex-column sm:flex-row">
-                  <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
-                  <p-iconfield iconPosition="left" class="ml-auto">
-                      <p-inputicon>
-                          <i class="pi pi-search"></i>
-                      </p-inputicon>
-                      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search keyword" />
-                  </p-iconfield>
-              </div>
-          </ng-template>
-  
-          <ng-template #header>
-            <tr>
-              <th></th>
-  
-              <th style="min-width: 12rem">
-                  <div class="flex justify-between items-center">
-                      Désignation
-                      <p-columnFilter type="text" field="designation" display="menu" placeholder="Search by designation"></p-columnFilter>
-                  </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Stock Dépot
-                    <p-columnFilter type="text" field="qteStock" display="menu" placeholder="Search by qte stock"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                  <div class="flex justify-between items-center">
-                      Stock Facturer
-                      <p-columnFilter type="text" field="qteFacturer" display="menu" placeholder="Search by qte facturer"></p-columnFilter>
-                  </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Stock Mag
-                    <p-columnFilter type="text" field="qteStockImport" display="menu" placeholder="Search by qte Stock Import"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    PATTC
-                    <p-columnFilter type="text" field="pattc" display="menu" placeholder="Search by pattc"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    PVTTC
-                    <p-columnFilter type="text" field="pvttc" display="menu" placeholder="Search by pvttc"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    P.Comm
-                    <p-columnFilter type="text" field="prixCommercial" display="menu" placeholder="Search by Prix Commercial"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    P.V.Min
-                    <p-columnFilter type="text" field="prixVentMin1" display="menu" placeholder="Search by Prix Vent Min"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Remise Max
-                    <p-columnFilter type="text" field="remiseMax1" display="menu" placeholder="Search by Remise Max"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    Bénéfice
-                    <p-columnFilter type="text" field="benifice" display="menu" placeholder="Search by Benefice"></p-columnFilter>
-                </div>
-              </th>
-
-              <th style="min-width: 12rem">
-                <div class="flex justify-between items-center">
-                    FournisseurId
-                    <p-columnFilter type="text" field="fournisseurId" display="menu" placeholder="Search by Fournisseur"></p-columnFilter>
-                </div>
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template #body let-p>
-            <tr>
-              <td style="width: 10%; min-width: 7rem">
-                <div class="flex gap-2">
-                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded title="Modifier"/>
-                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded title="Supprimer"/>
-                  @if (typeOfList === 0) {
-                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="help" rounded title="Archiver"/>
-                    <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="warn" rounded title="Corbeille"/>
-                  }
-                  @if (typeOfList === 1) {
-                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded title="Annuler Archiver"/>
-                  }
-                  @if (typeOfList === 2) {
-                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded title="Annuler Corbeille"/>
-                  }
-                </div>
-              </td>
-              <td>{{ p.designation }}</td>
-              <td>{{ p.qteStock }}</td>
-              <td>{{ p.qteFacturer }}</td>
-              <td>{{ p.qteStockImport }}</td>
-              <td>{{ p.pattc }}</td>
-              <td>{{ p.pvttc }}</td>
-              <td>{{ p.prixCommercial }}</td>
-              <td>{{ p.prixVentMin1 }}</td>
-              <td>{{ p.remiseMax1 }}</td>
-              <td>{{ p.benifice }}</td>
-              <td>{{ p.fournisseurId }}</td>
-            </tr>
-          </ng-template>
-  
-          <ng-template #emptymessage>
-              <tr>
-                  <td colspan="6">No Stock found.</td>
-              </tr>
-          </ng-template>
-          <ng-template #loadingbody>
-              <tr>
-                  <td colspan="6">Loading Stocks data. Please wait.</td>
-              </tr>
-          </ng-template>
-        </p-table>
-      </div>
-  
-      <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-        header="Mise à jour Stock" [modal]="true" class="p-fluid" [closable]="false">
-        <!-- Form content must go inside ng-template -->
-        <ng-template pTemplate="content">
-          <div [formGroup]="formGroup" class="p-fluid">
-            <div class="card flex flex-col gap-4">
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-select formControlName="fournisseurId" inputId="fournisseurId" [options]="listFournisseur" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                    <label for="fournisseurId">Fournisseur</label>
-                  </p-floatlabel>
-                </div>
-                
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="designation" formControlName="designation" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
-                    <label for="designation">Désignation</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="pattc" inputId="pattc" allowEmpty="false" (onBlur)="calculerBenefice()" [min]="0" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }"/>
-                    <label for="pattc">Prix Achat TTC</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixCommercial" allowEmpty="false" inputId="prixCommercial" [min]="0" />
-                    <label for="prixCommercial">Prix Commercial</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false" (onBlur)="calculerBenefice()" [min]="0" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pvttc')?.invalid }"/>
-                    <label for="pvttc">Prix Vente TTC</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
-                    <label for="tva">TVA</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="benifice" inputId="benifice" />
-                    <label for="benifice">Bénéfice</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qteStock" inputId="qteStock" />
-                    <label for="qteStock">Stock Dépot</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer" allowEmpty="false" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('qteFacturer')?.invalid }"/>
-                    <label for="qteFacturer">Stock Facturer</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport" />
-                    <label for="qteStockImport">Stock Magasin</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixVentMin1" inputId="prixVentMin1" allowEmpty="false" />
-                    <label for="prixVentMin1">Prix Vente Min 1</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1" />
-                    <label for="qtePVMin1">Qte PVMin 1</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1" (onBlur)="onChangeRemise(1)" />
-                    <label for="remiseMax1">Remise Max 1</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixVentMin2" inputId="prixVentMin2" allowEmpty="false" />
-                    <label for="prixVentMin2">Prix Vente Min 2</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qtePVMin2" inputId="qtePVMin2" />
-                    <label for="qtePVMin2">Qte PVMin 2</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax2" inputId="remiseMax2" (onBlur)="onChangeRemise(2)"/>
-                    <label for="remiseMax2">Remise Max 2</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixVentMin3" inputId="prixVentMin3" allowEmpty="false" />
-                    <label for="prixVentMin3">Prix Vente Min 3</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qtePVMin3" inputId="qtePVMin3" />
-                    <label for="qtePVMin3">Qte PVMin 3</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3" (onBlur)="onChangeRemise(3)" />
-                    <label for="remiseMax3">Remise Max 3</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prixVentMin4" inputId="prixVentMin4" allowEmpty="false" />
-                    <label for="prixVentMin4">Prix Vente Min 4</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="qtePVMin4" inputId="qtePVMin4" />
-                    <label for="qtePVMin4">Qte PVMin 4</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4" (onBlur)="onChangeRemise(4)" />
-                    <label for="remiseMax4">Remise Max 4</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant1" inputId="montant1" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
-                    <label for="montant1">Montant 1</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime1" inputId="prime1" [min]="0" />
-                    <label for="prime1">Prime 1</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant2" inputId="montant2" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
-                    <label for="montant2">Montant 2</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime2" inputId="prime2" [min]="0" />
-                    <label for="prime2">Prime 2</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="montant3" inputId="montant3" allowEmpty="false" [min]="0" [maxFractionDigits]="1" />
-                    <label for="montant3">Montant 3</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-input-number formControlName="prime3" inputId="prime3" [min]="0" />
-                    <label for="prime3">Prime 3</label>
-                  </p-floatlabel>
-                </div>
-              </div>
+        <p-dialog [(visible)]="dialogArchiver" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+                  [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stock) {
+                    <span>{{ msg.components.stock.messageDeleteAreYouSureArchive }}</span>
+                }
             </div>
-          </div>
-        </ng-template>
-  
-        <!-- Footer template -->
-        <ng-template pTemplate="footer">
-          <button pButton pRipple label="Fermer" icon="pi pi-times" class="p-button-outlined p-button-info" (click)="openCloseDialogAjouter(false)"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="formGroup.invalid"></button>
-        </ng-template>
-      </p-dialog>
-  
-      <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (stock) {
-            <span>Êtes-vous sûr de vouloir supprimer ce stock ?</span>
-          }
-        </div>
 
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="supprimer()"></button>
-        </ng-template>
-      </p-dialog>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                        class="p-button-outlined p-button-info" (click)="dialogArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                        (click)="archiver(true)"></button>
+            </ng-template>
+        </p-dialog>
 
-      <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (stock) {
-            <span>Êtes-vous sûr de vouloir archiver ce stock ?</span>
-          }
-        </div>
+        <p-dialog [(visible)]="dialogCorbeille" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+                  [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stock) {
+                    <span>{{ msg.components.stock.messageDeleteAreYouSureCorbeille }}</span>
+                }
+            </div>
 
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogArchiver = false"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="archiver(true)"></button>
-        </ng-template>
-      </p-dialog>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                        class="p-button-outlined p-button-info" (click)="dialogCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                        (click)="corbeille(true)"></button>
+            </ng-template>
+        </p-dialog>
 
-      <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (stock) {
-            <span>Êtes-vous sûr de vouloir placer ce stock dans la corbeille ?</span>
-          }
-        </div>
+        <p-dialog [(visible)]="dialogAnnulerArchiver" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+                  [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stock) {
+                    <span>{{ msg.components.stock.messageDeleteAreYouSureAnnulerArchive }}</span>
+                }
+            </div>
 
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogCorbeille = false"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(true)"></button>
-        </ng-template>
-      </p-dialog>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                        class="p-button-outlined p-button-info" (click)="dialogAnnulerArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                        (click)="archiver(false)"></button>
+            </ng-template>
+        </p-dialog>
 
-      <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (stock) {
-            <span>Êtes-vous sûr de vouloir annuler archiver ce stock ?</span>
-          }
-        </div>
+        <p-dialog [(visible)]="dialogAnnulerCorbeille" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+                  [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stock) {
+                    <span>{{ msg.components.stock.messageDeleteAreYouSureAnnulerCorbeille }}</span>
+                }
+            </div>
 
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogAnnulerArchiver = false"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="archiver(false)"></button>
-        </ng-template>
-      </p-dialog>
-
-      <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (stock) {
-            <span>Êtes-vous sûr de vouloir annuler suppression ce stock ?</span>
-          }
-        </div>
-
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" type="button" label="Fermer" class="p-button-outlined p-button-info" (click)="dialogAnnulerCorbeille = false"></button>
-          <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(false)"></button>
-        </ng-template>
-      </p-dialog>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                        class="p-button-outlined p-button-info" (click)="dialogAnnulerCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                        (click)="corbeille(false)"></button>
+            </ng-template>
+        </p-dialog>
     </div>
-  </div>
-  
+</div>
