@@ -27,6 +27,7 @@ import { TypePersonnelPipe } from '@/pipes/type-personnel-pipe';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { PersonnelValidator } from '@/validators/personnel-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-personnel-component',
@@ -50,6 +51,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
         FloatLabelModule,
         SelectModule,
         ToggleSwitchModule,
+        MessageModule,
         TypePersonnelPipe
     ],
     templateUrl: './personnel-component.html',

@@ -70,6 +70,9 @@ export const APP_MESSAGES = {
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce personnel dans la corbeille ?',
             messageDeleteAreYouSureAnnulerArchive: 'Êtes-vous sûr de vouloir désarchiver ce personnel ?',
             messageDeleteAreYouSureAnnulerCorbeille: 'Êtes-vous sûr de vouloir restaurer ce personnel ?',
+            errors: {
+                tel1AndTel2Identique: 'Tel 1 et Tel2 sont identique'
+            }
         } ,
         fournisseur: {
             label: 'Fournisseur',
