@@ -4,13 +4,14 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
 
   // Helper to get form controls safely
   const get = (name: string) => control.get(name);
+  let pattc = get('pattc');
 
   // List ranges for Remise/Qte
   const remiseLevels = [
-    { r: get('remiseMax1'), q: get('qtePVMin1'), key: 1 },
-    { r: get('remiseMax2'), q: get('qtePVMin2'), key: 2 },
-    { r: get('remiseMax3'), q: get('qtePVMin3'), key: 3 },
-    { r: get('remiseMax4'), q: get('qtePVMin4'), key: 4 }
+    { r: get('prixVentMin1'), q: get('qtePVMin1'), key: 1 },
+    { r: get('prixVentMin2'), q: get('qtePVMin2'), key: 2 },
+    { r: get('prixVentMin3'), q: get('qtePVMin3'), key: 3 },
+    { r: get('prixVentMin4'), q: get('qtePVMin4'), key: 4 }
   ];
 
   // List ranges for Montant/Prime
@@ -46,14 +47,27 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     }
   };
 
+  const validateDescending = (curr: number, next: number, keyCurr: string, keyNext: string) => {
+    if (curr > 0 && next > 0 && curr <= next) {
+      addError(`${keyCurr}MustBeGreaterThan${keyNext}`);
+    }
+  };
+
+  const validateWithPrixVenteTTC= (curr: number, keyCurr: string) => {
+    if (curr > 0  && curr && pattc && curr < pattc?.value) {
+      addError(`${keyCurr}MustBeGreaterThanPATTC`);
+    }
+  };
+
   /* ------------------ Validate Remise/Qte ------------------ */
 
   remiseLevels.forEach((lvl, i) => {
-    validatePair(lvl.r!.value, lvl.q!.value, `remiseMax${lvl.key}`, `qtePVMin${lvl.key}`);
+    validatePair(lvl.r!.value, lvl.q!.value, `prixVentMin${lvl.key}`, `qtePVMin${lvl.key}`);
+    validateWithPrixVenteTTC(lvl.r!.value, `prixVentMin${lvl.key}`);
 
     if (i < remiseLevels.length - 1) {
       const next = remiseLevels[i + 1];
-      validateAscending(lvl.r!.value, next.r!.value, `remiseMax${lvl.key}`, `remiseMax${next.key}`);
+      validateDescending(lvl.r!.value, next.r!.value, `prixVentMin${lvl.key}`, `prixVentMin${next.key}`);
       validateAscending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
     }
   });

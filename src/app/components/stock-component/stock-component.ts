@@ -22,6 +22,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-stock-component',
@@ -39,6 +40,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
         FloatLabelModule,
         InputNumberModule,
         SelectModule,
+        MessageModule,
         InputTextModule
     ],
     templateUrl: './stock-component.html',
