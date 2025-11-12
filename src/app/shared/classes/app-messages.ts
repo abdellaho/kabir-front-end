@@ -71,7 +71,7 @@ export const APP_MESSAGES = {
             messageDeleteAreYouSureAnnulerArchive: 'Êtes-vous sûr de vouloir désarchiver ce personnel ?',
             messageDeleteAreYouSureAnnulerCorbeille: 'Êtes-vous sûr de vouloir restaurer ce personnel ?',
             errors: {
-                tel1AndTel2Identique: 'Tel 1 et Tel2 sont identique'
+                tel1AndTel2Identique: 'Tel1 et Tel2 sont identique'
             }
         } ,
         fournisseur: {
@@ -90,6 +90,9 @@ export const APP_MESSAGES = {
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce fournisseur dans la corbeille ?',
             messageDeleteAreYouSureAnnulerArchive: 'Êtes-vous sûr de vouloir désarchiver ce fournisseur ?',
             messageDeleteAreYouSureAnnulerCorbeille: 'Êtes-vous sûr de vouloir restaurer ce fournisseur ?',
+            errors: {
+                tel1AndTel2Identique: 'Tel1 et Tel2 sont identique'
+            }
         },
         absence: {
             label: 'Présence',
@@ -161,6 +164,11 @@ export const APP_MESSAGES = {
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce repertoire dans la corbeille ?',
             messageDeleteAreYouSureAnnulerArchive: 'Êtes-vous sûr de vouloir désarchiver ce repertoire ?',
             messageDeleteAreYouSureAnnulerCorbeille: 'Êtes-vous sûr de vouloir restaurer ce repertoire ?',
+            errors: {
+                tel1AndTel2Identique: 'Tel1 et Tel2 sont identique',
+                tel1AndTel3Identique: 'Tel1 et Tel3 sont identique',
+                tel2AndTel3Identique: 'Tel2 et Tel3 sont identique',
+            }
         },
         parametrage: 'Paramétrage',
         acceuil: 'Acceuil',

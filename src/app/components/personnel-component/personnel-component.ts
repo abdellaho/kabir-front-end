@@ -206,7 +206,7 @@ export class PersonnelComponent implements OnInit {
             tel1: [''],
             tel2: [''],
             adresse: [''],
-            salaire: [0],
+            salaire: [null],
             etatComptePersonnel: [true]
         }, { validators: [PersonnelValidator] });
     }
@@ -232,7 +232,7 @@ export class PersonnelComponent implements OnInit {
                     tel1: this.personnel.tel1,
                     tel2: this.personnel.tel2,
                     adresse: this.personnel.adresse,
-                    salaire: this.personnel.salaire,
+                    salaire: this.personnel.salaire !== 0 ? this.personnel.salaire : null,
                     etatComptePersonnel: this.personnel.etatComptePersonnel
                 });
 
@@ -287,7 +287,7 @@ export class PersonnelComponent implements OnInit {
         personnel.tel1 = formGroup.get('tel1')?.value;
         personnel.tel2 = formGroup.get('tel2')?.value;
         personnel.adresse = formGroup.get('adresse')?.value;
-        personnel.salaire = formGroup.get('salaire')?.value;
+        personnel.salaire = formGroup.get('salaire')?.value | 0;
         personnel.etatComptePersonnel = formGroup.get('etatComptePersonnel')?.value;
 
         return personnel;

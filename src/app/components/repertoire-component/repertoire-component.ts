@@ -25,6 +25,8 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { MessageModule } from 'primeng/message';
+import { RepertoireValidator } from '@/validators/repertoire-validator';
 
 @Component({
   selector: 'app-repertoire-component',
@@ -42,6 +44,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
     FloatLabelModule,
     InputNumberModule,
     InputTextModule,
+    MessageModule,
     SelectModule,
     TypeRepertoirePipe
   ],
@@ -104,17 +107,17 @@ export class RepertoireComponent {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      typeRepertoire: [0],
+      typeRepertoire: [0, [Validators.required, Validators.min(1)]],
       designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       villeId: [0, [Validators.required, Validators.min(1)]],
-      tel1: ['', [Validators.maxLength(12)]],
-      tel2: ['', [Validators.maxLength(12)]],
-      tel3: ['', [Validators.maxLength(12)]],
-      ice: ['', [Validators.maxLength(12)]],
+      tel1: ['', [Validators.maxLength(10)]],
+      tel2: ['', [Validators.maxLength(10)]],
+      tel3: ['', [Validators.maxLength(10)]],
+      ice: ['', [Validators.maxLength(10)]],
       observation: ['', [Validators.maxLength(250)]],
       personnelId: [0, [Validators.required, Validators.min(1)]],
-      plafond: [0],
-    });
+      plafond: [null],
+    }, { validators: [RepertoireValidator]});
   }
 
   search() {
@@ -255,7 +258,7 @@ export class RepertoireComponent {
           ice: this.repertoire.ice,
           observation: this.repertoire.observation,
           personnelId: this.repertoire.personnelId,
-          plafond: this.repertoire.plafond,
+          plafond: this.repertoire.plafond !== 0 ? this.repertoire.plafond : null,
         });
 
         this.openCloseDialogAjouter(true);
@@ -305,7 +308,7 @@ export class RepertoireComponent {
     repertoire.ice = formGroup.get('ice')?.value;
     repertoire.observation = formGroup.get('observation')?.value;
     repertoire.personnelId = formGroup.get('personnelId')?.value;
-    repertoire.plafond = formGroup.get('plafond')?.value;
+    repertoire.plafond = formGroup.get('plafond')?.value | 0;
 
     return repertoire;
   }

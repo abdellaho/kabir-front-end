@@ -24,6 +24,8 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { Ripple } from 'primeng/ripple';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { FournisseurValidator } from '@/validators/fournisseur-validator';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-fournisseur-component',
@@ -42,6 +44,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
         FloatLabelModule,
         InputNumberModule,
         SelectModule,
+        MessageModule,
         TypeFournisseurPipe,
         Ripple
     ],
@@ -130,6 +133,7 @@ export class FournisseurComponent implements OnInit {
 
     getAll(): void {
         let objectSearch: Fournisseur = this.initObjectSearch(false, false);
+
         this.fournisseurService.search(objectSearch).subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
@@ -185,7 +189,7 @@ export class FournisseurComponent implements OnInit {
             tel2: [''],
             ice: [''],
             adresse: [''],
-        });
+        }, { validators: [FournisseurValidator] });
     }
 
     getAllVille(): void {
