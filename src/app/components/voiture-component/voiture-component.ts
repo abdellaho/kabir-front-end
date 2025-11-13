@@ -18,6 +18,8 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { NegativeValidator } from '@/validators/negative-validator';
+import { returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
 
 @Component({
   selector: 'app-voiture-component',
@@ -74,7 +76,7 @@ export class VoitureComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      kmMax: [0, [Validators.required, Validators.minLength(1)]],
+      kmMax: [null, [NegativeValidator]],
       numVoiture: ['', [Validators.required, Validators.minLength(1)]],
     });
   }
@@ -109,7 +111,7 @@ export class VoitureComponent implements OnInit {
         this.voiture = voitureEdit;
         if(operation === 1) {
           this.formGroup.patchValue({
-            kmMax: this.voiture.kmMax,
+            kmMax: returnValueOfNumberProperty(this.voiture.kmMax),
             numVoiture: this.voiture.numVoiture,
           });
 
@@ -143,7 +145,7 @@ export class VoitureComponent implements OnInit {
   }
 
   mapFormGroupToObject(formGroup: FormGroup, voiture: Voiture): Voiture {
-    voiture.kmMax = formGroup.get('kmMax')?.value;
+    voiture.kmMax = formGroup.get('kmMax')?.value | 0;
     voiture.numVoiture = formGroup.get('numVoiture')?.value;
 
     return voiture;

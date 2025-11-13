@@ -26,6 +26,7 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AbsencelValidator } from '@/validators/absence-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-absence-component',
@@ -47,6 +48,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
         SelectModule,
         IconFieldModule,
         ToggleSwitchModule,
+        CheckboxModule,
         MultiSelectModule
     ],
     templateUrl: './absence-component.html',

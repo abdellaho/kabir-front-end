@@ -75,10 +75,10 @@
                         <td>{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
                         <td>
-                            <p-toggleswitch [(ngModel)]="p.matin" disabled="true"/>
+                            <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
                         </td>
                         <td>
-                            <p-toggleswitch [(ngModel)]="p.apresMidi" disabled="true"/>
+                            <p-checkbox [(ngModel)]="p.apresMidi" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
                         </td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">

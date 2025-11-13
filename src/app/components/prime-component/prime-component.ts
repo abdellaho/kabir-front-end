@@ -18,6 +18,8 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { NegativeValidator } from '@/validators/negative-validator';
+import { returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
 
 @Component({
   selector: 'app-prime-component',
@@ -75,8 +77,8 @@ export class PrimeComponent {
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
-      montant: [0, [Validators.required, Validators.min(1)]],
-      prime: [0, [Validators.required, Validators.min(1)]],
+      montant: [null, [Validators.required, NegativeValidator]],
+      prime: [null, [Validators.required, NegativeValidator]],
     });
   }
 
@@ -115,8 +117,8 @@ export class PrimeComponent {
         this.prime = primeEdit;
         if(operation === 1) {
           this.formGroup.patchValue({
-            montant: this.prime.montant,
-            prime: this.prime.prime,
+            montant: returnValueOfNumberProperty(this.prime.montant),
+            prime: returnValueOfNumberProperty(this.prime.prime),
           });
 
           this.openCloseDialogAjouter(true);
@@ -149,8 +151,8 @@ export class PrimeComponent {
   }
 
   mapFormGroupToObject(formGroup: FormGroup, prime: Prime): Prime {
-    prime.montant = formGroup.get('montant')?.value;
-    prime.prime = formGroup.get('prime')?.value;
+    prime.montant = formGroup.get('montant')?.value | 0;
+    prime.prime = formGroup.get('prime')?.value | 0;
 
     return prime;
   }

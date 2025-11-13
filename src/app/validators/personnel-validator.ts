@@ -11,9 +11,6 @@ export const PersonnelValidator: ValidatorFn = (control: AbstractControl): Valid
     }
 
     if(tel1 && tel2 && tel1?.value !== '' && tel2?.value !== '' && tel1?.value === tel2?.value) {
-        console.log('Tel1 : ', tel1, 'tel2 : ', tel2);
-        console.log('Tel1 Value : ', tel1.value, 'tel2 Value : ', tel2.value);
-        console.log(control)
         return { tel1EqualTel2: true };
     } else {
         return null;

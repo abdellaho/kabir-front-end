@@ -251,8 +251,8 @@ export class PersonnelComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Erreur',
-                detail: 'Veuillez réessayer l\'opération'
+                summary: this.msg.summary.labelError,
+                detail: this.msg.messages.messageError
             });
         }
     }
@@ -324,9 +324,9 @@ export class PersonnelComponent implements OnInit {
                     next: (data) => {
                         this.messageService.add({
                             severity: 'success',
-                            summary: 'Succès',
+                            summary: this.msg.summary.labelSuccess,
                             closable: true,
-                            detail: 'Mise à jour effectué avec succès'
+                            detail: this.msg.messages.messageUpdateSuccess
                         });
                         this.checkIfListIsNull();
                         this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY);
@@ -336,8 +336,8 @@ export class PersonnelComponent implements OnInit {
                         this.loadingService.hide();
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Erreur',
-                            detail: 'Une erreur s\'est produite'
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
                         });
                     }, complete: () => {
                         this.loadingService.hide();
@@ -348,9 +348,9 @@ export class PersonnelComponent implements OnInit {
                     next: (data: Personnel) => {
                         this.messageService.add({
                             severity: 'success',
-                            summary: 'Succès',
+                            summary: this.msg.summary.labelSuccess,
                             closable: true,
-                            detail: 'Ajout effectué avec succès'
+                            detail: this.msg.messages.messageAddSuccess
                         });
                         this.checkIfListIsNull();
                         this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.ADD);
@@ -360,8 +360,8 @@ export class PersonnelComponent implements OnInit {
                         this.loadingService.hide();
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Erreur',
-                            detail: 'Une erreur s\'est produite'
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
                         });
                     }, complete: () => {
                         this.loadingService.hide();
@@ -369,7 +369,7 @@ export class PersonnelComponent implements OnInit {
                 });
             }
         } else {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Le personnel existe déjà' });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.personnel.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }
     }
@@ -382,9 +382,9 @@ export class PersonnelComponent implements OnInit {
                 next: (data) => {
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Succès',
+                        summary: this.msg.summary.labelSuccess,
                         closable: true,
-                        detail: 'Suppression avec succès'
+                        detail: this.msg.messages.messageDeleteSuccess
                     });
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
@@ -394,15 +394,15 @@ export class PersonnelComponent implements OnInit {
                     this.loadingService.hide();
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erreur',
-                        detail: 'Une erreur s\'est produite'
+                        summary: this.msg.summary.labelError,
+                        detail: this.msg.messages.messageErrorProduite
                     });
                 }, complete: () => {
                     this.loadingService.hide();
                 }
             });
         } else {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }
 
         this.openCloseDialogSupprimer(false);
@@ -418,9 +418,9 @@ export class PersonnelComponent implements OnInit {
                 next: (data) => {
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Succès',
+                        summary: this.msg.summary.labelSuccess,
                         closable: true,
-                        detail: 'Opération effectuée avec succès'
+                        detail: this.msg.messages.messageSuccess
                     });
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
@@ -430,15 +430,15 @@ export class PersonnelComponent implements OnInit {
                     this.loadingService.hide();
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erreur',
-                        detail: 'Une erreur s\'est produite'
+                        summary: this.msg.summary.labelError,
+                        detail: this.msg.messages.messageErrorProduite
                     });
                 }, complete: () => {
                     this.loadingService.hide();
                 }
             });
         } else {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }
 
         if (archiver) {
@@ -458,9 +458,9 @@ export class PersonnelComponent implements OnInit {
                 next: (data) => {
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Succès',
+                        summary: this.msg.summary.labelSuccess,
                         closable: true,
-                        detail: 'Opération effectuée avec succès'
+                        detail: this.msg.messages.messageSuccess
                     });
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
@@ -470,15 +470,15 @@ export class PersonnelComponent implements OnInit {
                     this.loadingService.hide();
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erreur',
-                        detail: 'Une erreur s\'est produite'
+                        summary: this.msg.summary.labelError,
+                        detail: this.msg.messages.messageErrorProduite
                     });
                 }, complete: () => {
                     this.loadingService.hide();
                 }
             });
         } else {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur s\'est produite' });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
         }
 
         if (corbeille) {

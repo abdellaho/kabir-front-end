@@ -91,28 +91,35 @@
                     </div>
                 </th>
 
-                <th pSortableColumn="typePersonnel" style="width: 20%">
+                <th pSortableColumn="typePersonnel" style="width: 16%">
                     <div class="flex items-center gap-2">
                         {{ msg.components.personnel.typePersonnel }}
                         <p-sortIcon field="typePersonnel" />
                     </div>
                 </th>
 
-                <th pSortableColumn="tel1" style="width: 15%">
+                <th pSortableColumn="tel1" style="width: 10%">
                     <div class="flex items-center gap-2">
                         {{ msg.components.personnel.tel1 }}
                         <p-sortIcon field="tel1" />
                     </div>
                 </th>
 
-                <th pSortableColumn="tel2" style="width: 15%">
+                <th pSortableColumn="tel2" style="width: 10%">
                     <div class="flex items-center gap-2">
                         {{ msg.components.personnel.tel2 }}
                         <p-sortIcon field="tel2" />
                     </div>
                 </th>
 
-                <th style="width: 7%"></th>
+                <th pSortableColumn="dateEntrer" style="width: 16%">
+                  <div class="flex items-center gap-2">
+                      {{ msg.components.fournisseur.dateEntrer }}
+                      <p-sortIcon field="dateEntrer" />
+                  </div>
+              </th>
+
+                <th style="width: 5%"></th>
             </tr>
           </ng-template>
           <ng-template #body let-p>
@@ -122,6 +129,7 @@
                 <td>{{ p.typePersonnel | typePersonnelPipe }}</td>
                 <td>{{ p.tel1 }}</td>
                 <td>{{ p.tel2 }}</td>
+                <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
 
                 <td style="width: 10%; min-width: 7rem">
                     <div class="flex gap-2">

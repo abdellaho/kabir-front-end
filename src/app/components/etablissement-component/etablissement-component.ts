@@ -27,6 +27,9 @@ import { PasswordModule } from 'primeng/password';
 import { DatePickerModule } from "primeng/datepicker";
 import { RippleModule } from 'primeng/ripple';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
+import { RepertoireValidator } from '@/validators/repertoire-validator';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-etablissement-component',
@@ -51,6 +54,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
         InputNumberModule,
         InputTextModule,
         PasswordModule,
+        MessageModule,
         DatePickerModule,
         RippleModule
     ],
@@ -113,15 +117,15 @@ export class EtablissementComponent implements OnInit {
       lienDbDump: [''],
       lienBackupDB: [''],
       cheminBD: [''],
-      pourcentageLiv: [0],
+      pourcentageLiv: [null],
       patente: [''],
       siteweb: [''],
-      port: [''],
+      port: [null],
       hostMail: [''],
       numJour: [1],
       typeExec: [0],
       dateTime: [new Date()]
-    });
+    }, { validators: [RepertoireValidator]});
   }
 
   onChangeTypeExecution(event: any) {
@@ -156,6 +160,8 @@ export class EtablissementComponent implements OnInit {
 
           const patchedEtablissement = {
             ...this.etablissement,
+            port: returnValueOfNumberProperty(this.etablissement.port),
+            pourcentageLiv: returnValueOfNumberProperty(this.etablissement.pourcentageLiv),
             dateTime: this.etablissement.dateTime ? new Date(this.etablissement.dateTime) : null,
           };
 
@@ -193,8 +199,8 @@ export class EtablissementComponent implements OnInit {
     etablissement.nom = formGroup.get('nom')?.value;
     etablissement.paswordMail = formGroup.get('paswordMail')?.value;
     etablissement.patente = formGroup.get('patente')?.value;
-    //etablissement.port = formGroup.get('port')?.value;
-    etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value;
+    etablissement.port = formGroup.get('port')?.value | 0;
+    etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value | 0;
     etablissement.siteweb = formGroup.get('siteweb')?.value;
     etablissement.tel1 = formGroup.get('tel1')?.value;
     etablissement.tel2 = formGroup.get('tel2')?.value;
@@ -231,10 +237,10 @@ export class EtablissementComponent implements OnInit {
         this.etablissementService.update(this.etablissement.id, this.etablissement).subscribe({
           next: (data) => {
             this.etablissement = data;
-            this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Mise à jour effectué avec succès' });
+            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
           }, error: (err) => {
               console.log(err);
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
               this.loadingService.hide();
           }, complete: () => {
             this.loadingService.hide();
@@ -244,10 +250,10 @@ export class EtablissementComponent implements OnInit {
         this.etablissementService.create(this.etablissement).subscribe({
             next: (data: Etablissement) => {
               this.etablissement = data;
-              this.messageService.add({ severity: 'success', summary: 'Succès', closable: true, detail: 'Ajout effectué avec succès' });
+              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
             }, error: (err) => {
                 console.log(err);
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Une erreur s'est produite" });
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                 this.loadingService.hide();
             }, complete: () => {
               this.loadingService.hide();

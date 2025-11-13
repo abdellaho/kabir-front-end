@@ -1,13 +1,6 @@
-:root {
---p-datatable-header-cell-sm-padding: 0.0rem 0.5rem;
-}
-
-.p-datatable .p-datatable-header-cell.p-sm {
-    padding: var(--p-datatable-header-cell-sm-padding);
-}
-
-.p-datatable.p-datatable-sm .p-datatable-thead > tr > th {
-    padding: var(--p-datatable-header-cell-sm-padding);
-    background-color: #f0f0f0;
-}
+.custom-disabled {
+    pointer-events: none;
+    // Optional: Add subtle visual feedback if desired (e.g., slight opacity), but skip to avoid mimicking p-disabled
+    // opacity: 0.6;
+  }
   

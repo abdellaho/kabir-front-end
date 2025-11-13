@@ -91,14 +91,14 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="montant" formControlName="montant" [min]="0"/>
+                                    <p-input-number id="montant" formControlName="montant" [min]="0.00000001"/>
                                     <label for="montant">{{ msg.components.prime.montant }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="prime" formControlName="prime" [min]="0"/>
+                                    <p-input-number id="prime" formControlName="prime" [min]="0.00000001"/>
                                     <label for="prime">{{ msg.components.prime.prime }}</label>
                                 </p-floatlabel>
                             </div>

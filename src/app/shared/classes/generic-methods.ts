@@ -1,3 +1,4 @@
+import { AbstractControl } from "@angular/forms";
 import { TypeEmploye } from "../enums/type-employe";
 import { TypePersonnel } from "../enums/type-personnel";
 
@@ -145,4 +146,12 @@ export function convertTypeEmploye(typeEmploye: TypeEmploye): TypeEmploye {
   }
 
   return typeEmployeReturn;
+}
+
+export function returnValueOfNumberControl(control: AbstractControl, libel: string): number | null {
+  return (control.get(libel) !== null && control.get(libel)?.value !== null && control.get(libel)?.value !== 0 && control.get(libel)?.value !== '0') ? control.get(libel)?.value : null;
+}
+
+export function returnValueOfNumberProperty(value: number | null | string): number | null {
+  return (value !== null && value !== null && value !== 0 && value !== '0') ? Number(value) : null;
 }

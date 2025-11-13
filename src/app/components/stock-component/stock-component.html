@@ -77,77 +77,77 @@
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="designation" style="width: 15%">
+                        <th pSortableColumn="designation" style="width: 40%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.designation }}
                                 <p-sortIcon field="designation"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteStock" style="width: 15%">
+                        <th pSortableColumn="qteStock" style="width: 5%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteStockTable }}
                                 <p-sortIcon field="qteStock"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteFacturer" style="width: 15%">
+                        <th pSortableColumn="qteFacturer" style="width: 5%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteFacturerTable }}
                                 <p-sortIcon field="qteFacturer"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteStockImport" style="width: 15%">
+                        <th pSortableColumn="qteStockImport" style="width: 5%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteStockImportTable }}
                                 <p-sortIcon field="qteStockImport"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="pattc" style="width: 15%">
+                        <th pSortableColumn="pattc" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.pattc }}
                                 <p-sortIcon field="pattc"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="pvttc" style="width: 15%">
+                        <th pSortableColumn="pvttc" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.pvttc }}
                                 <p-sortIcon field="pvttc"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="prixCommercial" style="width: 15%">
+                        <th pSortableColumn="prixCommercial" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.prixCommercial }}
                                 <p-sortIcon field="prixCommercial"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="prixVentMin1" style="width: 15%">
+                        <th pSortableColumn="prixVentMin1" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.prixVentMin }}
                                 <p-sortIcon field="prixVentMin1"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="remiseMax1" style="width: 15%">
+                        <th pSortableColumn="remiseMax1" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.remiseMax }}
                                 <p-sortIcon field="remiseMax1"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="benifice" style="width: 15%">
+                        <th pSortableColumn="benifice" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.benifice }}
                                 <p-sortIcon field="benifice"/>
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurId" style="width: 15%">
+                        <th pSortableColumn="fournisseurId" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.fournisseurId }}
                                 <p-sortIcon field="fournisseurId"/>
@@ -168,8 +168,8 @@
                         <td>{{ p.prixCommercial }}</td>
                         <td>{{ p.prixVentMin1 }}</td>
                         <td>{{ p.remiseMax1 }}</td>
-                        <td>{{ p.benifice }}</td>
-                        <td>{{ p.fournisseurId }}</td>
+                        <td>{{ p.benifice | number: '1.2-3' }}</td>
+                        <td>{{ getDesignation(p.fournisseurId) }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded

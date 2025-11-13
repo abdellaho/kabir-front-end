@@ -24,6 +24,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { NegativeValidator } from '@/validators/negative-validator';
+import { arrayToMap, getElementFromMap, returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
 
 @Component({
     selector: 'app-stock-component',
@@ -73,7 +74,7 @@ export class StockComponent {
     listStock: Stock[] = [];
     stock: Stock = initObjectStock();
     typeOfList: number = 0;
-    mapOfPersonnels: Map<number, string> = new Map<number, string>();
+    mapOfFournisseurs: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;
     dialogArchiver: boolean = false;
@@ -220,6 +221,7 @@ export class StockComponent {
         this.fournisseurService.getAll().subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
+                this.mapOfFournisseurs = arrayToMap(this.listFournisseur, 'id', ['designation'], ['']);
             },
             error: (error: any) => {
                 console.error(error);
@@ -258,39 +260,44 @@ export class StockComponent {
         this.initFormGroup();
     }
 
+    getDesignation(id: number): string {
+        return getElementFromMap(this.mapOfFournisseurs, id);
+    }
+
     recupperer(operation: number, stockEdit: Stock) {
         if (stockEdit && stockEdit.id) {
             this.stock = stockEdit;
             if (operation === 1) {
+                console.log(this.stock);
                 this.formGroup.patchValue({
                     designation: this.stock.designation,
                     fournisseurId: this.stock.fournisseurId,
-                    prixCommercial: this.stock.prixCommercial,
-                    pattc: this.stock.pattc !==0 ? this.stock.pattc : null,
-                    pvttc: this.stock.pvttc !==0 ? this.stock.pvttc : null,
+                    prixCommercial: returnValueOfNumberProperty(this.stock.prixCommercial),
+                    pattc: returnValueOfNumberProperty(this.stock.pattc),
+                    pvttc: returnValueOfNumberProperty(this.stock.pvttc),
                     tva: this.stock.tva,
-                    benifice: this.stock.benifice !==0 ? this.stock.benifice : null,
-                    qteStock: this.stock.qteStock !==0 ? this.stock.qteStock : null,
-                    qteFacturer: this.stock.qteFacturer !==0 ? this.stock.qteFacturer : null,
-                    qteStockImport: this.stock.qteStockImport !==0 ? this.stock.qteStockImport : null,
-                    prixVentMin1: this.stock.prixVentMin1 !==0 ? this.stock.prixVentMin1 : null,
-                    prixVentMin2: this.stock.prixVentMin2 !==0 ? this.stock.prixVentMin2 : null,
-                    prixVentMin3: this.stock.prixVentMin3 !==0 ? this.stock.prixVentMin3 : null,
-                    prixVentMin4: this.stock.prixVentMin4 !==0 ? this.stock.prixVentMin4 : null,
-                    qtePVMin1: this.stock.qtePVMin1 !==0 ? this.stock.qtePVMin1 : null,
-                    qtePVMin2: this.stock.qtePVMin2 !==0 ? this.stock.qtePVMin2 : null,
-                    qtePVMin3: this.stock.qtePVMin3 !==0 ? this.stock.qtePVMin3 : null,
-                    qtePVMin4: this.stock.qtePVMin4 !==0 ? this.stock.qtePVMin4 : null,
-                    remiseMax1: this.stock.remiseMax1 !==0 ? this.stock.remiseMax1 : null,
-                    remiseMax2: this.stock.remiseMax2 !==0 ? this.stock.remiseMax2 : null,
-                    remiseMax3: this.stock.remiseMax3 !==0 ? this.stock.remiseMax3 : null,
-                    remiseMax4: this.stock.remiseMax4 !==0 ? this.stock.remiseMax4 : null,
-                    montant1: this.stock.montant1 !==0 ? this.stock.montant1 : null,
-                    montant2: this.stock.montant2 !==0 ? this.stock.montant2 : null,
-                    montant3: this.stock.montant3 !==0 ? this.stock.montant3 : null,
-                    prime1: this.stock.prime1 !==0 ? this.stock.prime1 : null,
-                    prime2: this.stock.prime2 !==0 ? this.stock.prime2 : null,
-                    prime3: this.stock.prime3 !==0 ? this.stock.prime3 : null,
+                    benifice: returnValueOfNumberProperty(this.stock.benifice),
+                    qteStock: returnValueOfNumberProperty(this.stock.qteStock),
+                    qteFacturer: returnValueOfNumberProperty(this.stock.qteFacturer),
+                    qteStockImport: returnValueOfNumberProperty(this.stock.qteStockImport),
+                    prixVentMin1: returnValueOfNumberProperty(this.stock.prixVentMin1),
+                    prixVentMin2: returnValueOfNumberProperty(this.stock.prixVentMin2),
+                    prixVentMin3: returnValueOfNumberProperty(this.stock.prixVentMin3),
+                    prixVentMin4: returnValueOfNumberProperty(this.stock.prixVentMin4),
+                    qtePVMin1: returnValueOfNumberProperty(this.stock.qtePVMin1),
+                    qtePVMin2: returnValueOfNumberProperty(this.stock.qtePVMin2),
+                    qtePVMin3: returnValueOfNumberProperty(this.stock.qtePVMin3),
+                    qtePVMin4: returnValueOfNumberProperty(this.stock.qtePVMin4),
+                    remiseMax1: returnValueOfNumberProperty(this.stock.remiseMax1),
+                    remiseMax2: returnValueOfNumberProperty(this.stock.remiseMax2),
+                    remiseMax3: returnValueOfNumberProperty(this.stock.remiseMax3),
+                    remiseMax4: returnValueOfNumberProperty(this.stock.remiseMax4),
+                    montant1: returnValueOfNumberProperty(this.stock.montant1),
+                    montant2: returnValueOfNumberProperty(this.stock.montant2),
+                    montant3: returnValueOfNumberProperty(this.stock.montant3),
+                    prime1: returnValueOfNumberProperty(this.stock.prime1),
+                    prime2: returnValueOfNumberProperty(this.stock.prime2),
+                    prime3: returnValueOfNumberProperty(this.stock.prime3),
                 });
 
                 this.openCloseDialogAjouter(true);
@@ -418,6 +425,7 @@ export class StockComponent {
         stock.fournisseurId = formGroup.get('fournisseurId')?.value;
         stock.prixCommercial = formGroup.get('prixCommercial')?.value | 0;
         stock.pattc = formGroup.get('pattc')?.value | 0;
+        stock.pvttc = formGroup.get('pvttc')?.value | 0;
         stock.tva = formGroup.get('tva')?.value | 0;
         stock.benifice = formGroup.get('benifice')?.value | 0;
         stock.qteStock = formGroup.get('qteStock')?.value | 0;

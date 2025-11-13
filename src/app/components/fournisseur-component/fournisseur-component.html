@@ -77,7 +77,7 @@
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="designation" style="width: 25%">
+                        <th pSortableColumn="designation" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.fournisseur.designation }}
                                 <p-sortIcon field="designation" />
@@ -105,17 +105,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="ice" style="width: 13%">
+                        <th pSortableColumn="ice" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.fournisseur.ice }}
                                 <p-sortIcon field="ice" />
-                            </div>
-                        </th>
-
-                        <th pSortableColumn="dateEntrer" style="width: 12%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.fournisseur.dateEntrer }}
-                                <p-sortIcon field="dateEntrer" />
                             </div>
                         </th>
 
@@ -130,8 +123,7 @@
                         <td>{{ p.ice }}</td>
                         <td>{{ p.tel1 }}</td>
                         <td>{{ p.tel2 }}</td>
-                        <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
-                        <td style="width: 10%; min-width: 7rem">
+                        <td>
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded/>
                                 <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded/>
