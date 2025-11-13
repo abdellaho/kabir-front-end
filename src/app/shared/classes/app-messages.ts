@@ -172,6 +172,8 @@ export const APP_MESSAGES = {
                 montant3MustBeGreaterThanmontant2: 'Montant 3 doit être supérieur au montant 2',
                 montant3Required: 'Champs obligatoire',
                 prime3Required: 'Champs obligatoire',
+                pvttcMustBeGreatThanPattc: 'P.V.TTC doit être supérieur au P.A.TTC',
+                prixCommercialMustBeGreatThanPattc: 'Prix Commercial doit être supérieur au P.A.TTC'
             }
         },
         repertoire: {
@@ -236,7 +238,8 @@ export const APP_MESSAGES = {
         messageAddSuccess: 'Ajout effectué avec succès',
         messageDeleteSuccess: 'Suppression effectuée avec succès',
         messageUpdateSuccess: 'Mise à jour effectué avec succès',
-        messageExistDeja: ' existe déjà'
+        messageExistDeja: ' existe déjà',
+        numberMustBeEqualZeroOrPositive: 'Ce champs doit supérieur ou égal 0'
     },
     summary: {
         labelError: 'Erreur',

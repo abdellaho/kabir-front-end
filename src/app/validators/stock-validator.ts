@@ -5,6 +5,8 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
   // Helper to get form controls safely
   const get = (name: string) => control.get(name);
   let pattc = get('pattc');
+  let prixCommercial = get('prixCommercial');
+  let pvttc = get('pvttc');
 
   // List ranges for Remise/Qte
   const remiseLevels = [
@@ -36,9 +38,21 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     errors[key] = true;
   };
 
+  if(pattc && pvttc && pattc.value !== null && pvttc.value !== null && pattc.value !== 0 && pvttc.value !== 0) {
+    if(pattc.value >= pvttc.value) {
+      addError('pvttcMustBeGreatThanPattc');
+    }
+  }
+
+  if(pattc && prixCommercial && pattc.value !== null && prixCommercial.value !== null && pattc.value !== 0 && prixCommercial.value !== 0) {
+    if(pattc.value >= prixCommercial.value) {
+      addError('prixCommercialMustBeGreatThanPattc');
+    }
+  }
+
   const validatePair = (valueA: number, valueB: number, keyA: string, keyB: string) => {
-    if (valueA > 0 && valueB === 0) addError(`${keyB}Required`);
-    else if (valueB > 0 && valueA === 0) addError(`${keyA}Required`);
+    if (valueA > 0 && (valueB === null || valueB === 0)) addError(`${keyB}Required`);
+    else if (valueB > 0 && (valueA === null || valueA === 0)) addError(`${keyA}Required`);
   };
 
   const validateAscending = (curr: number, next: number, keyCurr: string, keyNext: string) => {
