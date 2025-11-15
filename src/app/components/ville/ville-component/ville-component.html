@@ -8,7 +8,7 @@
             <button
               pButton
               pRipple
-              label="Ajouter"
+              [label]="msg.buttons.ajouter"
               icon="pi pi-plus"
               class="p-button-success mr-2"
               (click)="viderAjouter()"
@@ -39,7 +39,7 @@
 
         <ng-template #header>
           <tr>
-              <th pSortableColumn="nomVille">Ville <p-sortIcon field="nomVille" /></th>
+              <th pSortableColumn="nomVille">{{ msg.components.ville.nomVille }}<p-sortIcon field="nomVille" /></th>
               <th></th>
           </tr>
         </ng-template>
@@ -74,7 +74,7 @@
     <p-dialog
       [(visible)]="dialogAjouter"
       [style]="{ width: '700px' }"
-      header="Mise à jour Ville"
+      [header]="`${msg.messages.miseAJour} ${msg.components.ville.label}`"
       [modal]="true"
       class="p-fluid"
       [closable]="false"
@@ -87,7 +87,7 @@
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
                   <input pInputText id="nomVille" formControlName="nomVille" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nomVille')?.invalid }" />
-                  <label for="nomVille">Ville</label>
+                  <label for="nomVille">{{ msg.components.ville.nomVille }}</label>
                 </p-floatlabel>
               </div>
             </div>
@@ -100,7 +100,7 @@
         <button
           pButton
           pRipple
-          label="Fermer"
+          [label]="msg.buttons.fermer"
           icon="pi pi-times"
           class="p-button-outlined p-button-info"
           (click)="openCloseDialogAjouter(false)"
@@ -108,7 +108,7 @@
         <button
           pButton
           pRipple
-          label="Valider"
+          [label]="msg.buttons.valider"
           icon="pi pi-check"
           class="p-button-info"
           (click)="miseAjour()"
@@ -127,7 +127,7 @@
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         @if (ville) {
-          <span>Are you sure you want to delete this ville ?</span>
+          <span>{{ msg.components.ville.messageDeleteAreYouSure }}</span>
         }
       </div>
       <ng-template pTemplate="footer">
@@ -136,14 +136,14 @@
           pRipple
           icon="pi pi-times"
           type="button"
-          label="Fermer"
+          [label]="msg.buttons.fermer"
           class="p-button-outlined p-button-info"
           (click)="dialogSupprimer = false"
         ></button>
         <button
           pButton
           pRipple
-          label="Valider"
+          [label]="msg.buttons.valider"
           icon="pi pi-check"
           class="p-button-info"
           (click)="supprimer()"
