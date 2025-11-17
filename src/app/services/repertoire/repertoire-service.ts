@@ -22,13 +22,13 @@ export class RepertoireService {
 
   create(repertoire: Repertoire): Observable<Repertoire> {
     const serializedObj = this.serialization(repertoire);
-    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    const obj = omit(serializedObj, 'ville', 'personnel');
     return this.http.post<Repertoire>(ENDPOINTS.REPERTOIRE.create, obj);
   }
 
   update(id: bigint, repertoire: Repertoire): Observable<Repertoire> {
     const serializedObj = this.serialization(repertoire);
-    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    const obj = omit(serializedObj, 'ville', 'personnel');
     return this.http.patch<Repertoire>(ENDPOINTS.REPERTOIRE.update(id), obj);
   }
 
@@ -38,7 +38,7 @@ export class RepertoireService {
 
   search(repertoire: Repertoire): Observable<Repertoire[]> {
     const serializedObj = this.serialization(repertoire);
-    const obj = omit(serializedObj, 'villeId', 'repertoireId', 'ville', 'repertoire');
+    const obj = omit(serializedObj, 'ville', 'personnel');
     return this.http.post<Repertoire[]>(ENDPOINTS.REPERTOIRE.search, obj);
   }
 
@@ -55,5 +55,5 @@ export class RepertoireService {
       personnelId: repertoire.personnelId?.toString(),
     };
   }
-  
+
 }

@@ -10,7 +10,7 @@ export const ENDPOINTS = {
     update: (id: bigint) => `${BASE_URL}/ville/${id}`,
     delete: (id: bigint) => `${BASE_URL}/ville/${id}`,
     exist: `${BASE_URL}/ville/exist`,
-  }, 
+  },
   PAYS: {
     getAll: `${BASE_URL}/pays`,
     getById: (id: bigint) => `${BASE_URL}/pays/${id}`,
@@ -27,6 +27,13 @@ export const ENDPOINTS = {
     update: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
     delete: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
   },
+    STOCK_DEPOT: {
+        getAll: `${BASE_URL}/stock-depot`,
+        getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+        create: `${BASE_URL}/stock-depot`,
+        update: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+    },
   REPERTOIRE: {
     getAll: `${BASE_URL}/repertoire`,
     getById: (id: bigint) => `${BASE_URL}/repertoire/${id}`,

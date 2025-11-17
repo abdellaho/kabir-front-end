@@ -27,6 +27,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { RepertoireValidator } from '@/validators/repertoire-validator';
+import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
 
 @Component({
   selector: 'app-repertoire-component',
@@ -70,6 +71,7 @@ export class RepertoireComponent {
   listRepertoire: Repertoire[] = [];
   repertoire: Repertoire = initObjectRepertoire();
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
+  mapOfVilles: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;
   dialogArchiver: boolean = false;
@@ -113,7 +115,7 @@ export class RepertoireComponent {
       tel1: ['', [Validators.maxLength(10)]],
       tel2: ['', [Validators.maxLength(10)]],
       tel3: ['', [Validators.maxLength(10)]],
-      ice: ['', [Validators.maxLength(10)]],
+      ice: ['', [Validators.maxLength(15)]],
       observation: ['', [Validators.maxLength(250)]],
       personnelId: [0, [Validators.required, Validators.min(1)]],
       plafond: [null],
@@ -197,6 +199,7 @@ export class RepertoireComponent {
     this.personnelService.getAll().subscribe({
       next: (data: Personnel[]) => {
         this.listPersonnel = data;
+          this.mapOfPersonnels = arrayToMap(data, 'id', ['designation'], ['']);
       }, error: (error: any) => {
         console.error(error);
       }
@@ -207,6 +210,7 @@ export class RepertoireComponent {
     this.villeService.getVilles().subscribe({
       next: (data: Ville[]) => {
         this.listVille = data;
+          this.mapOfVilles = arrayToMap(data, 'id', ['nomVille'], ['']);
       }, error: (error: any) => {
         console.error(error);
       }
@@ -235,6 +239,14 @@ export class RepertoireComponent {
 
   openCloseDialogAnnulerCorbeille(openClose: boolean): void {
     this.dialogAnnulerCorbeille = openClose;
+  }
+
+  getNomVille(id: number) {
+      return getElementFromMap(this.mapOfVilles, id);
+  }
+
+  getPersonnelName(id: number) {
+      return getElementFromMap(this.mapOfPersonnels, id);
   }
 
   viderAjouter() {

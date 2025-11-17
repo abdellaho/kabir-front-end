@@ -22,18 +22,11 @@
 
             <p-table
                 #dt
-                size="small"
-                class="p-datatable-sm"
                 [value]="listVoiture"
                 dataKey="id"
-                [rows]="10"
                 [rowHover]="true"
                 [showGridlines]="true"
-                [paginator]="true"
                 [globalFilterFields]="['numVoiture', 'kmMax']"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="({first} of {totalRecords})"
             >
 
                 <ng-template #header>

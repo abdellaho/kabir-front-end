@@ -22,18 +22,11 @@
 
             <p-table
                 #dt
-                size="small"
-                class="p-datatable-sm"
                 [value]="listPrime"
                 dataKey="id"
-                [rows]="10"
                 [rowHover]="true"
                 [showGridlines]="true"
-                [paginator]="true"
                 [globalFilterFields]="['montant', 'prime']"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="({first} of {totalRecords})"
             >
 
                 <ng-template #header>
@@ -91,14 +84,14 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="montant" formControlName="montant" [min]="0.00000001"/>
+                                    <p-input-number id="montant" formControlName="montant" [min]="0.00000001" [maxFractionDigits]="2"/>
                                     <label for="montant">{{ msg.components.prime.montant }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="prime" formControlName="prime" [min]="0.00000001"/>
+                                    <p-input-number id="prime" formControlName="prime" [min]="0.00000001" [maxFractionDigits]="2"/>
                                     <label for="prime">{{ msg.components.prime.prime }}</label>
                                 </p-floatlabel>
                             </div>

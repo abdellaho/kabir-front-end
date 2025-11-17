@@ -32,10 +32,8 @@
             [globalFilterFields]="['nomVille']"
             [rowsPerPageOptions]="[10, 20, 30]"
             [showCurrentPageReport]="true"
-            currentPageReportTemplate="({first} of {totalRecords})"
+            currentPageReportTemplate="({currentPage} sur {totalPages})"
         >
-        <ng-template #caption>
-        </ng-template>
 
         <ng-template #header>
           <tr>

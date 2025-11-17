@@ -143,7 +143,7 @@ export class VilleComponent implements OnInit {
     } else if(operationType === OperationType.DELETE) {
         list = list.filter(x => x.id !== id);
     }
-    return list;
+    return list.sort((a, b) => a.nomVille.localeCompare(b.nomVille));
   }
 
   checkIfListIsNull() {

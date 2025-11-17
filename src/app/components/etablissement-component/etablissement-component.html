@@ -1,7 +1,6 @@
 <p-toast></p-toast>
 <p-fluid class="flex mt-8" [formGroup]="formGroup">
   <div class="card flex flex-col gap-6 w-full">
-    <div class="font-semibold text-xl">{{ msg.components.etablissement.label }}</div>
     <div class="flex flex-col md:flex-row gap-2">
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
@@ -12,7 +11,7 @@
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="ice" formControlName="ice" />
+          <input pInputText id="ice" formControlName="ice" maxLength="15" />
           <label for="ice">{{ msg.components.etablissement.ice }}</label>
         </p-floatlabel>
       </div>
@@ -159,7 +158,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="flex flex-col gap-4" style="display: none;">
+      <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <p-date-picker id="dateTime" formControlName="dateTime" [timeOnly]="true" />
           <label for="dateTime">Date Time</label>

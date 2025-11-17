@@ -13,3 +13,12 @@ export const filteredTypeFourniseur = [
     { label: 'Carburant', value: TypeFourniseur.CARBURANT },
     { label: 'Fourniture', value: TypeFourniseur.FOURNITURE },
 ];
+
+export const filteredTypeFourniseurWithNull = [
+    { label: '', value: null },
+    { label: 'Marchandises', value: TypeFourniseur.MARCHANDISES },
+    { label: 'Services', value: TypeFourniseur.SERVICES },
+    { label: 'Douanes', value: TypeFourniseur.DOUANES },
+    { label: 'Carburant', value: TypeFourniseur.CARBURANT },
+    { label: 'Fourniture', value: TypeFourniseur.FOURNITURE },
+];

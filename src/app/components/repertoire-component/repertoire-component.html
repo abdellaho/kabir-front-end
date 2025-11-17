@@ -34,7 +34,7 @@
                                 pRipple
                                 icon="pi pi-warehouse"
                                 [label]="msg.buttons.archive"
-                                severity="info"
+                                severity="warn"
                                 class="mr-2"
                                 (click)="archiveListe()"
                             ></p-button>
@@ -72,12 +72,12 @@
                 [globalFilterFields]="['typeRepertoire', 'designation', 'villeId', 'ice', 'tel1', 'tel2', 'tel3', 'personnelId', 'observation', 'nbrOperationClient']"
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="({first} of {totalRecords})"
+                currentPageReportTemplate="({currentPage} sur {totalPages})"
             >
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="typeRepertoire" style="width: 15%">
+                        <th pSortableColumn="typeRepertoire" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.typeRepertoire }}
                                 <p-sortIcon field="typeRepertoire"/>
@@ -91,7 +91,14 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="ice" style="width: 15%">
+                        <th pSortableColumn="villeId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.repertoire.villeId }}
+                                <p-sortIcon field="villeId"/>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="ice" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.ice }}
                                 <p-sortIcon field="ice"/>
@@ -148,11 +155,12 @@
                     <tr>
                         <td>{{ p.typeRepertoire | typeRepertoirePipe }}</td>
                         <td>{{ p.designation }}</td>
+                        <td>{{ getNomVille(p.villeId) }}</td>
                         <td>{{ p.ice }}</td>
                         <td>{{ p.tel1 }}</td>
                         <td>{{ p.tel2 }}</td>
                         <td>{{ p.tel3 }}</td>
-                        <td>{{ p.personnelId }}</td>
+                        <td>{{ getPersonnelName(p.personnelId) }}</td>
                         <td>{{ p.observation }}</td>
                         <td>{{ p.nbrOperationClient }}</td>
                         <td>
@@ -280,7 +288,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="ice" formControlName="ice"/>
+                                    <input pInputText id="ice" formControlName="ice" maxlength="15" />
                                     <label for="ice">{{ msg.components.repertoire.ice }}</label>
                                 </p-floatlabel>
                             </div>

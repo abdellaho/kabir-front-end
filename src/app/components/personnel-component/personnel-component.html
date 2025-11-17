@@ -71,7 +71,7 @@
               [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']"
               [rowsPerPageOptions]="[10, 20, 30]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="({first} to {last})"
+              currentPageReportTemplate="({currentPage} sur {totalPages})"
               [rowHover]="true"
           >
 
@@ -112,12 +112,19 @@
                     </div>
                 </th>
 
-                <th pSortableColumn="dateEntrer" style="width: 16%">
+                <th pSortableColumn="dateEntrer" style="width: 10%">
                   <div class="flex items-center gap-2">
                       {{ msg.components.fournisseur.dateEntrer }}
                       <p-sortIcon field="dateEntrer" />
                   </div>
-              </th>
+                </th>
+
+                <th pSortableColumn="dateEntrer" style="width: 6%">
+                    <div class="flex items-center gap-2">
+                        {{ msg.components.fournisseur.etatComptePersonnel }}
+                        <p-sortIcon field="etatComptePersonnel" />
+                    </div>
+                </th>
 
                 <th style="width: 5%"></th>
             </tr>
@@ -130,6 +137,18 @@
                 <td>{{ p.tel1 }}</td>
                 <td>{{ p.tel2 }}</td>
                 <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
+                <td>
+                    @if (p.etatComptePersonnel === true) {
+                        <div style="background-color: red; color: red" class="p-tag p-tag-success">
+                            {{ p.etatComptePersonnel }}
+                        </div>
+                    }
+                    @if (p.etatComptePersonnel === false) {
+                        <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
+                            {{ p.etatComptePersonnel }}
+                        </div>
+                    }
+                </td>
 
                 <td style="width: 10%; min-width: 7rem">
                     <div class="flex gap-2">
@@ -152,12 +171,12 @@
 
           <ng-template #emptymessage>
               <tr>
-                  <td colspan="6">No Personnel found.</td>
+                  <td colspan="10">No Personnel found.</td>
               </tr>
           </ng-template>
           <ng-template #loadingbody>
               <tr>
-                  <td colspan="6">Loading personnels data. Please wait.</td>
+                  <td colspan="10">Loading personnels data. Please wait.</td>
               </tr>
           </ng-template>
         </p-table>

@@ -105,7 +105,7 @@ export class EtablissementComponent implements OnInit {
       hostmail: [''],
       rc: [''],
       ife: [''],
-      ice: [''],
+      ice: ['', [Validators.maxLength(15)]],
       lundi: [false],
       mardi: [false],
       mercredi: [false],

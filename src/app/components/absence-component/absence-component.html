@@ -27,12 +27,17 @@
                 [value]="listAbsence"
                 dataKey="id"
                 [rows]="10"
+                rowGroupMode="rowspan"
+                groupRowsBy="dateAbsence"
+                sortField="dateAbsence"
+                [sortOrder]="-1"
+                sortMode="multiple"
                 [showGridlines]="true"
                 [paginator]="true"
                 [globalFilterFields]="['dateAbsence', 'personnelId', 'matin', 'apresMidi']"
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                currentPageReportTemplate="({currentPage} sur {totalPages})"
                 [rowHover]="true"
             >
 
@@ -70,9 +75,9 @@
                     </tr>
                 </ng-template>
 
-                <ng-template #body let-p>
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
-                        <td>{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
                         <td>
                             <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
@@ -131,13 +136,13 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <span id="apresMidiSpan">{{ msg.components.absence.apresMidi }}</span>
-                                <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi"/>
+                                <span id="matinSpan">{{ msg.components.absence.matin }}</span>
+                                <p-toggleswitch name="matin" id="matin" formControlName="matin"/>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <span id="matinSpan">{{ msg.components.absence.matin }}</span>
-                                <p-toggleswitch name="matin" id="matin" formControlName="matin"/>
+                                <span id="apresMidiSpan">{{ msg.components.absence.apresMidi }}</span>
+                                <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi"/>
                             </div>
                         </div>
                     </div>

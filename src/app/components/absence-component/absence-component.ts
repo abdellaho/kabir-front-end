@@ -83,6 +83,10 @@ export class AbsenceComponent implements OnInit {
         this.initFormGroup();
     }
 
+    sortList(listAbsence: Absence[]) : Absence[] {
+        return listAbsence.sort((a, b) => b.dateAbsence.getTime() - a.dateAbsence.getTime());
+    }
+
     clear(table: Table) {
         table.clear();
     }
@@ -107,6 +111,7 @@ export class AbsenceComponent implements OnInit {
                     ...a,
                     dateAbsence: a && (a as any).dateAbsence ? new Date((a as any).dateAbsence) : new Date()
                 }));
+                this.listAbsence = this.sortList(this.listAbsence);
             }, error: (error: any) => {
                 console.error(error);
             }
@@ -175,6 +180,7 @@ export class AbsenceComponent implements OnInit {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter(x => x.id !== id);
         }
+        list = this.sortList(list);
         return list;
     }
 

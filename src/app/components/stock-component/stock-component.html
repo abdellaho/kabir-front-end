@@ -34,7 +34,7 @@
                                 pRipple
                                 icon="pi pi-warehouse"
                                 [label]="msg.buttons.archive"
-                                severity="info"
+                                severity="warn"
                                 class="mr-2"
                                 (click)="archiveListe()"
                             ></p-button>
@@ -72,7 +72,7 @@
                 [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurId']"
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="({first} of {totalRecords})"
+                currentPageReportTemplate="({currentPage} sur {totalPages})"
             >
 
                 <ng-template #header>
@@ -559,11 +559,14 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-input-number formControlName="prime2" inputId="prime2" [maxFractionDigits]="2"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime2Required'] || formGroup.get('prime2')?.errors?.['negative'] }"/>
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime2Required'] || formGroup.get('prime2')?.errors?.['negative'] || formGroup.errors?.['prime2MustBeGreaterThanprime1'] }"/>
                                     <label for="prime2">{{ msg.components.stock.prime2 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['prime2Required']) {
                                     <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.prime2Required }}</p-message>
+                                }
+                                @if (formGroup.errors?.['prime2MustBeGreaterThanprime1']) {
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.prime2MustBeGreaterThanprime1 }}</p-message>
                                 }
                                 @if (formGroup.get('prime2')?.errors?.['negative']) {
                                     <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
@@ -594,11 +597,14 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-input-number formControlName="prime3" inputId="prime3" [maxFractionDigits]="2"
-                                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime3Required'] || formGroup.get('prime3')?.errors?.['negative'] }"/>
+                                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime3Required'] || formGroup.get('prime3')?.errors?.['negative'] || formGroup.errors?.['prime3MustBeGreaterThanprime2'] }"/>
                                     <label for="prime3">{{ msg.components.stock.prime3 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['prime3Required']) {
                                     <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.prime3Required }}</p-message>
+                                }
+                                @if (formGroup.errors?.['prime3MustBeGreaterThanprime2']) {
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.prime3MustBeGreaterThanprime2 }}</p-message>
                                 }
                                 @if (formGroup.get('prime3')?.errors?.['negative']) {
                                     <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>

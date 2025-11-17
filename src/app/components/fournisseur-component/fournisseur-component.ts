@@ -4,7 +4,7 @@ import { TypeFournisseurPipe } from '@/pipes/type-fournisseur-pipe';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypeFourniseur } from '@/shared/enums/type-fournisseur';
+import { filteredTypeFourniseurWithNull } from '@/shared/enums/type-fournisseur';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -65,7 +65,7 @@ export class FournisseurComponent implements OnInit {
         { key: 'Fourniture', value: 4 }
     ];
 
-    typeFournisseurs: { label: string, value: number }[] = filteredTypeFourniseur;
+    typeFournisseurs: { label: string, value: number | null }[] = filteredTypeFourniseurWithNull;
     listVille: Ville[] = [];
     listFournisseur: Fournisseur[] = [];
     fournisseur: Fournisseur = initObjectFournisseur();
@@ -184,10 +184,10 @@ export class FournisseurComponent implements OnInit {
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
             designation: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-            type: [0],
+            type: [null, [Validators.required, Validators.min(0)]],
             tel1: [''],
             tel2: [''],
-            ice: [''],
+            ice: ['', [Validators.maxLength(15)]],
             adresse: [''],
         }, { validators: [FournisseurValidator] });
     }

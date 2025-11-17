@@ -94,6 +94,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     if (i < primeLevels.length - 1) {
       const next = primeLevels[i + 1];
       validateAscending(lvl.m!.value, next.m!.value, `montant${lvl.key}`, `montant${next.key}`);
+      validateAscending(lvl.p!.value, next.p!.value, `prime${lvl.key}`, `prime${next.key}`);
     }
   });
 
