@@ -189,6 +189,7 @@ export class EtablissementComponent implements OnInit {
     etablissement.hostMail = formGroup.get('hostMail')?.value;
     etablissement.ife = formGroup.get('ife')?.value;
     etablissement.ice = formGroup.get('ice')?.value;
+    etablissement.rc = formGroup.get('rc')?.value;
     etablissement.lundi = formGroup.get('lundi')?.value;
     etablissement.mardi = formGroup.get('mardi')?.value;
     etablissement.mercredi = formGroup.get('mercredi')?.value;

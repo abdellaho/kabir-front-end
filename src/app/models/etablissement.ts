@@ -17,6 +17,7 @@ export interface Etablissement {
   raisonSocial: string;
   ice: string;
   ife: string;
+  rc: string;
   port: number;
   hostMail: string;
   paswordMail: string;
@@ -59,6 +60,7 @@ export function initObjectEtablissement(): Etablissement {
     raisonSocial: "",
     ice: "",
     ife: "",
+    rc: "",
     port: 0,
     hostMail: "",
     paswordMail: "",

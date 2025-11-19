@@ -35,7 +35,7 @@ export const APP_MESSAGES = {
                 lienDbDump: 'Lien Db Dump',
                 lienBackupDB: 'Lien Backup DB',
                 cheminBD: 'Chemin BD',
-                pourcentageLiv: 'Taux de risque',
+                pourcentageLiv: 'Taux de risque %',
                 tel1: 'Tel1',
                 tel2: 'Tel2',
                 tel3: 'Tel3',
