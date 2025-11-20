@@ -1,4 +1,7 @@
 export const APP_MESSAGES = {
+    locale: {
+        default: 'en-US'
+    },
     menu: {
       ville: 'Ville',
       etablissement: 'Société',
@@ -64,7 +67,7 @@ export const APP_MESSAGES = {
             tel2: 'Tel2',
             adresse: 'Adresse',
             salaire: 'Salaire',
-            etatComptePersonnel: 'Active',
+            etatComptePersonnel: 'Etat',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce personnel ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce personnel ?',
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce personnel dans la corbeille ?',
@@ -84,7 +87,7 @@ export const APP_MESSAGES = {
             tel1: 'Tel1',
             tel2: 'Tel2',
             adresse: 'Adresse',
-            etatComptePersonnel: 'Active',
+            etatComptePersonnel: 'Etat',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce fournisseur ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce fournisseur ?',
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce fournisseur dans la corbeille ?',
@@ -95,7 +98,7 @@ export const APP_MESSAGES = {
             }
         },
         absence: {
-            label: 'Présence',
+            label: 'La Présence',
             matin: 'Matin',
             apresMidi: 'Soir',
             personnel: 'Personnel',
@@ -227,6 +230,8 @@ export const APP_MESSAGES = {
         desarchiver: 'Désarchiver',
         corbeille: 'Corbeille',
         restaurer: 'Restaurer',
+        role: 'Role',
+        actualiser: 'Actualiser'
     },
     messages: {
         miseAJour: 'Mise à jour',

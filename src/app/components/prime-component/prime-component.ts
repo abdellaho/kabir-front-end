@@ -151,8 +151,12 @@ export class PrimeComponent {
   }
 
   mapFormGroupToObject(formGroup: FormGroup, prime: Prime): Prime {
-    prime.montant = formGroup.get('montant')?.value | 0;
-    prime.prime = formGroup.get('prime')?.value | 0;
+    prime.montant = formGroup.get('montant')?.value ?? 0;
+    prime.prime = formGroup.get('prime')?.value ?? 0;
+
+    console.log(formGroup.get('montant')?.value);
+    console.log(formGroup.get('prime')?.value);
+    console.log(prime);
 
     return prime;
   }

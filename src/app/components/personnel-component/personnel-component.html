@@ -15,26 +15,13 @@
               ></button>
             </div>
 
-              @if (typeOfList !== 0) {
-                  <div class="my-2">
-                      <p-button
-                          pRipple
-                          icon="pi pi-crown"
-                          [label]="msg.components.personnel.label"
-                          severity="contrast"
-                          class="mr-2"
-                          (click)="listOfAll()"
-                      ></p-button>
-                  </div>
-              }
-
               @if (typeOfList !== 1) {
                   <div class="my-2">
                       <p-button
                           pRipple
                           icon="pi pi-warehouse"
                           [label]="msg.buttons.archive"
-                          severity="info"
+                          severity="warn"
                           class="mr-2"
                           (click)="archiveListe()"
                       ></p-button>
@@ -53,6 +40,17 @@
                       ></p-button>
                   </div>
               }
+
+              <div class="my-2">
+                <p-button
+                    pRipple
+                    icon="pi pi-crown"
+                    [label]="msg.buttons.actualiser"
+                    severity="contrast"
+                    class="mr-2"
+                    (click)="listOfAll()"
+                ></p-button>
+            </div>
           </ng-template>
 
           <ng-template pTemplate="right">
@@ -61,8 +59,6 @@
 
         <p-table
               #dt
-              size="small"
-              class="p-datatable-sm"
               [value]="listPersonnel"
               dataKey="id"
               [rows]="10"
@@ -139,12 +135,12 @@
                 <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
                 <td>
                     @if (p.etatComptePersonnel === true) {
-                        <div style="background-color: red; color: red" class="p-tag p-tag-success">
+                        <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
                             {{ p.etatComptePersonnel }}
                         </div>
                     }
                     @if (p.etatComptePersonnel === false) {
-                        <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
+                        <div style="background-color: red; color: red" class="p-tag p-tag-success">
                             {{ p.etatComptePersonnel }}
                         </div>
                     }
@@ -152,14 +148,14 @@
 
                 <td style="width: 10%; min-width: 7rem">
                     <div class="flex gap-2">
-                        <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
-                        <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
                         @if (typeOfList === 0) {
-                            <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="help" rounded [title]="msg.buttons.archiver"/>
-                            <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="warn" rounded [title]="msg.buttons.corbeille"/>
+                            <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier"/>
+                            <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver"/>
+                            <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer"/>
+                            <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded [title]="msg.buttons.corbeille"/>
                         }
                         @if (typeOfList === 1) {
-                            <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.desarchiver"/>
+                            <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="warn" rounded [title]="msg.buttons.desarchiver"/>
                         }
                         @if (typeOfList === 2) {
                             <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.restaurer"/>
@@ -268,7 +264,7 @@
 
                 <div class="flex flex-col grow basis-0">
                   <p-floatlabel variant="on">
-                    <p-input-number id="salaire" formControlName="salaire" [min]="0" />
+                    <p-input-number id="salaire" formControlName="salaire" [min]="0" [maxFractionDigits]="2" />
                     <label for="salaire">{{ msg.components.personnel.salaire }}</label>
                   </p-floatlabel>
                 </div>
