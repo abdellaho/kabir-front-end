@@ -6,51 +6,50 @@
           <ng-template pTemplate="left">
             <div class="my-2">
               <button
-                pButton
-                pRipple
-                [label]="msg.buttons.ajouter"
-                icon="pi pi-plus"
-                class="p-button-success mr-2"
-                (click)="viderAjouter()"
-              ></button>
-            </div>
-
-              @if (typeOfList !== 1) {
-                  <div class="my-2">
-                      <p-button
-                          pRipple
-                          icon="pi pi-warehouse"
-                          [label]="msg.buttons.archive"
-                          severity="warn"
-                          class="mr-2"
-                          (click)="archiveListe()"
-                      ></p-button>
-                  </div>
-              }
-
-              @if (typeOfList !== 2) {
-                  <div class="my-2">
-                      <p-button
-                          pRipple
-                          [label]="msg.buttons.corbeille"
-                          icon="pi pi-trash"
-                          severity="danger"
-                          class="mr-2"
-                          (click)="corbeilleListe()"
-                      ></p-button>
-                  </div>
-              }
+                  pButton
+                  pRipple
+                  [label]="msg.buttons.ajouter"
+                  icon="pi pi-plus"
+                  class="p-button-success mr-2"
+                  (click)="viderAjouter()"
+                ></button>
+              </div>
 
               <div class="my-2">
                 <p-button
                     pRipple
+                    [outlined]="typeOfList === 0 ? false : true"
                     icon="pi pi-crown"
-                    [label]="msg.buttons.actualiser"
+                    [label]="msg.components.personnel.label"
                     severity="contrast"
                     class="mr-2"
                     (click)="listOfAll()"
                 ></p-button>
-            </div>
+              </div>
+
+              <div class="my-2">
+                  <p-button
+                      pRipple
+                      [outlined]="typeOfList === 1 ? false : true"
+                      icon="pi pi-warehouse"
+                      [label]="msg.buttons.archive"
+                      severity="warn"
+                      class="mr-2"
+                      (click)="archiveListe()"
+                  ></p-button>
+              </div>
+
+              <div class="my-2">
+                <p-button
+                      pRipple
+                      [outlined]="typeOfList === 2 ? false : true"
+                      [label]="msg.buttons.corbeille"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      class="mr-2"
+                      (click)="corbeilleListe()"
+                  ></p-button>
+              </div>
           </ng-template>
 
           <ng-template pTemplate="right">
@@ -284,8 +283,8 @@
 
         <!-- Footer template -->
         <ng-template pTemplate="footer">
-          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-info" (click)="openCloseDialogAjouter(false)"></button>
-          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
         </ng-template>
       </p-dialog>
 
@@ -298,8 +297,8 @@
         </div>
 
         <ng-template pTemplate="footer">
-          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-info" (click)="dialogSupprimer = false"></button>
-          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="supprimer()"></button>
+          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="supprimer()"></button>
         </ng-template>
       </p-dialog>
 
@@ -312,8 +311,8 @@
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-info" (click)="dialogArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="archiver(true)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(true)"></button>
             </ng-template>
         </p-dialog>
 
@@ -326,8 +325,8 @@
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-info" (click)="dialogCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(true)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(true)"></button>
             </ng-template>
         </p-dialog>
 
@@ -340,8 +339,8 @@
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-info" (click)="dialogAnnulerArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="archiver(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(false)"></button>
             </ng-template>
         </p-dialog>
 
@@ -354,8 +353,8 @@
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-info" (click)="dialogAnnulerCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="corbeille(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(false)"></button>
             </ng-template>
         </p-dialog>
     </div>

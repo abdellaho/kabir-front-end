@@ -320,7 +320,7 @@ export class RepertoireComponent {
     repertoire.ice = formGroup.get('ice')?.value;
     repertoire.observation = formGroup.get('observation')?.value;
     repertoire.personnelId = formGroup.get('personnelId')?.value;
-    repertoire.plafond = formGroup.get('plafond')?.value | 0;
+    repertoire.plafond = formGroup.get('plafond')?.value ?? 0;
 
     return repertoire;
   }

@@ -287,7 +287,7 @@ export class PersonnelComponent implements OnInit {
         personnel.tel1 = formGroup.get('tel1')?.value;
         personnel.tel2 = formGroup.get('tel2')?.value;
         personnel.adresse = formGroup.get('adresse')?.value;
-        personnel.salaire = formGroup.get('salaire')?.value | 0;
+        personnel.salaire = formGroup.get('salaire')?.value ?? 0;
         personnel.etatComptePersonnel = formGroup.get('etatComptePersonnel')?.value;
 
         return personnel;

@@ -71,7 +71,7 @@
 
     <p-dialog
       [(visible)]="dialogAjouter"
-      [style]="{ width: '700px' }"
+      [style]="{ width: '300px' }"
       [header]="`${msg.messages.miseAJour} ${msg.components.ville.label}`"
       [modal]="true"
       class="p-fluid"
@@ -84,7 +84,7 @@
             <div class="flex flex-wrap gap-6">
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="nomVille" formControlName="nomVille" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nomVille')?.invalid }" />
+                  <input pInputText id="nomVille" formControlName="nomVille" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nomVille')?.invalid }" style="width: 100%;" />
                   <label for="nomVille">{{ msg.components.ville.nomVille }}</label>
                 </p-floatlabel>
               </div>
@@ -100,7 +100,7 @@
           pRipple
           [label]="msg.buttons.fermer"
           icon="pi pi-times"
-          class="p-button-outlined p-button-info"
+          class="p-button-outlined p-button-danger"
           (click)="openCloseDialogAjouter(false)"
         ></button>
         <button
@@ -108,7 +108,7 @@
           pRipple
           [label]="msg.buttons.valider"
           icon="pi pi-check"
-          class="p-button-info"
+          class="p-button-success"
           (click)="miseAjour()"
           [disabled]="!formGroup.valid"
         ></button>
@@ -135,7 +135,7 @@
           icon="pi pi-times"
           type="button"
           [label]="msg.buttons.fermer"
-          class="p-button-outlined p-button-info"
+          class="p-button-outlined p-button-danger"
           (click)="dialogSupprimer = false"
         ></button>
         <button
@@ -143,7 +143,7 @@
           pRipple
           [label]="msg.buttons.valider"
           icon="pi pi-check"
-          class="p-button-info"
+          class="p-button-success"
           (click)="supprimer()"
         ></button>
       </ng-template>

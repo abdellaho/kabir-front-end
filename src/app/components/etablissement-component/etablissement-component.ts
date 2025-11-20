@@ -200,8 +200,8 @@ export class EtablissementComponent implements OnInit {
     etablissement.nom = formGroup.get('nom')?.value;
     etablissement.paswordMail = formGroup.get('paswordMail')?.value;
     etablissement.patente = formGroup.get('patente')?.value;
-    etablissement.port = formGroup.get('port')?.value | 0;
-    etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value | 0;
+    etablissement.port = formGroup.get('port')?.value ?? 0;
+    etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value ?? 0;
     etablissement.siteweb = formGroup.get('siteweb')?.value;
     etablissement.tel1 = formGroup.get('tel1')?.value;
     etablissement.tel2 = formGroup.get('tel2')?.value;

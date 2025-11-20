@@ -145,7 +145,7 @@ export class VoitureComponent implements OnInit {
   }
 
   mapFormGroupToObject(formGroup: FormGroup, voiture: Voiture): Voiture {
-    voiture.kmMax = formGroup.get('kmMax')?.value | 0;
+    voiture.kmMax = formGroup.get('kmMax')?.value ?? 0;
     voiture.numVoiture = formGroup.get('numVoiture')?.value;
 
     return voiture;
