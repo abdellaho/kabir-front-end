@@ -5,14 +5,8 @@
       <p-toolbar class="mb-4">
         <ng-template pTemplate="left">
           <div class="my-2">
-            <button
-              pButton
-              pRipple
-              [label]="msg.buttons.ajouter"
-              icon="pi pi-plus"
-              class="p-button-success mr-2"
-              (click)="viderAjouter()"
-            ></button>
+            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2"
+              (click)="viderAjouter()"></button>
           </div>
         </ng-template>
 
@@ -20,63 +14,49 @@
         </ng-template>
       </p-toolbar>
 
-      <p-table
-            #dt
-            size="small"
-            [value]="listVille"
-            dataKey="id"
-            [rows]="10"
-            [rowHover]="true"
-            [showGridlines]="true"
-            [paginator]="true"
-            [globalFilterFields]="['nomVille']"
-            [rowsPerPageOptions]="[10, 20, 30]"
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="({currentPage} sur {totalPages})"
-        >
+      <p-table #dt size="small" [value]="listVille" dataKey="id" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['nomVille']" [rowsPerPageOptions]="[10, 20, 30]"
+        [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})">
 
         <ng-template #header>
           <tr>
-              <th pSortableColumn="nomVille">{{ msg.components.ville.nomVille }}<p-sortIcon field="nomVille" /></th>
-              <th></th>
+            <th pSortableColumn="nomVille">{{ msg.components.ville.nomVille }}<p-sortIcon field="nomVille" /></th>
+            <th></th>
           </tr>
         </ng-template>
         <ng-template #body let-p>
           <tr>
             <td>
-                {{ p.nomVille }}
+              {{ p.nomVille }}
             </td>
 
             <td style="width: 14%; min-width: 10rem">
-                <div class="flex gap-2">
-                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
-                    <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
-                </div>
+              <div class="flex gap-2">
+                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                  [title]="msg.buttons.modifier" />
+                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                  [title]="msg.buttons.supprimer" />
+              </div>
             </td>
           </tr>
         </ng-template>
 
         <ng-template #emptymessage>
-            <tr>
-                <td colspan="3">No Villes found.</td>
-            </tr>
+          <tr>
+            <td colspan="3">No Villes found.</td>
+          </tr>
         </ng-template>
         <ng-template #loadingbody>
-            <tr>
-                <td colspan="3">Loading Villes data. Please wait.</td>
-            </tr>
+          <tr>
+            <td colspan="3">Loading Villes data. Please wait.</td>
+          </tr>
         </ng-template>
       </p-table>
     </div>
 
-    <p-dialog
-      [(visible)]="dialogAjouter"
-      [style]="{ width: '300px' }"
-      [header]="`${msg.messages.miseAJour} ${msg.components.ville.label}`"
-      [modal]="true"
-      class="p-fluid"
-      [closable]="false"
-    >
+    <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '300px' }"
+      [header]="`${msg.messages.miseAJour} ${msg.components.ville.label}`" [modal]="true" class="p-fluid"
+      [closable]="false">
       <!-- Form content must go inside ng-template -->
       <ng-template pTemplate="content">
         <div [formGroup]="formGroup" class="p-fluid">
@@ -84,7 +64,9 @@
             <div class="flex flex-wrap gap-6">
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="nomVille" formControlName="nomVille" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nomVille')?.invalid }" style="width: 100%;" />
+                  <input pInputText id="nomVille" formControlName="nomVille" required
+                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('nomVille')?.invalid }"
+                    style="width: 100%;" />
                   <label for="nomVille">{{ msg.components.ville.nomVille }}</label>
                 </p-floatlabel>
               </div>
@@ -95,57 +77,26 @@
 
       <!-- Footer template -->
       <ng-template pTemplate="footer" style="justify-content: center;">
-        <button
-          pButton
-          pRipple
-          [label]="msg.buttons.fermer"
-          icon="pi pi-times"
-          class="p-button-outlined p-button-danger"
-          (click)="openCloseDialogAjouter(false)"
-        ></button>
-        <button
-          pButton
-          pRipple
-          [label]="msg.buttons.valider"
-          icon="pi pi-check"
-          class="p-button-success"
-          (click)="miseAjour()"
-          [disabled]="!formGroup.valid"
-        ></button>
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+          class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
       </ng-template>
     </p-dialog>
 
-    <p-dialog
-      [(visible)]="dialogSupprimer"
-      header="Confirm"
-      [modal]="true"
-      [style]="{ width: '450px' }"
-      [closable]="false"
-    >
+    <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         @if (ville) {
-          <span>{{ msg.components.ville.messageDeleteAreYouSure }}</span>
+        <span>{{ msg.components.ville.messageDeleteAreYouSure }}</span>
         }
       </div>
       <ng-template pTemplate="footer">
-        <button
-          pButton
-          pRipple
-          icon="pi pi-times"
-          type="button"
-          [label]="msg.buttons.fermer"
-          class="p-button-outlined p-button-danger"
-          (click)="dialogSupprimer = false"
-        ></button>
-        <button
-          pButton
-          pRipple
-          [label]="msg.buttons.valider"
-          icon="pi pi-check"
-          class="p-button-success"
-          (click)="supprimer()"
-        ></button>
+        <button pButton pRipple icon="pi pi-times" type="button" [label]="msg.buttons.fermer"
+          class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="supprimer()"></button>
       </ng-template>
     </p-dialog>
   </div>

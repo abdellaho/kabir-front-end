@@ -14,6 +14,14 @@ export interface Personnel {
     salaire: number;
     archiver: boolean;
     supprimer: boolean;
+    consulterStock: boolean;
+    ajouterStock: boolean;
+    modifierStock: boolean;
+    supprimerStock: boolean;
+    consulterRepertoire: boolean;
+    ajouterRepertoire: boolean;
+    modifierRepertoire: boolean;
+    supprimerRepertoire: boolean;
 }
 
 export function initObjectPersonnel(): Personnel {
@@ -32,6 +40,14 @@ export function initObjectPersonnel(): Personnel {
         dateEntrer: new Date(),
         salaire: 0,
         archiver: false,
-        supprimer: false
+        supprimer: false,
+        consulterStock: false,
+        ajouterStock: false,
+        modifierStock: false,
+        supprimerStock: false,
+        consulterRepertoire: false,
+        ajouterRepertoire: false,
+        modifierRepertoire: false,
+        supprimerRepertoire: false,
     }
 }

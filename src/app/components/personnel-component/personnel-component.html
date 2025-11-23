@@ -1,361 +1,358 @@
 <div class="card">
-    <div class="col-12">
-      <div class="card px-6 py-6">
-        <p-toast></p-toast>
-        <p-toolbar class="mb-4">
-          <ng-template pTemplate="left">
-            <div class="my-2">
-              <button
-                  pButton
-                  pRipple
-                  [label]="msg.buttons.ajouter"
-                  icon="pi pi-plus"
-                  class="p-button-success mr-2"
-                  (click)="viderAjouter()"
-                ></button>
-              </div>
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar class="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2"
+              (click)="viderAjouter()"></button>
+          </div>
 
-              <div class="my-2">
-                <p-button
-                    pRipple
-                    [outlined]="typeOfList === 0 ? false : true"
-                    icon="pi pi-crown"
-                    [label]="msg.components.personnel.label"
-                    severity="contrast"
-                    class="mr-2"
-                    (click)="listOfAll()"
-                ></p-button>
-              </div>
+          <div class="my-2">
+            <p-button pRipple [outlined]="typeOfList === 0 ? false : true" icon="pi pi-crown"
+              [label]="msg.components.personnel.label" severity="success" class="mr-2" (click)="listOfAll()"></p-button>
+          </div>
 
-              <div class="my-2">
-                  <p-button
-                      pRipple
-                      [outlined]="typeOfList === 1 ? false : true"
-                      icon="pi pi-warehouse"
-                      [label]="msg.buttons.archive"
-                      severity="warn"
-                      class="mr-2"
-                      (click)="archiveListe()"
-                  ></p-button>
-              </div>
+          <div class="my-2">
+            <p-button pRipple [outlined]="typeOfList === 1 ? false : true" icon="pi pi-warehouse"
+              [label]="msg.buttons.archive" severity="warn" class="mr-2" (click)="archiveListe()"></p-button>
+          </div>
 
-              <div class="my-2">
-                <p-button
-                      pRipple
-                      [outlined]="typeOfList === 2 ? false : true"
-                      [label]="msg.buttons.corbeille"
-                      icon="pi pi-trash"
-                      severity="danger"
-                      class="mr-2"
-                      (click)="corbeilleListe()"
-                  ></p-button>
-              </div>
-          </ng-template>
-
-          <ng-template pTemplate="right">
-          </ng-template>
-        </p-toolbar>
-
-        <p-table
-              #dt
-              [value]="listPersonnel"
-              dataKey="id"
-              [rows]="10"
-              [showGridlines]="true"
-              [paginator]="true"
-              [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']"
-              [rowsPerPageOptions]="[10, 20, 30]"
-              [showCurrentPageReport]="true"
-              currentPageReportTemplate="({currentPage} sur {totalPages})"
-              [rowHover]="true"
-          >
-
-          <ng-template #header>
-            <tr>
-                <th pSortableColumn="designation" style="width: 30%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.personnel.designation }}
-                        <p-sortIcon field="designation" />
-                    </div>
-                </th>
-
-                <th pSortableColumn="cin" style="width: 13%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.personnel.cin }}
-                        <p-sortIcon field="cin" />
-                    </div>
-                </th>
-
-                <th pSortableColumn="typePersonnel" style="width: 16%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.personnel.typePersonnel }}
-                        <p-sortIcon field="typePersonnel" />
-                    </div>
-                </th>
-
-                <th pSortableColumn="tel1" style="width: 10%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.personnel.tel1 }}
-                        <p-sortIcon field="tel1" />
-                    </div>
-                </th>
-
-                <th pSortableColumn="tel2" style="width: 10%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.personnel.tel2 }}
-                        <p-sortIcon field="tel2" />
-                    </div>
-                </th>
-
-                <th pSortableColumn="dateEntrer" style="width: 10%">
-                  <div class="flex items-center gap-2">
-                      {{ msg.components.fournisseur.dateEntrer }}
-                      <p-sortIcon field="dateEntrer" />
-                  </div>
-                </th>
-
-                <th pSortableColumn="dateEntrer" style="width: 6%">
-                    <div class="flex items-center gap-2">
-                        {{ msg.components.fournisseur.etatComptePersonnel }}
-                        <p-sortIcon field="etatComptePersonnel" />
-                    </div>
-                </th>
-
-                <th style="width: 5%"></th>
-            </tr>
-          </ng-template>
-          <ng-template #body let-p>
-            <tr>
-                <td>{{ p.designation }}</td>
-                <td>{{ p.cin }}</td>
-                <td>{{ p.typePersonnel | typePersonnelPipe }}</td>
-                <td>{{ p.tel1 }}</td>
-                <td>{{ p.tel2 }}</td>
-                <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
-                <td>
-                    @if (p.etatComptePersonnel === true) {
-                        <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
-                            {{ p.etatComptePersonnel }}
-                        </div>
-                    }
-                    @if (p.etatComptePersonnel === false) {
-                        <div style="background-color: red; color: red" class="p-tag p-tag-success">
-                            {{ p.etatComptePersonnel }}
-                        </div>
-                    }
-                </td>
-
-                <td style="width: 10%; min-width: 7rem">
-                    <div class="flex gap-2">
-                        @if (typeOfList === 0) {
-                            <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier"/>
-                            <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver"/>
-                            <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer"/>
-                            <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded [title]="msg.buttons.corbeille"/>
-                        }
-                        @if (typeOfList === 1) {
-                            <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="warn" rounded [title]="msg.buttons.desarchiver"/>
-                        }
-                        @if (typeOfList === 2) {
-                            <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.restaurer"/>
-                        }
-                    </div>
-                </td>
-            </tr>
-          </ng-template>
-
-          <ng-template #emptymessage>
-              <tr>
-                  <td colspan="10">No Personnel found.</td>
-              </tr>
-          </ng-template>
-          <ng-template #loadingbody>
-              <tr>
-                  <td colspan="10">Loading personnels data. Please wait.</td>
-              </tr>
-          </ng-template>
-        </p-table>
-      </div>
-
-      <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-        header="Mise à jour Personnel" [modal]="true" class="p-fluid" [closable]="false">
-        <!-- Form content must go inside ng-template -->
-        <ng-template pTemplate="content">
-          <div [formGroup]="formGroup" class="p-fluid">
-            <div class="card flex flex-col gap-4">
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="designation" formControlName="designation" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
-                    <label for="designation">{{ msg.components.personnel.designation }}</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="cin" formControlName="cin" required [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
-                    <label for="cin">{{ msg.components.personnel.cin }}</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel class="w-full md:w-56" variant="on">
-                    <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel" appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;" class="w-full md:w-56" />
-                    <label for="typePersonnel">{{ msg.components.personnel.typePersonnel }}</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="login" formControlName="login" />
-                    <label for="login">{{ msg.components.personnel.login }}</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <p-password id="password" formControlName="password" />
-                    <label for="password">{{ msg.components.personnel.password }}</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY"/>
-                    <label for="dateEntrer">{{ msg.components.personnel.dateEntrer }}</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="tel1" formControlName="tel1" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
-                    <label for="tel1">{{ msg.components.personnel.tel1 }}</label>
-                  </p-floatlabel>
-                  @if (formGroup.errors?.['tel1EqualTel2']) {
-                    <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
-                  }
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="tel2" formControlName="tel2" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
-                    <label for="tel2">{{ msg.components.personnel.tel2 }}</label>
-                  </p-floatlabel>
-                  @if (formGroup.errors?.['tel1EqualTel2']) {
-                    <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
-                  }
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <input pInputText id="adresse" formControlName="adresse" />
-                    <label for="adresse">{{ msg.components.personnel.adresse }}</label>
-                  </p-floatlabel>
-                </div>
-
-                <div class="flex flex-col grow basis-0">
-                  <p-floatlabel variant="on">
-                    <p-input-number id="salaire" formControlName="salaire" [min]="0" [maxFractionDigits]="2" />
-                    <label for="salaire">{{ msg.components.personnel.salaire }}</label>
-                  </p-floatlabel>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-6">
-                <div class="flex flex-col grow basis-0">
-                  <span id="etatComptePersonnelSpan">{{ msg.components.personnel.etatComptePersonnel }}</span>
-                  <p-toggleswitch name="etatComptePersonnel" id="etatComptePersonnel" formControlName="etatComptePersonnel" />
-                </div>
-
-                <div class="flex flex-col grow basis-0"></div>
-              </div>
-            </div>
+          <div class="my-2">
+            <p-button pRipple [outlined]="typeOfList === 2 ? false : true" [label]="msg.buttons.corbeille"
+              icon="pi pi-trash" severity="danger" class="mr-2" (click)="corbeilleListe()"></p-button>
           </div>
         </ng-template>
 
-        <!-- Footer template -->
-        <ng-template pTemplate="footer">
-          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
-          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+        <ng-template pTemplate="right">
         </ng-template>
-      </p-dialog>
+      </p-toolbar>
 
-      <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          @if (personnel) {
-            <span>{{ msg.components.personnel.messageDeleteAreYouSure }}</span>
-          }
-        </div>
+      <p-table #dt [value]="listPersonnel" dataKey="id" [rows]="10" [showGridlines]="true" [paginator]="true"
+        [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']" [rowsPerPageOptions]="[10, 20, 30]"
+        [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
-        <ng-template pTemplate="footer">
-          <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
-          <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="supprimer()"></button>
+        <ng-template #header>
+          <tr>
+            <th pSortableColumn="designation" style="width: 30%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.personnel.designation }}
+                <p-sortIcon field="designation" />
+              </div>
+            </th>
+
+            <th pSortableColumn="cin" style="width: 13%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.personnel.cin }}
+                <p-sortIcon field="cin" />
+              </div>
+            </th>
+
+            <th pSortableColumn="typePersonnel" style="width: 16%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.personnel.typePersonnel }}
+                <p-sortIcon field="typePersonnel" />
+              </div>
+            </th>
+
+            <th pSortableColumn="tel1" style="width: 10%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.personnel.tel1 }}
+                <p-sortIcon field="tel1" />
+              </div>
+            </th>
+
+            <th pSortableColumn="tel2" style="width: 10%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.personnel.tel2 }}
+                <p-sortIcon field="tel2" />
+              </div>
+            </th>
+
+            <th pSortableColumn="dateEntrer" style="width: 10%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.fournisseur.dateEntrer }}
+                <p-sortIcon field="dateEntrer" />
+              </div>
+            </th>
+
+            <th pSortableColumn="dateEntrer" style="width: 6%">
+              <div class="flex items-center gap-2">
+                {{ msg.components.fournisseur.etatComptePersonnel }}
+                <p-sortIcon field="etatComptePersonnel" />
+              </div>
+            </th>
+
+            <th style="width: 5%"></th>
+          </tr>
         </ng-template>
-      </p-dialog>
+        <ng-template #body let-p>
+          <tr>
+            <td>{{ p.designation }}</td>
+            <td>{{ p.cin }}</td>
+            <td>{{ p.typePersonnel | typePersonnelPipe }}</td>
+            <td>{{ p.tel1 }}</td>
+            <td>{{ p.tel2 }}</td>
+            <td>{{ p.dateEntrer | date:'dd/MM/yyyy' }}</td>
+            <td>
+              @if (p.etatComptePersonnel === true) {
+              <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
+                {{ p.etatComptePersonnel }}
+              </div>
+              }
+              @if (p.etatComptePersonnel === false) {
+              <div style="background-color: red; color: red" class="p-tag p-tag-success">
+                {{ p.etatComptePersonnel }}
+              </div>
+              }
+            </td>
 
-        <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                @if (personnel) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureArchive }}</span>
+            <td style="width: 10%; min-width: 7rem">
+              <div class="flex gap-2">
+                @if (typeOfList === 0) {
+                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                  [title]="msg.buttons.modifier" />
+                <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
+                  [title]="msg.buttons.archiver" />
+                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                  [title]="msg.buttons.supprimer" />
+                <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
+                  [title]="msg.buttons.corbeille" />
                 }
-            </div>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(true)"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                @if (personnel) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureCorbeille }}</span>
+                @if (typeOfList === 1) {
+                <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="warn" rounded
+                  [title]="msg.buttons.desarchiver" />
                 }
-            </div>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(true)"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                @if (personnel) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerArchive }}</span>
+                @if (typeOfList === 2) {
+                <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
+                  [title]="msg.buttons.restaurer" />
                 }
-            </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
 
-            <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(false)"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                @if (personnel) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerCorbeille }}</span>
-                }
-            </div>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(false)"></button>
-            </ng-template>
-        </p-dialog>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="10">No Personnel found.</td>
+          </tr>
+        </ng-template>
+        <ng-template #loadingbody>
+          <tr>
+            <td colspan="10">Loading personnels data. Please wait.</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+
+    <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '500px', maxWidth: '100%' }"
+      [breakpoints]="{ '960px': '90vw', '640px': '95vw' }" header="Mise à jour Personnel" [modal]="true" class="p-fluid"
+      [closable]="false">
+      <!-- Form content must go inside ng-template -->
+      <ng-template pTemplate="content">
+        <div [formGroup]="formGroup" class="p-fluid">
+          <div class="card flex flex-col gap-4">
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="designation" formControlName="designation" required
+                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
+                  <label for="designation">{{ msg.components.personnel.designation }}</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="cin" formControlName="cin" required
+                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
+                  <label for="cin">{{ msg.components.personnel.cin }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel class="w-full md:w-56" variant="on">
+                  <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel"
+                    appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;"
+                    class="w-full md:w-56" />
+                  <label for="typePersonnel">{{ msg.components.personnel.typePersonnel }}</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="login" formControlName="login" />
+                  <label for="login">{{ msg.components.personnel.login }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <p-password id="password" formControlName="password" />
+                  <label for="password">{{ msg.components.personnel.password }}</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body"
+                    [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                  <label for="dateEntrer">{{ msg.components.personnel.dateEntrer }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="tel1" formControlName="tel1" [maxLength]="10"
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                  <label for="tel1">{{ msg.components.personnel.tel1 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['tel1EqualTel2']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                  msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
+                }
+              </div>
+
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="tel2" formControlName="tel2" [maxLength]="10"
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                  <label for="tel2">{{ msg.components.personnel.tel2 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['tel1EqualTel2']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                  msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
+                }
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <input pInputText id="adresse" formControlName="adresse" />
+                  <label for="adresse">{{ msg.components.personnel.adresse }}</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="flex flex-col grow basis-0">
+                <p-floatlabel variant="on">
+                  <p-input-number id="salaire" formControlName="salaire" [min]="0" [maxFractionDigits]="2" />
+                  <label for="salaire">{{ msg.components.personnel.salaire }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex flex-col grow basis-0">
+                <span id="etatComptePersonnelSpan">{{ msg.components.personnel.etatComptePersonnel }}</span>
+                <p-toggleswitch name="etatComptePersonnel" id="etatComptePersonnel"
+                  formControlName="etatComptePersonnel" />
+              </div>
+
+              <div class="flex flex-col grow basis-0"></div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Footer template -->
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+          class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (personnel) {
+        <span>{{ msg.components.personnel.messageDeleteAreYouSure }}</span>
+        }
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+          class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="supprimer()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (personnel) {
+        <span>{{ msg.components.personnel.messageDeleteAreYouSureArchive }}</span>
+        }
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+          class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="archiver(true)"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (personnel) {
+        <span>{{ msg.components.personnel.messageDeleteAreYouSureCorbeille }}</span>
+        }
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+          class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="corbeille(true)"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (personnel) {
+        <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerArchive }}</span>
+        }
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+          class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="archiver(false)"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+      [closable]="false">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (personnel) {
+        <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerCorbeille }}</span>
+        }
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+          class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="corbeille(false)"></button>
+      </ng-template>
+    </p-dialog>
   </div>
+</div>

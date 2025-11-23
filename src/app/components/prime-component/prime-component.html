@@ -5,14 +5,8 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            [label]="msg.buttons.ajouter"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="viderAjouter()"
-                        ></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
                 </ng-template>
 
@@ -20,28 +14,22 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table
-                #dt
-                [value]="listPrime"
-                dataKey="id"
-                [rowHover]="true"
-                [showGridlines]="true"
-                [globalFilterFields]="['montant', 'prime']"
-            >
+            <p-table #dt [value]="listPrime" dataKey="id" [rowHover]="true" [showGridlines]="true"
+                [globalFilterFields]="['montant', 'prime']">
 
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="montant" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.prime.montant }}
-                                <p-sortIcon field="montant"/>
+                                <p-sortIcon field="montant" />
                             </div>
                         </th>
 
                         <th pSortableColumn="prime" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.prime.prime }}
-                                <p-sortIcon field="prime"/>
+                                <p-sortIcon field="prime" />
                             </div>
                         </th>
 
@@ -54,8 +42,8 @@
                         <td>{{ p.prime }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
-                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded/>
-                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded/>
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
                             </div>
                         </td>
                     </tr>
@@ -74,9 +62,10 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
-                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-                  [header]="`${msg.messages.miseAJour} ${msg.components.prime.label}`" [modal]="true" class="p-fluid" [closable]="false">
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.prime.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
@@ -84,14 +73,16 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="montant" formControlName="montant" [min]="0.00000001" [locale]="msg.locale.default" [maxFractionDigits]="2"/>
+                                    <p-input-number id="montant" formControlName="montant" [min]="0.00000001" style="width: 100%;"
+                                        [locale]="msg.locale.default" [maxFractionDigits]="2" />
                                     <label for="montant">{{ msg.components.prime.montant }}</label>
                                 </p-floatlabel>
                             </div>
-
+                            
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="prime" formControlName="prime" [min]="0.00000001" [locale]="msg.locale.default" [maxFractionDigits]="2"/>
+                                    <p-input-number id="prime" formControlName="prime" [min]="0.00000001" style="width: 100%;"
+                                        [locale]="msg.locale.default" [maxFractionDigits]="2" />
                                     <label for="prime">{{ msg.components.prime.prime }}</label>
                                 </p-floatlabel>
                             </div>
@@ -102,27 +93,27 @@
 
             <!-- Footer template -->
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger"
-                        (click)="openCloseDialogAjouter(false)"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()"
-                        [disabled]="!formGroup.valid"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (prime) {
-                    <span>{{ msg.components.prime.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.prime.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="supprimer()"></button>
+                    (click)="supprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>

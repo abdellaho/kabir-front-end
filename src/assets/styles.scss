@@ -8,6 +8,13 @@
     --p-datatable-header-cell-sm-padding: 0.2rem 0.5rem !important;
     --p-datatable-body-cell-sm-padding: 0.2rem 0.5rem !important;
     --p-button-icon-only-width: 1.5rem !important;
+    --p-button-warn-background: #f7a202 !important;
+    --p-button-warn-color: #ffffff !important;
+    --p-button-warn-hover-background: #f7a202 !important;
+    --p-button-warn-hover-border-color: #f7a202 !important;
+    --p-button-warn-border-color: #f7a202 !important;
+    --p-button-outlined-warn-border-color: #f7a202 !important;
+    --p-button-outlined-warn-color: #f7a202 !important;
 }
 
 .p-toolbar {
@@ -16,4 +23,10 @@
 
 .p-dialog-footer {
     justify-content: center !important;
+}
+
+.orange-color {
+    background: #FBC02D !important;
+    border: 1px solid #FBC02D !important;
+    color: white !important;
 }

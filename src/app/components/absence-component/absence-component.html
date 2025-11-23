@@ -5,14 +5,8 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            [label]="msg.buttons.ajouter"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="viderAjouter()"
-                        ></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
                 </ng-template>
 
@@ -20,26 +14,12 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table
-                #dt
-                size="small"
-                class="p-datatable-sm my-custom-datatable"
-                [value]="listAbsence"
-                dataKey="id"
-                [rows]="10"
-                rowGroupMode="rowspan"
-                groupRowsBy="dateAbsence"
-                sortField="dateAbsence"
-                [sortOrder]="-1"
-                sortMode="multiple"
-                [showGridlines]="true"
-                [paginator]="true"
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAbsence" dataKey="id"
+                [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateAbsence" sortField="dateAbsence" [sortOrder]="-1"
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['dateAbsence', 'personnelId', 'matin', 'apresMidi']"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="({currentPage} sur {totalPages})"
-                [rowHover]="true"
-            >
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
@@ -83,12 +63,13 @@
                             <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
                         </td>
                         <td>
-                            <p-checkbox [(ngModel)]="p.apresMidi" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
+                            <p-checkbox [(ngModel)]="p.apresMidi" [binary]="true"
+                                [ngClass]="{ 'custom-disabled': true }" />
                         </td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
-                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded/>
-                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded/>
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
                             </div>
                         </td>
                     </tr>
@@ -107,9 +88,10 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
-                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-                  [header]="`${msg.messages.miseAJour} ${msg.components.absence.label}`" [modal]="true" class="p-fluid" [closable]="false">
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.absence.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
@@ -117,18 +99,20 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-date-picker id="dateAbsence" formControlName="dateAbsence" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY"
-                                                   required
-                                                   [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAbsence')?.invalid }"/>
+                                    <p-date-picker id="dateAbsence" formControlName="dateAbsence" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAbsence')?.invalid }" />
                                     <label for="dateAbsence">{{ msg.components.absence.dateAbsence }}</label>
                                 </p-floatlabel>
                             </div>
-
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelId"
-                                              [options]="listPersonnel" appendTo="body" optionLabel="designation"
-                                              optionValue="id" style="height: 30px;" class="w-full md:w-56"/>
+                                        [options]="listPersonnel" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
                                     <label for="personnelId">{{ msg.components.absence.personnel }}</label>
                                 </p-floatlabel>
                             </div>
@@ -137,12 +121,12 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <span id="matinSpan">{{ msg.components.absence.matin }}</span>
-                                <p-toggleswitch name="matin" id="matin" formControlName="matin"/>
+                                <p-toggleswitch name="matin" id="matin" formControlName="matin" />
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <span id="apresMidiSpan">{{ msg.components.absence.apresMidi }}</span>
-                                <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi"/>
+                                <p-toggleswitch name="apresMidi" id="apresMidi" formControlName="apresMidi" />
                             </div>
                         </div>
                     </div>
@@ -151,27 +135,27 @@
 
             <!-- Footer template -->
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger"
-                        (click)="openCloseDialogAjouter(false)"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()"
-                        [disabled]="!formGroup.valid"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (absence) {
-                    <span>{{ msg.components.absence.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.absence.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="supprimer()"></button>
+                    (click)="supprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>

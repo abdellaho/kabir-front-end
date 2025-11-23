@@ -5,50 +5,26 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left" class="gap-2">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            [label]="msg.buttons.ajouter"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="viderAjouter()"
-                        ></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
 
                     <div class="my-2">
-                        <p-button
-                            severity="contrast"
-                            [outlined]="typeOfList === 0 ? false : true"
-                            pRipple
-                            icon="pi pi-crown"
-                            [label]="msg.components.repertoire.label"
-                            class="mr-2"
-                            (click)="listOfAll()"
-                        ></p-button>
+                        <p-button severity="success" [outlined]="typeOfList === 0 ? false : true" pRipple
+                            icon="pi pi-crown" [label]="msg.components.repertoire.label" class="mr-2"
+                            (click)="listOfAll()"></p-button>
                     </div>
 
                     <div class="my-2">
-                        <p-button
-                            pRipple
-                            icon="pi pi-warehouse"
-                            [label]="msg.buttons.archive"
-                            severity="warn"
-                            [outlined]="typeOfList === 1 ? false : true"
-                            class="mr-2"
-                            (click)="archiveListe()"
-                        ></p-button>
+                        <p-button pRipple icon="pi pi-warehouse" [label]="msg.buttons.archive" severity="warn"
+                            [outlined]="typeOfList === 1 ? false : true" class="mr-2"
+                            (click)="archiveListe()"></p-button>
                     </div>
 
                     <div class="my-2">
-                        <p-button
-                            severity="danger"
-                            [outlined]="typeOfList === 2 ? false : true"
-                            pRipple
-                            [label]="msg.buttons.corbeille"
-                            icon="pi pi-ban"
-                            class="mr-2"
-                            (click)="bloqueListe()"
-                        ></p-button>
+                        <p-button severity="danger" [outlined]="typeOfList === 2 ? false : true" pRipple
+                            [label]="msg.buttons.corbeille" icon="pi pi-trash" class="mr-2"
+                            (click)="bloqueListe()"></p-button>
                     </div>
                 </ng-template>
 
@@ -56,91 +32,81 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table
-                #dt
-                size="small"
-                class="p-datatable-sm"
-                [value]="listRepertoire"
-                dataKey="id"
-                [rows]="10"
-                [rowHover]="true"
-                [showGridlines]="true"
-                [paginator]="true"
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="10"
+                [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['typeRepertoire', 'designation', 'villeId', 'ice', 'tel1', 'tel2', 'tel3', 'personnelId', 'observation', 'nbrOperationClient']"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="({currentPage} sur {totalPages})"
-            >
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})">
 
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="typeRepertoire" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.typeRepertoire }}
-                                <p-sortIcon field="typeRepertoire"/>
+                                <p-sortIcon field="typeRepertoire" />
                             </div>
                         </th>
 
                         <th pSortableColumn="designation" style="width: 30%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.designation }}
-                                <p-sortIcon field="designation"/>
+                                <p-sortIcon field="designation" />
                             </div>
                         </th>
 
                         <th pSortableColumn="villeId" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.villeId }}
-                                <p-sortIcon field="villeId"/>
+                                <p-sortIcon field="villeId" />
                             </div>
                         </th>
 
                         <th pSortableColumn="ice" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.ice }}
-                                <p-sortIcon field="ice"/>
+                                <p-sortIcon field="ice" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel1" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.tel1 }}
-                                <p-sortIcon field="tel1"/>
+                                <p-sortIcon field="tel1" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel2" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.tel2 }}
-                                <p-sortIcon field="tel2"/>
+                                <p-sortIcon field="tel2" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel3" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.tel3 }}
-                                <p-sortIcon field="tel3"/>
+                                <p-sortIcon field="tel3" />
                             </div>
                         </th>
 
                         <th pSortableColumn="personnelId" style="width: 15%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.personnelId }}
-                                <p-sortIcon field="personnelId"/>
+                                <p-sortIcon field="personnelId" />
                             </div>
                         </th>
 
                         <th pSortableColumn="observation" style="width: 20%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.observation }}
-                                <p-sortIcon field="observation"/>
+                                <p-sortIcon field="observation" />
                             </div>
                         </th>
 
                         <th pSortableColumn="nbrOperationClient" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.nbrOperationClient }}
-                                <p-sortIcon field="nbrOperationClient"/>
+                                <p-sortIcon field="nbrOperationClient" />
                             </div>
                         </th>
 
@@ -163,16 +129,22 @@
                         <td>
                             <div class="flex gap-2">
                                 @if (typeOfList === 0) {
-                                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier"/>
-                                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver" />
-                                    <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer"/>
-                                    <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded [title]="msg.buttons.corbeille" />
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                                    [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
+                                    [title]="msg.buttons.archiver" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                                    [title]="msg.buttons.supprimer" />
+                                <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
+                                    [title]="msg.buttons.corbeille" />
                                 }
                                 @if (typeOfList === 1) {
-                                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.desarchiver"/>
+                                <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded
+                                    [title]="msg.buttons.desarchiver" />
                                 }
                                 @if (typeOfList === 2) {
-                                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.restaurer"/>
+                                <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
+                                    [title]="msg.buttons.restaurer" />
                                 }
                             </div>
                         </td>
@@ -192,9 +164,10 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
-                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-                  [header]="`${msg.messages.miseAJour} ${msg.components.repertoire.label}`" [modal]="true" class="p-fluid" [closable]="false">
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '500px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.repertoire.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
@@ -203,8 +176,8 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="typeRepertoire" inputId="typeRepertoire"
-                                              [options]="typeRepertoire" appendTo="body" optionLabel="label"
-                                              optionValue="value" style="height: 30px;" class="w-full md:w-56"/>
+                                        [options]="typeRepertoire" appendTo="body" optionLabel="label"
+                                        optionValue="value" style="height: 30px;" class="w-full md:w-56" />
                                     <label for="typeRepertoire">{{ msg.components.repertoire.typeRepertoire }}</label>
                                 </p-floatlabel>
                             </div>
@@ -212,7 +185,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="designation" formControlName="designation" required
-                                           [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }"/>
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
                                     <label for="designation">{{ msg.components.repertoire.designation }}</label>
                                 </p-floatlabel>
                             </div>
@@ -222,24 +195,27 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="villeId" inputId="villeId" [options]="listVille"
-                                              appendTo="body" optionLabel="nomVille" optionValue="id"
-                                              style="height: 30px;" class="w-full md:w-56"/>
+                                        appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
+                                        class="w-full md:w-56" />
                                     <label for="villeId">{{ msg.components.repertoire.villeId }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] }" />
+                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel1 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3']) {
-                                    @if (formGroup.errors?.['tel1EqualTel2']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
-                                    }
-                                    @if (formGroup.errors?.['tel1EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
-                                    }
+                                @if (formGroup.errors?.['tel1EqualTel2']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                }
+                                @if (formGroup.errors?.['tel1EqualTel3']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                }
                                 }
                             </div>
                         </div>
@@ -247,31 +223,37 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] }" />
+                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] }" />
                                     <label for="tel2">{{ msg.components.repertoire.tel2 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3']) {
-                                    @if (formGroup.errors?.['tel1EqualTel2']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
-                                    }
-                                    @if (formGroup.errors?.['tel2EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
-                                    }
+                                @if (formGroup.errors?.['tel1EqualTel2']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                }
+                                @if (formGroup.errors?.['tel2EqualTel3']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                }
                                 }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel3" formControlName="tel3" [maxlength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] }" />
+                                    <input pInputText id="tel3" formControlName="tel3" [maxlength]="10"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel3 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3']) {
-                                    @if (formGroup.errors?.['tel1EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
-                                    }
-                                    @if (formGroup.errors?.['tel2EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
-                                    }
+                                @if (formGroup.errors?.['tel1EqualTel3']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                }
+                                @if (formGroup.errors?.['tel2EqualTel3']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                }
                                 }
                             </div>
                         </div>
@@ -286,7 +268,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="observation" formControlName="observation"/>
+                                    <input pInputText id="observation" formControlName="observation" />
                                     <label for="observation">{{ msg.components.repertoire.observation }}</label>
                                 </p-floatlabel>
                             </div>
@@ -296,15 +278,16 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelId"
-                                              [options]="listPersonnel" appendTo="body" optionLabel="designation"
-                                              optionValue="id" style="height: 30px;" class="w-full md:w-56"/>
+                                        [options]="listPersonnel" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
                                     <label for="personnelId">{{ msg.components.repertoire.personnelId }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-input-number id="plafond" formControlName="plafond" [min]="0" [maxFractionDigits]="2"/>
+                                    <p-input-number id="plafond" formControlName="plafond" [min]="0"
+                                        [maxFractionDigits]="2" />
                                     <label for="plafond">{{ msg.components.repertoire.plafond }}</label>
                                 </p-floatlabel>
                             </div>
@@ -315,95 +298,95 @@
 
             <!-- Footer template -->
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger"
-                        (click)="openCloseDialogAjouter(false)"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()"
-                        [disabled]="!formGroup.valid"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                    <span>{{ msg.components.repertoire.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.repertoire.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="supprimer()"></button>
+                    (click)="supprimer()"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogArchiver" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogArchiver" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                    <span>{{ msg.components.repertoire.messageDeleteAreYouSureArchive }}</span>
+                <span>{{ msg.components.repertoire.messageDeleteAreYouSureArchive }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="archiver(true)"></button>
+                    (click)="archiver(true)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogCorbeille" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogCorbeille" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                    <span>{{ msg.components.repertoire.messageDeleteAreYouSureCorbeille }}</span>
+                <span>{{ msg.components.repertoire.messageDeleteAreYouSureCorbeille }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="corbeille(true)"></button>
+                    (click)="corbeille(true)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogAnnulerArchiver" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogAnnulerArchiver" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                    <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerArchive }}</span>
+                <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerArchive }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="archiver(false)"></button>
+                    (click)="archiver(false)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogAnnulerCorbeille" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogAnnulerCorbeille" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                    <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerCorbeille }}</span>
+                <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerCorbeille }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="corbeille(false)"></button>
+                    (click)="corbeille(false)"></button>
             </ng-template>
         </p-dialog>
     </div>

@@ -5,72 +5,36 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            [label]="msg.buttons.ajouter"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="viderAjouter()"
-                        ></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
 
-                        <div class="my-2">
-                            <p-button
-                                pRipple
-                                [outlined]="typeOfList === 0 ? false : true"
-                                icon="pi pi-crown"
-                                [label]="msg.components.fournisseur.label"
-                                severity="contrast"
-                                class="mr-2"
-                                (click)="listOfAll()"
-                            ></p-button>
-                        </div>
+                    <div class="my-2">
+                        <p-button pRipple [outlined]="typeOfList === 0 ? false : true" icon="pi pi-crown"
+                            [label]="msg.components.fournisseur.label" severity="success" class="mr-2"
+                            (click)="listOfAll()"></p-button>
+                    </div>
 
-                        <div class="my-2">
-                            <p-button
-                                pRipple
-                                [outlined]="typeOfList === 1 ? false : true"
-                                icon="pi pi-warehouse"
-                                [label]="msg.buttons.archive"
-                                severity="warn"
-                                class="mr-2"
-                                (click)="archiveListe()"
-                            ></p-button>
-                        </div>
+                    <div class="my-2">
+                        <p-button pRipple [outlined]="typeOfList === 1 ? false : true" icon="pi pi-warehouse"
+                            [label]="msg.buttons.archive" severity="warn" class="mr-2"
+                            (click)="archiveListe()"></p-button>
+                    </div>
 
-                        <div class="my-2">
-                            <p-button
-                                pRipple
-                                [outlined]="typeOfList === 2 ? false : true"
-                                [label]="msg.buttons.corbeille"
-                                icon="pi pi-trash"
-                                severity="danger"
-                                class="mr-2"
-                                (click)="corbeilleListe()"
-                            ></p-button>
-                        </div>
+                    <div class="my-2">
+                        <p-button pRipple [outlined]="typeOfList === 2 ? false : true" [label]="msg.buttons.corbeille"
+                            icon="pi pi-trash" severity="danger" class="mr-2" (click)="corbeilleListe()"></p-button>
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
                 </ng-template>
             </p-toolbar>
 
-            <p-table
-                #dt
-                size="small"
-                class="p-datatable-sm"
-                [value]="listFournisseur"
-                dataKey="id"
-                [rows]="10"
-                [showGridlines]="true"
-                [paginator]="true"
-                [globalFilterFields]="['designation', 'type', 'tel1', 'tel2']"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="({currentPage} sur {totalPages})"
-                [rowHover]="true"
-            >
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listFournisseur" dataKey="id" [rows]="10"
+                [showGridlines]="true" [paginator]="true" [globalFilterFields]="['designation', 'type', 'tel1', 'tel2']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
@@ -123,16 +87,22 @@
                         <td>
                             <div class="flex gap-2">
                                 @if (typeOfList === 0) {
-                                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
-                                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver"/>
-                                    <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
-                                    <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded [title]="msg.buttons.corbeille"/>
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                                    [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
+                                    [title]="msg.buttons.archiver" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                                    [title]="msg.buttons.supprimer" />
+                                <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
+                                    [title]="msg.buttons.corbeille" />
                                 }
                                 @if (typeOfList === 1) {
-                                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.desarchiver"/>
+                                <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded
+                                    [title]="msg.buttons.desarchiver" />
                                 }
                                 @if (typeOfList === 2) {
-                                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.restaurer"/>
+                                <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
+                                    [title]="msg.buttons.restaurer" />
                                 }
                             </div>
                         </td>
@@ -152,9 +122,10 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
-                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-                  [header]="`${msg.messages.miseAJour} ${msg.components.fournisseur.label}`" [modal]="true" class="p-fluid" [closable]="false">
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '500px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.fournisseur.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
@@ -163,7 +134,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="designation" formControlName="designation" required
-                                           [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }"/>
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
                                     <label for="designation">{{ msg.components.fournisseur.designation }}</label>
                                 </p-floatlabel>
                             </div>
@@ -171,8 +142,8 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="type" inputId="type" [options]="typeFournisseurs"
-                                              appendTo="body" optionLabel="label" optionValue="value"
-                                              style="height: 30px;" class="w-full md:w-56"/>
+                                        appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;"
+                                        class="w-full md:w-56" />
                                     <label for="type">{{ msg.components.fournisseur.type }}</label>
                                 </p-floatlabel>
                             </div>
@@ -181,18 +152,20 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="ice" formControlName="ice" maxlength="15"/>
+                                    <input pInputText id="ice" formControlName="ice" maxlength="15" />
                                     <label for="ice">{{ msg.components.fournisseur.ice }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                                     <label for="tel1">{{ msg.components.fournisseur.tel1 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2']) {
-                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.fournisseur.errors.tel1AndTel2Identique }}</p-message>
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.fournisseur.errors.tel1AndTel2Identique }}</p-message>
                                 }
                             </div>
                         </div>
@@ -200,17 +173,19 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                                     <label for="tel2">{{ msg.components.fournisseur.tel2 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2']) {
-                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.fournisseur.errors.tel1AndTel2Identique }}</p-message>
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.fournisseur.errors.tel1AndTel2Identique }}</p-message>
                                 }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="adresse" formControlName="adresse"/>
+                                    <input pInputText id="adresse" formControlName="adresse" />
                                     <label for="adresse">{{ msg.components.fournisseur.adresse }}</label>
                                 </p-floatlabel>
                             </div>
@@ -221,83 +196,95 @@
 
             <!-- Footer template -->
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger"
-                        (click)="openCloseDialogAjouter(false)"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()"
-                        [disabled]="!formGroup.valid"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
             </ng-template>
         </p-dialog>
 
         <p-dialog [(visible)]="dialogSupprimer" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+            [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (fournisseur) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.personnel.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-success"
-                        (click)="supprimer()"></button>
+                    (click)="supprimer()"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <p-dialog [(visible)]="dialogArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+            [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (fournisseur) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureArchive }}</span>
+                <span>{{ msg.components.personnel.messageDeleteAreYouSureArchive }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(true)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="archiver(true)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <p-dialog [(visible)]="dialogCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+            [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (fournisseur) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureCorbeille }}</span>
+                <span>{{ msg.components.personnel.messageDeleteAreYouSureCorbeille }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(true)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="corbeille(true)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <p-dialog [(visible)]="dialogAnnulerArchiver" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+            [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (fournisseur) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerArchive }}</span>
+                <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerArchive }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="archiver(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogAnnulerArchiver = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="archiver(false)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }" [closable]="false">
+        <p-dialog [(visible)]="dialogAnnulerCorbeille" header="Confirm" [modal]="true" [style]="{ width: '450px' }"
+            [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (fournisseur) {
-                    <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerCorbeille }}</span>
+                <span>{{ msg.components.personnel.messageDeleteAreYouSureAnnulerCorbeille }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button" class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="corbeille(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="corbeille(false)"></button>
             </ng-template>
         </p-dialog>
     </div>

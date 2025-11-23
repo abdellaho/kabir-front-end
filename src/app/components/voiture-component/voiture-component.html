@@ -5,14 +5,8 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            [label]="msg.buttons.ajouter"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="viderAjouter()"
-                        ></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
                 </ng-template>
 
@@ -20,28 +14,22 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table
-                #dt
-                [value]="listVoiture"
-                dataKey="id"
-                [rowHover]="true"
-                [showGridlines]="true"
-                [globalFilterFields]="['numVoiture', 'kmMax']"
-            >
+            <p-table #dt [value]="listVoiture" dataKey="id" [rowHover]="true" [showGridlines]="true"
+                [globalFilterFields]="['numVoiture', 'kmMax']">
 
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="numVoiture" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.voiture.numVoiture }}
-                                <p-sortIcon field="numVoiture"/>
+                                <p-sortIcon field="numVoiture" />
                             </div>
                         </th>
 
                         <th pSortableColumn="kmMax" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.voiture.kmMax }}
-                                <p-sortIcon field="kmMax"/>
+                                <p-sortIcon field="kmMax" />
                             </div>
                         </th>
 
@@ -54,8 +42,8 @@
                         <td>{{ p.kmMax }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
-                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded/>
-                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded/>
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded />
                             </div>
                         </td>
                     </tr>
@@ -74,9 +62,10 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '700px', maxWidth: '100%' }"
-                  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-                  [header]="`${msg.messages.miseAJour} ${msg.components.voiture.label}`" [modal]="true" class="p-fluid" [closable]="false">
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.voiture.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
@@ -85,7 +74,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="numVoiture" formControlName="numVoiture" required
-                                           [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('numVoiture')?.invalid }"/>
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('numVoiture')?.invalid }" />
                                     <label for="numVoiture">{{ msg.components.voiture.numVoiture }}</label>
                                 </p-floatlabel>
                             </div>
@@ -93,7 +82,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <p-input-number id="kmMax" formControlName="kmMax"
-                                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('kmMax')?.invalid }"/>
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('kmMax')?.invalid }" />
                                     <label for="kmMax">{{ msg.components.voiture.kmMax }}</label>
                                 </p-floatlabel>
                             </div>
@@ -104,27 +93,27 @@
 
             <!-- Footer template -->
             <ng-template pTemplate="footer">
-                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger"
-                        (click)="openCloseDialogAjouter(false)"></button>
-                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="miseAjour()"
-                        [disabled]="!formGroup.valid"></button>
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
-                  [closable]="false">
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (voiture) {
-                    <span>{{ msg.components.voiture.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.voiture.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
-                        class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                        (click)="supprimer()"></button>
+                    (click)="supprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>
