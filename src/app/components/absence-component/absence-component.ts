@@ -61,6 +61,7 @@ export class AbsenceComponent implements OnInit {
     listPersonnel: Personnel[] = [];
     listAbsence: Absence[] = [];
     absence: Absence = initObjectAbsence();
+    selectedAbsence!: Absence;
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;

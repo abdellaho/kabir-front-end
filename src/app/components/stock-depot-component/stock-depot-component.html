@@ -1,1 +1,145 @@
-<p>stock-depot-component works!</p>
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listStockDepot" dataKey="id"
+                [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation" [sortOrder]="-1"
+                selectionMode="single" [(selection)]="selectedStockDepot" dataKey="id"
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['dateOperation', 'stockId', 'qteStockDepot']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="dateOperation" style="width: 30%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stockDepot.dateOperation }}
+                                <p-sortIcon field="dateOperation" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="stockId" style="width: 45%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stockDepot.stockId }}
+                                <p-sortIcon field="stockId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="qteStockDepot" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.stockDepot.qteStockDepot }}
+                                <p-sortIcon field="qteStockDepot" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                    <tr>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.stockId }}</td>
+                        <td>{{ p.qteStockDepot }}</td>
+
+                        <td style="min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="6">No StockDepot found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="6">Loading StockDepot data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.stockDepot.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
+                                    <label for="dateOperation">{{ msg.components.stockDepot.dateOperation }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId"
+                                        [options]="listStock" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="stockId">{{ msg.components.stockDepot.stockId }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <span id="qteStockDepotSpan">{{ msg.components.stockDepot.qteStockDepot }}</span>
+                                <p-inputNumber name="qteStockDepot" id="qteStockDepot" formControlName="qteStockDepot" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (stockDepot) {
+                <span>{{ msg.components.stockDepot.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

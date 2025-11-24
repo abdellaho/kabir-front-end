@@ -47,6 +47,7 @@ export class VoitureComponent implements OnInit {
 
   listVoiture: Voiture[] = [];
   voiture: Voiture = initObjectVoiture();
+  selectedVoiture!: Voiture;
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;

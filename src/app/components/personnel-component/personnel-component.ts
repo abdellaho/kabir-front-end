@@ -62,6 +62,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 export class PersonnelComponent implements OnInit {
 
     personnel: Personnel = initObjectPersonnel();
+    selectedPersonnel!: Personnel;
     listPersonnel: Personnel[] = [];
     typePersonnel: { label: string, value: TypePersonnel }[] = filteredTypePersonnelAll;
     dialogSupprimer: boolean = false;

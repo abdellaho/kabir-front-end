@@ -15,6 +15,7 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAbsence" dataKey="id"
+                selectionMode="single" [(selection)]="selectedAbsence"
                 [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateAbsence" sortField="dateAbsence" [sortOrder]="-1"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['dateAbsence', 'personnelId', 'matin', 'apresMidi']"

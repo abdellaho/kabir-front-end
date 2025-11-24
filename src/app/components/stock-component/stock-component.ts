@@ -72,6 +72,7 @@ export class StockComponent {
 
     listFournisseur: Fournisseur[] = [];
     listStock: Stock[] = [];
+    selectedStock!: Stock;
     stock: Stock = initObjectStock();
     typeOfList: number = 0;
     mapOfFournisseurs: Map<number, string> = new Map<number, string>();

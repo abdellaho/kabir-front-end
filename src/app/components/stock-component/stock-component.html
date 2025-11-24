@@ -32,6 +32,7 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm" [value]="listStock" dataKey="id" [rows]="10"
+                selectionMode="single" [(selection)]="selectedStock"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurId']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"

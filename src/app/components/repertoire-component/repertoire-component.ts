@@ -69,6 +69,7 @@ export class RepertoireComponent {
   listVille: Ville[] = [];
   listPersonnel: Personnel[] = [];
   listRepertoire: Repertoire[] = [];
+  selectedRepertoire!: Repertoire;
   repertoire: Repertoire = initObjectRepertoire();
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   mapOfVilles: Map<number, string> = new Map<number, string>();

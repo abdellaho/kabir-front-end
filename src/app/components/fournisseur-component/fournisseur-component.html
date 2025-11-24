@@ -32,6 +32,7 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm" [value]="listFournisseur" dataKey="id" [rows]="10"
+                selectionMode="single" [(selection)]="selectedFournisseur"
                 [showGridlines]="true" [paginator]="true" [globalFilterFields]="['designation', 'type', 'tel1', 'tel2']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">

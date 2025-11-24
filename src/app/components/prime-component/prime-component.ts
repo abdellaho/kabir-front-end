@@ -48,6 +48,7 @@ export class PrimeComponent {
 
   listPrime: Prime[] = [];
   prime: Prime = initObjectPrime();
+  selectedPrime!: Prime;
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;

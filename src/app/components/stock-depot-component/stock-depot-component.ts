@@ -24,6 +24,7 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { OperationType } from '@/shared/enums/operation-type';
 import { initObjectStockDepot, StockDepot } from '@/models/stock-depot';
 import { StockDepotService } from '@/services/stock-depot/stock-depot-service';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-stock-depot-component',
@@ -41,6 +42,7 @@ import { StockDepotService } from '@/services/stock-depot/stock-depot-service';
       FloatLabelModule,
       InputNumberModule,
       SelectModule,
+      DatePickerModule,
       MessageModule,
       InputTextModule
   ],
@@ -52,6 +54,7 @@ export class StockDepotComponent {
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
+    selectedStockDepot!: StockDepot;
     stock: Stock = initObjectStock();
     mapOfStock: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;

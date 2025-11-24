@@ -52,6 +52,7 @@ export class VilleComponent implements OnInit {
   cols: any[] = [];
   listVille: Ville[] = [];
   ville: Ville = initObjectVille();
+  selectedVille!: Ville;
   dialogSupprimer: boolean = false;
   dialogAjouter: boolean = false;
   submitted: boolean = false;

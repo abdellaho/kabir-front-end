@@ -15,6 +15,7 @@
       </p-toolbar>
 
       <p-table #dt size="small" [value]="listVille" dataKey="id" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        selectionMode="single" [(selection)]="selectedVille"
         [paginator]="true" [globalFilterFields]="['nomVille']" [rowsPerPageOptions]="[10, 20, 30]"
         [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})">
 

@@ -15,6 +15,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="listVoiture" dataKey="id" [rowHover]="true" [showGridlines]="true"
+                selectionMode="single" [(selection)]="selectedVoiture"
                 [globalFilterFields]="['numVoiture', 'kmMax']">
 
                 <ng-template #header>

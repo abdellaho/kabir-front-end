@@ -33,6 +33,7 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="10"
+                selectionMode="single" [(selection)]="selectedRepertoire"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['typeRepertoire', 'designation', 'villeId', 'ice', 'tel1', 'tel2', 'tel3', 'personnelId', 'observation', 'nbrOperationClient']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"

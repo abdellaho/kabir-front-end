@@ -15,6 +15,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="listPrime" dataKey="id" [rowHover]="true" [showGridlines]="true"
+                selectionMode="single" [(selection)]="selectedPrime"
                 [globalFilterFields]="['montant', 'prime']">
 
                 <ng-template #header>

@@ -69,6 +69,7 @@ export class FournisseurComponent implements OnInit {
     listVille: Ville[] = [];
     listFournisseur: Fournisseur[] = [];
     fournisseur: Fournisseur = initObjectFournisseur();
+    selectedFournisseur!: Fournisseur;
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;

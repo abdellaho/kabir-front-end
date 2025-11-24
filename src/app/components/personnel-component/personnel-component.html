@@ -30,6 +30,7 @@
       </p-toolbar>
 
       <p-table #dt [value]="listPersonnel" dataKey="id" [rows]="10" [showGridlines]="true" [paginator]="true"
+        selectionMode="single" [(selection)]="selectedPersonnel"
         [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']" [rowsPerPageOptions]="[10, 20, 30]"
         [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 

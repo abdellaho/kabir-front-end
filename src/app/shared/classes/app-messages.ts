@@ -185,6 +185,13 @@ export const APP_MESSAGES = {
                 prixCommercialMustBeGreatThanPattc: 'Prix Commercial doit être supérieur au P.A.TTC'
             }
         },
+        stockDepot: {
+            label: 'Stock Dépôt',
+            qteStockDepot: 'Qte Stock Dépôt',
+            dateOperation: 'Date Operation',
+            stockId: 'Produit',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce stock ?',
+        },
         repertoire: {
             label: 'Repertoire',
             typeRepertoire: 'Type',
