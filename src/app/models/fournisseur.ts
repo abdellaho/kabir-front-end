@@ -10,6 +10,7 @@ export interface Fournisseur {
     adresse: string;
     archiver: boolean;
     supprimer: boolean;
+    dateSuppression: Date | null;
     ville: Ville | null;
     villeId: bigint | null;
 }
@@ -25,6 +26,7 @@ export function initObjectFournisseur(): Fournisseur {
         adresse: '',
         archiver: false,
         supprimer: false,
+        dateSuppression: null,
         ville: null,
         villeId: null,
     }

@@ -211,7 +211,7 @@ export class PersonnelComponent implements OnInit {
             cin: ['', [Validators.required, Validators.min(1)]],
             login: [''],
             password: [''],
-            typePersonnel: [0],
+            typePersonnel: [0, [Validators.required, Validators.min(1)]],
             dateEntrer: [new Date()],
             tel1: [''],
             tel2: [''],
@@ -496,6 +496,12 @@ export class PersonnelComponent implements OnInit {
             this.loadingService.show();
             let id = this.personnel.id;
             this.personnel.supprimer = corbeille;
+            
+            if(corbeille) {
+                this.personnel.dateSuppression = new Date();
+            } else {
+                this.personnel.dateSuppression = null;
+            }
 
             this.personnelService.update(this.personnel.id, this.personnel).subscribe({
                 next: (data) => {

@@ -26,7 +26,7 @@
           </tr>
         </ng-template>
         <ng-template #body let-p>
-          <tr>
+          <tr [pSelectableRow]="p">
             <td>
               {{ p.nomVille }}
             </td>

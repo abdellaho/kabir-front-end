@@ -16,6 +16,7 @@ export interface Repertoire {
   archiver: boolean;
   bloquer: boolean;
   sysDate: Date;
+  dateSuppression: Date | null;
   observation: string;
   nbrOperationClient: number;
   plafond: number;
@@ -41,6 +42,7 @@ export function initObjectRepertoire(): Repertoire {
     archiver: false,
     bloquer: false,
     sysDate: new Date(),
+    dateSuppression: null,
     observation: "",
     nbrOperationClient: 0,
     plafond: 0,

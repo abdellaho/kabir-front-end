@@ -79,7 +79,7 @@
                 </ng-template>
 
                 <ng-template #body let-p>
-                    <tr>
+                    <tr [pSelectableRow]="p">
                         <td>{{ p.designation }}</td>
                         <td>{{ p.type | typeFournisseur }}</td>
                         <td>{{ p.ice }}</td>
@@ -92,9 +92,7 @@
                                     [title]="msg.buttons.modifier" />
                                 <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
                                     [title]="msg.buttons.archiver" />
-                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
-                                    [title]="msg.buttons.supprimer" />
-                                <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
+                                <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
                                     [title]="msg.buttons.corbeille" />
                                 }
                                 @if (typeOfList === 1) {

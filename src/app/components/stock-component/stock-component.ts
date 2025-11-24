@@ -614,6 +614,12 @@ export class StockComponent {
             let id = this.stock.id;
             this.stock.supprimer = corbeille;
 
+            if(corbeille) {
+                this.stock.dateSuppression = new Date();
+            } else {
+                this.stock.dateSuppression = null;
+            }
+
             this.stockService.update(this.stock.id, this.stock).subscribe({
                 next: (data) => {
                     this.messageService.add({

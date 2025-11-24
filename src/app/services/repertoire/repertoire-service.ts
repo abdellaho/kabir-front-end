@@ -29,6 +29,7 @@ export class RepertoireService {
   update(id: bigint, repertoire: Repertoire): Observable<Repertoire> {
     const serializedObj = this.serialization(repertoire);
     const obj = omit(serializedObj, 'ville', 'personnel');
+    console.log("obj", obj);
     return this.http.patch<Repertoire>(ENDPOINTS.REPERTOIRE.update(id), obj);
   }
 

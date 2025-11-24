@@ -10,6 +10,7 @@ export interface Absence {
   personnelOperation?: Personnel | null;
   personnelId: bigint;
   personnel?: Personnel | null;
+  dateAbsenceStr?: string;
 }
 
 export function initObjectAbsence(): Absence {
@@ -23,5 +24,6 @@ export function initObjectAbsence(): Absence {
     personnelOperation: null,
     personnelId: BigInt(0),
     personnel: null,
+    dateAbsenceStr: ""
   };
 }

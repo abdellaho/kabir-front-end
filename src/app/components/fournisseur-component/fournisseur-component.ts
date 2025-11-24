@@ -185,7 +185,7 @@ export class FournisseurComponent implements OnInit {
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
             designation: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-            type: [null, [Validators.required, Validators.min(0)]],
+            type: [null],
             tel1: [''],
             tel2: [''],
             ice: ['', [Validators.maxLength(15)]],
@@ -243,7 +243,7 @@ export class FournisseurComponent implements OnInit {
                     ice: this.fournisseur.ice,
                     tel1: this.fournisseur.tel1,
                     tel2: this.fournisseur.tel2,
-                    type: this.fournisseur.type,
+                    type: this.fournisseur.type > 4 ? null : this.fournisseur.type,
                     adresse: this.fournisseur.adresse
                 });
 
@@ -289,7 +289,7 @@ export class FournisseurComponent implements OnInit {
         fournisseur.ice = formGroup.get('ice')?.value;
         fournisseur.tel1 = formGroup.get('tel1')?.value;
         fournisseur.tel2 = formGroup.get('tel2')?.value;
-        fournisseur.type = formGroup.get('type')?.value;
+        fournisseur.type = formGroup.get('type')?.value ?? 9;
         fournisseur.adresse = formGroup.get('adresse')?.value;
         //fournisseur.villeId = formGroup.get('villeId')?.value;
 
@@ -455,6 +455,12 @@ export class FournisseurComponent implements OnInit {
             this.loadingService.show();
             let id = this.fournisseur.id;
             this.fournisseur.supprimer = corbeille;
+
+            if(corbeille) {
+                this.fournisseur.dateSuppression = new Date();
+            } else {
+                this.fournisseur.dateSuppression = null;
+            }
 
             this.fournisseurService.update(this.fournisseur.id, this.fournisseur).subscribe({
                 next: (data) => {

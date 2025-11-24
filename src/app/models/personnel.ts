@@ -11,6 +11,7 @@ export interface Personnel {
     adresse: string;
     email: string;
     dateEntrer: Date;
+    dateSuppression: Date | null;
     salaire: number;
     archiver: boolean;
     supprimer: boolean;
@@ -38,6 +39,7 @@ export function initObjectPersonnel(): Personnel {
         adresse: '',
         email: '',
         dateEntrer: new Date(),
+        dateSuppression: null,
         salaire: 0,
         archiver: false,
         supprimer: false,

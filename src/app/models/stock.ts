@@ -4,6 +4,7 @@ export interface Stock {
   id: bigint | null;
   designation: string;
   sysDate: Date;
+  dateSuppression: Date | null;
   pahtGrossiste: number;
   prixCommercial: number;
   tva: number;
@@ -45,6 +46,7 @@ export function initObjectStock(): Stock {
     id: null,
     designation: "",
     sysDate: new Date(),
+    dateSuppression: null,
     pahtGrossiste: 0,
     prixCommercial: 0,
     tva: 0,

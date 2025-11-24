@@ -1,4 +1,4 @@
-import { Personnel } from '@/models/personnel';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { Ville } from '@/models/ville';
 import { TypeRepertoirePipe } from '@/pipes/type-repertoire-pipe';
@@ -118,7 +118,7 @@ export class RepertoireComponent {
       tel3: ['', [Validators.maxLength(10)]],
       ice: ['', [Validators.maxLength(15)]],
       observation: ['', [Validators.maxLength(250)]],
-      personnelId: [0, [Validators.required, Validators.min(1)]],
+      personnelId: [0],
       plafond: [null],
     }, { validators: [RepertoireValidator]});
   }
@@ -199,8 +199,10 @@ export class RepertoireComponent {
   getAllPersonnel(): void {
     this.personnelService.getAll().subscribe({
       next: (data: Personnel[]) => {
-        this.listPersonnel = data;
-          this.mapOfPersonnels = arrayToMap(data, 'id', ['designation'], ['']);
+        const emptyPersonnel = initObjectPersonnel();
+        emptyPersonnel.id = BigInt(0);
+        this.listPersonnel = [emptyPersonnel, ...data];
+        this.mapOfPersonnels = arrayToMap(data, 'id', ['designation'], ['']);
       }, error: (error: any) => {
         console.error(error);
       }
@@ -270,7 +272,7 @@ export class RepertoireComponent {
           tel3: this.repertoire.tel3,
           ice: this.repertoire.ice,
           observation: this.repertoire.observation,
-          personnelId: this.repertoire.personnelId,
+          personnelId: this.repertoire.personnelId ?? 0,
           plafond: this.repertoire.plafond !== 0 ? this.repertoire.plafond : null,
         });
 
@@ -450,6 +452,12 @@ export class RepertoireComponent {
       this.loadingService.show();
       let id = this.repertoire.id;
       this.repertoire.bloquer = corbeille;
+      
+      if(corbeille) {
+        this.repertoire.dateSuppression = new Date();
+      } else {
+        this.repertoire.dateSuppression = null;
+      }
 
       this.repertoireService.update(this.repertoire.id, this.repertoire).subscribe({
         next: (data) => {
