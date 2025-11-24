@@ -111,22 +111,29 @@
             <td style="width: 10%; min-width: 7rem">
               <div class="flex gap-2">
                 @if (typeOfList === 0) {
-                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
-                  [title]="msg.buttons.modifier" />
-                <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
-                  [title]="msg.buttons.archiver" />
-                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
-                  [title]="msg.buttons.supprimer" />
-                <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
-                  [title]="msg.buttons.corbeille" />
+                  <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
+                    [title]="msg.buttons.modifier" />
+                  <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
+                    [title]="msg.buttons.archiver" />
+                  <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded
+                    [title]="msg.buttons.supprimer" />
+                  <p-button (click)="recupperer(4, p)" icon="pi pi-ban" severity="help" rounded
+                    [title]="msg.buttons.corbeille" />
+                  <p-button (click)="recupperer(7, p)" icon="pi pi-check" severity="success" rounded
+                    [title]="msg.buttons.role" />
                 }
                 @if (typeOfList === 1) {
-                <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="warn" rounded
-                  [title]="msg.buttons.desarchiver" />
+                  <p-button (click)="recupperer(7, p)" icon="pi pi-check" severity="success" rounded
+                    [title]="msg.buttons.role" />
+                }
+                
+                @if (typeOfList === 1) {
+                  <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="warn" rounded
+                    [title]="msg.buttons.desarchiver" />
                 }
                 @if (typeOfList === 2) {
-                <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
-                  [title]="msg.buttons.restaurer" />
+                  <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
+                    [title]="msg.buttons.restaurer" />
                 }
               </div>
             </td>
@@ -352,6 +359,73 @@
           class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
         <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
           (click)="corbeille(false)"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dialogRole" [style]="{ width: '500px', maxWidth: '100%' }"
+      [breakpoints]="{ '960px': '90vw', '640px': '95vw' }" [header]="`${msg.messages.miseAJour} ${msg.buttons.role}`" [modal]="true" [closable]="false">
+      <!-- Form content must go inside ng-template -->
+      <ng-template pTemplate="content">
+        <div [formGroup]="formGroupRole" class="p-fluid">
+          <div class="flex flex-col gap-2">
+            <!-- Header -->
+            <div class="flex items-center font-bold border-b border-gray-300 py-2">
+              <div class="flex-1">Menu</div>
+              <div class="flex-1 text-center">Consulter</div>
+              <div class="flex-1 text-center">{{ msg.buttons.ajouter }}</div>
+              <div class="flex-1 text-center">{{ msg.buttons.modifier }}</div>
+              <div class="flex-1 text-center">{{ msg.buttons.supprimer }}</div>
+            </div>
+
+            <!-- Stock Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.stock }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterStock" [binary]="true" id="consulterStock" inputId="consulterStock"
+                  (onChange)="onChangeRoleConsulter($event, 1)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterStock" [binary]="true" id="ajouterStock" inputId="ajouterStock"
+                  (onChange)="onChangeRoleAjouter($event, 1)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierStock" [binary]="true" id="modifierStock" inputId="modifierStock"
+                  (onChange)="onChangeRoleModifier($event, 1)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerStock" [binary]="true" id="supprimerStock" inputId="supprimerStock"
+                  (onChange)="onChangeRoleSupprimer($event, 1)"></p-checkbox>
+              </div>
+            </div>
+
+            <!-- Repertoire Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.repertoire }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterRepertoire" [binary]="true" id="consulterRepertoire" inputId="consulterRepertoire"
+                  (onChange)="onChangeRoleConsulter($event, 2)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterRepertoire" [binary]="true" id="ajouterRepertoire" inputId="ajouterRepertoire"
+                  (onChange)="onChangeRoleAjouter($event, 2)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierRepertoire" [binary]="true" id="modifierRepertoire" inputId="modifierRepertoire"
+                  (onChange)="onChangeRoleModifier($event, 2)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerRepertoire" [binary]="true" id="supprimerRepertoire" inputId="supprimerRepertoire"
+                  (onChange)="onChangeRoleSupprimer($event, 2)"></p-checkbox>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+          class="p-button-outlined p-button-danger" (click)="openCloseDialogRole(false)"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+          (click)="updateRole()"></button>
       </ng-template>
     </p-dialog>
   </div>

@@ -28,6 +28,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { PersonnelValidator } from '@/validators/personnel-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-personnel-component',
@@ -49,6 +50,7 @@ import { MessageModule } from 'primeng/message';
         InputNumberModule,
         ToggleButtonModule,
         FloatLabelModule,
+        CheckboxModule,
         SelectModule,
         ToggleSwitchModule,
         MessageModule,
@@ -68,9 +70,11 @@ export class PersonnelComponent implements OnInit {
     dialogCorbeille: boolean = false;
     dialogAnnulerArchiver: boolean = false;
     dialogAnnulerCorbeille: boolean = false;
+    dialogRole: boolean = false;
     submitted: boolean = false;
     loading: boolean = true;
     formGroup!: FormGroup;
+    formGroupRole!: FormGroup;
     typeOfList: number = 0;
     msg = APP_MESSAGES;
 
@@ -86,6 +90,7 @@ export class PersonnelComponent implements OnInit {
         this.typeOfList = 0;
         this.search();
         this.initFormGroup();
+        this.initFormGroupRole();
     }
 
     archiveListe(): void {
@@ -195,6 +200,10 @@ export class PersonnelComponent implements OnInit {
         this.dialogAnnulerCorbeille = openClose;
     }
 
+    openCloseDialogRole(openClose: boolean): void {
+        this.dialogRole = openClose;
+    }
+
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
             designation: ['', [Validators.required, Validators.min(1)]],
@@ -209,6 +218,19 @@ export class PersonnelComponent implements OnInit {
             salaire: [null],
             etatComptePersonnel: [true]
         }, { validators: [PersonnelValidator] });
+    }
+
+    initFormGroupRole() {
+        this.formGroupRole = this.formBuilder.group({
+            consulterStock: [false],
+            ajouterStock: [false],
+            modifierStock: [false],
+            supprimerStock: [false],
+            consulterRepertoire: [false],
+            ajouterRepertoire: [false],
+            modifierRepertoire: [false],
+            supprimerRepertoire: [false],
+        });
     }
 
     viderAjouter() {
@@ -237,7 +259,7 @@ export class PersonnelComponent implements OnInit {
                 });
 
                 this.openCloseDialogAjouter(true);
-            } else if(operation === 2) {
+            } else if (operation === 2) {
                 this.openCloseDialogSupprimer(true);
             } else if (operation === 3) {
                 this.openCloseDialogArchiver(true);
@@ -247,13 +269,20 @@ export class PersonnelComponent implements OnInit {
                 this.openCloseDialogAnnulerArchiver(true);
             } else if (operation === 6) {
                 this.openCloseDialogAnnulerCorbeille(true);
+            } else if (operation === 7) {
+                this.initFormGroupRole();
+                this.formGroupRole.patchValue({
+                    consulterStock: this.personnel.consulterStock ?? false,
+                    ajouterStock: this.personnel.ajouterStock ?? false,
+                    modifierStock: this.personnel.modifierStock ?? false,
+                    supprimerStock: this.personnel.supprimerStock ?? false,
+                    consulterRepertoire: this.personnel.consulterRepertoire ?? false,
+                    ajouterRepertoire: this.personnel.ajouterRepertoire ?? false,
+                    modifierRepertoire: this.personnel.modifierRepertoire ?? false,
+                    supprimerRepertoire: this.personnel.supprimerRepertoire ?? false,
+                });
+                this.openCloseDialogRole(true);
             }
-        } else {
-            this.messageService.add({
-                severity: 'error',
-                summary: this.msg.summary.labelError,
-                detail: this.msg.messages.messageError
-            });
         }
     }
 
@@ -277,18 +306,31 @@ export class PersonnelComponent implements OnInit {
         }
     }
 
-    mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel): Personnel {
-        personnel.designation = formGroup.get('designation')?.value;
-        personnel.cin = formGroup.get('cin')?.value;
-        personnel.login = formGroup.get('login')?.value;
-        personnel.password = formGroup.get('password')?.value;
-        personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
-        personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
-        personnel.tel1 = formGroup.get('tel1')?.value;
-        personnel.tel2 = formGroup.get('tel2')?.value;
-        personnel.adresse = formGroup.get('adresse')?.value;
-        personnel.salaire = formGroup.get('salaire')?.value ?? 0;
-        personnel.etatComptePersonnel = formGroup.get('etatComptePersonnel')?.value;
+    mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel, type: number): Personnel {
+        if(type === 0){
+            personnel.designation = formGroup.get('designation')?.value;
+            personnel.cin = formGroup.get('cin')?.value;
+            personnel.login = formGroup.get('login')?.value;
+            personnel.password = formGroup.get('password')?.value;
+            personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
+            personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
+            personnel.tel1 = formGroup.get('tel1')?.value;
+            personnel.tel2 = formGroup.get('tel2')?.value;
+            personnel.adresse = formGroup.get('adresse')?.value;
+            personnel.salaire = formGroup.get('salaire')?.value ?? 0;
+            personnel.etatComptePersonnel = formGroup.get('etatComptePersonnel')?.value;
+        } else {
+            personnel.consulterRepertoire = formGroup.get('consulterRepertoire')?.value ?? false;
+            personnel.ajouterRepertoire = formGroup.get('ajouterRepertoire')?.value ?? false;
+            personnel.modifierRepertoire = formGroup.get('modifierRepertoire')?.value ?? false;
+            personnel.supprimerRepertoire = formGroup.get('supprimerRepertoire')?.value ?? false;
+            
+            personnel.consulterStock = formGroup.get('consulterStock')?.value ?? false;
+            personnel.ajouterStock = formGroup.get('ajouterStock')?.value ?? false;
+            personnel.modifierStock = formGroup.get('modifierStock')?.value ?? false;
+            personnel.supprimerStock = formGroup.get('supprimerStock')?.value ?? false;
+        }
+        
 
         return personnel;
     }
@@ -311,12 +353,12 @@ export class PersonnelComponent implements OnInit {
     async miseAjour(): Promise<void> {
         this.loadingService.show();
         let personnelEdit: Personnel = { ...this.personnel };
-        personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit);
+        personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit, 0);
         //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
         let trvErreur = await this.checkIfExists(personnelEdit);
 
         if (!trvErreur) {
-            this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel);
+            this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel, 0);
             this.submitted = true;
 
             if (this.personnel.id) {
@@ -485,6 +527,123 @@ export class PersonnelComponent implements OnInit {
             this.openCloseDialogCorbeille(false);
         } else {
             this.openCloseDialogAnnulerCorbeille(false);
+        }
+    }
+
+    updateRole() {
+        if (this.personnel && this.personnel.id) {
+            this.loadingService.show();
+            let id = this.personnel.id;
+            this.personnel = this.mapFormGroupToObject(this.formGroupRole, this.personnel, 1);
+
+            this.personnelService.update(id, this.personnel).subscribe({
+                next: (data) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: this.msg.summary.labelSuccess,
+                        closable: true,
+                        detail: this.msg.messages.messageSuccess
+                    });
+                    this.checkIfListIsNull();
+                    this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY, id);
+                    this.personnel = initObjectPersonnel();
+                    this.openCloseDialogRole(false);
+                }, error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: this.msg.summary.labelError,
+                        detail: this.msg.messages.messageErrorProduite
+                    });
+                }, complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+        }
+    }
+
+    onChangeRoleConsulter(event: any, type: number) {
+        switch (type) {
+            case 1:
+                this.personnel.consulterStock = this.formGroupRole.get('consulterStock')?.value;
+                if (this.personnel.consulterStock === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterStock: false,
+                        modifierStock: false,
+                        supprimerStock: false
+                    });
+                }
+                break;
+            case 2:
+                this.personnel.consulterRepertoire = this.formGroupRole.get('consulterRepertoire')?.value;
+                if (this.personnel.consulterRepertoire === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterRepertoire: false,
+                        modifierRepertoire: false,
+                        supprimerRepertoire: false
+                    });
+                }
+                break;
+        }
+    }
+
+    onChangeRoleAjouter(event: any, type: number) {
+        switch (type) {
+            case 1:
+                if (this.formGroupRole.get('consulterStock')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterStock: false,
+                    });
+                }
+                break;
+            case 2:
+                if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterRepertoire: false,
+                    });
+                }
+                break;
+        }
+    }
+
+    onChangeRoleModifier(event: any, type: number) {
+        switch (type) {
+            case 1:
+                if (this.formGroupRole.get('consulterStock')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierStock: false,
+                    });
+                }
+                break;
+            case 2:
+                if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierRepertoire: false,
+                    });
+                }
+                break;
+        }
+    }
+
+    onChangeRoleSupprimer(event: any, type: number) {
+        switch (type) {
+            case 1:
+                if (this.formGroupRole.get('consulterStock')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerStock: false
+                    });
+                }
+                break;
+            case 2:
+                if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerRepertoire: false
+                    });
+                }
+                break;
         }
     }
 
