@@ -263,5 +263,10 @@ export const APP_MESSAGES = {
         labelError: 'Erreur',
         labelSuccess: 'Succès',
         labelInfo: 'Info',
+    },
+    table: {
+        columns: {
+            action: 'Actions'
+        }
     }
 } as const;

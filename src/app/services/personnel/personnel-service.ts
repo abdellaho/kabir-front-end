@@ -43,11 +43,16 @@ export class PersonnelService {
     return this.http.post<Personnel[]>(ENDPOINTS.PERSONNEL.search, obj);
   }
 
-    exist(personnel: Personnel): Observable<boolean> {
-        const serializedObj = this.serialization(personnel);
-        const obj = omit(serializedObj, 'villeId', 'ville');
-        return this.http.post<boolean>(ENDPOINTS.PERSONNEL.exist, obj);
-    }
+  exist(personnel: Personnel): Observable<boolean> {
+      const serializedObj = this.serialization(personnel);
+      const obj = omit(serializedObj, 'villeId', 'ville');
+      return this.http.post<boolean>(ENDPOINTS.PERSONNEL.exist, obj);
+  }
+
+  present(dateAbsence: Date): Observable<Personnel[]> {
+    let body = { dateAbsence };
+    return this.http.post<Personnel[]>(ENDPOINTS.PERSONNEL.present, body);
+  }
 
   serialization(obj: Personnel | PersonnelSearch): any {
     return {

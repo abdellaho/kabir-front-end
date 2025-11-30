@@ -121,7 +121,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '500px', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '400px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.fournisseur.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
@@ -132,16 +132,18 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="designation" formControlName="designation" required
+                                    <input pInputText id="designation" formControlName="designation" required style="width: 100% !important;"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
                                     <label for="designation">{{ msg.components.fournisseur.designation }}</label>
                                 </p-floatlabel>
                             </div>
+                        </div>
 
+                        <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full md:w-56" variant="on" style="width: 100% !important;">
                                     <p-select formControlName="type" inputId="type" [options]="typeFournisseurs"
-                                        appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;"
+                                        appendTo="body" optionLabel="label" optionValue="value" style="width: 100% !important; height: 30px;"
                                         class="w-full md:w-56" />
                                     <label for="type">{{ msg.components.fournisseur.type }}</label>
                                 </p-floatlabel>
@@ -151,14 +153,16 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="ice" formControlName="ice" maxlength="15" />
+                                    <input pInputText id="ice" formControlName="ice" maxlength="15" style="width: 100% !important;" />
                                     <label for="ice">{{ msg.components.fournisseur.ice }}</label>
                                 </p-floatlabel>
                             </div>
+                        </div>
 
+                        <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10"
+                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10" style="width: 100% !important;"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                                     <label for="tel1">{{ msg.components.fournisseur.tel1 }}</label>
                                 </p-floatlabel>
@@ -172,7 +176,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10"
+                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10" style="width: 100% !important;"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                                     <label for="tel2">{{ msg.components.fournisseur.tel2 }}</label>
                                 </p-floatlabel>
@@ -181,10 +185,12 @@
                                     msg.components.fournisseur.errors.tel1AndTel2Identique }}</p-message>
                                 }
                             </div>
+                        </div>
 
+                        <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="adresse" formControlName="adresse" />
+                                    <input pInputText id="adresse" formControlName="adresse" style="width: 100% !important;"/>
                                     <label for="adresse">{{ msg.components.fournisseur.adresse }}</label>
                                 </p-floatlabel>
                             </div>

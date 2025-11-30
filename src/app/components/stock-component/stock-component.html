@@ -194,6 +194,13 @@
                                     <label for="designation">{{ msg.components.stock.designation }}</label>
                                 </p-floatlabel>
                             </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
+                                    <label for="tva">{{ msg.components.stock.tva }}</label>
+                                </p-floatlabel>
+                            </div>
                         </div>
 
                         <div class="flex flex-wrap gap-6">
@@ -204,6 +211,19 @@
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }" />
                                     <label for="pattc">{{ msg.components.stock.pattc }}</label>
                                 </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false"
+                                        [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('pvttc')?.invalid || formGroup.errors?.['pvttcMustBeGreatThanPattc'] }" />
+                                    <label for="pvttc">{{ msg.components.stock.pvttcMAJ }}</label>
+                                </p-floatlabel>
+                                @if (formGroup.errors?.['pvttcMustBeGreatThanPattc']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.components.stock.errors.pvttcMustBeGreatThanPattc }}</p-message>
+                                }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
@@ -230,21 +250,23 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false"
-                                        [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('pvttc')?.invalid || formGroup.errors?.['pvttcMustBeGreatThanPattc'] }" />
-                                    <label for="pvttc">{{ msg.components.stock.pvttcMAJ }}</label>
+                                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport" />
+                                    <label for="qteStockImport">{{ msg.components.stock.qteStockImport }}</label>
                                 </p-floatlabel>
-                                @if (formGroup.errors?.['pvttcMustBeGreatThanPattc']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.pvttcMustBeGreatThanPattc }}</p-message>
-                                }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
-                                    <label for="tva">{{ msg.components.stock.tva }}</label>
+                                    <p-input-number formControlName="qteStock" inputId="qteStock" />
+                                    <label for="qteStock">{{ msg.components.stock.qteStock }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('qteFacturer')?.invalid }" />
+                                    <label for="qteFacturer">{{ msg.components.stock.qteFacturer }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -258,29 +280,8 @@
                                 </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteStock" inputId="qteStock" />
-                                    <label for="qteStock">{{ msg.components.stock.qteStock }}</label>
-                                </p-floatlabel>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('qteFacturer')?.invalid }" />
-                                    <label for="qteFacturer">{{ msg.components.stock.qteFacturer }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport" />
-                                    <label for="qteStockImport">{{ msg.components.stock.qteStockImport }}</label>
-                                </p-floatlabel>
-                            </div>
+                            <div class="flex flex-col grow basis-0"></div>
+                            <div class="flex flex-col grow basis-0"></div>
                         </div>
 
                         <div class="flex flex-wrap gap-6">
@@ -539,15 +540,47 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prime1" inputId="prime1" [maxFractionDigits]="2"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime1Required'] || formGroup.get('prime1')?.errors?.['negative'] }" />
-                                    <label for="prime1">{{ msg.components.stock.prime1 }}</label>
+                                    <p-input-number formControlName="montant2" inputId="montant2"
+                                        [maxFractionDigits]="2"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant2Required'] || formGroup.get('montant2')?.errors?.['negative'] || formGroup.errors?.['montant2MustBeGreaterThanmontant1'] }" />
+                                    <label for="montant2">{{ msg.components.stock.montant2 }}</label>
                                 </p-floatlabel>
-                                @if (formGroup.errors?.['prime1Required']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.prime1Required }}</p-message>
+                                @if (formGroup.errors?.['montant2Required'] ||
+                                formGroup.errors?.['montant2MustBeGreaterThanmontant1']) {
+                                    @if (formGroup.errors?.['montant2Required']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.stock.errors.montant2Required }}</p-message>
+                                    }
+                                    @if (formGroup.errors?.['montant2MustBeGreaterThanmontant1']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.stock.errors.montant2MustBeGreaterThanmontant1 }}</p-message>
+                                    }
                                 }
-                                @if (formGroup.get('prime1')?.errors?.['negative']) {
+                                @if (formGroup.get('montant2')?.errors?.['negative']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                    msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number formControlName="montant3" inputId="montant3"
+                                        [maxFractionDigits]="2"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant3Required'] || formGroup.get('montant3')?.errors?.['negative'] || formGroup.errors?.['montant3MustBeGreaterThanmontant2'] }" />
+                                    <label for="montant3">{{ msg.components.stock.montant3 }}</label>
+                                </p-floatlabel>
+                                @if (formGroup.errors?.['montant3Required'] ||
+                                formGroup.errors?.['montant3MustBeGreaterThanmontant2']) {
+                                @if (formGroup.errors?.['montant3Required']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.stock.errors.montant3Required }}</p-message>
+                                    }
+                                    @if (formGroup.errors?.['montant3MustBeGreaterThanmontant2']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.stock.errors.montant3MustBeGreaterThanmontant2 }}</p-message>
+                                    }
+                                }
+                                @if (formGroup.get('montant3')?.errors?.['negative']) {
                                 <p-message severity="error" variant="simple" size="small">{{
                                     msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
                                 }
@@ -557,23 +590,15 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="montant2" inputId="montant2"
-                                        [maxFractionDigits]="2"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant2Required'] || formGroup.get('montant2')?.errors?.['negative'] || formGroup.errors?.['montant2MustBeGreaterThanmontant1'] }" />
-                                    <label for="montant2">{{ msg.components.stock.montant2 }}</label>
+                                    <p-input-number formControlName="prime1" inputId="prime1" [maxFractionDigits]="2"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime1Required'] || formGroup.get('prime1')?.errors?.['negative'] }" />
+                                    <label for="prime1">{{ msg.components.stock.prime1 }}</label>
                                 </p-floatlabel>
-                                @if (formGroup.errors?.['montant2Required'] ||
-                                formGroup.errors?.['montant2MustBeGreaterThanmontant1']) {
-                                @if (formGroup.errors?.['montant2Required']) {
+                                @if (formGroup.errors?.['prime1Required']) {
                                 <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.montant2Required }}</p-message>
+                                    msg.components.stock.errors.prime1Required }}</p-message>
                                 }
-                                @if (formGroup.errors?.['montant2MustBeGreaterThanmontant1']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.montant2MustBeGreaterThanmontant1 }}</p-message>
-                                }
-                                }
-                                @if (formGroup.get('montant2')?.errors?.['negative']) {
+                                @if (formGroup.get('prime1')?.errors?.['negative']) {
                                 <p-message severity="error" variant="simple" size="small">{{
                                     msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
                                 }
@@ -594,32 +619,6 @@
                                     msg.components.stock.errors.prime2MustBeGreaterThanprime1 }}</p-message>
                                 }
                                 @if (formGroup.get('prime2')?.errors?.['negative']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="montant3" inputId="montant3"
-                                        [maxFractionDigits]="2"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant3Required'] || formGroup.get('montant3')?.errors?.['negative'] || formGroup.errors?.['montant3MustBeGreaterThanmontant2'] }" />
-                                    <label for="montant3">{{ msg.components.stock.montant3 }}</label>
-                                </p-floatlabel>
-                                @if (formGroup.errors?.['montant3Required'] ||
-                                formGroup.errors?.['montant3MustBeGreaterThanmontant2']) {
-                                @if (formGroup.errors?.['montant3Required']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.montant3Required }}</p-message>
-                                }
-                                @if (formGroup.errors?.['montant3MustBeGreaterThanmontant2']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.montant3MustBeGreaterThanmontant2 }}</p-message>
-                                }
-                                }
-                                @if (formGroup.get('montant3')?.errors?.['negative']) {
                                 <p-message severity="error" variant="simple" size="small">{{
                                     msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
                                 }

@@ -72,12 +72,14 @@ export const ENDPOINTS = {
   },
   PERSONNEL: {
     getAll: `${BASE_URL}/personnel`,
+    getAllAlowed: `${BASE_URL}/personnel/allowed`,
     getById: (id: bigint) => `${BASE_URL}/personnel/${id}`,
     create: `${BASE_URL}/personnel`,
     update: (id: bigint) => `${BASE_URL}/personnel/${id}`,
     delete: (id: bigint) => `${BASE_URL}/personnel/${id}`,
     exist: `${BASE_URL}/personnel/exist`,
     search: `${BASE_URL}/personnel/search`,
+    present: `${BASE_URL}/personnel/present`
   },
   PRIME: {
     getAll: `${BASE_URL}/prime`,

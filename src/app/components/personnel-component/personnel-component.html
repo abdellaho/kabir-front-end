@@ -78,14 +78,14 @@
               </div>
             </th>
 
-            <th pSortableColumn="dateEntrer" style="width: 6%">
+            <th pSortableColumn="etatComptePersonnel" style="width: 6%">
               <div class="flex items-center gap-2">
                 {{ msg.components.fournisseur.etatComptePersonnel }}
                 <p-sortIcon field="etatComptePersonnel" />
               </div>
             </th>
 
-            <th style="width: 5%"></th>
+            <th style="width: 5%">{{ msg.table.columns.action }}</th>
           </tr>
         </ng-template>
         <ng-template #body let-p>
@@ -117,12 +117,8 @@
                   <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
                     [title]="msg.buttons.archiver" />
                   <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
-                    [title]="msg.buttons.corbeille" />
+                    [title]="msg.buttons.supprimer" />
                   <p-button (click)="recupperer(7, p)" icon="pi pi-ban" severity="help" rounded
-                    [title]="msg.buttons.role" />
-                }
-                @if (typeOfList === 1) {
-                  <p-button (click)="recupperer(7, p)" icon="pi pi-check" severity="success" rounded
                     [title]="msg.buttons.role" />
                 }
                 

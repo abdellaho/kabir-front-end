@@ -22,7 +22,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
+import { arrayToMap, getElementFromMap, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AbsencelValidator } from '@/validators/absence-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
@@ -58,6 +58,7 @@ export class AbsenceComponent implements OnInit {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
     //Tableau ---> Date + Personnel + Matin + Soir
     //Ajouter ---> Date + Personnel + Matin + Soir
+    listPersonnelFixe: Personnel[] = [];
     listPersonnel: Personnel[] = [];
     listAbsence: Absence[] = [];
     absence: Absence = initObjectAbsence();
@@ -80,7 +81,7 @@ export class AbsenceComponent implements OnInit {
 
     ngOnInit(): void {
         this.getAllAbsence();
-        this.getAllPersonnel();
+        this.getAllPersonnelFixe();
         this.initFormGroup();
     }
 
@@ -123,11 +124,11 @@ export class AbsenceComponent implements OnInit {
         });
     }
 
-    getAllPersonnel(): void {
+    getAllPersonnelFixe(): void {
         this.personnelService.getAll().subscribe({
             next: (data: Personnel[]) => {
-                this.listPersonnel = data;
-                this.mapOfPersonnels = arrayToMap(this.listPersonnel, 'id', ['designation'], ['']);
+                this.listPersonnelFixe = data;
+                this.mapOfPersonnels = arrayToMap(this.listPersonnelFixe, 'id', ['designation'], ['']);
             },
             error: (error: any) => {
                 console.error(error);
@@ -152,6 +153,38 @@ export class AbsenceComponent implements OnInit {
         this.submitted = false;
         this.absence = initObjectAbsence();
         this.initFormGroup();
+        this.onChangeDateAbsence();
+    }
+
+    async getPersonnelPresent(date: Date): Promise<Personnel[]> {
+        try {
+            let dateAbsence = mapToDateTimeBackEnd(date);
+            const existsObservable = this.personnelService.present(dateAbsence).pipe(
+                catchError(error => {
+                    console.error('Error in absence existence observable:', error);
+                    return of([]); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return [];
+        }
+    }
+
+    async onChangeDateAbsence() {
+        let dateAbsence: Date = this.formGroup.get('dateAbsence')?.value ?? new Date();
+        this.listPersonnel = await this.getPersonnelPresent(dateAbsence);
+        this.formGroup.patchValue({
+            personnelId: 0
+        });
+    }
+
+    onClearDateAbsence(): void {
+        this.listPersonnel = [];
+        this.formGroup.patchValue({
+            personnelId: 0
+        });
     }
 
     recupperer(operation: number, absenceEdit: Absence) {
@@ -200,6 +233,7 @@ export class AbsenceComponent implements OnInit {
 
     mapFormGroupToObject(formGroup: FormGroup, absence: Absence): Absence {
         absence.dateAbsence = formGroup.get('dateAbsence')?.value;
+        absence.dateAbsence = mapToDateTimeBackEnd(absence.dateAbsence);
         absence.personnelId = formGroup.get('personnelId')?.value;
         absence.matin = formGroup.get('matin')?.value;
         absence.apresMidi = formGroup.get('apresMidi')?.value;
@@ -227,7 +261,6 @@ export class AbsenceComponent implements OnInit {
         let absenceEdit: Absence = { ...this.absence };
         this.mapFormGroupToObject(this.formGroup, absenceEdit);
         let trvErreur = await this.checkIfExists(absenceEdit);
-        console.log(absenceEdit, trvErreur);
 
         if (!trvErreur) {
             this.absence = this.mapFormGroupToObject(this.formGroup, this.absence);

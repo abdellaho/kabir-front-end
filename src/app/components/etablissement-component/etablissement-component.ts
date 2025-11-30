@@ -102,7 +102,7 @@ export class EtablissementComponent implements OnInit {
       tel1: [''],
       tel2: [''],
       tel3: [''],
-      hostmail: [''],
+      hostMail: [''],
       rc: [''],
       ife: [''],
       ice: ['', [Validators.maxLength(15)]],
@@ -121,7 +121,6 @@ export class EtablissementComponent implements OnInit {
       patente: [''],
       siteweb: [''],
       port: [null],
-      hostMail: [''],
       numJour: [1],
       typeExec: [0],
       dateTime: [new Date()]
