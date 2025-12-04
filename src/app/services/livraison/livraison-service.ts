@@ -1,0 +1,64 @@
+import { ENDPOINTS } from '@/config/endpoints';
+import { Livraison } from '@/models/livraison';
+import { omit } from '@/shared/classes/generic-methods';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LivraisonService {
+  
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Livraison[]> {
+    return this.http.get<Livraison[]>(ENDPOINTS.LIVRAISON.getAll);
+  }
+
+  getById(id: bigint): Observable<Livraison> {
+    return this.http.get<Livraison>(ENDPOINTS.LIVRAISON.getById(id));
+  }
+
+  create(livraison: Livraison): Observable<Livraison> {
+    const serializedObj = this.serialization(livraison);
+    const obj = omit(serializedObj, 'villeId', 'ville');
+    return this.http.post<Livraison>(ENDPOINTS.LIVRAISON.create, obj);
+  }
+
+  update(id: bigint, livraison: Livraison): Observable<Livraison> {
+    const serializedObj = this.serialization(livraison);
+    const obj = omit(serializedObj, 'villeId', 'ville');
+    return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), obj);
+  }
+
+  delete(id: bigint): Observable<void> {
+    return this.http.delete<void>(ENDPOINTS.LIVRAISON.delete(id));
+  }
+
+  search(livraison: Livraison): Observable<Livraison[]> {
+    const serializedObj = this.serialization(livraison);
+    const obj = omit(serializedObj, 'villeId', 'ville');
+    return this.http.post<Livraison[]>(ENDPOINTS.LIVRAISON.search, obj);
+  }
+
+  exist(livraison: Livraison): Observable<boolean> {
+      const serializedObj = this.serialization(livraison);
+      const obj = omit(serializedObj, 'villeId', 'ville');
+      return this.http.post<boolean>(ENDPOINTS.LIVRAISON.exist, obj);
+  }
+
+  present(dateAbsence: Date): Observable<Livraison[]> {
+    let body = { dateAbsence };
+    return this.http.post<Livraison[]>(ENDPOINTS.LIVRAISON.present, body);
+  }
+
+  serialization(obj: Livraison): any {
+    return {
+      ...obj,
+      id: obj.id?.toString(),
+    };
+  }
+  
+}

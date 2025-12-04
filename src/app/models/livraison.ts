@@ -1,7 +1,4 @@
-import { DetBulttinLivraison } from "./det-bulttin-livraison";
-import { DetLivraison } from "./det-livraison";
 import { Employe } from "./employe";
-import { Repertoire } from "./Repertoire";
 
 export interface Livraison {
   id: bigint;

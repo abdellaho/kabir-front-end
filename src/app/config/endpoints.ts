@@ -106,5 +106,26 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/voiture/${id}`,
     exist: `${BASE_URL}/voiture/exist`,
     search: `${BASE_URL}/voiture/search`,
+  },
+  LIVRAISON: {
+    getAll: `${BASE_URL}/livraison`,
+    getById: (id: bigint) => `${BASE_URL}/livraison/${id}`,
+    create: `${BASE_URL}/livraison`,
+    update: (id: bigint) => `${BASE_URL}/livraison/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/livraison/${id}`,
+    exist: `${BASE_URL}/livraison/exist`,
+    search: `${BASE_URL}/livraison/search`,
+    present: `${BASE_URL}/livraison/present`
+  },
+  DET_LIVRAISON: {
+    getAll: `${BASE_URL}/det-livraison`,
+    getById: (id: bigint) => `${BASE_URL}/det-livraison/${id}`,
+    create: `${BASE_URL}/det-livraison`,
+    update: (id: bigint) => `${BASE_URL}/det-livraison/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/det-livraison/${id}`,
+    getByLivraison: (idLivraison: bigint) => `${BASE_URL}/det-livraison/livraison/${idLivraison}`,
+    exist: `${BASE_URL}/det-livraison/exist`,
+    search: `${BASE_URL}/det-livraison/search`,
+    present: `${BASE_URL}/det-livraison/present`
   }
 };

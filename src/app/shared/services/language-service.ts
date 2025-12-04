@@ -34,6 +34,6 @@ export class LanguageService {
   }
 
   getCurrentLanguage(): string {
-    return this.translate.currentLang || this.translate.getDefaultLang();
+    return this.languageSubject.getValue();
   }
 }
