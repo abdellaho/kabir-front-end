@@ -32,12 +32,9 @@ export interface Livraison {
   codeTransport: string;
   employeOperateurId: bigint;
   employeOperateur?: Employe | null;
-  repertoireByCommercialId: bigint;
-  repertoireByCommercial?: Repertoire | null;
-  repertoireByCommercialAncienId: bigint;
-  repertoireByCommercialAncien?: Repertoire | null;
-  repertoireByClientId: bigint;
-  repertoireByClient?: Repertoire | null;
+  personnelId: bigint;
+  personnelAncienId?: bigint | null;
+  fournisseurId: bigint;
 }
 
 export function initObjectLivraison(): Livraison {
@@ -73,11 +70,8 @@ export function initObjectLivraison(): Livraison {
     codeTransport: "",
     employeOperateurId: BigInt(0),
     employeOperateur: null,
-    repertoireByCommercialId: BigInt(0),
-    repertoireByCommercial: null,
-    repertoireByCommercialAncienId: BigInt(0),
-    repertoireByCommercialAncien: null,
-    repertoireByClientId: BigInt(0),
-    repertoireByClient: null,
+    personnelId: BigInt(0),
+    personnelAncienId: null,
+    fournisseurId: BigInt(0),
   };
 }
