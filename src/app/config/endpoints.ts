@@ -110,6 +110,7 @@ export const ENDPOINTS = {
   LIVRAISON: {
     getAll: `${BASE_URL}/livraison`,
     getById: (id: bigint) => `${BASE_URL}/livraison/${id}`,
+    getByIdWithDetLivraison: (id: bigint) => `${BASE_URL}/livraison/${id}/with-det-livraison`,
     create: `${BASE_URL}/livraison`,
     update: (id: bigint) => `${BASE_URL}/livraison/${id}`,
     delete: (id: bigint) => `${BASE_URL}/livraison/${id}`,

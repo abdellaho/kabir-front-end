@@ -14,7 +14,7 @@ export interface DetLivraison {
   avecRemise: boolean;
   livraisonId: bigint;
   livraison?: Livraison | null;
-  stockId: bigint;
+  stockId: bigint | null;
   stock?: Stock | null;
 }
 
@@ -32,7 +32,7 @@ export function initObjectDetLivraison(): DetLivraison {
     avecRemise: false,
     livraisonId: BigInt(0),
     livraison: null,
-    stockId: BigInt(0),
+    stockId: null,
     stock: null,
   };
 }

@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Livraison } from '@/models/livraison';
 import { omit } from '@/shared/classes/generic-methods';
+import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -21,14 +22,18 @@ export class LivraisonService {
     return this.http.get<Livraison>(ENDPOINTS.LIVRAISON.getById(id));
   }
 
-  create(livraison: Livraison): Observable<Livraison> {
-    const serializedObj = this.serialization(livraison);
+  getByIdWithDetLivraison(id: bigint): Observable<LivraisonRequest> {
+    return this.http.get<LivraisonRequest>(ENDPOINTS.LIVRAISON.getByIdWithDetLivraison(id));
+  }
+
+  create(livraisonRequest: LivraisonRequest): Observable<Livraison> {
+    const serializedObj = this.serialization(livraisonRequest.livraison);
     const obj = omit(serializedObj, 'villeId', 'ville');
     return this.http.post<Livraison>(ENDPOINTS.LIVRAISON.create, obj);
   }
 
-  update(id: bigint, livraison: Livraison): Observable<Livraison> {
-    const serializedObj = this.serialization(livraison);
+  update(id: bigint, livraisonRequest: LivraisonRequest): Observable<Livraison> {
+    const serializedObj = this.serialization(livraisonRequest.livraison);
     const obj = omit(serializedObj, 'villeId', 'ville');
     return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), obj);
   }

@@ -25,6 +25,10 @@ import { Router } from '@angular/router';
 import { OperationType } from '@/shared/enums/operation-type';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { DataService } from '@/shared/services/data-service';
+import { initObjectStock, Stock } from '@/models/stock';
+import { StockService } from '@/services/stock/stock-service';
+import { PersonnelService } from '@/services/personnel/personnel-service';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 
 @Component({
   selector: 'app-livraison-view-component',
@@ -52,14 +56,18 @@ export class LivraisonViewComponent implements OnInit {
   listLivraison: Livraison[] = [];
   livraison: Livraison = initObjectLivraison();
   listFournisseur: Fournisseur[] = [];
+  listPersonnel: Personnel[] = [];
   dialogSupprimer: boolean = false;
   msg = APP_MESSAGES;
+  listStock: Stock[] = [];
 
   constructor(
       private livraisonService: LivraisonService,
       private detLivraisonService: DetLivraisonService,
       private fournisseurService: FournisseurService,
+      private stockService: StockService,
       private dataService: DataService,
+      private personnelService: PersonnelService,
       private router: Router,
       private messageService: MessageService,
       private loadingService: LoadingService
@@ -68,6 +76,8 @@ export class LivraisonViewComponent implements OnInit {
     ngOnInit(): void {
       this.search();
       this.getAllFournisseur();
+      this.getAllStock();
+      this.getAllPersonnel();
     }
 
     initObjectFournisseurSearch(archiver: boolean, supprimer: boolean): Fournisseur {
@@ -77,6 +87,24 @@ export class LivraisonViewComponent implements OnInit {
         objectSearch.supprimer = supprimer;
 
         return objectSearch;
+    }
+
+    initObjectStockSearch(archiver: boolean, supprimer: boolean): Stock {
+        let stockSearch: Stock = initObjectStock();
+
+        stockSearch.archiver = archiver;
+        stockSearch.supprimer = supprimer;
+
+        return stockSearch;
+    }
+
+    initObjectPersonnelSearch(archiver: boolean, supprimer: boolean): Personnel {
+        let personnelSearch: Personnel = initObjectPersonnel();
+
+        personnelSearch.archiver = archiver;
+        personnelSearch.supprimer = supprimer;
+
+        return personnelSearch;
     }
 
     search() {
@@ -111,28 +139,80 @@ export class LivraisonViewComponent implements OnInit {
       });
     }
 
+    getAllStock() {
+      this.listStock = [];
+      let objectSearch: Stock = this.initObjectStockSearch(false, false);
+
+        this.stockService.search(objectSearch).subscribe({
+          next: (stocks) => {
+              this.listStock = stocks;
+          },
+          error: (error) => {
+              console.log(error);
+          },
+      });
+    }
+
+    getAllPersonnel() {
+      this.listPersonnel = [];
+      let objectSearch: Personnel = this.initObjectPersonnelSearch(false, false);
+
+        this.personnelService.search(objectSearch).subscribe({
+          next: (personnels) => {
+              this.listPersonnel = personnels;
+          },
+          error: (error) => {
+              console.log(error);
+          },
+      });
+    }
+
     openCloseDialogSupprimer(openClose: boolean): void {
         this.dialogSupprimer = openClose;
     }
 
+    generateNumLivraison(livraison: Livraison): void {
+        livraison.numLivraison = new Date().getFullYear();
+    }
+
     emitToPageUpdate(selectedLivraison: Livraison) {
-      if(selectedLivraison) {
-        let listDetail: DetLivraison[] = [];
-        if(selectedLivraison.id) {
-          this.detLivraisonService.getByLivraison(selectedLivraison.id).subscribe({
-            next: (details) => {
-                listDetail = details;
-            },
-            error: (error) => {
-              console.log(error);
-            },
-            complete: () => {
-              this.dataService.setLivraisonData({ livraison: selectedLivraison, detLivraisons: listDetail, listFournisseur: this.listFournisseur });
-              this.router.navigate(['/update-livraison']);
+        if(selectedLivraison && selectedLivraison.id) {
+            let listDetail: DetLivraison[] = [];
+            
+            if(selectedLivraison.id) {
+                this.livraisonService.getByIdWithDetLivraison(selectedLivraison.id).subscribe({
+                    next: (livraisonRequest) => {
+                        selectedLivraison = livraisonRequest.livraison;
+                        listDetail = livraisonRequest.detLivraisons;
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    },
+                    complete: () => {
+                        this.dataService.setLivraisonData({ 
+                            livraison: selectedLivraison, 
+                            detLivraisons: listDetail, 
+                            listFournisseur: this.listFournisseur,
+                            listStock: this.listStock,
+                            listPersonnel: this.listPersonnel 
+                        });
+                        this.router.navigate(['/update-livraison']);
+                    }
+                });
+            } else {
+                let livraison: Livraison = initObjectLivraison();
+                this.generateNumLivraison(livraison);
+
+                this.dataService.setLivraisonData({ 
+                    livraison,
+                    detLivraisons: [], 
+                    listFournisseur: this.listFournisseur,
+                    listStock: this.listStock,
+                    listPersonnel: this.listPersonnel 
+                });
+                this.router.navigate(['/update-livraison']);
             }
-          });
         }
-      }
     }
 
     recupperer(operation: number, livraisonEdit: Livraison) {
