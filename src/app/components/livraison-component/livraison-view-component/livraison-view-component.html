@@ -1,1 +1,172 @@
 <p>livraison-view-component works!</p>
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listLivraison" dataKey="id"
+                selectionMode="single" [(selection)]="selectedLivraison" [metaKeySelection]="false"
+                [rows]="10" 
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['codeBl', 'sysDate', 'dateBl', 'mantantBL','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurId', 'personnelId', 'reglerNonRegler']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="codeBl" style="width: 30%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.codeBl }}
+                                <p-sortIcon field="codeBl" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="sysDate" style="width: 45%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.sysDate }}
+                                <p-sortIcon field="sysDate" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="dateBl" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.dateBl }}
+                                <p-sortIcon field="dateBl" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mantantBL" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.mantantBL }}
+                                <p-sortIcon field="mantantBL" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.dateReglement }}
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.mntReglement }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="fournisseurId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.fournisseurId }}
+                                <p-sortIcon field="fournisseurId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="personnelId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.personnelId }}
+                                <p-sortIcon field="personnelId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="reglerNonRegler" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.reglerNonRegler }}
+                                <p-sortIcon field="reglerNonRegler" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                    <tr [pSelectableRow]="p">
+                        <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.codeBl }}</td>
+                        <td>{{ p.mantantBL }}</td>
+                        <td>
+                            {{ p.dateReglement | date:'dd/MM/yyyy' }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
+                                <br />
+                                {{ p.dateReglement2 | date:'dd/MM/yyyy' }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '') {
+                                <br />
+                                {{ p.dateReglement3 | date:'dd/MM/yyyy' }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
+                                <br />
+                                {{ p.dateReglement4 | date:'dd/MM/yyyy' }}
+                            }
+                        </td>
+                        
+                        <td>
+                            {{ p.mntReglement | number:'1.2-2' }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
+                                <br />
+                                {{ p.mntReglement2 | number:'1.2-2' }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '') {
+                                <br />
+                                {{ p.mntReglement3 | number:'1.2-2' }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
+                                <br />
+                                {{ p.mntReglement4 | number:'1.2-2' }}
+                            }
+                        </td>
+                        
+                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.reglerNonRegler }}</td>
+                        <td style="width: 10%; min-width: 7rem">
+                        <div class="flex gap-2">
+                            <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                            <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                        </div>
+                        </td>
+                    </tr>
+                    </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="6">No Livraisons found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="6">Loading Livraisons data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (livraison) {
+                    <span>{{ msg.components.livraison.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

@@ -31,6 +31,9 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   listDetLivraison: DetLivraison[] = [];
   listPersonnel: Personnel[] = [];
   listStock: Stock[] = [];
+  mapOfPersonnels: Map<number, string> = new Map<number, string>();
+  mapOfStocks: Map<number, string> = new Map<number, string>();
+  mapOfFournisseurs: Map<number, string> = new Map<number, string>();
   subscription!: Subscription;
   dialogStock: boolean = false;
   dialogFacturer: boolean = false;
@@ -62,8 +65,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.livraison = data.livraison;
         this.listDetLivraison = data.detLivraisons;
         this.listFournisseur = data.listFournisseur;
+        this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
         this.listPersonnel = data.listPersonnel;
+        this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
         this.listStock = data.listStock;
+        this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
       },
       error: (error) => {
         console.log(error);

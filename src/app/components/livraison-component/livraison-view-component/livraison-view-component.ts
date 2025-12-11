@@ -57,9 +57,13 @@ export class LivraisonViewComponent implements OnInit {
   livraison: Livraison = initObjectLivraison();
   listFournisseur: Fournisseur[] = [];
   listPersonnel: Personnel[] = [];
+  listStock: Stock[] = [];
+  selectedLivraison: Livraison | null = null;
+  mapOfPersonnels: Map<number, string> = new Map<number, string>();
+  mapOfStocks: Map<number, string> = new Map<number, string>();
+  mapOfFournisseurs: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   msg = APP_MESSAGES;
-  listStock: Stock[] = [];
 
   constructor(
       private livraisonService: LivraisonService,
@@ -132,6 +136,7 @@ export class LivraisonViewComponent implements OnInit {
         this.fournisseurService.search(objectSearch).subscribe({
           next: (fournisseurs) => {
               this.listFournisseur = fournisseurs;
+              this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
           },
           error: (error) => {
               console.log(error);
@@ -146,6 +151,7 @@ export class LivraisonViewComponent implements OnInit {
         this.stockService.search(objectSearch).subscribe({
           next: (stocks) => {
               this.listStock = stocks;
+              this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
           },
           error: (error) => {
               console.log(error);
@@ -160,11 +166,24 @@ export class LivraisonViewComponent implements OnInit {
         this.personnelService.search(objectSearch).subscribe({
           next: (personnels) => {
               this.listPersonnel = personnels;
+              this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
           },
           error: (error) => {
               console.log(error);
           },
       });
+    }
+
+    getDesignationPersonnel(personnelId: number): string {
+        return this.mapOfPersonnels.get(personnelId) || '';
+    }
+
+    getDesignationStock(stockId: number): string {
+        return this.mapOfStocks.get(stockId) || '';
+    }
+
+    getDesignationFournisseur(fournisseurId: number): string {
+        return this.mapOfFournisseurs.get(fournisseurId) || '';
     }
 
     openCloseDialogSupprimer(openClose: boolean): void {
@@ -175,8 +194,12 @@ export class LivraisonViewComponent implements OnInit {
         livraison.numLivraison = new Date().getFullYear();
     }
 
+    viderAjouter(): void {
+        this.emitToPageUpdate(initObjectLivraison());
+    }
+
     emitToPageUpdate(selectedLivraison: Livraison) {
-        if(selectedLivraison && selectedLivraison.id) {
+        if(selectedLivraison) {
             let listDetail: DetLivraison[] = [];
             
             if(selectedLivraison.id) {
@@ -200,11 +223,10 @@ export class LivraisonViewComponent implements OnInit {
                     }
                 });
             } else {
-                let livraison: Livraison = initObjectLivraison();
-                this.generateNumLivraison(livraison);
+                this.generateNumLivraison(selectedLivraison);
 
                 this.dataService.setLivraisonData({ 
-                    livraison,
+                    livraison: selectedLivraison,
                     detLivraisons: [], 
                     listFournisseur: this.listFournisseur,
                     listStock: this.listStock,
