@@ -15,6 +15,8 @@ import { StockComponent } from '@/components/stock-component/stock-component';
 import { VoitureComponent } from '@/components/voiture-component/voiture-component';
 import { PrimeComponent } from '@/components/prime-component/prime-component';
 import { AcceuilComponent } from '@/components/acceuil-component/acceuil-component';
+import { LivraisonUpdateComponent } from '@/components/livraison-component/livraison-update-component/livraison-update-component';
+import { LivraisonViewComponent } from '@/components/livraison-component/livraison-view-component/livraison-view-component';
 
 export const appRoutes: Routes = [
     {
@@ -34,6 +36,8 @@ export const appRoutes: Routes = [
             { path: 'etablissement', component: EtablissementComponent },
             { path: 'prime', component: PrimeComponent },
             { path: 'personnel', component: PersonnelComponent },
+            { path: 'livraison', component: LivraisonViewComponent },
+            { path: 'livraison-update', component: LivraisonUpdateComponent },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]

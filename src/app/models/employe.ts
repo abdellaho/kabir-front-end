@@ -1,4 +1,4 @@
-import { Repertoire } from "./Repertoire";
+import { Repertoire } from "./repertoire";
 
 export interface Employe {
   id: bigint;

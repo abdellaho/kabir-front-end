@@ -42,6 +42,10 @@ export class AppMenu {
                 label: '',
                 items: [{ label: this.msg.menu.stock, icon: 'pi pi-fw pi-home', routerLink: ['/stock'] }]
             },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-home', routerLink: ['/livraison'] }]
+            },
             /* {
                 label: 'UI Components',
                 items: [

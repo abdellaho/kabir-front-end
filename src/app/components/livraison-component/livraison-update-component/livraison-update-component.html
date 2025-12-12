@@ -1,1 +1,312 @@
-<p>livraison-update-component works!</p>
+<p-toast></p-toast>
+<div class="flex flex-wrap gap-3">
+    <div class="flex-1 min-w-full md:min-w-0 md:basis-[calc(50%-0.75rem)] lg:basis-[calc(20%-0.75rem)]">
+        <div class="flex flex-col md:flex-row gap-2">
+            <div>
+                <p-floatlabel variant="on">
+                    <input pInputText id="codeBl" formControlName="codeBl" />
+                    <label for="codeBl">{{ msg.components.livraison.codeBl }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            2
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            3
+        </div>
+    </div>
+    <div class="flex-1 min-w-full md:min-w-0 md:basis-[calc(50%-0.75rem)] lg:basis-[calc(20%-0.75rem)]">
+        <div class="flex flex-col md:flex-row gap-2">
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-date-picker id="dateReglement2" formControlName="dateReglement2" appendTo="body"
+                        [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                    <label for="dateReglement2">{{ msg.components.livraison.dateReglement2 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['dateReglement2MustBeAfterDateReglement']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.dateReglement2MustBeAfterDateReglement }}</p-message>
+                }
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            2
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            3
+        </div>
+    </div>
+    <div class="flex-1 min-w-full md:min-w-0 md:basis-[calc(50%-0.75rem)] lg:basis-[calc(20%-0.75rem)]">
+        <div class="flex flex-col md:flex-row gap-2">
+            1
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            2
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            3
+        </div>
+    </div>
+    <div class="flex-1 min-w-full md:min-w-0 md:basis-[calc(50%-0.75rem)] lg:basis-[calc(20%-0.75rem)]">
+        <div class="flex flex-col md:flex-row gap-2">
+            1
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            2
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            3
+        </div>
+    </div>
+    <div class="flex-1 min-w-full md:min-w-0 md:basis-[calc(50%-0.75rem)] lg:basis-[calc(20%-0.75rem)]">
+        <div class="flex flex-col md:flex-row gap-2">
+            1
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            2
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            3
+        </div>
+    </div>
+</div>
+<p-fluid class="flex mt-8" [formGroup]="formGroup">
+    <div class="card flex flex-col gap-6 w-full">
+        <div class="flex flex-col md:flex-row gap-2">
+
+
+
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-date-picker id="dateReglement3" formControlName="dateReglement3" appendTo="body"
+                        [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                    <label for="dateReglement3">{{ msg.components.livraison.dateReglement3 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['dateReglement3MustBeAfterDateReglement2']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.dateReglement3MustBeAfterDateReglement2 }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-date-picker id="dateReglement4" formControlName="dateReglement4" appendTo="body"
+                        [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                    <label for="dateReglement4">{{ msg.components.livraison.dateReglement4 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['dateReglement4MustBeAfterDateReglement3']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.dateReglement4MustBeAfterDateReglement3 }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-select formControlName="fournisseurId" inputId="fournisseurId" [options]="listFournisseur"
+                        appendTo="body" optionLabel="designation" optionValue="id"
+                        style="width: 100% !important; height: 33px;" class="w-full md:w-56"
+                        placeholder="{{ msg.components.livraison.selectFournisseur }}" />
+                    <label for="fournisseurId">{{ msg.components.livraison.fournisseurId }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['fournisseurIdMustBeSelected']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.fournisseurRequired }}</p-message>
+                }
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-date-picker id="dateBl" formControlName="dateBl" [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                    <label for="dateBl">{{ msg.components.livraison.dateBl }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="typeReglment2" inputId="typeReglment2" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="w-full md:w-56" />
+                    <label for="typeReglment2">{{ msg.components.livraison.typeReglment2 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                        <p-select formControlName="typeReglment3" inputId="typeReglment3" [options]="typeReglements"
+                            appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                            class="w-full md:w-56" />
+                        <label for="typeReglment3">{{ msg.components.livraison.typeReglment3 }}</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                        <p-select formControlName="typeReglment4" inputId="typeReglment4" [options]="typeReglements"
+                            appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                            class="w-full md:w-56" />
+                        <label for="typeReglment4">{{ msg.components.livraison.typeReglment4 }}</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel class="w-full md:w-56" variant="on">
+                    <input pInputText formControlName="fournisseurDesignation" id="fournisseurDesignation"
+                        inputId="fournisseurDesignation" />
+                    <label for="fournisseurDesignation">{{ msg.components.livraison.fournisseur.designation }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
+                        [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                    <label for="dateReglement">{{ msg.components.livraison.dateReglement }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['dateReglementRequired']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.dateReglementRequired }}</p-message>
+                }
+                @if (formGroup.errors?.['dateReglementMustBeAfterDateBl']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.dateReglementMustBeAfterDateBl }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-input-number id="mntReglement2" formControlName="mntReglement2" />
+                    <label for="mntReglement2">{{ msg.components.livraison.mntReglement2 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['mntReglement2Required']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.mntReglement2Required }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-input-number id="mntReglement3" formControlName="mntReglement3" />
+                    <label for="mntReglement3">{{ msg.components.livraison.mntReglement3 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['mntReglement3Required']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.mntReglement3Required }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-input-number id="mntReglement4" formControlName="mntReglement4" />
+                    <label for="mntReglement4">{{ msg.components.livraison.mntReglement4 }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['mntReglement4Required']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.mntReglement4Required }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel variant="on" style="width: 100% !important;">
+                    <input pInputText formControlName="fournisseurTel1" id="fournisseurTel1"
+                        inputId="fournisseurTel1" />
+                    <label>{{ msg.components.livraison.fournisseur.tel1 }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-input-number id="mntReglement" formControlName="mntReglement" />
+                    <label for="mntReglement">{{ msg.components.livraison.mntReglement }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['mntReglementRequired'] ||
+                formGroup.errors?.['sumMntReglementMustBeEqualMntBL']) {
+                @if (formGroup.errors?.['mntReglementRequired']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.mntReglementRequired }}</p-message>
+                }
+                @if (formGroup.errors?.['sumMntReglementMustBeEqualMntBL']) {
+                <p-message severity="error" variant="simple" size="small">{{
+                    msg.components.livraison.errors.sumMntReglementMustBeEqualMntBL }}</p-message>
+                }
+                }
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <p-floatlabel variant="on">
+                    <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
+                        appendTo="body" optionLabel="designation" optionValue="id"
+                        style="width: 100% !important; height: 33px;" class="w-full md:w-56"
+                        placeholder="{{ msg.components.livraison.selectStock }}" />
+                    <label for="stockId">{{ msg.components.livraison.stockId }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel variant="on">
+                    <input pInputText formControlName="fournisseurTel2" id="fournisseurTel2"
+                        inputId="fournisseurTel2" />
+                    <label for="fournisseurTel2">{{ msg.components.livraison.fournisseur.tel2 }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-2">
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel class="w-full md:w-56" variant="on">
+                    <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="w-full md:w-56" />
+                    <label for="typeReglment">{{ msg.components.livraison.typeReglment }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <p-floatlabel variant="on">
+                    <input pInputText formControlName="fournisseurICE" id="fournisseurICE" inputId="fournisseurICE" />
+                    <label for="fournisseurICE">{{ msg.components.livraison.fournisseur.ice }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center"
+        style="justify-content: center;">
+        <div class="flex">
+            <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                class="p-button-outlined p-button-danger" (click)="fermer()"></button>
+            <p-button pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                (click)="miseAjour()" [disabled]="!formGroup.valid"></p-button>
+        </div>
+    </div>
+</p-fluid>

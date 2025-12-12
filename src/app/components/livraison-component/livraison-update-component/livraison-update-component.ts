@@ -17,10 +17,52 @@ import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
+import { ToastModule } from 'primeng/toast';
+import { FluidModule } from 'primeng/fluid';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MessageModule } from 'primeng/message';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
+import { filteredTypeReglement } from '@/shared/enums/type-reglement';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-livraison-update-component',
-  imports: [],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputNumberModule,
+    InputTextModule,
+    DatePickerModule,
+    SelectModule,
+    IconFieldModule,
+    ToggleSwitchModule,
+    CheckboxModule,
+    MessageModule,
+    MultiSelectModule
+  ],
   templateUrl: './livraison-update-component.html',
   styleUrl: './livraison-update-component.scss'
 })
@@ -45,6 +87,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   msg = APP_MESSAGES;
   formGroup!: FormGroup;
   formGroupStock!: FormGroup;
+  typeReglements: { label: string, value: number }[] = filteredTypeReglement;
 
   constructor(
     private livraisonService: LivraisonService,
@@ -118,6 +161,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         personnelId: [0],
         //personnelAncienId: [null],
         fournisseurId: [0],
+        stockId: [0],
+        fournisseurDesignation: { value: '', disabled: true },
+        fournisseurTel1: { value: '', disabled: true },
+        fournisseurTel2: { value: '', disabled: true },
+        fournisseurICE: { value: '', disabled: true },
       });
   }
 
@@ -164,6 +212,21 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   onChangeIdFournisseur() {
     this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.formGroup.get('fournisseurId')?.value) || initObjectFournisseur();
+    if(this.fournisseurSelected && this.fournisseurSelected.id !== null && this.fournisseurSelected.id !== undefined) {
+      this.formGroup.patchValue({
+        fournisseurDesignation: { value: this.fournisseurSelected.designation, disabled: true },
+        fournisseurTel1: { value: this.fournisseurSelected.tel1, disabled: true },
+        fournisseurTel2: { value: this.fournisseurSelected.tel2, disabled: true },
+        fournisseurICE: { value: this.fournisseurSelected.ice, disabled: true },
+      })
+    } else {
+      this.formGroup.patchValue({
+        fournisseurDesignation: { value: '', disabled: true },
+        fournisseurTel1: { value: '', disabled: true },
+        fournisseurTel2: { value: '', disabled: true },
+        fournisseurICE: { value: '', disabled: true },
+      })
+    }
   }
 
   onChangeIdStock() {
@@ -335,6 +398,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  fermer() {
+    this.router.navigate(['/livraison']);
   }
   
   ngOnDestroy(): void {

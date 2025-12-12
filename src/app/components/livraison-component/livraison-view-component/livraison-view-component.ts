@@ -219,7 +219,7 @@ export class LivraisonViewComponent implements OnInit {
                             listStock: this.listStock,
                             listPersonnel: this.listPersonnel 
                         });
-                        this.router.navigate(['/update-livraison']);
+                        this.router.navigate(['/livraison-update']);
                     }
                 });
             } else {
@@ -232,7 +232,7 @@ export class LivraisonViewComponent implements OnInit {
                     listStock: this.listStock,
                     listPersonnel: this.listPersonnel 
                 });
-                this.router.navigate(['/update-livraison']);
+                this.router.navigate(['/livraison-update']);
             }
         }
     }
