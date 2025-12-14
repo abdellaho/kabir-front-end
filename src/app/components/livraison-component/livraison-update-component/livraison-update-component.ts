@@ -13,7 +13,7 @@ import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
-import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { ajusterMontants, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -71,6 +71,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   livraison: Livraison = initObjectLivraison();
   listFournisseur: Fournisseur[] = [];
   listDetLivraison: DetLivraison[] = [];
+  originalListDetLivraison: DetLivraison[] = [];
   listPersonnel: Personnel[] = [];
   listStock: Stock[] = [];
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
@@ -107,17 +108,23 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.livraison = data.livraison;
         this.listDetLivraison = data.detLivraisons;
+        this.originalListDetLivraison = structuredClone(data.detLivraisons);
         this.listFournisseur = data.listFournisseur;
         this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
         this.listPersonnel = data.listPersonnel;
         this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
         this.listStock = data.listStock;
         this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
+        this.mapObjectToFormGroup(this.livraison);
       },
       error: (error) => {
         console.log(error);
       }
     });
+  }
+
+  mapObjectToFormGroup(livraison: Livraison) {
+    this.formGroup.patchValue(livraison);
   }
 
   initFormGroupStock() {
@@ -131,7 +138,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   initFormGroup() {
       this.formGroup = this.formBuilder.group({
         numLivraison: [0],
-        codeBl: [''],
+        codeBl: [{value: '', disabled: true}, [Validators.required]],
         dateBl: [new Date()],
         dateReglement: [new Date()],
         dateReglement2: [null],
@@ -266,23 +273,23 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   recuppererDetLivraison(operation: number, detLivraisonEdit: DetLivraison) {
-      if (detLivraisonEdit && detLivraisonEdit.id) {
-          this.detLivraisonSelected = detLivraisonEdit;
-          if (operation === 1) {
-              this.formGroupStock.patchValue({
-                  stockId: this.detLivraisonSelected.stockId,
-                  prixVente: this.detLivraisonSelected.prixVente,
-                  qteLivrer: this.detLivraisonSelected.qteLivrer,
-                  remiseLivraison: this.detLivraisonSelected.remiseLivraison
-              });
+    if (detLivraisonEdit && detLivraisonEdit.id) {
+        this.detLivraisonSelected = detLivraisonEdit;
+        if (operation === 1) {
+            this.formGroupStock.patchValue({
+                stockId: this.detLivraisonSelected.stockId,
+                prixVente: this.detLivraisonSelected.prixVente,
+                qteLivrer: this.detLivraisonSelected.qteLivrer,
+                remiseLivraison: this.detLivraisonSelected.remiseLivraison
+            });
 
-              this.openCloseDialogStock(true);
-          } else {
-              this.openCloseDialogDeleteStock(true);
-          }
-      } else {
-          this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
-      }
+            this.openCloseDialogStock(true);
+        } else {
+            this.openCloseDialogDeleteStock(true);
+        }
+    } else {
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+    }
   }
 
   validerStock() {
@@ -303,7 +310,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   trancherMontantTotal() {
     if(this.livraison && this.livraison.mantantBL > 0) {
-      let montantReglement1: number = this.formGroup.get('mntReglement1')?.value;
+      let montantReglement1: number = this.formGroup.get('mntReglement')?.value;
       let montantReglement2: number = this.formGroup.get('dateReglement2')?.value ? this.formGroup.get('mntReglement2')?.value :0;
       let montantReglement3: number = this.formGroup.get('dateReglement3')?.value ? this.formGroup.get('mntReglement3')?.value :0;
       let montantReglement4: number = this.formGroup.get('dateReglement4')?.value ? this.formGroup.get('mntReglement4')?.value :0;
@@ -315,7 +322,13 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     if(this.listDetLivraison && this.listDetLivraison.length > 0) {
       this.livraison.mantantBL = this.listDetLivraison.reduce((total, detLivraison) => total + detLivraison.montantProduit, 0);
       this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
-      this.trancherMontantTotal();
+      this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
+      this.formGroup.patchValue({
+        mntReglement: this.livraison.mntReglement,
+        mntReglement2: this.livraison.mntReglement2,
+        mntReglement3: this.livraison.mntReglement3,
+        mntReglement4: this.livraison.mntReglement4
+      });
     }
   }
 

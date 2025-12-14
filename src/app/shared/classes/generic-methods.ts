@@ -1,6 +1,7 @@
 import { AbstractControl } from "@angular/forms";
 import { TypeEmploye } from "../enums/type-employe";
 import { TypePersonnel } from "../enums/type-personnel";
+import { Livraison } from "@/models/livraison";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
@@ -154,4 +155,145 @@ export function returnValueOfNumberControl(control: AbstractControl, libel: stri
 
 export function returnValueOfNumberProperty(value: number | null | string): number | null {
   return (value !== null && value !== null && value !== 0 && value !== '0') ? Number(value) : null;
+}
+
+export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livraison {
+  if (livraison.dateReglement == null) livraison.mntReglement = 0.0;
+  if (livraison.dateReglement2 == null) livraison.mntReglement2 = 0.0;
+  if (livraison.dateReglement3 == null) livraison.mntReglement3 = 0.0;
+  if (livraison.dateReglement4 == null) livraison.mntReglement4 = 0.0;
+      
+  let nombreReglements = 1; // mntReglement toujours présent
+  if (livraison.dateReglement2 != null) nombreReglements++;
+  if (livraison.dateReglement3 != null) nombreReglements++;
+  if (livraison.dateReglement4 != null) nombreReglements++;
+
+  // Diviser la somme totale par le nombre de règlements disponibles
+  let montantParReglement = nombreReglements > 0 ? sommeTotale / nombreReglements : sommeTotale;
+      
+  if (livraison.dateReglement != null && livraison.mntReglement == 0.0 && sommeTotale > 0) livraison.mntReglement = montantParReglement > 1 ? 1 : montantParReglement;
+  if (livraison.dateReglement2 != null && livraison.mntReglement2 == 0.0 && sommeTotale > 0) livraison.mntReglement2 = montantParReglement > 1 ? 1 : montantParReglement;
+  if (livraison.dateReglement3 != null && livraison.mntReglement3 == 0.0 && sommeTotale > 0) livraison.mntReglement3 = montantParReglement > 1 ? 1 : montantParReglement;
+  if (livraison.dateReglement4 != null && livraison.mntReglement4 == 0.0 && sommeTotale > 0) livraison.mntReglement4 = montantParReglement > 1 ? 1 : montantParReglement;
+    
+  let trvErreur: boolean = true;
+    
+  while (trvErreur) {
+    // Calculer la somme actuelle des règlements
+    let sommeActuelle = livraison.mntReglement + livraison.mntReglement2 + livraison.mntReglement3 + livraison.mntReglement4;
+
+    // Calculer la différence à ajuster
+    let difference = sommeTotale - sommeActuelle;
+          
+    let reste: number = 0;
+    // Ajuster le dernier montant disponible
+    if (livraison.dateReglement4 != null) {
+      livraison.mntReglement4 = livraison.mntReglement4 + difference;
+            
+      if(livraison.mntReglement4 < 0) {
+        reste = Math.abs(livraison.mntReglement4) + 1;
+        if(sommeTotale > 0) {
+          livraison.mntReglement4 = 1;
+        } else {
+          livraison.mntReglement4 = 0;
+        }
+      }
+            
+      if (livraison.dateReglement3 != null) {
+        livraison.mntReglement3 = livraison.mntReglement3 - reste;
+              
+        if(livraison.mntReglement3 < 0) {
+          reste = Math.abs(livraison.mntReglement3) + 1;
+                
+          if(sommeTotale > 0) {
+            livraison.mntReglement3 = 1;
+          } else {
+            livraison.mntReglement3 = 0;
+          }
+        }
+              
+        if (livraison.dateReglement2 != null) {
+          livraison.mntReglement2 = livraison.mntReglement2 - reste;
+                
+          if(livraison.mntReglement2 < 0) {
+            reste = Math.abs(livraison.mntReglement2) + 1;
+                  
+            if(sommeTotale > 0) {
+              livraison.mntReglement2 = 1;
+            } else {
+              livraison.mntReglement2 = 0;
+            }
+                  
+            livraison.mntReglement = livraison.mntReglement - reste;
+          }
+        } else {
+          livraison.mntReglement = livraison.mntReglement - reste;
+        }
+      } else if (livraison.dateReglement2 != null) {
+        livraison.mntReglement2 = livraison.mntReglement2 - reste;
+              
+        if(livraison.mntReglement2 < 0) {
+          reste = Math.abs(livraison.mntReglement2) + 1;
+                
+          if(sommeTotale > 0) {
+            livraison.mntReglement2 = 1;
+          } else {
+            livraison.mntReglement2 = 0;
+          }
+                
+          livraison.mntReglement = livraison.mntReglement - reste;
+        }
+      } else if (livraison.dateReglement3 != null) {
+        livraison.mntReglement3 = livraison.mntReglement3 + difference;
+            
+        if(livraison.mntReglement3 < 0) {
+          reste = Math.abs(livraison.mntReglement3) + 1;
+          if(sommeTotale > 0) {
+            livraison.mntReglement3 = 1;
+          } else {
+            livraison.mntReglement3 = 0;
+          }
+        }
+            
+        if (livraison.dateReglement2 != null) {
+          livraison.mntReglement2 = livraison.mntReglement2 - reste;
+              
+          if(livraison.mntReglement2 < 0) {
+            reste = Math.abs(livraison.mntReglement2) + 1;
+            if(sommeTotale > 0) {
+              livraison.mntReglement2 = 1;
+            } else {
+              livraison.mntReglement2 = 0;
+            }
+                
+            livraison.mntReglement = livraison.mntReglement - reste;
+          }
+        } else if (livraison.dateReglement2 != null) {
+          livraison.mntReglement2 = livraison.mntReglement2 + difference;
+            
+          if(livraison.mntReglement2 < 0) {
+            reste = Math.abs(livraison.mntReglement2) + 1;
+              
+            if(sommeTotale > 0) {
+              livraison.mntReglement2 = 1;
+            } else {
+              livraison.mntReglement2 = 0;
+            }
+              
+            livraison.mntReglement = livraison.mntReglement - reste;
+          }
+        } else {
+          livraison.mntReglement = livraison.mntReglement + difference;
+        }
+          
+        sommeActuelle = livraison.mntReglement + livraison.mntReglement2 + livraison.mntReglement3 + livraison.mntReglement4;
+          
+        if(sommeActuelle == sommeTotale) {
+          trvErreur = false;
+        }
+      }
+    }
+  }
+  
+  return livraison;
 }

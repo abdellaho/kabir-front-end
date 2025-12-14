@@ -116,7 +116,8 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/livraison/${id}`,
     exist: `${BASE_URL}/livraison/exist`,
     search: `${BASE_URL}/livraison/search`,
-    present: `${BASE_URL}/livraison/present`
+    present: `${BASE_URL}/livraison/present`,
+    getLastNumLivraison: `${BASE_URL}/livraison/last-num-livraison`
   },
   DET_LIVRAISON: {
     getAll: `${BASE_URL}/det-livraison`,

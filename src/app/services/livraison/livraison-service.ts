@@ -59,6 +59,10 @@ export class LivraisonService {
     return this.http.post<Livraison[]>(ENDPOINTS.LIVRAISON.present, body);
   }
 
+  getLastNumLivraison(body: { dateBl: string; id: number | null }): Observable<number> {
+    return this.http.post<number>(ENDPOINTS.LIVRAISON.getLastNumLivraison, body);
+  }
+
   serialization(obj: Livraison): any {
     return {
       ...obj,

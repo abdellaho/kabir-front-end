@@ -29,6 +29,8 @@ import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
+import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-livraison-view-component',
@@ -190,12 +192,42 @@ export class LivraisonViewComponent implements OnInit {
         this.dialogSupprimer = openClose;
     }
 
-    generateNumLivraison(livraison: Livraison): void {
-        livraison.numLivraison = new Date().getFullYear();
-    }
+    async generateNumLivraison(livraison: Livraison) {
+		let changeCodeBL: boolean = true;
+		let localDate: Date = null != livraison.dateBl ? livraison.dateBl : new Date();
+		let annee: string = localDate.getFullYear().toString().substring(2);
+		
+		if(livraison.codeBl && livraison.codeBl.length > 0) {
+			let anneeAncien: string = livraison.codeBl.substring(0, 2);
+			if(annee === anneeAncien) {
+				changeCodeBL = false;
+			}
+		}
+		
+		if(changeCodeBL) {
+			let num: number = 0;
+			num = await this.getLastNumLivraison(livraison.dateBl, livraison.id ? Number(livraison.id) : null);
 
-    viderAjouter(): void {
-        this.emitToPageUpdate(initObjectLivraison());
+			let codbl: string = num + "";
+			let codeBL: string = "";
+			if (codbl.length == 1) {
+				codeBL = annee + "-000" + num /*"L000" + num*/;
+			} else if (codbl.length == 2) {
+				codeBL = annee + "-00" + num /*"L00" + num*/;
+			}
+			if (codbl.length >= 3) {
+				codeBL = annee + "-0" + num /*"L0" + num*/;
+			}
+			
+			livraison.numLivraison = num;
+			livraison.codeBl = codeBL;
+		}
+	}
+
+    async viderAjouter() {
+        let livraison = initObjectLivraison();
+        await this.generateNumLivraison(livraison);
+        this.emitToPageUpdate(livraison);
     }
 
     emitToPageUpdate(selectedLivraison: Livraison) {
@@ -302,6 +334,23 @@ export class LivraisonViewComponent implements OnInit {
         }
 
         this.openCloseDialogSupprimer(false);
+    }
+
+    async getLastNumLivraison(date: Date, id: number | null): Promise<number> {
+        try {
+            let dateBl = mapToDateTimeBackEnd(date);
+            let body = { dateBl: dateBl.toISOString(), id: id };
+            const existsObservable = this.livraisonService.getLastNumLivraison(body).pipe(
+                catchError(error => {
+                    console.error('Error in absence existence observable:', error);
+                    return of(1); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return 1;
+        }
     }
 
 }
