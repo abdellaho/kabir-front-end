@@ -103,27 +103,27 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initFormGroup();
     
-    this.subscription = this.dataService.livraisonData$.subscribe({
-      next: (data) => {
-        this.livraison = data.livraison;
-        this.listDetLivraison = data.detLivraisons;
-        this.originalListDetLivraison = structuredClone(data.detLivraisons);
-        this.listFournisseur = data.listFournisseur;
-        this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
-        this.listPersonnel = data.listPersonnel;
-        this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
-        this.listStock = data.listStock;
-        this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
-        this.mapObjectToFormGroup(this.livraison);
-      },
-      error: (error) => {
-        console.log(error);
+    this.subscription = this.dataService.currentData$.subscribe((data) => {
+      if (!data) {
+        this.router.navigate(['/livraison']);
+        return;
       }
+      this.livraison = data.livraison;
+      this.listDetLivraison = data.detLivraisons;
+      this.originalListDetLivraison = structuredClone(data.detLivraisons);
+      this.listFournisseur = data.listFournisseur;
+      this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
+      this.listPersonnel = data.listPersonnel;
+      this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
+      this.listStock = data.listStock;
+      this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
+      this.mapObjectToFormGroup(this.livraison);
     });
   }
 
   mapObjectToFormGroup(livraison: Livraison) {
     this.formGroup.patchValue(livraison);
+    console.log(livraison);
   }
 
   initFormGroupStock() {

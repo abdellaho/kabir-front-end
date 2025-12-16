@@ -116,8 +116,8 @@ export class LivraisonViewComponent implements OnInit {
     search() {
       this.listLivraison = [];
         this.loadingService.show();
-        let livraison = initObjectLivraison();
-        this.livraisonService.search(livraison).subscribe({
+        //let livraison = initObjectLivraison();
+        this.livraisonService.getAll().subscribe({
             next: (livraisons) => {
                 this.listLivraison = livraisons;
             },
@@ -228,6 +228,7 @@ export class LivraisonViewComponent implements OnInit {
         let livraison = initObjectLivraison();
         await this.generateNumLivraison(livraison);
         this.emitToPageUpdate(livraison);
+        console.log("codeBl : ", livraison.codeBl);
     }
 
     emitToPageUpdate(selectedLivraison: Livraison) {
@@ -244,7 +245,7 @@ export class LivraisonViewComponent implements OnInit {
                         console.log(error);
                     },
                     complete: () => {
-                        this.dataService.setLivraisonData({ 
+                        this.dataService.setLivraisonData({
                             livraison: selectedLivraison, 
                             detLivraisons: listDetail, 
                             listFournisseur: this.listFournisseur,
@@ -255,9 +256,7 @@ export class LivraisonViewComponent implements OnInit {
                     }
                 });
             } else {
-                this.generateNumLivraison(selectedLivraison);
-
-                this.dataService.setLivraisonData({ 
+                this.dataService.setLivraisonData({
                     livraison: selectedLivraison,
                     detLivraisons: [], 
                     listFournisseur: this.listFournisseur,
