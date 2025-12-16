@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Stock } from '@/models/stock';
 import { omit } from '@/shared/classes/generic-methods';
+import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -46,6 +47,21 @@ export class StockService {
     const serializedObj = this.serialization(stock);
     return this.http.post<boolean>(ENDPOINTS.STOCK.exist, serializedObj);
   }
+  
+  updateQteStock(id: bigint, qte: number, operationType: OperationType): Observable<void> {
+    let typeOperation: number = this.getTypeOperation(operationType);
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStock(id), { qte, typeOperation });
+  }
+
+  updateQteStockImport(id: bigint, qte: number, operationType: OperationType): Observable<void> {
+    let typeOperation: number = this.getTypeOperation(operationType);
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockImport(id), { qte, typeOperation });
+  }
+
+  updateQteStockFacturer(id: bigint, qte: number, operationType: OperationType): Observable<void> {
+    let typeOperation: number = this.getTypeOperation(operationType);
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockFacturer(id), { qte, typeOperation });
+  }
 
   serialization(obj: Stock): any {
     return {
@@ -53,6 +69,10 @@ export class StockService {
       id: obj.id?.toString(),
       fournisseurId: obj.fournisseurId?.toString(),
     };
+  }
+
+  getTypeOperation(operationType: OperationType): number {
+    return operationType === OperationType.ADD ? 1 : (operationType === OperationType.DELETE ? 2 : 3);
   }
   
 }

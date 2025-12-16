@@ -97,6 +97,9 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/stock/${id}`,
     exist: `${BASE_URL}/stock/exist`,
     search: `${BASE_URL}/stock/search`,
+    updateQteStock: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock`,
+    updateQteStockImport: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock-import`,
+    updateQteStockFacturer: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock-facturer`,
   },
   VOITURE: {
     getAll: `${BASE_URL}/voiture`,
