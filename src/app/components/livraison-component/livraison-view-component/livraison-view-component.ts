@@ -228,7 +228,6 @@ export class LivraisonViewComponent implements OnInit {
         let livraison = initObjectLivraison();
         await this.generateNumLivraison(livraison);
         this.emitToPageUpdate(livraison);
-        console.log("codeBl : ", livraison.codeBl);
     }
 
     emitToPageUpdate(selectedLivraison: Livraison) {

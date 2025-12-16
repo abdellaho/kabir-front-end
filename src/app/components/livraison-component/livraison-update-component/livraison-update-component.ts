@@ -122,8 +122,32 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   mapObjectToFormGroup(livraison: Livraison) {
-    this.formGroup.patchValue(livraison);
-    console.log(livraison);
+    this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === livraison.fournisseurId) || initObjectFournisseur();
+    this.formGroup.patchValue({
+      numLivraison: livraison.numLivraison,
+      codeBl: livraison.codeBl,
+      dateBl: livraison.dateBl,
+      dateReglement: livraison.dateReglement,
+      dateReglement2: livraison.dateReglement2,
+      dateReglement3: livraison.dateReglement3,
+      dateReglement4: livraison.dateReglement4,
+      typeReglment: livraison.typeReglment,
+      typeReglment2: livraison.typeReglment2,
+      typeReglment3: livraison.typeReglment3,
+      typeReglment4: livraison.typeReglment4,
+      mntReglement: livraison.mntReglement,
+      mntReglement2: livraison.mntReglement2,
+      mntReglement3: livraison.mntReglement3,
+      mntReglement4: livraison.mntReglement4,
+      mantantBL: livraison.mantantBL,
+      personnelId: livraison.personnelId,
+      fournisseurId: this.fournisseurSelected?.id,
+      fournisseurDesignation: this.fournisseurSelected?.designation || '',
+      fournisseurTel1: this.fournisseurSelected?.tel1 || '',
+      fournisseurTel2: this.fournisseurSelected?.tel2 || '',
+      fournisseurICE: this.fournisseurSelected?.ice || '',
+    });
+    console.log("mapObjectToFormGroup : ", this.formGroup.value);
   }
 
   initFormGroupStock() {
@@ -138,44 +162,44 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   initFormGroup() {
-      this.formGroup = this.formBuilder.group({
-        numLivraison: [0],
-        codeBl: [{value: '', disabled: true}, [Validators.required]],
-        dateBl: [new Date()],
-        dateReglement: [new Date()],
-        dateReglement2: [null],
-        dateReglement3: [null],
-        dateReglement4: [null],
-        typeReglment: [0],
-        typeReglment2: [0],
-        typeReglment3: [0],
-        typeReglment4: [0],
-        mantantBL: [0],
-        //mantantBLReel: [0],
-        //mantantBLBenefice: [0],
-        typePaiement: [''],
-        //mantantBLPourcent: [0],
-        //reglerNonRegler: [0],
-        //sysDate: [new Date()],
-        //infinity: [0],
-        //etatBultinPaie: [0],
-        //livrernonlivrer: [0],
-        //avecRemise: [false],
-        mntReglement: [0],
-        mntReglement2: [0],
-        mntReglement3: [0],
-        mntReglement4: [0],
-        //facturer100: [false],
-        //codeTransport: [''],
-        personnelId: [0],
-        //personnelAncienId: [null],
-        fournisseurId: [0],
-        stockId: [0],
-        fournisseurDesignation: { value: '', disabled: true },
-        fournisseurTel1: { value: '', disabled: true },
-        fournisseurTel2: { value: '', disabled: true },
-        fournisseurICE: { value: '', disabled: true },
-      });
+    this.formGroup = this.formBuilder.group({
+      numLivraison: [0],
+      codeBl: [{value: '', disabled: true}, [Validators.required]],
+      dateBl: [new Date()],
+      dateReglement: [new Date()],
+      dateReglement2: [null],
+      dateReglement3: [null],
+      dateReglement4: [null],
+      typeReglment: [0],
+      typeReglment2: [0],
+      typeReglment3: [0],
+      typeReglment4: [0],
+      mantantBL: [0],
+      //mantantBLReel: [0],
+      //mantantBLBenefice: [0],
+      //typePaiement: [''],
+      //mantantBLPourcent: [0],
+      //reglerNonRegler: [0],
+      //sysDate: [new Date()],
+      //infinity: [0],
+      //etatBultinPaie: [0],
+      //livrernonlivrer: [0],
+      //avecRemise: [false],
+      mntReglement: [0],
+      mntReglement2: [0],
+      mntReglement3: [0],
+      mntReglement4: [0],
+      //facturer100: [false],
+      //codeTransport: [''],
+      personnelId: [0],
+      //personnelAncienId: [null],
+      fournisseurId: [0],
+      stockId: [0],
+      fournisseurDesignation: [{ value: '', disabled: true }],
+      fournisseurTel1: [{ value: '', disabled: true }],
+      fournisseurTel2: [{ value: '', disabled: true }],
+      fournisseurICE: [{ value: '', disabled: true }],
+    });
   }
 
   mapFormToLivraison() {
@@ -221,29 +245,44 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   onChangeIdFournisseur() {
     this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.formGroup.get('fournisseurId')?.value) || initObjectFournisseur();
+    
     if(this.fournisseurSelected && this.fournisseurSelected.id !== null && this.fournisseurSelected.id !== undefined) {
+      console.log(this.fournisseurSelected);
       this.formGroup.patchValue({
-        fournisseurDesignation: { value: this.fournisseurSelected.designation, disabled: true },
-        fournisseurTel1: { value: this.fournisseurSelected.tel1, disabled: true },
-        fournisseurTel2: { value: this.fournisseurSelected.tel2, disabled: true },
-        fournisseurICE: { value: this.fournisseurSelected.ice, disabled: true },
-      })
+        fournisseurDesignation: this.fournisseurSelected.designation,
+        fournisseurTel1: this.fournisseurSelected.tel1,
+        fournisseurTel2: this.fournisseurSelected.tel2,
+        fournisseurICE: this.fournisseurSelected.ice,
+      });
+
+      this.formGroup.get('fournisseurDesignation')?.disable();
+      this.formGroup.get('fournisseurTel1')?.disable();
+      this.formGroup.get('fournisseurTel2')?.disable();
+      this.formGroup.get('fournisseurICE')?.disable();
     } else {
       this.formGroup.patchValue({
-        fournisseurDesignation: { value: '', disabled: true },
-        fournisseurTel1: { value: '', disabled: true },
-        fournisseurTel2: { value: '', disabled: true },
-        fournisseurICE: { value: '', disabled: true },
-      })
+        fournisseurDesignation: '',
+        fournisseurTel1: '',
+        fournisseurTel2: '',
+        fournisseurICE: '',
+      });
+
+      this.formGroup.get('fournisseurDesignation')?.enable();
+      this.formGroup.get('fournisseurTel1')?.enable();
+      this.formGroup.get('fournisseurTel2')?.enable();
+      this.formGroup.get('fournisseurICE')?.enable();
     }
   }
 
   onChangeIdStock() {
-    this.detLivraisonSelected = initObjectDetLivraison();
+    this.detLivraisonSelected = this.listDetLivraison.find((detLivraison) => detLivraison.stockId === this.formGroup.get('stockId')?.value) || initObjectDetLivraison();
     this.stockSelected = this.listStock.find((stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
     
     if(this.stockSelected.id !== null && this.stockSelected.id !== undefined) {
-      this.detLivraisonSelected.stockId = this.stockSelected.id;
+      if(this.detLivraisonSelected.stockId === null) {
+        this.detLivraisonSelected.stockId = this.stockSelected.id;
+      }
+      
       this.initFormGroupStock();
       this.openCloseDialogStock(true);
     }
@@ -306,40 +345,30 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.ADD);
       }
       
-      this.calculerMontantTotal();
+      //this.calculerMontantTotal();
       this.openCloseDialogStock(false);
     }
   }
 
   recupperer(operation: number, detLivraisonEdit: DetLivraison) {
-        if (detLivraisonEdit && detLivraisonEdit.id) {
-            this.detLivraisonSelected = detLivraisonEdit;
-            if (operation === 1) {
-                this.formGroupStock.patchValue({
-                    designation: this.detLivraisonSelected.stock?.designation,
-                    pattc: this.detLivraisonSelected.stock?.pattc,
-                    qteStock: this.detLivraisonSelected.stock?.qteStock,
-                    qteLivrer: this.detLivraisonSelected.qteLivrer,
-                    prixVente: this.detLivraisonSelected.prixVente,
-                    remiseLivraison: this.detLivraisonSelected.remiseLivraison,
-                });
+    if (detLivraisonEdit && detLivraisonEdit.stockId) {
+        this.detLivraisonSelected = detLivraisonEdit;
+        if (operation === 1) {
+            this.formGroupStock.patchValue({
+                designation: this.detLivraisonSelected.stock?.designation,
+                pattc: this.detLivraisonSelected.stock?.pattc,
+                qteStock: this.detLivraisonSelected.stock?.qteStock,
+                qteLivrer: this.detLivraisonSelected.qteLivrer,
+                prixVente: this.detLivraisonSelected.prixVente,
+                remiseLivraison: this.detLivraisonSelected.remiseLivraison,
+            });
 
-                this.openCloseDialogStock(true);
-            } else if(operation === 2) {
-                this.openCloseDialogDeleteStock(true);
-            }
-        } else {
-            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+            this.openCloseDialogStock(true);
+        } else if(operation === 2) {
+            this.openCloseDialogDeleteStock(true);
         }
-    }
-
-  trancherMontantTotal() {
-    if(this.livraison && this.livraison.mantantBL > 0) {
-      let montantReglement1: number = this.formGroup.get('mntReglement')?.value;
-      let montantReglement2: number = this.formGroup.get('dateReglement2')?.value ? this.formGroup.get('mntReglement2')?.value :0;
-      let montantReglement3: number = this.formGroup.get('dateReglement3')?.value ? this.formGroup.get('mntReglement3')?.value :0;
-      let montantReglement4: number = this.formGroup.get('dateReglement4')?.value ? this.formGroup.get('mntReglement4')?.value :0;
-      let montantTotal: number = montantReglement1 + montantReglement2 + montantReglement3 + montantReglement4;
+    } else {
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
   }
 
@@ -359,6 +388,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   deleteDetLivraison() {
     this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, this.detLivraisonSelected.id);
+    this.openCloseDialogDeleteStock(false);
   }
 
   mapFormGroupToObject(formGroup: FormGroup, livraison: Livraison): Livraison {

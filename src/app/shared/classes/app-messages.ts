@@ -269,6 +269,7 @@ export const APP_MESSAGES = {
                 remiseLivraison: 'Remise Livraison',
                 avecRemise: 'Avec Remise',
                 montantProduit: 'Montant Produit',
+                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
             },
             errors: {
                 mntReglementRequired: 'Mnt Réglement doit être supérieur à 0',
