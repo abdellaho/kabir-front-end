@@ -6,9 +6,9 @@ export interface Livraison {
   codeBl: string;
   dateBl: Date;
   dateReglement: Date;
-  dateReglement2: Date;
-  dateReglement3: Date;
-  dateReglement4: Date;
+  dateReglement2: Date | null;
+  dateReglement3: Date | null;
+  dateReglement4: Date | null;
   typeReglment: number;
   typeReglment2: number;
   typeReglment3: number;
@@ -44,9 +44,9 @@ export function initObjectLivraison(): Livraison {
     codeBl: "",
     dateBl: new Date(),
     dateReglement: new Date(),
-    dateReglement2: new Date(),
-    dateReglement3: new Date(),
-    dateReglement4: new Date(),
+    dateReglement2: null,
+    dateReglement3: null,
+    dateReglement4: null,
     typeReglment: 0,
     typeReglment2: 0,
     typeReglment3: 0,
