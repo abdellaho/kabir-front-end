@@ -13,7 +13,7 @@ import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
-import { ajusterMontants, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { ajusterMontants, findInvalidControls, getAllInvalidFields, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -247,11 +247,17 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.dialogDeleteStock = openClose;
   }
 
+  disableFournisseurData() {
+    this.formGroup.get('fournisseurDesignation')?.disable();
+    this.formGroup.get('fournisseurTel1')?.disable();
+    this.formGroup.get('fournisseurTel2')?.disable();
+    this.formGroup.get('fournisseurICE')?.disable();
+  }
+
   onChangeIdFournisseur() {
     this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.formGroup.get('fournisseurId')?.value) || initObjectFournisseur();
     
     if(this.fournisseurSelected && this.fournisseurSelected.id !== null && this.fournisseurSelected.id !== undefined) {
-      console.log(this.fournisseurSelected);
       this.formGroup.patchValue({
         fournisseurDesignation: this.fournisseurSelected.designation,
         fournisseurTel1: this.fournisseurSelected.tel1,
@@ -259,10 +265,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         fournisseurICE: this.fournisseurSelected.ice,
       });
 
-      this.formGroup.get('fournisseurDesignation')?.disable();
-      this.formGroup.get('fournisseurTel1')?.disable();
-      this.formGroup.get('fournisseurTel2')?.disable();
-      this.formGroup.get('fournisseurICE')?.disable();
+      this.disableFournisseurData();
     } else {
       this.formGroup.patchValue({
         fournisseurDesignation: '',
@@ -271,10 +274,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         fournisseurICE: '',
       });
 
-      this.formGroup.get('fournisseurDesignation')?.enable();
-      this.formGroup.get('fournisseurTel1')?.enable();
-      this.formGroup.get('fournisseurTel2')?.enable();
-      this.formGroup.get('fournisseurICE')?.enable();
+      this.disableFournisseurData();
     }
   }
 
@@ -288,6 +288,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       }
       
       this.initFormGroupStock();
+      this.onChangeMontantProduit();
       this.openCloseDialogStock(true);
     }
   }
@@ -295,11 +296,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   mapFormGroupStockToObject(formGroup: FormGroup, detailLivraison: DetLivraison): DetLivraison {
     detailLivraison.stockId = this.stockSelected.id;
     detailLivraison.stock = this.stockSelected;
-    detailLivraison.prixVente = this.formGroupStock.get('prixVente')?.value;
-    detailLivraison.qteLivrer = this.formGroupStock.get('qteLivrer')?.value;
-    detailLivraison.remiseLivraison = this.formGroupStock.get('remiseLivraison')?.value;
-    detailLivraison.avecRemise = this.formGroupStock.get('remiseLivraison')?.value > 0;
-    detailLivraison.montantProduit = this.formGroupStock.get('montantProduit')?.value;
+    detailLivraison.prixVente = formGroup.get('prixVente')?.value;
+    detailLivraison.qteLivrer = formGroup.get('qteLivrer')?.value;
+    detailLivraison.remiseLivraison = formGroup.get('remiseLivraison')?.value;
+    detailLivraison.avecRemise = formGroup.get('remiseLivraison')?.value > 0;
+    detailLivraison.montantProduit = formGroup.get('montantProduit')?.value;
     
     return detailLivraison;
   }
@@ -325,7 +326,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             this.stockSelected = this.listStock.find(x => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
             
             this.formGroupStock.patchValue({
-                designation: [{ value: this.stockSelected.designation, disabled: true }],
+                designation: this.stockSelected.designation,
                 pattc: this.stockSelected.pattc,
                 pvttc: this.stockSelected.pvttc,
                 qteStock: this.stockSelected.qteStock,
@@ -370,6 +371,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       }
       
       this.calculerMontantTotal();
+      this.stockSelected = initObjectStock();
       this.formGroup.patchValue({ stockId: null });
       this.openCloseDialogStock(false);
     }

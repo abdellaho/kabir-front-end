@@ -1,4 +1,4 @@
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup } from "@angular/forms";
 import { TypeEmploye } from "../enums/type-employe";
 import { TypePersonnel } from "../enums/type-personnel";
 import { Livraison } from "@/models/livraison";
@@ -311,6 +311,36 @@ export function getRemiseMax(stock: Stock): number {
     stock.remiseMax3 > 0 ? stock.remiseMax3 : 
     stock.remiseMax2 > 0 ? stock.remiseMax2 : stock.remiseMax1;
 }
+
+export function findInvalidControls(formGroup: FormGroup): string[] {
+  const invalid = [];
+  const controls = formGroup.controls;
+  for (const name in controls) {
+    if (controls[name].invalid) {
+      invalid.push(name);
+    }
+  }
+  return invalid;
+}
+
+export function getAllInvalidFields(form: FormGroup | FormArray): { [key: string]: AbstractControl } {
+    const invalidFields: { [key: string]: AbstractControl } = {}; // Key: path, Value: control
+
+    const recurse = (c: AbstractControl, path: string = '') => {
+      if (c.invalid && (c.dirty || c.touched)) { // Optional: Only if touched/dirty
+        invalidFields[path] = c;
+      }
+
+      if (c instanceof FormGroup || c instanceof FormArray) {
+        Object.keys(c.controls).forEach(key => {
+          recurse(c.get(key)!, path ? `${path}.${key}` : key);
+        });
+      }
+    };
+
+    recurse(form);
+    return invalidFields;
+  }
 
 export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livraison {
   // Array of payment fields for easier iteration

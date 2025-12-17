@@ -1,9 +1,10 @@
 <p-toast></p-toast>
 <p-fluid [formGroup]="formGroup">
+    @if (formGroup.errors?.['listDetLivraisonRequired']) {
+        <p-message severity="warn" variant="simple" size="small">{{ msg.components.livraison.errors.listDetLivraisonRequired }}</p-message>
+        <br>
+    }
     <div class="flex flex-wrap -mx-4">
-        @if (formGroup.errors?.['listDetLivraisonRequired']) {
-            <p-message severity="warn" variant="simple" size="small">{{ msg.components.livraison.errors.listDetLivraisonRequired }}</p-message>
-        }
         <!-- Info Livraison -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
             <div class="flex flex-col md:flex-row full-width">
@@ -427,38 +428,39 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="qteStock" id="qteStock" inputId="qteStock" />
+                            <p-inputNumber formControlName="qteStock" id="qteStock" inputId="qteStock" />
                             <label for="qteStock">{{ msg.components.livraison.stock.qteStock }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="pattc" id="pattc" inputId="pattc" />
+                            <p-inputNumber formControlName="pattc" id="pattc" inputId="pattc" />
                             <label for="pattc">{{ msg.components.livraison.stock.pattc }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="pvttc" id="pvttc" inputId="pvttc" />
+                            <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" />
                             <label for="pvttc">{{ msg.components.livraison.stock.pvttc }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" />
+                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" />
                             <label for="prixVenteMin">{{ msg.components.livraison.stock.prixVenteMin }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="prixVente" id="prixVente" inputId="prixVente" />
+                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" />
                             <label for="prixVente">{{ msg.components.livraison.stock.prixVente }}</label>
-                            @if (formGroup.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
-                            <p-message severity="error" variant="simple" size="small">{{
+                            
+                            @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
+                                <p-message severity="error" variant="simple" size="small">{{
                                 msg.components.livraison.errors.prixVenteMustBeAtLeastEqualPrixVenteMin }}</p-message>
                             }
                         </p-floatlabel>
@@ -466,15 +468,14 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" />
+                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" (onBlur)="onChangeMontantProduit()" />
                             <label for="qteLivrer">{{ msg.components.livraison.stock.qteLivrer }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <input pInputText formControlName="remiseLivraison" id="remiseLivraison"
-                                inputId="remiseLivraison" />
+                            <p-inputNumber formControlName="remiseLivraison" id="remiseLivraison" inputId="remiseLivraison" />
                             <label for="remiseLivraison">{{ msg.components.livraison.stock.remiseLivraison }}</label>
                         </p-floatlabel>
 
@@ -486,7 +487,7 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="montantProduit" id="montantProduit" />
+                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" />
                             <label for="montantProduit">{{ msg.components.livraison.stock.montantProduit }}</label>
                         </p-floatlabel>
                     </div>
@@ -500,7 +501,7 @@
         <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
             class="p-button-outlined p-button-danger" (click)="openCloseDialogStock(false)"></button>
         <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-            (click)="validerStock()" [disabled]="!formGroupStock.valid"></button>
+            (click)="validerStock()" [disabled]="formGroupStock.invalid"></button>
     </ng-template>
 </p-dialog>
 

@@ -4,13 +4,19 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function DetLivraisonValidator(config: { stock: Stock }): ValidatorFn {
     const { stock } = config;
-    const errors: ValidationErrors = {};
-    const addError = (key: string) => { errors[key] = true; };
 
     return (control: AbstractControl): ValidationErrors | null => {
+        let errors: any = {};
+        let hasError = false;
+
+        const addError = (key: string) => {
+            hasError = true;
+            errors[key] = true;
+        };
+
         let prixVente = control.get('prixVente');
         let remiseLivraison = control.get('remiseLivraison');
-
+        
         let prixVenteMin: number = getPrixVenteMin(stock);
         let remiseMax: number = getRemiseMax(stock);
 
@@ -22,7 +28,7 @@ export function DetLivraisonValidator(config: { stock: Stock }): ValidatorFn {
             addError("remiseLivraisonMustBeAtMostEqualRemiseMax");
         }
 
-        return Object.keys(errors).length ? errors : null;
+        return hasError ? errors : null;
     }
 }
 
