@@ -2,6 +2,7 @@ import { AbstractControl } from "@angular/forms";
 import { TypeEmploye } from "../enums/type-employe";
 import { TypePersonnel } from "../enums/type-personnel";
 import { Livraison } from "@/models/livraison";
+import { Stock } from "@/models/stock";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
@@ -157,7 +158,7 @@ export function returnValueOfNumberProperty(value: number | null | string): numb
   return (value !== null && value !== null && value !== 0 && value !== '0') ? Number(value) : null;
 }
 
-export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livraison {
+export function ajusterMontants1(livraison: Livraison, sommeTotale: number): Livraison {
   if (livraison.dateReglement == null) livraison.mntReglement = 0.0;
   if (livraison.dateReglement2 == null) livraison.mntReglement2 = 0.0;
   if (livraison.dateReglement3 == null) livraison.mntReglement3 = 0.0;
@@ -295,5 +296,82 @@ export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livr
     }
   }
   
+  return livraison;
+}
+
+export function getPrixVenteMin(stock: Stock): number {
+  return stock.prixVentMin4 > 0 ? stock.prixVentMin4 : 
+    stock.prixVentMin3 > 0 ? stock.prixVentMin3 : 
+    stock.prixVentMin2 > 0 ? stock.prixVentMin2 : 
+    stock.prixVentMin1 > 0 ? stock.prixVentMin1 : stock.pvttc;
+}
+
+export function getRemiseMax(stock: Stock): number {
+  return stock.remiseMax4 > 0 ? stock.remiseMax4 : 
+    stock.remiseMax3 > 0 ? stock.remiseMax3 : 
+    stock.remiseMax2 > 0 ? stock.remiseMax2 : stock.remiseMax1;
+}
+
+export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livraison {
+  // Array of payment fields for easier iteration
+  const paymentFields = [
+    { date: 'dateReglement', amount: 'mntReglement' },
+    { date: 'dateReglement2', amount: 'mntReglement2' },
+    { date: 'dateReglement3', amount: 'mntReglement3' },
+    { date: 'dateReglement4', amount: 'mntReglement4' }
+  ] as const;
+
+  // Reset amounts for payments without dates
+  paymentFields.forEach(field => {
+    if (livraison[field.date] == null) {
+      livraison[field.amount] = 0.0;
+    }
+  });
+
+  if(sommeTotale == 0) {
+    paymentFields.forEach(field => {
+      livraison[field.amount] = 0.0;
+    });
+    return livraison;
+  }
+
+  // Get active payments (those with dates)
+  const activePayments = paymentFields.filter(field => livraison[field.date] != null);
+  
+  if (activePayments.length === 0) return livraison;
+
+  // Initialize zero amounts with equal distribution
+  const amountPerPayment = sommeTotale / activePayments.length;
+  const minAmount = sommeTotale > 0 ? 1 : 0;
+  
+  activePayments.forEach(field => {
+    if (livraison[field.amount] === 0.0 && sommeTotale > 0) {
+      livraison[field.amount] = Math.min(amountPerPayment, 1);
+    }
+  });
+
+  // Adjust to match total exactly
+  const currentSum = activePayments.reduce((sum, field) => sum + livraison[field.amount], 0);
+  const difference = sommeTotale - currentSum;
+  
+  // Apply difference to the first active payment
+  const firstPayment = activePayments[0];
+  livraison[firstPayment.amount] += difference;
+
+  // Ensure no negative amounts by redistributing
+  for (let i = 1; i < activePayments.length; i++) {
+    const field = activePayments[i];
+    
+    if (livraison[field.amount] < 0) {
+      const deficit = Math.abs(livraison[field.amount]);
+      livraison[field.amount] = minAmount;
+      
+      // Transfer deficit to next payment
+      if (i < activePayments.length - 1) {
+        livraison[activePayments[i + 1].amount] -= (deficit + (minAmount > 0 ? 1 : 0));
+      }
+    }
+  }
+
   return livraison;
 }

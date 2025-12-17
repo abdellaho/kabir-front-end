@@ -13,8 +13,8 @@ import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
-import { ajusterMontants, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
-import { Personnel } from '@/models/personnel';
+import { ajusterMontants, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
 import { ToastModule } from 'primeng/toast';
@@ -37,6 +37,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { DetLivraisonValidator } from '@/validators/det-livraison-validator';
+import { LivraisonValidator } from '@/validators/livraison-validator';
 
 @Component({
   selector: 'app-livraison-update-component',
@@ -111,11 +113,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       this.livraison = data.livraison;
       this.listDetLivraison = data.detLivraisons;
       this.originalListDetLivraison = structuredClone(data.detLivraisons);
-      this.listFournisseur = data.listFournisseur;
+      this.listFournisseur = [initObjectFournisseur(), ...data.listFournisseur];
       this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
-      this.listPersonnel = data.listPersonnel;
+      this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
       this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
-      this.listStock = data.listStock;
+      this.listStock = [initObjectStock(), ...data.listStock];
       this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
       this.mapObjectToFormGroup(this.livraison);
     });
@@ -147,26 +149,28 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       fournisseurTel2: this.fournisseurSelected?.tel2 || '',
       fournisseurICE: this.fournisseurSelected?.ice || '',
     });
-    console.log("mapObjectToFormGroup : ", this.formGroup.value);
   }
 
   initFormGroupStock() {
     this.formGroupStock = this.formBuilder.group({
       designation: [{ value: this.stockSelected.designation, disabled: true }],
       pattc: [{ value: this.stockSelected.pattc, disabled: true }],
+      pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
       qteStock: [{ value: this.stockSelected.qteStock, disabled: true }],
+      prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
       qteLivrer: [1, [Validators.required, Validators.min(1)]],
       prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
       remiseLivraison: [0, [Validators.min(0), Validators.max(100)]],
-    });
+      montantProduit: [0, [Validators.min(0)]],
+    }, { validators: DetLivraisonValidator({ stock: this.stockSelected }) });
   }
 
   initFormGroup() {
     this.formGroup = this.formBuilder.group({
       numLivraison: [0],
       codeBl: [{value: '', disabled: true}, [Validators.required]],
-      dateBl: [new Date()],
-      dateReglement: [new Date()],
+      dateBl: [new Date(), [Validators.required]],
+      dateReglement: [new Date(), [Validators.required]],
       dateReglement2: [null],
       dateReglement3: [null],
       dateReglement4: [null],
@@ -191,15 +195,15 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       mntReglement4: [0],
       //facturer100: [false],
       //codeTransport: [''],
-      personnelId: [0],
+      personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       //personnelAncienId: [null],
-      fournisseurId: [0],
+      fournisseurId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       stockId: [0],
       fournisseurDesignation: [{ value: '', disabled: true }],
       fournisseurTel1: [{ value: '', disabled: true }],
       fournisseurTel2: [{ value: '', disabled: true }],
       fournisseurICE: [{ value: '', disabled: true }],
-    });
+    }, { validators: LivraisonValidator({ listDetLivraison: this.listDetLivraison }) });
   }
 
   mapFormToLivraison() {
@@ -295,7 +299,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     detailLivraison.qteLivrer = this.formGroupStock.get('qteLivrer')?.value;
     detailLivraison.remiseLivraison = this.formGroupStock.get('remiseLivraison')?.value;
     detailLivraison.avecRemise = this.formGroupStock.get('remiseLivraison')?.value > 0;
-    detailLivraison.montantProduit = detailLivraison.prixVente * detailLivraison.qteLivrer;
+    detailLivraison.montantProduit = this.formGroupStock.get('montantProduit')?.value;
     
     return detailLivraison;
   }
@@ -304,12 +308,12 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       if (operationType === OperationType.ADD) {
           list = [...list, detailLivraison];
       } else if (operationType === OperationType.MODIFY) {
-          let index = list.findIndex(x => x.id === detailLivraison.id);
+          let index = list.findIndex(x => x.stockId === detailLivraison.stockId);
           if (index > -1) {
               list[index] = detailLivraison;
           }
       } else if (operationType === OperationType.DELETE) {
-          list = list.filter(x => x.id !== id);
+          list = list.filter(x => x.stockId !== id);
       }
       return list;
   }
@@ -318,12 +322,26 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     if (detLivraisonEdit && detLivraisonEdit.id) {
         this.detLivraisonSelected = detLivraisonEdit;
         if (operation === 1) {
+            this.stockSelected = this.listStock.find(x => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
+            
             this.formGroupStock.patchValue({
-                stockId: this.detLivraisonSelected.stockId,
+                designation: [{ value: this.stockSelected.designation, disabled: true }],
+                pattc: this.stockSelected.pattc,
+                pvttc: this.stockSelected.pvttc,
+                qteStock: this.stockSelected.qteStock,
+                prixVenteMin: getPrixVenteMin(this.stockSelected),
                 prixVente: this.detLivraisonSelected.prixVente,
                 qteLivrer: this.detLivraisonSelected.qteLivrer,
-                remiseLivraison: this.detLivraisonSelected.remiseLivraison
+                remiseLivraison: this.detLivraisonSelected.remiseLivraison,
+                montantProduit: this.detLivraisonSelected.montantProduit
             });
+
+            this.formGroupStock.get('designation')?.disable();
+            this.formGroupStock.get('pattc')?.disable();
+            this.formGroupStock.get('pvttc')?.disable();
+            this.formGroupStock.get('qteStock')?.disable();
+            this.formGroupStock.get('prixVenteMin')?.disable();
+            this.formGroupStock.get('montantProduit')?.disable();
 
             this.openCloseDialogStock(true);
         } else {
@@ -332,6 +350,12 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     } else {
         this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
+  }
+
+  onChangeMontantProduit() {
+    this.formGroupStock.patchValue({
+        montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteLivrer')?.value
+    });
   }
 
   validerStock() {
@@ -345,7 +369,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.ADD);
       }
       
-      //this.calculerMontantTotal();
+      this.calculerMontantTotal();
+      this.formGroup.patchValue({ stockId: null });
       this.openCloseDialogStock(false);
     }
   }
@@ -372,22 +397,38 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     }
   }
 
+  getReglementDataFromFormGroup(livraison: Livraison, formGroup: FormGroup) {
+    livraison.dateReglement = formGroup.get('dateReglement')?.value;
+    livraison.dateReglement2 = formGroup.get('dateReglement2')?.value;
+    livraison.dateReglement3 = formGroup.get('dateReglement3')?.value;
+    livraison.dateReglement4 = formGroup.get('dateReglement4')?.value;
+    livraison.mntReglement = formGroup.get('mntReglement')?.value;
+    livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
+    livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
+    livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+  }
+
+  patchMontantReglement(livraison: Livraison, formGroup: FormGroup) {
+    formGroup.patchValue({
+      mntReglement: livraison.mntReglement,
+      mntReglement2: livraison.mntReglement2,
+      mntReglement3: livraison.mntReglement3,
+      mntReglement4: livraison.mntReglement4
+    });
+  }
+
   calculerMontantTotal() {
-    if(this.listDetLivraison && this.listDetLivraison.length > 0) {
-      this.livraison.mantantBL = this.listDetLivraison.reduce((total, detLivraison) => total + detLivraison.montantProduit, 0);
-      this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
-      this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
-      this.formGroup.patchValue({
-        mntReglement: this.livraison.mntReglement,
-        mntReglement2: this.livraison.mntReglement2,
-        mntReglement3: this.livraison.mntReglement3,
-        mntReglement4: this.livraison.mntReglement4
-      });
-    }
+    this.livraison.mantantBL = this.listDetLivraison.reduce((total, detLivraison) => total + detLivraison.montantProduit, 0);
+    this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
+    this.getReglementDataFromFormGroup(this.livraison, this.formGroup);
+    this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
+    this.patchMontantReglement(this.livraison, this.formGroup);
   }
 
   deleteDetLivraison() {
-    this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, this.detLivraisonSelected.id);
+    let stockId: bigint = this.detLivraisonSelected?.stockId || 0n;
+    this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, stockId);
+    this.calculerMontantTotal();
     this.openCloseDialogDeleteStock(false);
   }
 
