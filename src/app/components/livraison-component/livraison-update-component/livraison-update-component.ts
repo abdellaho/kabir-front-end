@@ -149,6 +149,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       fournisseurTel2: this.fournisseurSelected?.tel2 || '',
       fournisseurICE: this.fournisseurSelected?.ice || '',
     });
+    this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison is set
   }
 
   initFormGroupStock() {
@@ -203,7 +204,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       fournisseurTel1: [{ value: '', disabled: true }],
       fournisseurTel2: [{ value: '', disabled: true }],
       fournisseurICE: [{ value: '', disabled: true }],
-    }, { validators: LivraisonValidator({ listDetLivraison: this.listDetLivraison }) });
+    }, { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) });
   }
 
   mapFormToLivraison() {
@@ -373,6 +374,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       this.calculerMontantTotal();
       this.stockSelected = initObjectStock();
       this.formGroup.patchValue({ stockId: null });
+      this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
       this.openCloseDialogStock(false);
     }
   }
@@ -431,15 +433,16 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     let stockId: bigint = this.detLivraisonSelected?.stockId || 0n;
     this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, stockId);
     this.calculerMontantTotal();
+    this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
     this.openCloseDialogDeleteStock(false);
   }
 
   mapFormGroupToObject(formGroup: FormGroup, livraison: Livraison): Livraison {
       livraison.dateBl = mapToDateTimeBackEnd(formGroup.get('dateBl')?.value);
       livraison.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
-      livraison.dateReglement2 = mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value);
-      livraison.dateReglement3 = mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value);
-      livraison.dateReglement4 = mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value);
+      livraison.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
+      livraison.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
+      livraison.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
       livraison.personnelId = formGroup.get('personnelId')?.value;
       livraison.fournisseurId = formGroup.get('fournisseurId')?.value;
       livraison.typeReglment = formGroup.get('typeReglment')?.value;
@@ -506,11 +509,13 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison: this.livraison,
         detLivraisons: this.listDetLivraison
       };
+
+      console.log('livraisonRequest', livraisonRequest);
       
-      if(this.livraison.id) {
+      /*if(this.livraison.id) {
         let detLivraisonToDelete: DetLivraison[] = this.originalListDetLivraison.filter((detLivraisonOriginal: DetLivraison) => !this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.id === detLivraisonOriginal.id));
         let detLivraisonToModify: DetLivraison[] = this.listDetLivraison.filter((detLivraison: DetLivraison) => detLivraison.id !== null);
-        
+
         this.livraisonService.update(this.livraison.id, livraisonRequest).subscribe({
           next: (data: Livraison) => {
             this.messageService.add({
@@ -557,7 +562,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         });
 
         this.updateStock(this.listDetLivraison, [], []);
-      }
+      }*/
     }
   }
 

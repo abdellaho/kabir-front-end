@@ -1,9 +1,7 @@
 import { DetLivraison } from '@/models/det-livraison';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function LivraisonValidator(conf: { listDetLivraison: DetLivraison[] }): ValidatorFn {
-  const { listDetLivraison } = conf;
-
+export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivraison[] }): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const errors: ValidationErrors = {};
     const get = (name: string) => control.get(name);
@@ -11,6 +9,8 @@ export function LivraisonValidator(conf: { listDetLivraison: DetLivraison[] }): 
     const hasValue = (value: any) => value !== null && value !== undefined && value !== '' && value !== 0;
     const addError = (key: string) => { errors[key] = true; };
 
+    // Call the getter function to get the current list
+    const listDetLivraison = conf.getListDetLivraison();
     if(listDetLivraison.length === 0) {
       addError('listDetLivraisonRequired');
     }
@@ -43,7 +43,13 @@ export function LivraisonValidator(conf: { listDetLivraison: DetLivraison[] }): 
       if (index === 0) {
         if (dateValue && dateBl) {
           totalMntReglement += mntValue;
-          if (dateValue < dateBl) {
+
+          const dateReglement1 = new Date(dateValue);
+          const dateBlFormat = new Date(dateBl);
+          dateReglement1.setHours(0, 0, 0, 0);
+          dateBlFormat.setHours(0, 0, 0, 0);
+          
+          if (dateReglement1 < dateBlFormat) {
             addError('dateReglementMustEqualOrAfterDateBl');
           }
           validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
@@ -57,7 +63,12 @@ export function LivraisonValidator(conf: { listDetLivraison: DetLivraison[] }): 
 
         // Check date is after previous payment date
         const prevDateValue = getValue(prevReg!.date);
-        if (prevDateValue && dateValue < prevDateValue) {
+        const currentDate = new Date(dateValue);
+        const previousDate = new Date(prevDateValue);
+        previousDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        
+        if (prevDateValue && (currentDate <= previousDate)) {
           addError(`dateReglement${reg.suffix}MustBeAfterDateReglement${prevReg!.suffix}`);
         }
 

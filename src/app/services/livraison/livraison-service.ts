@@ -1,4 +1,5 @@
 import { ENDPOINTS } from '@/config/endpoints';
+import { DetLivraison } from '@/models/det-livraison';
 import { Livraison } from '@/models/livraison';
 import { omit } from '@/shared/classes/generic-methods';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
@@ -27,15 +28,13 @@ export class LivraisonService {
   }
 
   create(livraisonRequest: LivraisonRequest): Observable<Livraison> {
-    const serializedObj = this.serialization(livraisonRequest.livraison);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = this.omitLivraison(livraisonRequest.livraison);
     return this.http.post<Livraison>(ENDPOINTS.LIVRAISON.create, obj);
   }
 
   update(id: bigint, livraisonRequest: LivraisonRequest): Observable<Livraison> {
-    const serializedObj = this.serialization(livraisonRequest.livraison);
-    const obj = omit(serializedObj, 'villeId', 'ville');
-    return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), obj);
+    const objLivraison = this.omitLivraison(livraisonRequest.livraison);
+    return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), objLivraison);
   }
 
   delete(id: bigint): Observable<void> {
@@ -43,15 +42,13 @@ export class LivraisonService {
   }
 
   search(livraison: Livraison): Observable<Livraison[]> {
-    const serializedObj = this.serialization(livraison);
-    const obj = omit(serializedObj, 'villeId', 'ville');
+    const obj = this.omitLivraison(livraison);
     return this.http.post<Livraison[]>(ENDPOINTS.LIVRAISON.search, obj);
   }
 
   exist(livraison: Livraison): Observable<boolean> {
-      const serializedObj = this.serialization(livraison);
-      const obj = omit(serializedObj, 'villeId', 'ville');
-      return this.http.post<boolean>(ENDPOINTS.LIVRAISON.exist, obj);
+    const obj = this.omitLivraison(livraison);
+    return this.http.post<boolean>(ENDPOINTS.LIVRAISON.exist, obj);
   }
 
   present(dateAbsence: Date): Observable<Livraison[]> {
@@ -61,6 +58,16 @@ export class LivraisonService {
 
   getLastNumLivraison(body: { dateBl: string; id: number | null }): Observable<number> {
     return this.http.post<number>(ENDPOINTS.LIVRAISON.getLastNumLivraison, body);
+  }
+
+  omitLivraison(livraison: Livraison): Livraison {
+    const objLivraison = omit(livraison, 'employeOperateur', 'personnel', 'personnelAncien', 'fournisseur');
+    return objLivraison;
+  }
+
+  omitDetLivraison(detLivraison: DetLivraison): DetLivraison {
+    const objDetLivraison = omit(detLivraison, 'livraison', 'stock');
+    return objDetLivraison;
   }
 
   serialization(obj: Livraison): any {
