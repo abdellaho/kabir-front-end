@@ -381,24 +381,23 @@ export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livr
   });
 
   // Adjust to match total exactly
-  const currentSum = activePayments.reduce((sum, field) => sum + livraison[field.amount], 0);
-  const difference = sommeTotale - currentSum;
+  const currentSum: number = activePayments.reduce((sum: number, field) => sum + Number(livraison[field.amount]), 0);
+  const difference: number = sommeTotale - currentSum;
   
   // Apply difference to the first active payment
   const firstPayment = activePayments[0];
-  livraison[firstPayment.amount] += difference;
+  livraison[firstPayment.amount] = Number(livraison[firstPayment.amount]) + difference;
 
   // Ensure no negative amounts by redistributing
   for (let i = 1; i < activePayments.length; i++) {
     const field = activePayments[i];
     
     if (livraison[field.amount] < 0) {
-      const deficit = Math.abs(livraison[field.amount]);
+      const deficit: number = Math.abs(livraison[field.amount]);
       livraison[field.amount] = minAmount;
-      
       // Transfer deficit to next payment
       if (i < activePayments.length - 1) {
-        livraison[activePayments[i + 1].amount] -= (deficit + (minAmount > 0 ? 1 : 0));
+        livraison[activePayments[i + 1].amount] = Number(livraison[activePayments[i + 1].amount]) - (deficit + (minAmount > 0 ? 1 : 0));
       }
     }
   }

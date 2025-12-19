@@ -103,6 +103,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.initFormGroupStock();
     this.initFormGroup();
     
     this.subscription = this.dataService.currentData$.subscribe((data) => {
@@ -110,7 +111,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.router.navigate(['/livraison']);
         return;
       }
-      this.livraison = data.livraison;
+      this.livraison = this.adjustLivraison(data.livraison);
       this.listDetLivraison = data.detLivraisons;
       this.originalListDetLivraison = structuredClone(data.detLivraisons);
       this.listFournisseur = [initObjectFournisseur(), ...data.listFournisseur];
@@ -120,6 +121,24 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       this.listStock = [initObjectStock(), ...data.listStock];
       this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
       this.mapObjectToFormGroup(this.livraison);
+      this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.livraison.fournisseurId) || initObjectFournisseur();
+      this.adjustDetLivraison();
+    });
+  }
+
+  adjustLivraison(livraison: Livraison): Livraison {
+    livraison.dateBl = new Date(livraison.dateBl);
+    livraison.dateReglement = new Date(livraison.dateReglement);
+    livraison.dateReglement2 = livraison.dateReglement2 ? new Date(livraison.dateReglement2) : null;
+    livraison.dateReglement3 = livraison.dateReglement3 ? new Date(livraison.dateReglement3) : null;
+    livraison.dateReglement4 = livraison.dateReglement4 ? new Date(livraison.dateReglement4) : null;
+    
+    return livraison;
+  }
+
+  adjustDetLivraison() {
+    this.listDetLivraison.forEach((detLivraison: DetLivraison) => {
+      detLivraison.stock = this.listStock.find((stock) => stock.id === detLivraison.stockId) || initObjectStock();
     });
   }
 
@@ -306,7 +325,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     return detailLivraison;
   }
 
-  updateList(detailLivraison: DetLivraison, list: DetLivraison[], operationType: OperationType, id?: bigint): DetLivraison[] {
+  updateList(detailLivraison: DetLivraison, list: DetLivraison[], operationType: OperationType, stockId?: bigint): DetLivraison[] {
       if (operationType === OperationType.ADD) {
           list = [...list, detailLivraison];
       } else if (operationType === OperationType.MODIFY) {
@@ -315,7 +334,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               list[index] = detailLivraison;
           }
       } else if (operationType === OperationType.DELETE) {
-          list = list.filter(x => x.stockId !== id);
+          list = list.filter(x => x.stockId !== stockId);
       }
       return list;
   }
@@ -324,28 +343,30 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     if (detLivraisonEdit && detLivraisonEdit.id) {
         this.detLivraisonSelected = detLivraisonEdit;
         if (operation === 1) {
-            this.stockSelected = this.listStock.find(x => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
-            
-            this.formGroupStock.patchValue({
-                designation: this.stockSelected.designation,
-                pattc: this.stockSelected.pattc,
-                pvttc: this.stockSelected.pvttc,
-                qteStock: this.stockSelected.qteStock,
-                prixVenteMin: getPrixVenteMin(this.stockSelected),
-                prixVente: this.detLivraisonSelected.prixVente,
-                qteLivrer: this.detLivraisonSelected.qteLivrer,
-                remiseLivraison: this.detLivraisonSelected.remiseLivraison,
-                montantProduit: this.detLivraisonSelected.montantProduit
-            });
+          this.initFormGroupStock();
+          this.stockSelected = this.listStock.find(x => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
+          this.detLivraisonSelected.stock = this.stockSelected;
 
-            this.formGroupStock.get('designation')?.disable();
-            this.formGroupStock.get('pattc')?.disable();
-            this.formGroupStock.get('pvttc')?.disable();
-            this.formGroupStock.get('qteStock')?.disable();
-            this.formGroupStock.get('prixVenteMin')?.disable();
-            this.formGroupStock.get('montantProduit')?.disable();
+          this.formGroupStock.patchValue({
+            designation: this.stockSelected.designation,
+            pattc: this.stockSelected.pattc,
+            pvttc: this.stockSelected.pvttc,
+            qteStock: this.stockSelected.qteStock,
+            prixVenteMin: getPrixVenteMin(this.stockSelected),
+            prixVente: this.detLivraisonSelected.prixVente,
+            qteLivrer: this.detLivraisonSelected.qteLivrer,
+            remiseLivraison: this.detLivraisonSelected.remiseLivraison,
+            montantProduit: this.detLivraisonSelected.montantProduit
+          });
 
-            this.openCloseDialogStock(true);
+          this.formGroupStock.get('designation')?.disable();
+          this.formGroupStock.get('pattc')?.disable();
+          this.formGroupStock.get('pvttc')?.disable();
+          this.formGroupStock.get('qteStock')?.disable();
+          this.formGroupStock.get('prixVenteMin')?.disable();
+          this.formGroupStock.get('montantProduit')?.disable();
+
+          this.openCloseDialogStock(true);
         } else {
             this.openCloseDialogDeleteStock(true);
         }
@@ -365,10 +386,14 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     if(!trvErreur) {
       this.detLivraisonSelected = this.mapFormGroupStockToObject(this.formGroupStock, this.detLivraisonSelected);
       
-      if(this.detLivraisonSelected.id) {
-        this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.MODIFY, this.detLivraisonSelected.id);
-      } else {
-        this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.ADD);
+      if(this.detLivraisonSelected.stockId) {
+        let exist: boolean = this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.stockId === this.detLivraisonSelected.stockId);
+        
+        if(exist) {
+          this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.MODIFY, this.detLivraisonSelected.stockId);
+        } else {
+          this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.ADD);
+        }
       }
       
       this.calculerMontantTotal();
@@ -422,7 +447,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   calculerMontantTotal() {
-    this.livraison.mantantBL = this.listDetLivraison.reduce((total, detLivraison) => total + detLivraison.montantProduit, 0);
+    this.livraison.mantantBL = this.listDetLivraison.reduce((total: number, detLivraison: DetLivraison) => total + Number(detLivraison.montantProduit), 0);
     this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
     this.getReglementDataFromFormGroup(this.livraison, this.formGroup);
     this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
@@ -473,16 +498,24 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateStock(detLivraisonToAdd: DetLivraison[], detLivraisonToModify: DetLivraison[], detLivraisonToDelete: DetLivraison[]) {
+  updateStock(detLivraisonToAdd: DetLivraison[], detLivraisonToModify: DetLivraison[], detLivraisonToDelete: DetLivraison[], detLivraisonChanged: DetLivraison[]) {
       if(detLivraisonToDelete && detLivraisonToDelete.length > 0) {
+        console.log('detLivraisonToDelete', detLivraisonToDelete);
         this.updateQteStock(detLivraisonToDelete, OperationType.DELETE);
       }
 
+      if(detLivraisonChanged && detLivraisonChanged.length > 0) {
+        console.log('detLivraisonChanged', detLivraisonChanged);
+        this.updateQteStock(detLivraisonChanged, OperationType.DELETE);
+      }
+
       if(detLivraisonToModify && detLivraisonToModify.length > 0) {
-        this.updateQteStock(detLivraisonToModify, OperationType.DELETE);
+        console.log('detLivraisonToModify', detLivraisonToModify);
+        this.updateQteStock(detLivraisonToModify, OperationType.ADD);
       }
       
       if(detLivraisonToAdd && detLivraisonToAdd.length > 0) {
+        console.log('detLivraisonToAdd', detLivraisonToAdd);
         this.updateQteStock(detLivraisonToAdd, OperationType.ADD);
       }
   }
@@ -490,7 +523,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   deleteListDetLivraison(detLivraisonToDelete: DetLivraison[]) {
     if(detLivraisonToDelete && detLivraisonToDelete.length > 0) {
       detLivraisonToDelete.forEach((detLivraison: DetLivraison) => {
-        this.detLivraisonService.delete(detLivraison.id).subscribe({
+        let id: bigint = detLivraison.id ? detLivraison.id : BigInt(0);
+        this.detLivraisonService.delete(id).subscribe({
           next: () => {
           }, error: (err) => {
             console.log(err);
@@ -509,11 +543,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison: this.livraison,
         detLivraisons: this.listDetLivraison
       };
-
-      console.log('livraisonRequest', livraisonRequest);
       
-      /*if(this.livraison.id) {
+      if(this.livraison.id) {
+        let detLivraisonToAdd: DetLivraison[] = this.listDetLivraison.filter((detLivraison: DetLivraison) => detLivraison.id === null);
         let detLivraisonToDelete: DetLivraison[] = this.originalListDetLivraison.filter((detLivraisonOriginal: DetLivraison) => !this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.id === detLivraisonOriginal.id));
+        let detLivraisonChanged: DetLivraison[] = this.originalListDetLivraison.filter((detLivraisonOriginal: DetLivraison) => this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.id === detLivraisonOriginal.id));
         let detLivraisonToModify: DetLivraison[] = this.listDetLivraison.filter((detLivraison: DetLivraison) => detLivraison.id !== null);
 
         this.livraisonService.update(this.livraison.id, livraisonRequest).subscribe({
@@ -537,7 +571,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
           }
         });
 
-        this.updateStock(this.listDetLivraison, detLivraisonToModify, detLivraisonToDelete);
+        this.updateStock(detLivraisonToAdd, detLivraisonToModify, detLivraisonToDelete, detLivraisonChanged);
         this.deleteListDetLivraison(detLivraisonToDelete);
       } else {
         this.livraisonService.create(livraisonRequest).subscribe({
@@ -561,8 +595,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
           }
         });
 
-        this.updateStock(this.listDetLivraison, [], []);
-      }*/
+        this.updateStock(this.listDetLivraison, [], [], []);
+      }
     }
   }
 

@@ -129,7 +129,8 @@
                     </p-floatlabel>
 
                     @if (formGroup.errors?.['mntReglementMustBeBiggerThanZero'] ||
-                        formGroup.errors?.['mntReglementMustBeAtLeastEqualZero']) {
+                        formGroup.errors?.['mntReglementMustBeAtLeastEqualZero'] || 
+                        formGroup.errors?.['totalMntReglementNotEqualMantantBL']) {
                         @if (formGroup.errors?.['mntReglementMustBeBiggerThanZero']) {
                         <p-message severity="error" variant="simple" size="small">{{
                             msg.components.livraison.errors.mntReglementMustBeBiggerThanZero }}</p-message>
@@ -137,6 +138,10 @@
                         @if (formGroup.errors?.['mntReglementMustBeAtLeastEqualZero']) {
                         <p-message severity="error" variant="simple" size="small">{{
                             msg.components.livraison.errors.mntReglementMustBeAtLeastEqualZero }}</p-message>
+                        }
+                        @if (formGroup.errors?.['totalMntReglementNotEqualMantantBL']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.livraison.errors.totalMntReglementNotEqualMantantBL }}</p-message>
                         }
                     }
                 </div>
@@ -161,6 +166,10 @@
                     @if (formGroup.errors?.['dateReglement2MustBeAfterDateReglement']) {
                         <p-message severity="error" variant="simple" size="small">{{
                         msg.components.livraison.errors.dateReglement2MustBeAfterDateReglement }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement2IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.dateReglement2IsMandatory }}</p-message>
                     }
                 </div>
             </div>
@@ -212,6 +221,10 @@
                         <p-message severity="error" variant="simple" size="small">{{
                         msg.components.livraison.errors.dateReglement3MustBeAfterDateReglement2 }}</p-message>
                     }
+                    @if (formGroup.errors?.['dateReglement3IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.dateReglement3IsMandatory }}</p-message>
+                    }
                 </div>
             </div>
 
@@ -261,6 +274,10 @@
                     @if (formGroup.errors?.['dateReglement4MustBeAfterDateReglement3']) {
                         <p-message severity="error" variant="simple" size="small">{{
                         msg.components.livraison.errors.dateReglement4MustBeAfterDateReglement3 }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement4IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.dateReglement4IsMandatory }}</p-message>
                     }
                 </div>
             </div>

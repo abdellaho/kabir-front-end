@@ -11,8 +11,13 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
 
     // Call the getter function to get the current list
     const listDetLivraison = conf.getListDetLivraison();
+    let listDetIsExist: boolean = false;
+    let sumDetLivraison: number = 0;
     if(listDetLivraison.length === 0) {
       addError('listDetLivraisonRequired');
+    } else {
+      listDetIsExist = true;
+      sumDetLivraison = listDetLivraison.reduce((sum, detLivraison) => sum + Number(detLivraison.montantProduit), 0);
     }
 
     // Validate required fields
@@ -27,10 +32,10 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
       { mnt: 'mntReglement4', date: 'dateReglement4', suffix: '4' },
     ];
 
-    const mantantBL = getValue('mantantBL');
+    const mantantBL: number = getValue('mantantBL');
     const dateBl = getValue('dateBl');
-    const hasMantantBL = mantantBL !== '' && mantantBL > 0;
-    let totalMntReglement = 0;
+    const hasMantantBL = mantantBL > 0;
+    let totalMntReglement: number = 0;
 
     // Validate each payment
     reglements.forEach((reg, index) => {
@@ -77,11 +82,23 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
         // Next payment filled without this one
         addError(`dateReglement${reg.suffix}MustBeFilledFirst`);
       }
+
+      if(!dateValue) {
+        if(Number(mntValue) !== 0) {
+          addError(`dateReglement${reg.suffix}IsMandatory`);
+        }
+      }
     });
 
-    // Validate total matches BL amount
-    if (totalMntReglement !== mantantBL) {
-      addError('totalMntReglementNotEqualMantantBL');
+    if(listDetIsExist) {
+      if (Number(totalMntReglement) !== Number(sumDetLivraison)) {
+        addError('totalMntReglementNotEqualMantantBL');
+      }
+    } else {
+      // Validate total matches BL amount
+      if (Number(totalMntReglement) !== Number(mantantBL)) {
+        addError('totalMntReglementNotEqualMantantBL');
+      }
     }
 
     return Object.keys(errors).length ? errors : null;

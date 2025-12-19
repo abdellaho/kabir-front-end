@@ -91,8 +91,9 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
-                        <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.codeBl }}</td>
+                        <td>{{ p.sysDate | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.mantantBL }}</td>
                         <td>
                             {{ p.dateReglement | date:'dd/MM/yyyy' }}
@@ -125,9 +126,8 @@
                                 {{ p.mntReglement4 | number:'1.2-2' }}
                             }
                         </td>
-                        
-                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
                         <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
                         <td>{{ p.reglerNonRegler }}</td>
                         <td style="width: 10%; min-width: 7rem">
                         <div class="flex gap-2">

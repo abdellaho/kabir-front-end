@@ -28,13 +28,19 @@ export class LivraisonService {
   }
 
   create(livraisonRequest: LivraisonRequest): Observable<Livraison> {
-    const obj = this.omitLivraison(livraisonRequest.livraison);
+    const objLivraison = this.omitLivraison(livraisonRequest.livraison);
+    const objListDetLivraison = livraisonRequest.detLivraisons.map(detLivraison => this.omitDetLivraison(detLivraison));
+
+    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison};
     return this.http.post<Livraison>(ENDPOINTS.LIVRAISON.create, obj);
   }
 
   update(id: bigint, livraisonRequest: LivraisonRequest): Observable<Livraison> {
     const objLivraison = this.omitLivraison(livraisonRequest.livraison);
-    return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), objLivraison);
+    const objListDetLivraison = livraisonRequest.detLivraisons.map(detLivraison => this.omitDetLivraison(detLivraison));
+
+    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison};
+    return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), obj);
   }
 
   delete(id: bigint): Observable<void> {
@@ -61,16 +67,33 @@ export class LivraisonService {
   }
 
   omitLivraison(livraison: Livraison): Livraison {
-    const objLivraison = omit(livraison, 'employeOperateur', 'personnel', 'personnelAncien', 'fournisseur');
+    const objLivraison = omit(this.serializationLivraison(livraison), 'employeOperateur', 'personnel', 'personnelAncien', 'fournisseur');
     return objLivraison;
   }
 
   omitDetLivraison(detLivraison: DetLivraison): DetLivraison {
-    const objDetLivraison = omit(detLivraison, 'livraison', 'stock');
+    const objDetLivraison = omit(this.serializationDetLivraison(detLivraison), 'livraison', 'stock');
     return objDetLivraison;
   }
 
-  serialization(obj: Livraison): any {
+  serializationLivraison(obj: Livraison): any {
+    const result: any = {
+      ...obj,
+      id: obj.id?.toString(),
+    };
+    if (obj.dateReglement2 == null) {
+      delete result.dateReglement2;
+    }
+    if (obj.dateReglement3 == null) {
+      delete result.dateReglement3;
+    }
+    if (obj.dateReglement4 == null) {
+      delete result.dateReglement4;
+    }
+    return result;
+  }
+
+  serializationDetLivraison(obj: DetLivraison): any {
     return {
       ...obj,
       id: obj.id?.toString(),

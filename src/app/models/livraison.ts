@@ -3,7 +3,7 @@ import { Fournisseur } from "./fournisseur";
 import { Personnel } from "./personnel";
 
 export interface Livraison {
-  id: bigint;
+  id: bigint | null;
   numLivraison: number;
   codeBl: string;
   dateBl: Date;
@@ -32,7 +32,7 @@ export interface Livraison {
   mntReglement4: number;
   facturer100: boolean;
   codeTransport: string;
-  employeOperateurId: bigint;
+  employeOperateurId: bigint | null;
   employeOperateur?: Employe | null;
   personnel: Personnel | null;
   personnelId: bigint;
@@ -44,7 +44,7 @@ export interface Livraison {
 
 export function initObjectLivraison(): Livraison {
   return {
-    id: BigInt(0),
+    id: null,
     numLivraison: 0,
     codeBl: "",
     dateBl: new Date(),
@@ -73,7 +73,7 @@ export function initObjectLivraison(): Livraison {
     mntReglement4: 0,
     facturer100: false,
     codeTransport: "",
-    employeOperateurId: BigInt(0),
+    employeOperateurId: null,
     employeOperateur: null,
     personnelId: BigInt(0),
     personnelAncienId: null,

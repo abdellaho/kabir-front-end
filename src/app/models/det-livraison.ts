@@ -2,7 +2,7 @@ import { Livraison } from "./livraison";
 import { Stock } from "./stock";
 
 export interface DetLivraison {
-  id: bigint;
+  id: bigint | null;
   qteLivrer: number;
   champsRouge: number;
   remiseLivraison: number;
@@ -12,7 +12,7 @@ export interface DetLivraison {
   benepourcentage: number;
   infinity: number;
   avecRemise: boolean;
-  livraisonId: bigint;
+  livraisonId: bigint | null;
   livraison?: Livraison | null;
   stockId: bigint | null;
   stock?: Stock | null;
@@ -20,7 +20,7 @@ export interface DetLivraison {
 
 export function initObjectDetLivraison(): DetLivraison {
   return {
-    id: BigInt(0),
+    id: null,
     qteLivrer: 0,
     champsRouge: 0,
     remiseLivraison: 0,
@@ -30,7 +30,7 @@ export function initObjectDetLivraison(): DetLivraison {
     benepourcentage: 0,
     infinity: 0,
     avecRemise: false,
-    livraisonId: BigInt(0),
+    livraisonId: null,
     livraison: null,
     stockId: null,
     stock: null,
