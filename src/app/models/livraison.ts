@@ -15,6 +15,10 @@ export interface Livraison {
   typeReglment2: number;
   typeReglment3: number;
   typeReglment4: number;
+  numCheque: string;
+  numCheque2: string;
+  numCheque3: string;
+  numCheque4: string;
   mantantBL: number;
   mantantBLReel: number;
   mantantBLBenefice: number;
@@ -52,6 +56,10 @@ export function initObjectLivraison(): Livraison {
     dateReglement2: null,
     dateReglement3: null,
     dateReglement4: null,
+    numCheque: "",
+    numCheque2: "",
+    numCheque3: "",
+    numCheque4: "",
     typeReglment: 0,
     typeReglment2: 0,
     typeReglment3: 0,

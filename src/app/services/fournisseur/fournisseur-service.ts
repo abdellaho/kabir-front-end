@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Fournisseur } from '@/models/fournisseur';
-import { omit } from '@/shared/classes/generic-methods';
+import { getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -39,6 +40,11 @@ export class FournisseurService {
   exist(fournisseur: Fournisseur): Observable<boolean> {
     const serializedObj = this.serialization(fournisseur);
     return this.http.post<boolean>(ENDPOINTS.FOURNISSEUR.exist, serializedObj);
+  }
+
+  updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
+    let nbrOperation: number = getTypeOperation(operationType);
+    return this.http.patch<void>(ENDPOINTS.FOURNISSEUR.updateNbrOperation(id), { nbrOperation });
   }
 
   search(fournisseur: Fournisseur): Observable<Fournisseur[]> {

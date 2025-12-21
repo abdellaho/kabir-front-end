@@ -51,6 +51,18 @@ import { DatePickerModule } from 'primeng/datepicker';
 })
 export class StockDepotComponent {
 
+    //Affichage --> Buttons --> Ajouter Rechercher Actualiser Consulter
+    //          ---> Achat Etranger (Ancien App)
+    // Tableau  ---> date designation qte Actions(Supprimer seulement)
+    // Ajouter --> date ListProduit --> designation + qte
+
+
+    //Achat Simple
+    //Affichage --> Buttons --> Ajouter Rechercher Actualiser Consulter
+    //          ---> Achat BL (Ancien App)
+    // Tableau  ---> date AL - fournisseur - N°BL Externe - montant TTCActions(Supprimer Modifier Imprimer)
+    // Ajouter --> date - fournisseur - N°BL Externe - ListProduit --> designation + qte Stock + prix vente + qte + unite gratuite + remise
+
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();

@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <p-fluid [formGroup]="formGroup">
-    @if (formGroup.errors?.['listDetLivraisonRequired']) {
+    @if (submitted && formGroup.errors?.['listDetLivraisonRequired']) {
         <p-message severity="warn" variant="simple" size="small">{{ msg.components.livraison.errors.listDetLivraisonRequired }}</p-message>
         <br>
     }
@@ -146,6 +146,17 @@
                     }
                 </div>
             </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque" formControlName="numCheque" class="full-width" />
+                    <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numChequeRequired']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numChequeRequired }}</p-message>
+                }
+            </div>
         </div>
         <!-- Fin Div Reglement 1 -->
 
@@ -199,6 +210,17 @@
                         msg.components.livraison.errors.mntReglement2MustBeAtLeastEqualZero }}</p-message>
                     }
                 </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque2" formControlName="numCheque2" class="full-width" />
+                    <label for="numCheque2">{{ msg.components.livraison.numCheque2 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque2Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque2Required }}</p-message>
+                }
             </div>
         </div>
         <!-- Fin Div Reglement 2 -->
@@ -254,6 +276,17 @@
                     }
                 </div>
             </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque3" formControlName="numCheque3" class="full-width" />
+                    <label for="numCheque3">{{ msg.components.livraison.numCheque3 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque3Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque3Required }}</p-message>
+                }
+            </div>
         </div>
         <!-- Fin Div Reglement 3 -->
 
@@ -307,6 +340,17 @@
                         msg.components.livraison.errors.mntReglement4MustBeAtLeastEqualZero }}</p-message>
                     }
                 </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque4" formControlName="numCheque4" class="full-width" />
+                    <label for="numCheque4">{{ msg.components.livraison.numCheque4 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque4Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque4Required }}</p-message>
+                }
             </div>
             <!-- Fin Div Reglement 4 -->
         </div>
@@ -397,8 +441,8 @@
                     <td>{{ p.montantProduit }}</td>
                     <td style="width: 5%; min-width: 7rem">
                         <div class="flex gap-2">
-                            <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
-                            <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            <p-button (click)="recuppererDetLivraison(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                            <p-button (click)="recuppererDetLivraison(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                         </div>
                     </td>
                 </tr>
@@ -526,7 +570,7 @@
     [style]="{ width: '450px' }" [closable]="false">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        @if (detLivraisonSelected) {
+        @if (detLivraisonSelected && detLivraisonSelected.stockId) {
             <span>{{ msg.components.livraison.stock.messageDeleteAreYouSure }}</span>
         }
     </div>
@@ -535,6 +579,6 @@
         <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
             class="p-button-outlined p-button-danger" (click)="dialogDeleteStock = false"></button>
         <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-            (click)="deleteDetLivraison()"></button>
+            (click)="deleteDetLivraison()" [disabled]="!detLivraisonSelected || !detLivraisonSelected.stockId"></button>
     </ng-template>
 </p-dialog>
