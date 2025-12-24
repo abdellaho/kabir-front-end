@@ -61,6 +61,7 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/fournisseur/${id}`,
     exist: `${BASE_URL}/fournisseur/exist`,
     search: `${BASE_URL}/fournisseur/search`,
+    updateNbrOperation: (id: bigint) => `${BASE_URL}/fournisseur/${id}/update-nbr-operation`,
   },
   COMPTE: {
     getAll: `${BASE_URL}/compte`,

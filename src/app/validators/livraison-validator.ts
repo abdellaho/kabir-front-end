@@ -26,10 +26,10 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
 
     // Payment validation config
     const reglements = [
-      { mnt: 'mntReglement', date: 'dateReglement', suffix: '' },
-      { mnt: 'mntReglement2', date: 'dateReglement2', suffix: '2' },
-      { mnt: 'mntReglement3', date: 'dateReglement3', suffix: '3' },
-      { mnt: 'mntReglement4', date: 'dateReglement4', suffix: '4' },
+      { mnt: 'mntReglement', date: 'dateReglement', numCheque: 'numCheque', typeReglment: 'typeReglment', suffix: '' },
+      { mnt: 'mntReglement2', date: 'dateReglement2', numCheque: 'numCheque2', typeReglment: 'typeReglment2', suffix: '2' },
+      { mnt: 'mntReglement3', date: 'dateReglement3', numCheque: 'numCheque3', typeReglment: 'typeReglment3', suffix: '3' },
+      { mnt: 'mntReglement4', date: 'dateReglement4', numCheque: 'numCheque4', typeReglment: 'typeReglment4', suffix: '4' },
     ];
 
     const mantantBL: number = getValue('mantantBL');
@@ -41,6 +41,8 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
     reglements.forEach((reg, index) => {
       const dateValue = getValue(reg.date);
       const mntValue = getValue(reg.mnt) || 0;
+      const typeReglementValue = getValue(reg.typeReglment) || 0;
+      const numChequeValue = getValue(reg.numCheque) || '';
       const prevReg = index > 0 ? reglements[index - 1] : null;
       const nextReg = index < 3 ? reglements[index + 1] : null;
 
@@ -58,6 +60,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
             addError('dateReglementMustEqualOrAfterDateBl');
           }
           validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+          validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
         }
         return;
       }
@@ -78,6 +81,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
         }
 
         validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+        validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
       } else if (nextReg && getValue(nextReg.date)) {
         // Next payment filled without this one
         addError(`dateReglement${reg.suffix}MustBeFilledFirst`);
@@ -119,5 +123,18 @@ function validateAmount(
     }
   } else if (amount < 0) {
     addError(`${fieldName}MustBeAtLeastEqualZero`);
+  }
+}
+
+function validateNumCheque(
+  suffix: string,
+  typeReglement: number,
+  numCheque: string, 
+  addError: (key: string) => void
+): void {
+  const fieldName = suffix ? `numCheque${suffix}` : 'numCheque';
+  
+  if (typeReglement === 1 && (!numCheque || numCheque.trim() === '')) {
+    addError(`${fieldName}Required`);
   }
 }

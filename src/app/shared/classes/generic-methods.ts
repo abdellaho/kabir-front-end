@@ -7,6 +7,7 @@ import { Fournisseur, initObjectFournisseur } from "@/models/fournisseur";
 import { initObjectPersonnel, Personnel } from "@/models/personnel";
 import { initObjectRepertoire, Repertoire } from "@/models/repertoire";
 import { TypeSearch } from "../enums/type-search";
+import { OperationType } from "../enums/operation-type";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
@@ -160,6 +161,10 @@ export function returnValueOfNumberControl(control: AbstractControl, libel: stri
 
 export function returnValueOfNumberProperty(value: number | null | string): number | null {
   return (value !== null && value !== null && value !== 0 && value !== '0') ? Number(value) : null;
+}
+
+export function getTypeOperation(operationType: OperationType): number {
+    return operationType === OperationType.ADD ? 1 : (operationType === OperationType.DELETE ? 2 : 3);
 }
 
 export function ajusterMontants1(livraison: Livraison, sommeTotale: number): Livraison {
