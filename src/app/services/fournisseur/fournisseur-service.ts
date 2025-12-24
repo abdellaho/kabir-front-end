@@ -44,7 +44,7 @@ export class FournisseurService {
 
   updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
     let nbrOperation: number = getTypeOperation(operationType);
-    return this.http.patch<void>(ENDPOINTS.FOURNISSEUR.updateNbrOperation(id), { nbrOperation });
+    return this.http.patch<void>(ENDPOINTS.FOURNISSEUR.updateNbrOperation(id, nbrOperation), {});
   }
 
   search(fournisseur: Fournisseur): Observable<Fournisseur[]> {

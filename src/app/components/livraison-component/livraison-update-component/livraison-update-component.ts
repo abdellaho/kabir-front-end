@@ -585,17 +585,14 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   giveMeMntBLPourcent(livraison: Livraison) {
-		if(livraison.mantantBLBenefice == 0 && livraison.mantantBL == 0) return 0;
-		if(livraison.mantantBL == 0) return 0;
-		let mntBenPourcent: number = livraison.mantantBL > 0 ? (livraison.mantantBLBenefice * 100) / livraison.mantantBL : 5555.0;
+    let infinity: number = 1;
+		if(livraison.mantantBLBenefice == 0 && livraison.mantantBL == 0) infinity = 0;
+		if(livraison.mantantBL == 0) infinity = 0;
+		let mntBenPourcent: number = livraison.mantantBL > 0 ? ((livraison.mantantBLBenefice * 100) / livraison.mantantBL) : 5555.0;
     
     livraison.mantantBLPourcent = mntBenPourcent;
     
-    if (livraison.mantantBL === 0) {
-      livraison.infinity = 0;
-    } else {
-      livraison.infinity = 1;
-    }
+    livraison.infinity = infinity;
 	}
 
   updateNbrOperationFournisseur(livraison: Livraison) {
