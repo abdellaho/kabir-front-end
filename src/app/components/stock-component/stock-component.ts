@@ -1,4 +1,4 @@
-import { Fournisseur } from '@/models/fournisseur';
+import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { initObjectStock, Stock } from '@/models/stock';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { StockService } from '@/services/stock/stock-service';
@@ -24,7 +24,8 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { NegativeValidator } from '@/validators/negative-validator';
-import { arrayToMap, getElementFromMap, returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
+import { arrayToMap, getElementFromMap, initObjectSearch, returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
+import { TypeSearch } from '@/shared/enums/type-search';
 
 @Component({
     selector: 'app-stock-component',
@@ -219,7 +220,8 @@ export class StockComponent {
     }
 
     getAllFournisseur(): void {
-        this.fournisseurService.getAll().subscribe({
+        let objectSearch: Fournisseur = initObjectSearch(false, false, TypeSearch.Fournisseur);
+        this.fournisseurService.search(objectSearch).subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
                 this.mapOfFournisseurs = arrayToMap(this.listFournisseur, 'id', ['designation'], ['']);

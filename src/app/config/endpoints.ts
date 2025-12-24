@@ -1,6 +1,6 @@
 import { environment } from "src/environments/environment";
 
-const BASE_URL = environment.production ? 'https://kabir-backend-nest-js.vercel.app/api' : 'http://localhost:3000/api';
+const BASE_URL = environment.production ? 'https://kabir-backend-nest-js.vercel.app/api' : 'http://localhost:8080/api';
 
 export const ENDPOINTS = {
   VILLE: {
@@ -27,13 +27,13 @@ export const ENDPOINTS = {
     update: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
     delete: (id: bigint) => `${BASE_URL}/etablissement/${id}`,
   },
-    STOCK_DEPOT: {
-        getAll: `${BASE_URL}/stock-depot`,
-        getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
-        create: `${BASE_URL}/stock-depot`,
-        update: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
-    },
+  STOCK_DEPOT: {
+    getAll: `${BASE_URL}/stock-depot`,
+    getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+    create: `${BASE_URL}/stock-depot`,
+    update: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+  },
   REPERTOIRE: {
     getAll: `${BASE_URL}/repertoire`,
     getById: (id: bigint) => `${BASE_URL}/repertoire/${id}`,

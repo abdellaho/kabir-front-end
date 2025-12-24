@@ -2,7 +2,11 @@ import { AbstractControl, FormArray, FormGroup } from "@angular/forms";
 import { TypeEmploye } from "../enums/type-employe";
 import { TypePersonnel } from "../enums/type-personnel";
 import { Livraison } from "@/models/livraison";
-import { Stock } from "@/models/stock";
+import { initObjectStock, Stock } from "@/models/stock";
+import { Fournisseur, initObjectFournisseur } from "@/models/fournisseur";
+import { initObjectPersonnel, Personnel } from "@/models/personnel";
+import { initObjectRepertoire, Repertoire } from "@/models/repertoire";
+import { TypeSearch } from "../enums/type-search";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
@@ -403,4 +407,38 @@ export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livr
   }
 
   return livraison;
+}
+
+// Overload signatures: TypeScript uses these for inference, not the implementation
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch.Fournisseur): Fournisseur;
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch.Stock): Stock;
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch.Personnel): Personnel;
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch.Repertoire): Repertoire;
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch): Fournisseur | Stock | Personnel | Repertoire | null;
+
+// Single implementation (must match the last overload's signature)
+export function initObjectSearch(archiver: boolean, supprimer: boolean, type: TypeSearch): Fournisseur | Stock | Personnel | Repertoire | null {
+  if (type == TypeSearch.Fournisseur) {
+    let objectSearch: Fournisseur = initObjectFournisseur();
+    objectSearch.archiver = archiver;
+    objectSearch.supprimer = supprimer;
+    return objectSearch;
+  } else if (type == TypeSearch.Stock) {
+    let objectSearch: Stock = initObjectStock();
+    objectSearch.archiver = archiver;
+    objectSearch.supprimer = supprimer;
+    return objectSearch;
+  } else if (type == TypeSearch.Personnel) {
+    let objectSearch: Personnel = initObjectPersonnel();
+    objectSearch.archiver = archiver;
+    objectSearch.supprimer = supprimer;
+    return objectSearch;
+  } else if (type == TypeSearch.Repertoire) {
+    let objectSearch: Repertoire = initObjectRepertoire();
+    objectSearch.archiver = archiver;
+    objectSearch.bloquer = supprimer;  // Note: This differs from other branches—consider consistency if 'supprimer' means the same
+    return objectSearch;
+  } else {
+    return null;
+  }
 }
