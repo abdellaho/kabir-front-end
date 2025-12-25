@@ -64,10 +64,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurId" style="width: 10%">
+                        <th pSortableColumn="repertoireId" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.fournisseurId }}
-                                <p-sortIcon field="fournisseurId" />
+                                {{ msg.components.livraison.repertoireId }}
+                                <p-sortIcon field="repertoireId" />
                             </div>
                         </th>
 
@@ -126,7 +126,7 @@
                                 {{ p.mntReglement4 | number:'1.2-2' }}
                             }
                         </td>
-                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
                         <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
                         <td>{{ p.reglerNonRegler }}</td>
                         <td style="width: 10%; min-width: 7rem">

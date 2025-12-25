@@ -1,6 +1,7 @@
 import { Employe } from "./employe";
 import { Fournisseur } from "./fournisseur";
 import { Personnel } from "./personnel";
+import { Repertoire } from "./repertoire";
 
 export interface Livraison {
   id: bigint | null;
@@ -42,8 +43,8 @@ export interface Livraison {
   personnelId: bigint;
   personnelAncien: Personnel | null;
   personnelAncienId?: bigint | null;
-  fournisseur: Fournisseur | null;
-  fournisseurId: bigint;
+  repertoire: Repertoire | null;
+  repertoireId: bigint;
 }
 
 export function initObjectLivraison(): Livraison {
@@ -85,9 +86,9 @@ export function initObjectLivraison(): Livraison {
     employeOperateur: null,
     personnelId: BigInt(0),
     personnelAncienId: null,
-    fournisseurId: BigInt(0),
+    repertoireId: BigInt(0),
     personnelAncien: null,
     personnel: null,
-    fournisseur: null,
+    repertoire: null,
   };
 }

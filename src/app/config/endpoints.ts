@@ -43,6 +43,7 @@ export const ENDPOINTS = {
     exist: `${BASE_URL}/repertoire/exist`,
     search: `${BASE_URL}/repertoire/search`,
     searchPersonnel: `${BASE_URL}/repertoire/search-personnel`,
+    updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/repertoire/${id}/update-nbr-operation/${nbrOperation}`,
   },
   ABSENCE: {
     getAll: `${BASE_URL}/absence`,

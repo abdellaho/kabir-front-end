@@ -67,7 +67,7 @@ export class LivraisonService {
   }
 
   omitLivraison(livraison: Livraison): Livraison {
-    const objLivraison = omit(this.serializationLivraison(livraison), 'employeOperateur', 'personnel', 'personnelAncien', 'fournisseur');
+    const objLivraison = omit(this.serializationLivraison(livraison), 'employeOperateur', 'personnel', 'personnelAncien', 'repertoire');
     return objLivraison;
   }
 

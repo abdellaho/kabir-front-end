@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Repertoire } from '@/models/repertoire';
-import { omit } from '@/shared/classes/generic-methods';
+import { getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -47,6 +48,11 @@ export class RepertoireService {
     const serializedObj = this.serialization(repertoire);
     return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
   }
+
+  updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
+      let nbrOperation: number = getTypeOperation(operationType);
+      return this.http.patch<void>(ENDPOINTS.REPERTOIRE.updateNbrOperation(id, nbrOperation), {});
+    }
 
   serialization(repertoire: Repertoire): any {
     return {

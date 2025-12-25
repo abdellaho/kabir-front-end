@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from '@/shared/services/data-service';
 import { Router } from '@angular/router';
 import { initObjectLivraison, Livraison } from '@/models/livraison';
-import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { DetLivraison, initObjectDetLivraison } from '@/models/det-livraison';
 import { Subscription, concatMap, delay, from } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
@@ -41,7 +40,8 @@ import { DetLivraisonValidator } from '@/validators/det-livraison-validator';
 import { LivraisonValidator } from '@/validators/livraison-validator';
 import { Etablissement, initObjectEtablissement } from '@/models/etablissement';
 import { EtablissementService } from '@/services/etablissement/etablissement-service';
-import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
+import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
+import { RepertoireService } from '@/services/repertoire/repertoire-service';
 
 @Component({
   selector: 'app-livraison-update-component',
@@ -76,14 +76,14 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   etablissement: Etablissement = initObjectEtablissement();
   oldLivraison: Livraison | null = null;
   livraison: Livraison = initObjectLivraison();
-  listFournisseur: Fournisseur[] = [];
+  listRepertoire: Repertoire[] = [];
   listDetLivraison: DetLivraison[] = [];
   originalListDetLivraison: DetLivraison[] = [];
   listPersonnel: Personnel[] = [];
   listStock: Stock[] = [];
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   mapOfStocks: Map<number, string> = new Map<number, string>();
-  mapOfFournisseurs: Map<number, string> = new Map<number, string>();
+  mapOfRepertoire: Map<number, string> = new Map<number, string>();
   subscription!: Subscription;
   dialogStock: boolean = false;
   dialogFacturer: boolean = false;
@@ -91,7 +91,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   dialogDeleteStock: boolean = false;
   detLivraisonSelected: DetLivraison = initObjectDetLivraison();
   stockSelected: Stock = initObjectStock();
-  fournisseurSelected: Fournisseur = initObjectFournisseur();
+  repertoireSelected: Repertoire = initObjectRepertoire();
   msg = APP_MESSAGES;
   formGroup!: FormGroup;
   formGroupStock!: FormGroup;
@@ -100,7 +100,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   constructor(
     private livraisonService: LivraisonService,
     private detLivraisonService: DetLivraisonService,
-    private fournisseurService: FournisseurService,
+    private repertoireService: RepertoireService,
     private stockService: StockService,
     private formBuilder: FormBuilder,
     private dataService: DataService,
@@ -125,14 +125,14 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       this.oldLivraison = this.livraison.id ? structuredClone(this.livraison) : null;
       this.listDetLivraison = data.detLivraisons;
       this.originalListDetLivraison = structuredClone(data.detLivraisons);
-      this.listFournisseur = [initObjectFournisseur(), ...data.listFournisseur];
-      this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
+      this.listRepertoire = [initObjectRepertoire(), ...data.listRepertoire];
+      this.mapOfRepertoire = this.listRepertoire.reduce((map, repertoire) => map.set(Number(repertoire.id), repertoire.designation), new Map<number, string>());
       this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
       this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
       this.listStock = [initObjectStock(), ...data.listStock];
       this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
       this.mapObjectToFormGroup(this.livraison);
-      this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.livraison.fournisseurId) || initObjectFournisseur();
+      this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.livraison.repertoireId) || initObjectRepertoire();
       this.adjustDetLivraison();
     });
   }
@@ -167,7 +167,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
   }
 
   mapObjectToFormGroup(livraison: Livraison) {
-    this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === livraison.fournisseurId) || initObjectFournisseur();
+    this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === livraison.repertoireId) || initObjectRepertoire();
     this.formGroup.patchValue({
       numLivraison: livraison.numLivraison,
       codeBl: livraison.codeBl,
@@ -190,11 +190,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       mntReglement4: livraison.mntReglement4,
       mantantBL: livraison.mantantBL,
       personnelId: livraison.personnelId,
-      fournisseurId: this.fournisseurSelected?.id,
-      fournisseurDesignation: this.fournisseurSelected?.designation || '',
-      fournisseurTel1: this.fournisseurSelected?.tel1 || '',
-      fournisseurTel2: this.fournisseurSelected?.tel2 || '',
-      fournisseurICE: this.fournisseurSelected?.ice || '',
+      repertoireId: this.repertoireSelected?.id,
+      repertoireDesignation: this.repertoireSelected?.designation || '',
+      repertoireTel1: this.repertoireSelected?.tel1 || '',
+      repertoireTel2: this.repertoireSelected?.tel2 || '',
+      repertoireICE: this.repertoireSelected?.ice || '',
     });
     this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison is set
   }
@@ -249,12 +249,12 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       //codeTransport: [''],
       personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       //personnelAncienId: [null],
-      fournisseurId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
+      repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       stockId: [0],
-      fournisseurDesignation: [{ value: '', disabled: true }],
-      fournisseurTel1: [{ value: '', disabled: true }],
-      fournisseurTel2: [{ value: '', disabled: true }],
-      fournisseurICE: [{ value: '', disabled: true }],
+      repertoireDesignation: [{ value: '', disabled: true }],
+      repertoireTel1: [{ value: '', disabled: true }],
+      repertoireTel2: [{ value: '', disabled: true }],
+      repertoireICE: [{ value: '', disabled: true }],
     }, { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) });
   }
 
@@ -292,7 +292,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     //this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
     this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
     //this.livraison.personnelAncienId = this.formGroup.get('personnelAncienId')?.value;
-    this.livraison.fournisseurId = this.formGroup.get('fournisseurId')?.value;
+    this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
   }
 
   openCloseDialogStock(openClose: boolean): void {
@@ -303,34 +303,34 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.dialogDeleteStock = openClose;
   }
 
-  disableFournisseurData() {
-    this.formGroup.get('fournisseurDesignation')?.disable();
-    this.formGroup.get('fournisseurTel1')?.disable();
-    this.formGroup.get('fournisseurTel2')?.disable();
-    this.formGroup.get('fournisseurICE')?.disable();
+  disableRepertoireData() {
+    this.formGroup.get('repertoireDesignation')?.disable();
+    this.formGroup.get('repertoireTel1')?.disable();
+    this.formGroup.get('repertoireTel2')?.disable();
+    this.formGroup.get('repertoireICE')?.disable();
   }
 
-  onChangeIdFournisseur() {
-    this.fournisseurSelected = this.listFournisseur.find((fournisseur) => fournisseur.id === this.formGroup.get('fournisseurId')?.value) || initObjectFournisseur();
+  onChangeIdRepertoire() {
+    this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.formGroup.get('repertoireId')?.value) || initObjectRepertoire();
     
-    if(this.fournisseurSelected && this.fournisseurSelected.id !== null && this.fournisseurSelected.id !== undefined) {
+    if(this.repertoireSelected && this.repertoireSelected.id !== null && this.repertoireSelected.id !== undefined) {
       this.formGroup.patchValue({
-        fournisseurDesignation: this.fournisseurSelected.designation,
-        fournisseurTel1: this.fournisseurSelected.tel1,
-        fournisseurTel2: this.fournisseurSelected.tel2,
-        fournisseurICE: this.fournisseurSelected.ice,
+        repertoireDesignation: this.repertoireSelected.designation,
+        repertoireTel1: this.repertoireSelected.tel1,
+        repertoireTel2: this.repertoireSelected.tel2,
+        repertoireICE: this.repertoireSelected.ice,
       });
 
-      this.disableFournisseurData();
+      this.disableRepertoireData();
     } else {
       this.formGroup.patchValue({
-        fournisseurDesignation: '',
-        fournisseurTel1: '',
-        fournisseurTel2: '',
-        fournisseurICE: '',
+        repertoireDesignation: '',
+        repertoireTel1: '',
+        repertoireTel2: '',
+        repertoireICE: '',
       });
 
-      this.disableFournisseurData();
+      this.disableRepertoireData();
     }
   }
 
@@ -502,7 +502,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       livraison.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
       livraison.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
       livraison.personnelId = formGroup.get('personnelId')?.value;
-      livraison.fournisseurId = formGroup.get('fournisseurId')?.value;
+      livraison.repertoireId = formGroup.get('repertoireId')?.value;
       livraison.typeReglment = formGroup.get('typeReglment')?.value;
       livraison.typeReglment2 = formGroup.get('typeReglment2')?.value;
       livraison.typeReglment3 = formGroup.get('typeReglment3')?.value;
@@ -595,17 +595,17 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     livraison.infinity = infinity;
 	}
 
-  updateNbrOperationFournisseur(livraison: Livraison) {
+  updateNbrOperationRepertoire(livraison: Livraison) {
     if(this.oldLivraison) {
-      if(this.oldLivraison.fournisseurId != livraison.fournisseurId) {
-        this.fournisseurService.updateNbrOperation(livraison.fournisseurId!, OperationType.ADD).subscribe({
+      if(this.oldLivraison.repertoireId != livraison.repertoireId) {
+        this.repertoireService.updateNbrOperation(livraison.repertoireId!, OperationType.ADD).subscribe({
           next: () => {
           }, error: (err) => {
             console.log(err);
           }
         });
 
-        this.fournisseurService.updateNbrOperation(this.oldLivraison.fournisseurId!, OperationType.DELETE).subscribe({
+        this.repertoireService.updateNbrOperation(this.oldLivraison.repertoireId!, OperationType.DELETE).subscribe({
           next: () => {
           }, error: (err) => {
             console.log(err);
@@ -613,7 +613,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         });
       }
     } else {
-      this.fournisseurService.updateNbrOperation(livraison.fournisseurId!, OperationType.ADD).subscribe({
+      this.repertoireService.updateNbrOperation(livraison.repertoireId!, OperationType.ADD).subscribe({
         next: () => {
         }, error: (err) => {
           console.log(err);
@@ -659,6 +659,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               summary: this.msg.summary.labelSuccess,
               detail: this.msg.messages.messageUpdateSuccess,
             });
+
+            this.updateNbrOperationRepertoire(this.livraison);
+            this.updateStock(detLivraisonToAdd, detLivraisonToModify, detLivraisonToDelete, detLivraisonChanged);
+            this.deleteListDetLivraison(detLivraisonToDelete);
+
             this.router.navigate(['/livraison']);
           }, error: (err) => {
             console.log(err);
@@ -672,9 +677,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               this.loadingService.hide();
           }
         });
-
-        this.updateStock(detLivraisonToAdd, detLivraisonToModify, detLivraisonToDelete, detLivraisonChanged);
-        this.deleteListDetLivraison(detLivraisonToDelete);
       } else {
         this.livraisonService.create(livraisonRequest).subscribe({
           next: (data: Livraison) => {
@@ -683,6 +685,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               summary: this.msg.summary.labelSuccess,
               detail: this.msg.messages.messageAddSuccess,
             });
+
+            this.updateStock(this.listDetLivraison, [], [], []);
+            this.updateNbrOperationRepertoire(this.livraison);
+
             this.router.navigate(['/livraison']);
           }, error: (err) => {
               console.log(err);
@@ -696,9 +702,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               this.loadingService.hide();
           }
         });
-
-        this.updateStock(this.listDetLivraison, [], [], []);
-        this.updateNbrOperationFournisseur(this.livraison);
       }
     }
   }

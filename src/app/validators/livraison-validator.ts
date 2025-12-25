@@ -22,7 +22,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
 
     // Validate required fields
     if (!hasValue(getValue('personnelId'))) addError('personnelIdRequired');
-    if (!hasValue(getValue('fournisseurId'))) addError('fournisseurIdRequired');
+    if (!hasValue(getValue('repertoireId'))) addError('repertoireIdRequired');
 
     // Payment validation config
     const reglements = [

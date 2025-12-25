@@ -16,7 +16,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
-import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { LivraisonService } from '@/services/livraison/livraison-service';
@@ -29,8 +28,11 @@ import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
-import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { RepertoireService } from '@/services/repertoire/repertoire-service';
+import { Repertoire } from '@/models/repertoire';
+import { TypeSearch } from '@/shared/enums/type-search';
 
 @Component({
   selector: 'app-livraison-view-component',
@@ -57,20 +59,20 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 export class LivraisonViewComponent implements OnInit {
   listLivraison: Livraison[] = [];
   livraison: Livraison = initObjectLivraison();
-  listFournisseur: Fournisseur[] = [];
+  listRepertoire: Repertoire[] = [];
   listPersonnel: Personnel[] = [];
   listStock: Stock[] = [];
   selectedLivraison: Livraison | null = null;
   mapOfPersonnels: Map<number, string> = new Map<number, string>();
   mapOfStocks: Map<number, string> = new Map<number, string>();
-  mapOfFournisseurs: Map<number, string> = new Map<number, string>();
+  mapOfRepertoire: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
   msg = APP_MESSAGES;
 
   constructor(
       private livraisonService: LivraisonService,
+      private repertoireService: RepertoireService,
       private detLivraisonService: DetLivraisonService,
-      private fournisseurService: FournisseurService,
       private stockService: StockService,
       private dataService: DataService,
       private personnelService: PersonnelService,
@@ -81,9 +83,9 @@ export class LivraisonViewComponent implements OnInit {
 
     ngOnInit(): void {
       this.search();
-      this.getAllFournisseur();
       this.getAllStock();
       this.getAllPersonnel();
+      this.getAllRepertoire();
     }
 
     initObjectFournisseurSearch(archiver: boolean, supprimer: boolean): Fournisseur {
@@ -131,19 +133,17 @@ export class LivraisonViewComponent implements OnInit {
         });
     }
 
-    getAllFournisseur() {
-      this.listFournisseur = [];
-      let objectSearch: Fournisseur = this.initObjectFournisseurSearch(false, false);
-
-        this.fournisseurService.search(objectSearch).subscribe({
-          next: (fournisseurs) => {
-              this.listFournisseur = fournisseurs;
-              this.mapOfFournisseurs = this.listFournisseur.reduce((map, fournisseur) => map.set(Number(fournisseur.id), fournisseur.designation), new Map<number, string>());
-          },
-          error: (error) => {
-              console.log(error);
-          },
-      });
+    getAllRepertoire(): void {
+        let objectSearch: Repertoire = initObjectSearch(false, false, TypeSearch.Repertoire);
+        this.repertoireService.search(objectSearch).subscribe({
+            next: (data: Repertoire[]) => {
+                this.listRepertoire = data;
+                this.mapOfRepertoire = arrayToMap(this.listRepertoire, 'id', ['designation'], ['']);
+            },
+            error: (error: any) => {
+                console.error(error);
+            }
+        });
     }
 
     getAllStock() {
@@ -184,8 +184,8 @@ export class LivraisonViewComponent implements OnInit {
         return this.mapOfStocks.get(stockId) || '';
     }
 
-    getDesignationFournisseur(fournisseurId: number): string {
-        return this.mapOfFournisseurs.get(fournisseurId) || '';
+    getDesignationRepertoire(repertoireId: number): string {
+        return this.mapOfRepertoire.get(repertoireId) || '';
     }
 
     openCloseDialogSupprimer(openClose: boolean): void {
@@ -247,7 +247,7 @@ export class LivraisonViewComponent implements OnInit {
                         this.dataService.setLivraisonData({
                             livraison: selectedLivraison, 
                             detLivraisons: listDetail, 
-                            listFournisseur: this.listFournisseur,
+                            listRepertoire: this.listRepertoire,
                             listStock: this.listStock,
                             listPersonnel: this.listPersonnel 
                         });
@@ -258,7 +258,7 @@ export class LivraisonViewComponent implements OnInit {
                 this.dataService.setLivraisonData({
                     livraison: selectedLivraison,
                     detLivraisons: [], 
-                    listFournisseur: this.listFournisseur,
+                    listRepertoire: this.listRepertoire,
                     listStock: this.listStock,
                     listPersonnel: this.listPersonnel 
                 });
@@ -295,8 +295,14 @@ export class LivraisonViewComponent implements OnInit {
     }
 
     checkIfListIsNull() {
-        if (null == this.listFournisseur) {
-            this.listFournisseur = [];
+        if (null == this.listRepertoire) {
+            this.listRepertoire = [];
+        }
+        if (null == this.listStock) {
+            this.listStock = [];
+        }
+        if (null == this.listPersonnel) {
+            this.listPersonnel = [];
         }
     }
 
@@ -312,6 +318,7 @@ export class LivraisonViewComponent implements OnInit {
                         closable: true,
                         detail: this.msg.messages.messageDeleteSuccess
                     });
+
                     this.checkIfListIsNull();
                     this.listLivraison = this.updateList(initObjectLivraison(), this.listLivraison, OperationType.DELETE, id);
                     this.livraison = initObjectLivraison();
