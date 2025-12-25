@@ -1,17 +1,17 @@
-export interface StockDepot {
+export interface StockDepot { 
     id?: bigint | null;
-    qteStockDepot: number;
     dateOperation: string | Date;
     dateSys: string | Date;
-    stockId: bigint | null;
+    numBlExterne: string;
+    montantTTC: number;
 }
 
 export function initObjectStockDepot(): StockDepot {
     return {
         id: null,
-        qteStockDepot: 1,
         dateOperation: new Date(),
         dateSys: new Date(),
-        stockId: null
+        numBlExterne: "",
+        montantTTC: 0
     };
 }
