@@ -188,7 +188,9 @@ export const APP_MESSAGES = {
         },
         stockDepot: {
             label: 'Stock Dépôt',
-            qteStockDepot: 'Qte Stock Dépôt',
+            designation: 'Produit',
+            dateSys: 'Date Système',
+            qte: 'Qte',
             dateOperation: 'Date Operation',
             stockId: 'Produit',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce stock ?',

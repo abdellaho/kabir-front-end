@@ -20,11 +20,14 @@ import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { NegativeValidator } from '@/validators/negative-validator';
 import { StockValidator } from '@/validators/stock-validator';
-import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
+import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { OperationType } from '@/shared/enums/operation-type';
 import { initObjectStockDepot, StockDepot } from '@/models/stock-depot';
 import { StockDepotService } from '@/services/stock-depot/stock-depot-service';
 import { DatePickerModule } from 'primeng/datepicker';
+import { DetStockDepot, initObjectDetStockDepot } from '@/models/det-stock-depot';
+import { TypeSearch } from '@/shared/enums/type-search';
+import { StockDepotRequest } from '@/shared/classes/stock-depot-request';
 
 @Component({
   selector: 'app-stock-depot-component',
@@ -63,8 +66,10 @@ export class StockDepotComponent {
     // Tableau  ---> date AL - fournisseur - N°BL Externe - montant TTCActions(Supprimer Modifier Imprimer)
     // Ajouter --> date - fournisseur - N°BL Externe - ListProduit --> designation + qte Stock + prix vente + qte + unite gratuite + remise
 
+    isValid: boolean = false;
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
+    listDetStockDepot: DetStockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
     selectedStockDepot!: StockDepot;
     stock: Stock = initObjectStock();
@@ -102,7 +107,8 @@ export class StockDepotComponent {
         this.formGroup = this.formBuilder.group({
             dateOperation: [new Date(), [Validators.required]],
             stockId: [0, [Validators.required, Validators.min(1)]],
-            qteStockDepot: [1, [NegativeValidator]],
+            qte: [1, [NegativeValidator]],
+            designation: [{ value: '', disabled: true }],
         }, { validators: [StockValidator] });
     }
 
@@ -123,18 +129,9 @@ export class StockDepotComponent {
         });
     }
 
-    initStockSearch(archiver: boolean, supprimer: boolean): Stock {
-        let stockSearch: Stock = initObjectStock();
-
-        stockSearch.archiver = archiver;
-        stockSearch.supprimer = supprimer;
-
-        return stockSearch;
-    }
-
     getAllStock(): void {
         this.listStock = [];
-        let stockSearch: Stock = this.initStockSearch(false, false);
+        let stockSearch: Stock = initObjectSearch(false, false, TypeSearch.Stock);
 
         this.stockService.search(stockSearch).subscribe({
             next: (data: Stock[]) => {
@@ -146,6 +143,44 @@ export class StockDepotComponent {
                 this.loadingService.hide();
             }
         });
+    }
+
+    onChangeIdStock() {
+        this.isValid = false;
+        this.stock = initObjectStock();
+        
+        if(this.formGroup.get('stockId')?.value > 0) {
+            this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+            
+            this.formGroup.patchValue({
+                qte: 1,
+                designation: this.stock.designation,
+            });
+
+            this.formGroup.get('designation')?.disable();
+            this.isValid = true;
+        }
+    }
+
+    initDetStockDepotFormInformation() {
+        this.stock = initObjectStock();
+        this.formGroup.patchValue({
+            stockId: 0,
+            qte: 1,
+            designation: '',
+        });
+        this.formGroup.get('designation')?.disable();
+    }
+
+    validerDetStockDepot() {
+        if(this.formGroup.get('stockId')?.value > 0 && this.formGroup.get('qte')?.value > 0) {
+            let detStockDepot: DetStockDepot = initObjectDetStockDepot();
+            detStockDepot.stockId = this.formGroup.get('stockId')?.value;
+            detStockDepot.qte = this.formGroup.get('qte')?.value;
+            this.listDetStockDepot.push(detStockDepot);
+            
+            this.initDetStockDepotFormInformation();
+        }
     }
 
     openCloseDialogAjouter(openClose: boolean): void {
@@ -172,10 +207,13 @@ export class StockDepotComponent {
             this.stockDepot = stockDepotEdit;
             if (operation === 1) {
                 this.formGroup.patchValue({
-                    stockId: this.stockDepot.stockId,
-                    qteStockDepot: this.stockDepot.qteStockDepot,
+                    designation: '',
+                    stockId: 0,
+                    qte: 1,
                     dateOperation: new Date(this.stockDepot.dateOperation),
                 });
+
+                this.formGroup.get('designation')?.disable();
 
                 this.openCloseDialogAjouter(true);
             } else if (operation === 2) {
@@ -201,31 +239,31 @@ export class StockDepotComponent {
     }
 
     checkIfListIsNull() {
-        if (null == this.listStock) {
-            this.listStock = [];
+        if (null == this.listStockDepot) {
+            this.listStockDepot = [];
         }
     }
 
     mapFormGroupToObject(formGroup: FormGroup, stockDepot: StockDepot): StockDepot {
-        stockDepot.qteStockDepot = formGroup.get('qteStockDepot')?.value;
-        stockDepot.stockId = formGroup.get('stockId')?.value;
-        stockDepot.dateOperation = formGroup.get('dateOperation')?.value;
+        stockDepot.dateOperation = mapToDateTimeBackEnd(formGroup.get('dateOperation')?.value);
 
         return stockDepot;
     }
 
     async miseAjour(): Promise<void> {
+        this.submitted = true;
         this.loadingService.show();
         let stockDepotEdit: StockDepot = { ...this.stockDepot };
         this.mapFormGroupToObject(this.formGroup, stockDepotEdit);
         let trvErreur = false;// await this.checkIfExists(stockDepotEdit);
 
         if (!trvErreur) {
-            this.mapFormGroupToObject(this.formGroup, this.stockDepot);
-            this.submitted = true;
+            this.stockDepot = this.mapFormGroupToObject(this.formGroup, this.stockDepot);
+
+            let stockDepotRequest: StockDepotRequest = { stockDepot: {...this.stockDepot }, detStockDepots: this.listDetStockDepot };
 
             if (this.stockDepot.id) {
-                this.stockDepotService.update(this.stockDepot.id, this.stockDepot).subscribe({
+                this.stockDepotService.update(this.stockDepot.id, stockDepotRequest).subscribe({
                     next: (data) => {
                         this.messageService.add({
                             severity: 'success',
@@ -233,6 +271,8 @@ export class StockDepotComponent {
                             closable: true,
                             detail: this.msg.messages.messageUpdateSuccess
                         });
+
+                        this.listDetStockDepot = [];
                         this.checkIfListIsNull();
                         this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
@@ -249,7 +289,7 @@ export class StockDepotComponent {
                     }
                 });
             } else {
-                this.stockDepotService.create(this.stockDepot).subscribe({
+                this.stockDepotService.create(stockDepotRequest).subscribe({
                     next: (data: StockDepot) => {
                         this.messageService.add({
                             severity: 'success',
@@ -257,6 +297,8 @@ export class StockDepotComponent {
                             closable: true,
                             detail: this.msg.messages.messageAddSuccess
                         });
+
+                        this.listDetStockDepot = [];
                         this.checkIfListIsNull();
                         this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
@@ -291,6 +333,7 @@ export class StockDepotComponent {
                         closable: true,
                         detail: this.msg.messages.messageDeleteSuccess
                     });
+
                     this.checkIfListIsNull();
                     this.listStockDepot = this.updateList(initObjectStockDepot(), this.listStockDepot, OperationType.DELETE, id);
                     this.stockDepot = initObjectStockDepot();

@@ -30,6 +30,7 @@ export const ENDPOINTS = {
   STOCK_DEPOT: {
     getAll: `${BASE_URL}/stock-depot`,
     getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/stock-depot/response/${id}`,
     create: `${BASE_URL}/stock-depot`,
     update: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
     delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,

@@ -30,17 +30,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="stockId" style="width: 45%">
+                        <th pSortableColumn="dateSys" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.stockDepot.stockId }}
-                                <p-sortIcon field="stockId" />
-                            </div>
-                        </th>
-
-                        <th pSortableColumn="qteStockDepot" style="width: 10%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.stockDepot.qteStockDepot }}
-                                <p-sortIcon field="qteStockDepot" />
+                                {{ msg.components.stockDepot.dateSys }}
+                                <p-sortIcon field="dateSys" />
                             </div>
                         </th>
 
@@ -51,8 +44,7 @@
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.stockId }}</td>
-                        <td>{{ p.qteStockDepot }}</td>
+                        <td>{{ p.dateSys | date:'dd/MM/yyyy' }}</td>
 
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">
@@ -106,12 +98,24 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
-                                <span id="qteStockDepotSpan">{{ msg.components.stockDepot.qteStockDepot }}</span>
-                                <p-inputNumber name="qteStockDepot" id="qteStockDepot" formControlName="qteStockDepot" />
+                        @if (formGroup.get('stockId')?.value !== null && formGroup.get('stockId')?.value !== undefined && formGroup.get('stockId')?.value !== 0) {
+                            <div class="flex flex-wrap gap-6">
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="designationStockDepotSpan">{{ msg.components.stockDepot.designation }}</span>
+                                    <p-inputText name="designation" id="designation" formControlName="designation" />
+                                </div>
                             </div>
-                        </div>
+                            
+                            <div class="flex flex-wrap gap-6">
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="qteStockDepotSpan">{{ msg.components.stockDepot.qte }}</span>
+                                    <p-inputNumber name="qte" id="qte" formControlName="qte" />
+                                </div>
+                            </div>
+
+                            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
+                                (click)="validerDetStockDepot()" [disabled]="formGroup.get('stockId')?.value === null || formGroup.get('stockId')?.value === undefined || formGroup.get('stockId')?.value === 0"></button>
+                        }
                     </div>
                 </div>
             </ng-template>
