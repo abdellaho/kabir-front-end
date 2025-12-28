@@ -1,1 +1,351 @@
-<p>achat-simple-component works!</p>
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatSimple" dataKey="id"
+                [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation" [sortOrder]="-1"
+                selectionMode="single" [(selection)]="selectedAchatSimple" dataKey="id"
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['dateOperation','fournisseurId', 'numBlExterne', 'montant']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="dateOperation" style="width: 30%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatSimple.dateOperation }}
+                                <p-sortIcon field="dateOperation" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="fournisseurId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatSimple.fournisseurId }}
+                                <p-sortIcon field="fournisseurId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="numBlExterne" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatSimple.numBlExterne }}
+                                <p-sortIcon field="numBlExterne" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="montant" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatSimple.montant }}
+                                <p-sortIcon field="montant" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                    <tr>
+                        <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.numBlExterne }}</td>
+                        <td>{{ p.montant }}</td>
+                        <td style="min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="8">No AchatSimple found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="8">Loading AchatSimple data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '600px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.achatSimple.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
+                                    <label for="dateOperation">{{ msg.components.achatSimple.dateOperation }}</label>
+                                </p-floatlabel>
+
+                                @if (formGroup.errors?.['dateOperationRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatSimple.errors.dateOperationRequired }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="fournisseurId" inputId="fournisseurId"
+                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="fournisseurId">{{ msg.components.achatSimple.fournisseurId }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <input pInputText id="numBlExterne" formControlName="numBlExterne" appendTo="body"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('numBlExterne')?.invalid }" />
+                                    <label for="numBlExterne">{{ msg.components.achatSimple.numBlExterne }}</label>
+                                </p-floatlabel>
+                                @if (formGroup.errors?.['numBlExterneRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatSimple.errors.numBlExterneRequired }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number id="montant" formControlName="montant" appendTo="body"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montant')?.invalid }" />
+                                    <label for="montant">{{ msg.components.achatSimple.montant }}</label>
+                                </p-floatlabel>
+                                @if (formGroup.errors?.['montantRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatSimple.errors.montantRequired }}</p-message>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId"
+                                        [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="stockId">{{ msg.components.achatSimple.stockId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0"></div>
+                        </div>
+
+                        @if (formGroup.get('stockId')?.value !== null 
+                            && formGroup.get('stockId')?.value !== undefined 
+                            && formGroup.get('stockId')?.value !== BigInt(0)) {
+                            <div class="flex flex-wrap gap-6">
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="designationStockAchatSimpleSpan">{{ msg.components.achatSimple.designationStock }}</span>
+                                    <input pInputText name="designation" id="designation" formControlName="designation" />
+                                </div>
+
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="qteStockAchatSimpleSpan">{{ msg.components.achatSimple.qteStock }}</span>
+                                    <input pInputText name="qteStock" id="qteStock" formControlName="qteStock" />
+                                </div>
+                            
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="qteStockAchatSimpleSpan">{{ msg.components.achatSimple.qte }}</span>
+                                    <p-inputNumber name="qte" id="qte" formControlName="qte" />
+                                </div>
+
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="prixVenteStockAchatSimpleSpan">{{ msg.components.achatSimple.prixVente }}</span>
+                                    <p-inputNumber name="prixVente" id="prixVente" formControlName="prixVente" />
+                                </div>
+
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="prixVenteStockAchatSimpleSpan">{{ msg.components.achatSimple.uniteGratuite }}</span>
+                                    <p-inputNumber name="uniteGratuite" id="uniteGratuite" formControlName="uniteGratuite" />
+                                </div>
+
+                                <div class="flex flex-col grow basis-0">
+                                    <span id="prixVenteStockAchatSimpleSpan">{{ msg.components.achatSimple.remise }}</span>
+                                    <p-inputNumber name="remise" id="remise" formControlName="remise" />
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-6" style="justify-content: center;">
+                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
+                                    (click)="validerDetAchatSimple()" [disabled]="formGroup.get('stockId')?.value === null || formGroup.get('stockId')?.value === undefined || formGroup.get('stockId')?.value === BigInt(0)"></button>
+                            </div>
+                        }
+                    </div>
+
+                    @if (submitted && formGroup.errors?.['listDetAchatSimpleRequired']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.achatSimple.errors.listDetAchatSimpleRequired }}</p-message>
+                    }
+
+                    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+                        <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatSimple" dataKey="stockId" style="width: 100% !important;"
+                            [rows]="10" 
+                            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteStock', 'qte', 'prixVente', 'uniteGratuite', 'remise', 'montant']"
+                            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                            <ng-template #header>
+                                <tr>
+                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.livraison.stock.designation }}
+                                            <p-sortIcon field="stock.designation" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="stock.pvttc" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.livraison.stock.pvttc }}
+                                            <p-sortIcon field="stock.pvttc" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="stock.qteStock" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.livraison.stock.qteStock }}
+                                            <p-sortIcon field="stock.qteStock" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="qte" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.stockDepot.qte }}
+                                            <p-sortIcon field="qte" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="prixVente" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatSimple.prixVente }}
+                                            <p-sortIcon field="prixVente" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="uniteGratuite" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatSimple.uniteGratuite }}
+                                            <p-sortIcon field="uniteGratuite" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="remise" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatSimple.remise }}
+                                            <p-sortIcon field="remise" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="montant" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatSimple.montant }}
+                                            <p-sortIcon field="montant" />
+                                        </div>
+                                    </th>
+
+                                    <th style="width: 5%"></th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                                <tr [pSelectableRow]="p">
+                                    <td>{{ p.stock.designation }}</td>
+                                    <td>{{ p.stock.pvttc }}</td>
+                                    <td>{{ p.stock.qteStock }}</td>
+                                    <td>{{ p.qte }}</td>
+                                    <td>{{ p.prixVente }}</td>
+                                    <td>{{ p.uniteGratuite }}</td>
+                                    <td>{{ p.remise }}</td>
+                                    <td>{{ p.montant }}</td>
+                                    <td style="width: 5%; min-width: 7rem">
+                                        <div class="flex gap-2">
+                                            <p-button (click)="recuppererDetAchatSimple(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template #emptymessage>
+                                <tr>
+                                    <td colspan="8">No Produits found.</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template #loadingbody>
+                                <tr>
+                                    <td colspan="8">Loading Produits data. Please wait.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (achatSimple) {
+                <span>{{ msg.components.achatSimple.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimerDetAchatSimple" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (detAchatSimple) {
+                <span>{{ msg.components.achatSimple.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimerDetAchatSimple = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimerDetAchatSimple()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

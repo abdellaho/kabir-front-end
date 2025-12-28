@@ -28,23 +28,31 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.parametrage, icon: 'pi pi-fw pi-home', routerLink: ['/parametrage'] }]
+                items: [{ label: this.msg.menu.parametrage, icon: 'pi pi-fw pi-cog', routerLink: ['/parametrage'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-home', routerLink: ['/absence'] }]
+                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-clock', routerLink: ['/absence'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.repertoire, icon: 'pi pi-fw pi-home', routerLink: ['/repertoire'] }]
+                items: [{ label: this.msg.menu.repertoire, icon: 'pi pi-fw pi-user', routerLink: ['/repertoire'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.stock, icon: 'pi pi-fw pi-home', routerLink: ['/stock'] }]
+                items: [{ label: this.msg.menu.stock, icon: 'pi pi-fw pi-box', routerLink: ['/stock'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-home', routerLink: ['/livraison'] }]
+                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.stockDepot, icon: 'pi pi-fw pi-box', routerLink: ['/stock-depot'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-simple'] }]
             },
             /* {
                 label: 'UI Components',

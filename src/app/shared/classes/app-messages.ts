@@ -11,10 +11,12 @@ export const APP_MESSAGES = {
       fournisseur: 'Fournisseur',
       absence: 'Présence',
       stock: 'Stock',
+      achatSimple: 'Achat Simple',
       repertoire: 'Repertoire',
       parametrage: 'Paramétrage',
       acceuil: 'Acceuil',
       livraison: 'Livraison',
+      stockDepot: 'Stock Dépôt',
     },
     components: {
         ville: {
@@ -193,7 +195,34 @@ export const APP_MESSAGES = {
             qte: 'Qte',
             dateOperation: 'Date Operation',
             stockId: 'Produit',
+            qteStock: 'Qte Stock',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce stock ?',
+            errors: {
+                listDetStockDepotRequired: 'Liste des produits obligatoire',
+                dateOperationRequired: 'Date opération obligatoire'
+            }
+        },
+        achatSimple: {
+            label: 'Achat Simple',
+            fournisseurId: 'Fournisseur',
+            numBlExterne: 'Numéro BL Externe',
+            montant: 'Montant',
+            dateOperation: 'Date Operation',
+            stockId: 'Produit',
+            qteStock: 'Qte Stock',
+            designationStock: 'Produit',
+            uniteGratuite: 'Unite gratuite',
+            remise: 'Remise',
+            prixVente: 'Prix Vente',
+            qte: 'Qte',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce achat simple ?',
+            errors: {
+                fournisseurIdRequired: 'Fournisseur obligatoire',
+                numBlExterneRequired: 'Numéro BL Externe obligatoire',
+                montantRequired: 'Montant obligatoire',
+                listDetAchatSimpleRequired: 'Liste des produits obligatoire',
+                dateOperationRequired: 'Date opération obligatoire'
+            }
         },
         repertoire: {
             label: 'Repertoire',
