@@ -13,8 +13,8 @@ export function StockDepotValidator(conf: { getListDetStockDepot: () => DetStock
       addError('dateOperationRequired');
     }
 
-    const listDetStockDepot = conf.getListDetStockDepot();
-    if(listDetStockDepot.length === 0) {
+    const listDetStockDepot = conf.getListDetStockDepot();    
+    if(null === listDetStockDepot || undefined === listDetStockDepot || listDetStockDepot.length === 0) {
         addError('listDetStockDepotRequired');
     }
     return errors;

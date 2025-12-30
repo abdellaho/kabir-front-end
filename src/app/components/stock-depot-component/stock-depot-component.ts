@@ -18,8 +18,6 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { StockService } from '@/services/stock/stock-service';
 import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
-import { NegativeValidator } from '@/validators/negative-validator';
-import { StockValidator } from '@/validators/stock-validator';
 import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { OperationType } from '@/shared/enums/operation-type';
 import { initObjectStockDepot, StockDepot } from '@/models/stock-depot';
@@ -28,6 +26,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DetStockDepot, initObjectDetStockDepot } from '@/models/det-stock-depot';
 import { TypeSearch } from '@/shared/enums/type-search';
 import { StockDepotRequest } from '@/shared/classes/stock-depot-request';
+import { StockDepotValidator } from '@/validators/stock-depot-validator';
 
 @Component({
   selector: 'app-stock-depot-component',
@@ -72,13 +71,16 @@ export class StockDepotComponent {
     listDetStockDepot: DetStockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
     selectedStockDepot!: StockDepot;
+    detStockDepot: DetStockDepot = initObjectDetStockDepot();
     stock: Stock = initObjectStock();
     mapOfStock: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
+    dialogSupprimerDetStockDepot: boolean = false;
     dialogAjouter: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
+    readonly BigInt = BigInt; // Expose BigInt to template
 
     constructor(
         private stockDepotService: StockDepotService,
@@ -106,10 +108,10 @@ export class StockDepotComponent {
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
             dateOperation: [new Date(), [Validators.required]],
-            stockId: [0, [Validators.required, Validators.min(1)]],
-            qte: [1, [NegativeValidator]],
+            stockId: [BigInt(0)],
+            qte: [1],
             designation: [{ value: '', disabled: true }],
-        }, { validators: [StockValidator] });
+        }, { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] });
     }
 
     search() {
@@ -135,7 +137,9 @@ export class StockDepotComponent {
 
         this.stockService.search(stockSearch).subscribe({
             next: (data: Stock[]) => {
-                this.listStock = data;
+                let initStock: Stock = initObjectStock();
+                initStock.id = BigInt(0);
+                this.listStock = [initStock, ...data];
                 this.mapOfStock = arrayToMap(this.listStock, 'id', ['designation'], ['']);
             }, error: (error: any) => {
                 console.error(error);
@@ -146,41 +150,75 @@ export class StockDepotComponent {
     }
 
     onChangeIdStock() {
-        this.isValid = false;
-        this.stock = initObjectStock();
-        
-        if(this.formGroup.get('stockId')?.value > 0) {
-            this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-            
-            this.formGroup.patchValue({
-                qte: 1,
-                designation: this.stock.designation,
-            });
+        if(this.formGroup.get('stockId')?.value > BigInt(0)) {
+            this.isValid = false;
+            this.stock = initObjectStock();
+            let isExistStock: boolean = false;
 
-            this.formGroup.get('designation')?.disable();
-            this.isValid = true;
+            this.listDetStockDepot.forEach((detStockDepot: DetStockDepot) => {
+                if(detStockDepot.stockId === this.formGroup.get('stockId')?.value) {
+                    isExistStock = true;
+
+                    this.formGroup.patchValue({
+                        stockId: BigInt(0),
+                    });
+
+                    return;
+                }
+            });
+        
+            if(!isExistStock) {
+                this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+                this.formGroup.patchValue({
+                    qte: 1,
+                    designation: this.stock.designation,
+                });
+
+                this.formGroup.get('designation')?.disable();
+                this.isValid = true;
+            }
         }
     }
 
     initDetStockDepotFormInformation() {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
-            stockId: 0,
+            stockId: BigInt(0),
             qte: 1,
             designation: '',
         });
         this.formGroup.get('designation')?.disable();
     }
 
+    recuppererDetStockDepot(operation: number, detStockDepotEdit: DetStockDepot) {
+        if (detStockDepotEdit && detStockDepotEdit.stockId) {
+            this.detStockDepot = structuredClone(detStockDepotEdit);
+            if (operation === 1) {
+                this.openCloseDialogAjouter(true);
+            } else if (operation === 2) {
+                this.openCloseDialogSupprimerDetStockDepot(true);
+            }
+        }
+    }
+
     validerDetStockDepot() {
-        if(this.formGroup.get('stockId')?.value > 0 && this.formGroup.get('qte')?.value > 0) {
+        if(this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qte')?.value > 0) {
             let detStockDepot: DetStockDepot = initObjectDetStockDepot();
             detStockDepot.stockId = this.formGroup.get('stockId')?.value;
             detStockDepot.qte = this.formGroup.get('qte')?.value;
+            let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+            detStockDepot.stock = stock;
+
             this.listDetStockDepot.push(detStockDepot);
             
             this.initDetStockDepotFormInformation();
         }
+    }
+
+    supprimerDetStockDepot() {
+        this.listDetStockDepot = this.listDetStockDepot.filter((detStockDepot: DetStockDepot) => detStockDepot.stockId !== this.detStockDepot.stockId);
+        this.formGroup.updateValueAndValidity();
+        this.openCloseDialogSupprimerDetStockDepot(false);
     }
 
     openCloseDialogAjouter(openClose: boolean): void {
@@ -191,9 +229,14 @@ export class StockDepotComponent {
         this.dialogSupprimer = openClose;
     }
 
+    openCloseDialogSupprimerDetStockDepot(openClose: boolean): void {
+        this.dialogSupprimerDetStockDepot = openClose;
+    }
+
     viderAjouter() {
         this.openCloseDialogAjouter(true);
         this.submitted = false;
+        this.listDetStockDepot = [];
         this.stockDepot = initObjectStockDepot();
         this.initFormGroup();
     }
@@ -204,19 +247,37 @@ export class StockDepotComponent {
 
     recupperer(operation: number, stockDepotEdit: StockDepot) {
         if (stockDepotEdit && stockDepotEdit.id) {
-            this.stockDepot = stockDepotEdit;
             if (operation === 1) {
-                this.formGroup.patchValue({
-                    designation: '',
-                    stockId: 0,
-                    qte: 1,
-                    dateOperation: new Date(this.stockDepot.dateOperation),
+                this.stockDepotService.getByIdRequest(stockDepotEdit.id).subscribe({
+                    next: (data: StockDepotRequest) => {
+                        this.stockDepot = data.stockDepot;
+                        this.listDetStockDepot = data.detStockDepots;
+
+                        this.listDetStockDepot.forEach((detStockDepot: DetStockDepot) => {
+                            if(detStockDepot.stockId && detStockDepot.stockId !== BigInt(0)) {
+                                let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detStockDepot.stockId) || initObjectStock();
+                                detStockDepot.stock = stock;
+                            }
+                        });
+                        
+                        this.formGroup.patchValue({
+                            designation: '',
+                            stockId: BigInt(0),
+                            qte: 1,
+                            dateOperation: new Date(this.stockDepot.dateOperation),
+                        });
+                        this.formGroup.get('designation')?.disable();
+                        this.formGroup.updateValueAndValidity();
+
+                        this.openCloseDialogAjouter(true);
+                    }, error: (error: any) => {
+                        console.error(error);
+                    }, complete: () => {
+                        this.loadingService.hide();
+                    }
                 });
-
-                this.formGroup.get('designation')?.disable();
-
-                this.openCloseDialogAjouter(true);
             } else if (operation === 2) {
+                this.stockDepot = structuredClone(stockDepotEdit);
                 this.openCloseDialogSupprimer(true);
             }
         } else {

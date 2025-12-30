@@ -50,17 +50,17 @@ export class StockService {
   
   updateQteStock(id: bigint, qte: number, operationType: OperationType): Observable<void> {
     let typeOperation: number = getTypeOperation(operationType);
-    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStock(id), { qte, typeOperation });
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStock(id), { qte, typeOperation, uniteGratuite: 0 });
   }
 
   updateQteStockImport(id: bigint, qte: number, operationType: OperationType): Observable<void> {
     let typeOperation: number = getTypeOperation(operationType);
-    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockImport(id), { qte, typeOperation });
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockImport(id), { qte, typeOperation, uniteGratuite: 0 });
   }
 
   updateQteStockFacturer(id: bigint, qte: number, operationType: OperationType): Observable<void> {
     let typeOperation: number = getTypeOperation(operationType);
-    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockFacturer(id), { qte, typeOperation });
+    return this.http.patch<void>(ENDPOINTS.STOCK.updateQteStockFacturer(id), { qte, typeOperation, uniteGratuite: 0 });
   }
 
   serialization(obj: Stock): any {

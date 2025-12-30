@@ -153,5 +153,16 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/${BON_SORTIE}`,
     update: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
     delete: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
+  },
+  ACHAT_SIMPLE: {
+    getAll: `${BASE_URL}/achat-simple`,
+    getById: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/achat-simple/response/${id}`,
+    create: `${BASE_URL}/achat-simple`,
+    update: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
+    exist: `${BASE_URL}/achat-simple/exist`,
+    search: `${BASE_URL}/achat-simple/search`,
+    present: `${BASE_URL}/achat-simple/present`
   }
 };

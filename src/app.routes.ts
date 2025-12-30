@@ -17,6 +17,8 @@ import { PrimeComponent } from '@/components/prime-component/prime-component';
 import { AcceuilComponent } from '@/components/acceuil-component/acceuil-component';
 import { LivraisonUpdateComponent } from '@/components/livraison-component/livraison-update-component/livraison-update-component';
 import { LivraisonViewComponent } from '@/components/livraison-component/livraison-view-component/livraison-view-component';
+import { StockDepotComponent } from '@/components/stock-depot-component/stock-depot-component';
+import { AchatSimpleComponent } from '@/components/achat-simple-component/achat-simple-component';
 
 export const appRoutes: Routes = [
     {
@@ -38,6 +40,8 @@ export const appRoutes: Routes = [
             { path: 'personnel', component: PersonnelComponent },
             { path: 'livraison', component: LivraisonViewComponent },
             { path: 'livraison-update', component: LivraisonUpdateComponent },
+            { path: 'stock-depot', component: StockDepotComponent },
+            { path: 'achat-simple', component: AchatSimpleComponent },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
