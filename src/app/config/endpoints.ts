@@ -1,6 +1,8 @@
 import { environment } from "src/environments/environment";
 
 const BASE_URL = environment.production ? 'https://kabir-backend-nest-js.vercel.app/api' : 'http://localhost:8080/api';
+const FACTURE = `facture`;
+const BON_SORTIE = `bon-sortie`;
 
 export const ENDPOINTS = {
   VILLE: {
@@ -135,5 +137,21 @@ export const ENDPOINTS = {
     exist: `${BASE_URL}/det-livraison/exist`,
     search: `${BASE_URL}/det-livraison/search`,
     present: `${BASE_URL}/det-livraison/present`
+  },
+  FACTURE: {
+    getAll: `${BASE_URL}/${FACTURE}`,
+    getById: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/${FACTURE}/response/${id}`,
+    create: `${BASE_URL}/${FACTURE}`,
+    update: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
+  },
+  BON_SORTIE: {
+    getAll: `${BASE_URL}/${BON_SORTIE}`,
+    getById: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/response/${id}`,
+    create: `${BASE_URL}/${BON_SORTIE}`,
+    update: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
   }
 };
