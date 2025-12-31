@@ -8,6 +8,7 @@ import { initObjectPersonnel, Personnel } from "@/models/personnel";
 import { initObjectRepertoire, Repertoire } from "@/models/repertoire";
 import { TypeSearch } from "../enums/type-search";
 import { OperationType } from "../enums/operation-type";
+import { Facture } from "@/models/facture";
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {
@@ -412,6 +413,69 @@ export function ajusterMontants(livraison: Livraison, sommeTotale: number): Livr
   }
 
   return livraison;
+}
+
+export function ajusterMontantsFacture(facture: Facture, sommeTotale: number): Facture {
+  // Array of payment fields for easier iteration
+  const paymentFields = [
+    { date: 'dateReglement', amount: 'mntReglement' },
+    { date: 'dateReglement2', amount: 'mntReglement2' },
+    { date: 'dateReglement3', amount: 'mntReglement3' },
+    { date: 'dateReglement4', amount: 'mntReglement4' }
+  ] as const;
+
+  // Reset amounts for payments without dates
+  paymentFields.forEach(field => {
+    if (facture[field.date] == null) {
+      facture[field.amount] = 0.0;
+    }
+  });
+
+  if(sommeTotale == 0) {
+    paymentFields.forEach(field => {
+      facture[field.amount] = 0.0;
+    });
+    return facture;
+  }
+
+  // Get active payments (those with dates)
+  const activePayments = paymentFields.filter(field => facture[field.date] != null);
+  
+  if (activePayments.length === 0) return facture;
+
+  // Initialize zero amounts with equal distribution
+  const amountPerPayment = sommeTotale / activePayments.length;
+  const minAmount = sommeTotale > 0 ? 1 : 0;
+  
+  activePayments.forEach(field => {
+    if (facture[field.amount] === 0.0 && sommeTotale > 0) {
+      facture[field.amount] = Math.min(amountPerPayment, 1);
+    }
+  });
+
+  // Adjust to match total exactly
+  const currentSum: number = activePayments.reduce((sum: number, field) => sum + Number(facture[field.amount]), 0);
+  const difference: number = sommeTotale - currentSum;
+  
+  // Apply difference to the first active payment
+  const firstPayment = activePayments[0];
+  facture[firstPayment.amount] = Number(facture[firstPayment.amount]) + difference;
+
+  // Ensure no negative amounts by redistributing
+  for (let i = 1; i < activePayments.length; i++) {
+    const field = activePayments[i];
+    
+    if (facture[field.amount] < 0) {
+      const deficit: number = Math.abs(facture[field.amount]);
+      facture[field.amount] = minAmount;
+      // Transfer deficit to next payment
+      if (i < activePayments.length - 1) {
+        facture[activePayments[i + 1].amount] = Number(facture[activePayments[i + 1].amount]) - (deficit + (minAmount > 0 ? 1 : 0));
+      }
+    }
+  }
+
+  return facture;
 }
 
 // Overload signatures: TypeScript uses these for inference, not the implementation

@@ -52,7 +52,7 @@ import { TypeSearch } from '@/shared/enums/type-search';
     InputNumberModule,
     SelectModule,
     MessageModule
-],
+  ],
   templateUrl: './livraison-view-component.html',
   styleUrl: './livraison-view-component.scss'
 })

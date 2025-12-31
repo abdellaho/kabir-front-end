@@ -1,0 +1,584 @@
+<p-toast></p-toast>
+<p-fluid [formGroup]="formGroup">
+    @if (submitted && formGroup.errors?.['listDetLivraisonRequired']) {
+        <p-message severity="warn" variant="simple" size="small">{{ msg.components.livraison.errors.listDetLivraisonRequired }}</p-message>
+        <br>
+    }
+    <div class="flex flex-wrap -mx-4">
+        <!-- Info Livraison -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="codeBF" formControlName="codeBF" class="full-width" required 
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('codeBF')?.invalid }" />
+                    <label for="codeBF">{{ msg.components.facture.codeBF }}</label>
+                </p-floatlabel>
+            </div>
+            
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-date-picker id="dateBF" formControlName="dateBF" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateBF')?.invalid }" />
+                    <label for="dateBF">{{ msg.components.facture.dateBF }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel"
+                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('personnelId')?.invalid }"
+                        appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;"
+                        class="full-width" />
+                    <label for="personnelId">{{ msg.components.facture.personnelId }}</label>
+                </p-floatlabel>
+
+                @if (formGroup.errors?.['personnelIdRequired']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.personnelIdRequired }}</p-message>
+                }
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-select formControlName="repertoireId" inputId="repertoireId" [options]="listRepertoire"
+                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('repertoireId')?.invalid }"
+                            appendTo="body" optionLabel="designation" optionValue="id"
+                            (onChange)="onChangeIdRepertoire()"
+                            style="width: 100% !important; height: 33px;" class="full-width"
+                            placeholder="{{ msg.components.facture.selectRepertoire }}" />
+                        <label for="repertoireId">{{ msg.components.facture.repertoireId }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['repertoireRequired']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.facture.errors.repertoireRequired }}</p-message>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Fin Info Livraison -->
+
+        <!-- Info Fournisseur -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText formControlName="repertoireDesignation" id="repertoireDesignation"
+                        inputId="repertoireDesignation" class="full-width" />
+                    <label for="repertoireDesignation">{{ msg.components.facture.repertoire.designation }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText formControlName="repertoireTel1" id="repertoireTel1"
+                        inputId="repertoireTel1" class="full-width" />
+                    <label for="repertoireTel1">{{ msg.components.facture.repertoire.tel1 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText formControlName="repertoireTel2" id="repertoireTel2"
+                        inputId="repertoireTel2" class="full-width" />
+                    <label for="repertoireTel2">{{ msg.components.facture.repertoire.tel2 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText formControlName="repertoireICE" id="repertoireICE" inputId="repertoireICE" class="full-width" />
+                    <label for="repertoireICE">{{ msg.components.facture.repertoire.ice }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+        <!-- Fin Info Fournisseur -->
+
+        <!-- Div Reglement 1 -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
+                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateReglement')?.invalid }"
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                        <label for="dateReglement">{{ msg.components.facture.dateReglement }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['dateReglementMustEqualOrAfterDateBl']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.facture.errors.dateReglementMustEqualOrAfterDateBl }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment">{{ msg.components.facture.typeReglment }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-input-number id="mntReglement" formControlName="mntReglement" class="full-width" />
+                        <label for="mntReglement">{{ msg.components.facture.mntReglement }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['mntReglementMustBeBiggerThanZero'] ||
+                        formGroup.errors?.['mntReglementMustBeAtLeastEqualZero'] || 
+                        formGroup.errors?.['totalMntReglementNotEqualMantantBL']) {
+                        @if (formGroup.errors?.['mntReglementMustBeBiggerThanZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.facture.errors.mntReglementMustBeBiggerThanZero }}</p-message>
+                        }
+                        @if (formGroup.errors?.['mntReglementMustBeAtLeastEqualZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.facture.errors.mntReglementMustBeAtLeastEqualZero }}</p-message>
+                        }
+                        @if (formGroup.errors?.['totalMntReglementNotEqualMantantBL']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.facture.errors.totalMntReglementNotEqualMantantBL }}</p-message>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque" formControlName="numCheque" class="full-width" />
+                    <label for="numCheque">{{ msg.components.facture.numCheque }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numChequeRequired']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.numChequeRequired }}</p-message>
+                }
+            </div>
+        </div>
+        <!-- Fin Div Reglement 1 -->
+
+        <!-- Div Reglement 2 -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-date-picker id="dateReglement2" formControlName="dateReglement2" appendTo="body"
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                        <label for="dateReglement2">{{ msg.components.facture.dateReglement2 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['dateReglement2MustBeFilledFirst']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement2MustBeFilledFirst }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement2MustBeAfterDateReglement']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement2MustBeAfterDateReglement }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement2IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement2IsMandatory }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment2" inputId="typeReglment2" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment2">{{ msg.components.facture.typeReglment2 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-input-number id="mntReglement2" formControlName="mntReglement2" class="full-width" />
+                        <label for="mntReglement2">{{ msg.components.facture.mntReglement2 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['mntReglement2MustBeBiggerThanZero']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement2MustBeBiggerThanZero }}</p-message>
+                    }
+                    @if (formGroup.errors?.['mntReglement2MustBeAtLeastEqualZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement2MustBeAtLeastEqualZero }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque2" formControlName="numCheque2" class="full-width" />
+                    <label for="numCheque2">{{ msg.components.facture.numCheque2 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque2Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.numCheque2Required }}</p-message>
+                }
+            </div>
+        </div>
+        <!-- Fin Div Reglement 2 -->
+
+        <!-- Div Reglement 3 -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-date-picker id="dateReglement3" formControlName="dateReglement3" appendTo="body"
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                        <label for="dateReglement3">{{ msg.components.facture.dateReglement3 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['dateReglement3MustBeFilledFirst']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement3MustBeFilledFirst }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement3MustBeAfterDateReglement2']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement3MustBeAfterDateReglement2 }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement3IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement3IsMandatory }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment3" inputId="typeReglment3" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment3">{{ msg.components.facture.typeReglment3 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-input-number id="mntReglement3" formControlName="mntReglement3" class="full-width" />
+                        <label for="mntReglement3">{{ msg.components.facture.mntReglement3 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['mntReglement3MustBeBiggerThanZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement3MustBeBiggerThanZero }}</p-message>
+                    }
+                    @if (formGroup.errors?.['mntReglement3MustBeAtLeastEqualZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement3MustBeAtLeastEqualZero }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque3" formControlName="numCheque3" class="full-width" />
+                    <label for="numCheque3">{{ msg.components.facture.numCheque3 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque3Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.numCheque3Required }}</p-message>
+                }
+            </div>
+        </div>
+        <!-- Fin Div Reglement 3 -->
+
+        <!-- Div Reglement 4 -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-date-picker id="dateReglement4" formControlName="dateReglement4" appendTo="body"
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                        <label for="dateReglement4">{{ msg.components.facture.dateReglement4 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['dateReglement4MustBeFilledFirst']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement4MustBeFilledFirst }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement4MustBeAfterDateReglement3']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement4MustBeAfterDateReglement3 }}</p-message>
+                    }
+                    @if (formGroup.errors?.['dateReglement4IsMandatory']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.dateReglement4IsMandatory }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment4" inputId="typeReglment4" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment4">{{ msg.components.facture.typeReglment4 }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-input-number id="mntReglement4" formControlName="mntReglement4" class="full-width" />
+                        <label for="mntReglement4">{{ msg.components.facture.mntReglement4 }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['mntReglement4MustBeBiggerThanZero']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement4MustBeBiggerThanZero }}</p-message>
+                    }
+                    @if (formGroup.errors?.['mntReglement4MustBeAtLeastEqualZero']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.mntReglement4MustBeAtLeastEqualZero }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <input pInputText id="numCheque4" formControlName="numCheque4" class="full-width" />
+                    <label for="numCheque4">{{ msg.components.facture.numCheque4 }}</label>
+                </p-floatlabel>
+                @if (formGroup.errors?.['numCheque4Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.facture.errors.numCheque4Required }}</p-message>
+                }
+            </div>
+            <!-- Fin Div Reglement 4 -->
+        </div>
+
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2">
+                <p-floatlabel variant="on" style="width: 50% !important;">
+                    <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
+                        appendTo="body" optionLabel="designation" optionValue="id"
+                        (onChange)="onChangeIdStock()"
+                        style="width: 100% !important; height: 33px;"
+                        placeholder="{{ msg.components.facture.selectStock }}" />
+                    <label for="stockId">{{ msg.components.facture.stockId }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+        <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetFacture" dataKey="id" style="width: 100% !important;"
+            [rows]="10" 
+            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteStock', 'prixVente', 'qteFacturer', 'remiseFacture', 'montantProduit']"
+            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="stock.designation" style="width: 45%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.designation }}
+                            <p-sortIcon field="stock.designation" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="stock.pvttc" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.pvttc }}
+                            <p-sortIcon field="stock.pvttc" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="stock.qteStock" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.qteStock }}
+                            <p-sortIcon field="stock.qteStock" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="prixVente" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.prixVente }}
+                            <p-sortIcon field="prixVente" />
+                        </div>
+                    </th>
+
+                    <th style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.qteFacturer }}
+                        </div>
+                    </th>
+
+                    <th style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.remiseFacture }}
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="montantProduit" style="width: 10%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.facture.stock.montantProduit }}
+                            <p-sortIcon field="montantProduit" />
+                        </div>
+                    </th>
+
+                    <th style="width: 5%"></th>
+                </tr>
+            </ng-template>
+
+            <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                <tr [pSelectableRow]="p">
+                    <td>{{ p.stock.designation }}</td>
+                    <td>{{ p.stock.pvttc }}</td>
+                    <td>{{ p.stock.qteStock }}</td>
+                    <td>{{ p.prixVente }}</td>
+                    <td>{{ p.qteFacturer }}</td>
+                    <td>{{ p.remiseFacture }}</td>
+                    <td>{{ p.montantProduit }}</td>
+                    <td style="width: 5%; min-width: 7rem">
+                        <div class="flex gap-2">
+                            <p-button (click)="recuppererDetFacture(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                            <p-button (click)="recuppererDetFacture(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template #emptymessage>
+                <tr>
+                    <td colspan="8">No Produits found.</td>
+                </tr>
+            </ng-template>
+            <ng-template #loadingbody>
+                <tr>
+                    <td colspan="8">Loading Produits data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center" style="justify-content: center; margin-top: 1rem;">
+        <div class="flex gap-2">
+            <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                class="p-button-outlined p-button-danger" (click)="fermer()"></button>
+            <p-button pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                (click)="miseAjour()" [disabled]="!formGroup.valid"></p-button>
+        </div>
+    </div>
+</p-fluid>
+
+<p-dialog [(visible)]="dialogStock" [style]="{ width: '300px', maxWidth: '100%' }"
+    [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+    [header]="`${msg.messages.miseAJour} ${msg.components.livraison.label}`" [modal]="true" class="p-fluid"
+    [closable]="false">
+    <!-- Form content must go inside ng-template -->
+    <ng-template pTemplate="content">
+        <div [formGroup]="formGroupStock" class="p-fluid">
+            <div class="card flex flex-col gap-4">
+                <div class="flex flex-wrap gap-6">
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <input pInputText formControlName="designation" id="designation" inputId="designation" />
+                            <label for="designation">{{ msg.components.livraison.stock.designation }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="qteStock" id="qteStock" inputId="qteStock" />
+                            <label for="qteStock">{{ msg.components.livraison.stock.qteStock }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="pattc" id="pattc" inputId="pattc" />
+                            <label for="pattc">{{ msg.components.livraison.stock.pattc }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" />
+                            <label for="pvttc">{{ msg.components.livraison.stock.pvttc }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" />
+                            <label for="prixVenteMin">{{ msg.components.livraison.stock.prixVenteMin }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" />
+                            <label for="prixVente">{{ msg.components.livraison.stock.prixVente }}</label>
+                            
+                            @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                msg.components.livraison.errors.prixVenteMustBeAtLeastEqualPrixVenteMin }}</p-message>
+                            }
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" [min]="1" (onBlur)="onChangeMontantProduit()" />
+                            <label for="qteFacturer">{{ msg.components.facture.stock.qteFacturer }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="remiseFacture" id="remiseFacture" inputId="remiseFacture" />
+                            <label for="remiseFacture">{{ msg.components.facture.stock.remiseFacture }}</label>
+                        </p-floatlabel>
+
+                        @if (formGroupStock.errors?.['remiseFactureMustBeAtMostEqualRemiseMax']) {
+                            <p-message severity="error" variant="simple" size="small">{{
+                                msg.components.facture.errors.remiseFactureMustBeAtMostEqualRemiseMax }}</p-message>
+                        }
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on">
+                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" />
+                            <label for="montantProduit">{{ msg.components.facture.stock.montantProduit }}</label>
+                        </p-floatlabel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Footer template -->
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+            class="p-button-outlined p-button-danger" (click)="openCloseDialogStock(false)"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+            (click)="validerStock()" [disabled]="formGroupStock.invalid"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dialogDeleteStock" [header]="msg.messages.confirm" [modal]="true"
+    [style]="{ width: '450px' }" [closable]="false">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (detFactureSelected && detFactureSelected.stockId) {
+            <span>{{ msg.components.facture.stock.messageDeleteAreYouSure }}</span>
+        }
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="dialogDeleteStock = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+            (click)="deleteDetFacture()" [disabled]="!detFactureSelected || !detFactureSelected.stockId"></button>
+    </ng-template>
+</p-dialog>

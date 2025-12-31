@@ -1,3 +1,4 @@
+import { Stock } from "./stock";
 
 export interface DetailBonSortie {
     id: bigint | null;
@@ -9,6 +10,7 @@ export interface DetailBonSortie {
     stockId: bigint | null;
     stockDesignation: string;
     stockQteStock: number;
+    stock?: Stock | null;
 }
 
 export function initObjectDetailBonSortie(): DetailBonSortie {
@@ -21,6 +23,7 @@ export function initObjectDetailBonSortie(): DetailBonSortie {
     bonSortieCodeSortie: "",
     stockId: null,
     stockDesignation: "",
-    stockQteStock: 0
+    stockQteStock: 0,
+    stock: null
   };
 }

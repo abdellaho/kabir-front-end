@@ -145,6 +145,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/${FACTURE}`,
     update: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
     delete: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
+    getLastNumFacture: `${BASE_URL}/${FACTURE}/last-num-facture`
   },
   BON_SORTIE: {
     getAll: `${BASE_URL}/${BON_SORTIE}`,
@@ -153,6 +154,7 @@ export const ENDPOINTS = {
     create: `${BASE_URL}/${BON_SORTIE}`,
     update: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
     delete: (id: bigint) => `${BASE_URL}/${BON_SORTIE}/${id}`,
+    getLastNumBonSortie: `${BASE_URL}/${BON_SORTIE}/last-num-bon-sortie`
   },
   ACHAT_SIMPLE: {
     getAll: `${BASE_URL}/achat-simple`,
