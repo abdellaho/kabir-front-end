@@ -26,6 +26,7 @@ import { MessageModule } from 'primeng/message';
 import { NegativeValidator } from '@/validators/negative-validator';
 import { arrayToMap, getElementFromMap, initObjectSearch, returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
 import { TypeSearch } from '@/shared/enums/type-search';
+import { filteredTypeProduit, TypeProduit } from '@/shared/enums/type-produit';
 
 @Component({
     selector: 'app-stock-component',
@@ -54,6 +55,8 @@ export class StockComponent {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Archiver + Corbeille
     //Tableau ---> Designation + St Depot + st Facture + st mag + PA + PV.I + Prix comm + PV min + Remise max + Benif + Fourniss
     //Ajouter ---> Fourniss* + Designation* + PA* + PComm + PV* + TVA* + Benif + st mag + st fact + st depot
+    //Benefice a la place du prix commercial, TVA ala place du benefice et TVA ---> type de produit (Interne ou externe)
+    // Tableau ---> prixCommercial --> prix de vente 2
 
     /*
       PV1   QTE1  Remise1
@@ -84,6 +87,7 @@ export class StockComponent {
     dialogAnnulerArchiver: boolean = false;
     dialogAnnulerCorbeille: boolean = false;
     submitted: boolean = false;
+    typeProduits: { label: string; value: TypeProduit }[] = filteredTypeProduit;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
 
@@ -115,7 +119,6 @@ export class StockComponent {
         this.formGroup = this.formBuilder.group({
             designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
             fournisseurId: [0, [Validators.required, Validators.min(1)]],
-            prixCommercial: [null, [NegativeValidator]],
             pvttc: [null, [Validators.required, Validators.min(0)]],
             pattc: [null, [Validators.required, Validators.min(0)]],
             tva: [20, [Validators.required, NegativeValidator]],
@@ -140,7 +143,8 @@ export class StockComponent {
             montant3: [null, [NegativeValidator]],
             prime1: [null, [NegativeValidator]],
             prime2: [null, [NegativeValidator]],
-            prime3: [null, [NegativeValidator]]
+            prime3: [null, [NegativeValidator]],
+            typeProduit: [0, [Validators.required, Validators.min(1)]]
         }, { validators: [StockValidator] });
     }
 
@@ -275,7 +279,6 @@ export class StockComponent {
                 this.formGroup.patchValue({
                     designation: this.stock.designation,
                     fournisseurId: this.stock.fournisseurId,
-                    prixCommercial: returnValueOfNumberProperty(this.stock.prixCommercial),
                     pattc: returnValueOfNumberProperty(this.stock.pattc),
                     pvttc: returnValueOfNumberProperty(this.stock.pvttc),
                     tva: this.stock.tva,
@@ -301,6 +304,7 @@ export class StockComponent {
                     prime1: returnValueOfNumberProperty(this.stock.prime1),
                     prime2: returnValueOfNumberProperty(this.stock.prime2),
                     prime3: returnValueOfNumberProperty(this.stock.prime3),
+                    typeProduit: this.stock.typeProduit
                 });
 
                 this.openCloseDialogAjouter(true);
@@ -426,7 +430,6 @@ export class StockComponent {
     mapFormGroupToObject(formGroup: FormGroup, stock: Stock): Stock {
         stock.designation = formGroup.get('designation')?.value;
         stock.fournisseurId = formGroup.get('fournisseurId')?.value;
-        stock.prixCommercial = formGroup.get('prixCommercial')?.value ?? 0;
         stock.pattc = formGroup.get('pattc')?.value ?? 0;
         stock.pvttc = formGroup.get('pvttc')?.value ?? 0;
         stock.tva = formGroup.get('tva')?.value ?? 0;
@@ -452,6 +455,7 @@ export class StockComponent {
         stock.prime1 = formGroup.get('prime1')?.value ?? 0;
         stock.prime2 = formGroup.get('prime2')?.value ?? 0;
         stock.prime3 = formGroup.get('prime3')?.value ?? 0;
+        stock.typeProduit = formGroup.get('typeProduit')?.value ?? 1;
 
         return stock;
     }

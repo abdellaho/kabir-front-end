@@ -1,6 +1,6 @@
 import { DetLivraison } from '@/models/det-livraison';
 import { initObjectLivraison, Livraison } from '@/models/livraison';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
@@ -19,7 +19,6 @@ import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { LivraisonService } from '@/services/livraison/livraison-service';
-import { DetLivraisonService } from '@/services/det-livraison/det-livraison-service';
 import { Router } from '@angular/router';
 import { OperationType } from '@/shared/enums/operation-type';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
@@ -33,6 +32,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { Repertoire } from '@/models/repertoire';
 import { TypeSearch } from '@/shared/enums/type-search';
+import { filteredTypeReglement } from '@/shared/enums/type-reglement';
 
 @Component({
   selector: 'app-livraison-view-component',
@@ -67,12 +67,12 @@ export class LivraisonViewComponent implements OnInit {
   mapOfStocks: Map<number, string> = new Map<number, string>();
   mapOfRepertoire: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
+  typeReglements: { label: string, value: number }[] = filteredTypeReglement;
   msg = APP_MESSAGES;
 
   constructor(
       private livraisonService: LivraisonService,
       private repertoireService: RepertoireService,
-      private detLivraisonService: DetLivraisonService,
       private stockService: StockService,
       private dataService: DataService,
       private personnelService: PersonnelService,
@@ -223,6 +223,11 @@ export class LivraisonViewComponent implements OnInit {
 			livraison.codeBl = codeBL;
 		}
 	}
+
+    getTypeReglement(typeReglement: number): string {
+        let filteredTypeReglement = this.typeReglements.filter((type) => type.value === typeReglement);
+        return filteredTypeReglement.length > 0 ? filteredTypeReglement[0].label : '';
+    }
 
     async viderAjouter() {
         let livraison = initObjectLivraison();

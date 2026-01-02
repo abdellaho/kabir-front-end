@@ -31,36 +31,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="sysDate" style="width: 45%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.sysDate }}
-                                <p-sortIcon field="sysDate" />
-                            </div>
-                        </th>
-
                         <th pSortableColumn="dateBl" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.dateBl }}
                                 <p-sortIcon field="dateBl" />
-                            </div>
-                        </th>
-
-                        <th pSortableColumn="mantantBL" style="width: 10%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.mantantBL }}
-                                <p-sortIcon field="mantantBL" />
-                            </div>
-                        </th>
-
-                        <th style="width: 10%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.dateReglement }}
-                            </div>
-                        </th>
-
-                        <th style="width: 10%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.mntReglement }}
                             </div>
                         </th>
 
@@ -78,6 +52,53 @@
                             </div>
                         </th>
 
+                        <th pSortableColumn="typeReglment" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.paiement }}
+                                <p-sortIcon field="typeReglment" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.datePaiement }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="numCheque" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.chequeNum }}
+                                <p-sortIcon field="numCheque" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.mtPaye }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mantantBL" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.totalPaye }}
+                                <p-sortIcon field="mantantBL" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="transport" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.transport }}
+                                <p-sortIcon field="transport" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mantantBL" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.livraison.mantantBL }}
+                                <p-sortIcon field="mantantBL" />
+                            </div>
+                        </th>
+
                         <th pSortableColumn="reglerNonRegler" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.reglerNonRegler }}
@@ -92,9 +113,26 @@
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
                         <td>{{ p.codeBl }}</td>
-                        <td>{{ p.sysDate | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.mantantBL }}</td>
+                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
+                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+
+                        <td>
+                            {{ getTypeReglement(p.typeReglment) }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment2) }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment3) }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment4) }}
+                            }
+                        </td>
+
                         <td>
                             {{ p.dateReglement | date:'dd/MM/yyyy' }}
                             @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
@@ -108,6 +146,22 @@
                             @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
                                 <br />
                                 {{ p.dateReglement4 | date:'dd/MM/yyyy' }}
+                            }
+                        </td>
+
+                        <td>
+                            {{ p.numCheque }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '' && p.typeReglment === 1) {
+                                <br />
+                                {{ p.numCheque2 }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '' && p.typeReglment3 === 1) {
+                                <br />
+                                {{ p.numCheque3 }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '' && p.typeReglment4 === 1) {
+                                <br />
+                                {{ p.numCheque4 }}
                             }
                         </td>
                         
@@ -126,8 +180,11 @@
                                 {{ p.mntReglement4 | number:'1.2-2' }}
                             }
                         </td>
-                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
-                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+
+                        <td>{{ p.mantantBL | number:'1.2-2' }}</td>
+                        <td>{{ p.codeTransport }}</td>
+                        <td>{{ p.mantantBL | number:'1.2-2' }}</td>
+
                         <td>
                             @if (p.reglerNonRegler === 1) {
                                 <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">

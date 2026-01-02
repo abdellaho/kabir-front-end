@@ -71,6 +71,13 @@
 
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <p-floatlabel variant="on" class="full-width">
+                    <input pInputText formControlName="repertoireAdresse" id="repertoireAdresse" inputId="repertoireAdresse" class="full-width" />
+                    <label for="repertoireAdresse">{{ msg.components.livraison.repertoire.adresse }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
                     <input pInputText formControlName="repertoireTel1" id="repertoireTel1"
                         inputId="repertoireTel1" class="full-width" />
                     <label for="repertoireTel1">{{ msg.components.livraison.repertoire.tel1 }}</label>
@@ -84,18 +91,20 @@
                     <label for="repertoireTel2">{{ msg.components.livraison.repertoire.tel2 }}</label>
                 </p-floatlabel>
             </div>
-
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText formControlName="repertoireICE" id="repertoireICE" inputId="repertoireICE" class="full-width" />
-                    <label for="repertoireICE">{{ msg.components.livraison.repertoire.ice }}</label>
-                </p-floatlabel>
-            </div>
         </div>
         <!-- Fin Info Fournisseur -->
 
         <!-- Div Reglement 1 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment">{{ msg.components.livraison.typeReglment }}</label>
+                </p-floatlabel>
+            </div>
+            
             <div class="flex flex-col md:flex-row full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
@@ -112,13 +121,15 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row full-width">
+            <div class="flex flex-col gap-4 full-width">
                 <p-floatlabel variant="on" class="full-width">
-                    <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
-                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
-                    <label for="typeReglment">{{ msg.components.livraison.typeReglment }}</label>
+                    <input pInputText id="numCheque" formControlName="numCheque" class="full-width" />
+                    <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
                 </p-floatlabel>
+                @if (formGroup.errors?.['numChequeRequired']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numChequeRequired }}</p-message>
+                }
             </div>
 
             <div class="flex flex-col md:flex-row full-width">
@@ -146,22 +157,20 @@
                     }
                 </div>
             </div>
-
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque" formControlName="numCheque" class="full-width" />
-                    <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
-                </p-floatlabel>
-                @if (formGroup.errors?.['numChequeRequired']) {
-                    <p-message severity="error" variant="simple" size="small">{{
-                        msg.components.livraison.errors.numChequeRequired }}</p-message>
-                }
-            </div>
         </div>
         <!-- Fin Div Reglement 1 -->
 
         <!-- Div Reglement 2 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment2" inputId="typeReglment2" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment2">{{ msg.components.livraison.typeReglment2 }}</label>
+                </p-floatlabel>
+            </div>
+            
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
@@ -185,13 +194,15 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
+            <div class="flex flex-col gap-4 full-width">
                 <p-floatlabel variant="on" class="full-width">
-                    <p-select formControlName="typeReglment2" inputId="typeReglment2" [options]="typeReglements"
-                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
-                    <label for="typeReglment2">{{ msg.components.livraison.typeReglment2 }}</label>
+                    <input pInputText id="numCheque2" formControlName="numCheque2" class="full-width" />
+                    <label for="numCheque2">{{ msg.components.livraison.numCheque2 }}</label>
                 </p-floatlabel>
+                @if (formGroup.errors?.['numCheque2Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque2Required }}</p-message>
+                }
             </div>
 
             <div class="flex flex-col md:flex-row gap-2 full-width">
@@ -211,22 +222,20 @@
                     }
                 </div>
             </div>
-
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque2" formControlName="numCheque2" class="full-width" />
-                    <label for="numCheque2">{{ msg.components.livraison.numCheque2 }}</label>
-                </p-floatlabel>
-                @if (formGroup.errors?.['numCheque2Required']) {
-                    <p-message severity="error" variant="simple" size="small">{{
-                        msg.components.livraison.errors.numCheque2Required }}</p-message>
-                }
-            </div>
         </div>
         <!-- Fin Div Reglement 2 -->
 
         <!-- Div Reglement 3 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment3" inputId="typeReglment3" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment3">{{ msg.components.livraison.typeReglment3 }}</label>
+                </p-floatlabel>
+            </div>
+            
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
@@ -250,13 +259,15 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
+            <div class="flex flex-col gap-4 full-width">
                 <p-floatlabel variant="on" class="full-width">
-                    <p-select formControlName="typeReglment3" inputId="typeReglment3" [options]="typeReglements"
-                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
-                    <label for="typeReglment3">{{ msg.components.livraison.typeReglment3 }}</label>
+                    <input pInputText id="numCheque3" formControlName="numCheque3" class="full-width" />
+                    <label for="numCheque3">{{ msg.components.livraison.numCheque3 }}</label>
                 </p-floatlabel>
+                @if (formGroup.errors?.['numCheque3Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque3Required }}</p-message>
+                }
             </div>
 
             <div class="flex flex-col md:flex-row gap-2 full-width">
@@ -276,22 +287,20 @@
                     }
                 </div>
             </div>
-
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque3" formControlName="numCheque3" class="full-width" />
-                    <label for="numCheque3">{{ msg.components.livraison.numCheque3 }}</label>
-                </p-floatlabel>
-                @if (formGroup.errors?.['numCheque3Required']) {
-                    <p-message severity="error" variant="simple" size="small">{{
-                        msg.components.livraison.errors.numCheque3Required }}</p-message>
-                }
-            </div>
         </div>
         <!-- Fin Div Reglement 3 -->
 
         <!-- Div Reglement 4 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-select formControlName="typeReglment4" inputId="typeReglment4" [options]="typeReglements"
+                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
+                        class="full-width" />
+                    <label for="typeReglment4">{{ msg.components.livraison.typeReglment4 }}</label>
+                </p-floatlabel>
+            </div>
+            
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
@@ -315,13 +324,15 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
+            <div class="flex flex-col gap-4 full-width">
                 <p-floatlabel variant="on" class="full-width">
-                    <p-select formControlName="typeReglment4" inputId="typeReglment4" [options]="typeReglements"
-                        appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
-                    <label for="typeReglment4">{{ msg.components.livraison.typeReglment4 }}</label>
+                    <input pInputText id="numCheque4" formControlName="numCheque4" class="full-width" />
+                    <label for="numCheque4">{{ msg.components.livraison.numCheque4 }}</label>
                 </p-floatlabel>
+                @if (formGroup.errors?.['numCheque4Required']) {
+                    <p-message severity="error" variant="simple" size="small">{{
+                        msg.components.livraison.errors.numCheque4Required }}</p-message>
+                }
             </div>
 
             <div class="flex flex-col md:flex-row gap-2 full-width">
@@ -341,30 +352,47 @@
                     }
                 </div>
             </div>
-
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque4" formControlName="numCheque4" class="full-width" />
-                    <label for="numCheque4">{{ msg.components.livraison.numCheque4 }}</label>
-                </p-floatlabel>
-                @if (formGroup.errors?.['numCheque4Required']) {
-                    <p-message severity="error" variant="simple" size="small">{{
-                        msg.components.livraison.errors.numCheque4Required }}</p-message>
-                }
-            </div>
             <!-- Fin Div Reglement 4 -->
         </div>
 
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
             <div class="flex flex-col md:flex-row gap-2">
-                <p-floatlabel variant="on" style="width: 50% !important;">
-                    <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
-                        appendTo="body" optionLabel="designation" optionValue="id"
-                        (onChange)="onChangeIdStock()"
-                        style="width: 100% !important; height: 33px;"
-                        placeholder="{{ msg.components.livraison.selectStock }}" />
-                    <label for="stockId">{{ msg.components.livraison.stockId }}</label>
-                </p-floatlabel>
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" style="width: 50% !important;">
+                        <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
+                            appendTo="body" optionLabel="designation" optionValue="id"
+                            (onChange)="onChangeIdStock()"
+                            style="width: 100% !important; height: 33px;"
+                            placeholder="{{ msg.components.livraison.selectStock }}" />
+                        <label for="stockId">{{ msg.components.livraison.stockId }}</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" style="width: 50% !important;">
+                        <input pInputText id="codeTransport" formControlName="codeTransport" class="full-width" />
+                        <label for="codeTransport">{{ msg.components.livraison.codeTransport }}</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" style="width: 100% !important;">
+                        <input pInputText id="remarqueClient" formControlName="remarqueClient" class="full-width" />
+                        <label for="remarqueClient">{{ msg.components.livraison.remarqueClient }}</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="flex flex-col gap-4 full-width">
+                    <p-button pRipple [label]="msg.buttons.facturer" icon="pi pi-check" class="p-button-info"></p-button>
+                    <p-button pRipple [label]="livraison.reglerNonRegler === 0 ? msg.buttons.nonRegler : msg.buttons.regler" [icon]="livraison.reglerNonRegler === 0 ? 'pi pi-check' : 'pi pi-times'" [class]="livraison.reglerNonRegler === 0 ? 'p-button-info' : 'p-button-danger'" (onClick)="reglerNonRegler()"></p-button>
+                </div>
+
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" style="width: 100% !important;">
+                        <p-date-picker id="sysDate" formControlName="sysDate" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                        <label for="sysDate">{{ msg.components.livraison.sysDate }}</label>
+                    </p-floatlabel>
+                </div>
             </div>
         </div>
     </div>

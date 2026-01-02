@@ -5,7 +5,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
   // Helper to get form controls safely
   const get = (name: string) => control.get(name);
   let pattc = get('pattc');
-  let prixCommercial = get('prixCommercial');
+  //let prixCommercial = get('prixCommercial');
   let pvttc = get('pvttc');
 
   // List ranges for Remise/Qte
@@ -44,11 +44,11 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     }
   }
 
-  if(pattc && prixCommercial && pattc.value !== null && prixCommercial.value !== null && pattc.value !== 0 && prixCommercial.value !== 0) {
+  /*if(pattc && prixCommercial && pattc.value !== null && prixCommercial.value !== null && pattc.value !== 0 && prixCommercial.value !== 0) {
     if(pattc.value >= prixCommercial.value) {
       addError('prixCommercialMustBeGreatThanPattc');
     }
-  }
+  }*/
 
   const validatePair = (valueA: number, valueB: number, keyA: string, keyB: string) => {
     if (valueA > 0 && (valueB === null || valueB === 0)) addError(`${keyB}Required`);

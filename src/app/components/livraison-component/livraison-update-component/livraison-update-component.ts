@@ -149,6 +149,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   adjustLivraison(livraison: Livraison): Livraison {
     livraison.dateBl = new Date(livraison.dateBl);
+    livraison.sysDate = new Date(livraison.sysDate);
     livraison.dateReglement = new Date(livraison.dateReglement);
     livraison.dateReglement2 = livraison.dateReglement2 ? new Date(livraison.dateReglement2) : null;
     livraison.dateReglement3 = livraison.dateReglement3 ? new Date(livraison.dateReglement3) : null;
@@ -172,6 +173,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       numLivraison: livraison.numLivraison,
       codeBl: livraison.codeBl,
       dateBl: livraison.dateBl,
+      sysDate: livraison.sysDate,
       dateReglement: livraison.dateReglement,
       dateReglement2: livraison.dateReglement2,
       dateReglement3: livraison.dateReglement3,
@@ -188,14 +190,17 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       mntReglement2: livraison.mntReglement2,
       mntReglement3: livraison.mntReglement3,
       mntReglement4: livraison.mntReglement4,
+      codeTransport: livraison.codeTransport,
       mantantBL: livraison.mantantBL,
       personnelId: livraison.personnelId,
       repertoireId: this.repertoireSelected?.id,
       repertoireDesignation: this.repertoireSelected?.designation || '',
       repertoireTel1: this.repertoireSelected?.tel1 || '',
       repertoireTel2: this.repertoireSelected?.tel2 || '',
-      repertoireICE: this.repertoireSelected?.ice || '',
+      repertoireAdresse: this.repertoireSelected?.adresse || '',
+      remarqueClient: this.repertoireSelected?.observation || '',
     });
+    this.formGroup.get('sysDate')?.disable();
     this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison is set
   }
 
@@ -218,6 +223,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       numLivraison: [0],
       codeBl: [{value: '', disabled: true}, [Validators.required]],
       dateBl: [new Date(), [Validators.required]],
+      sysDate: [{value: new Date(), disabled: true}, [Validators.required]],
       dateReglement: [new Date(), [Validators.required]],
       dateReglement2: [null],
       dateReglement3: [null],
@@ -251,10 +257,12 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       //personnelAncienId: [null],
       repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       stockId: [0],
+      codeTransport: [''],
+      remarqueClient: [''],
       repertoireDesignation: [{ value: '', disabled: true }],
       repertoireTel1: [{ value: '', disabled: true }],
       repertoireTel2: [{ value: '', disabled: true }],
-      repertoireICE: [{ value: '', disabled: true }],
+      repertoireAdresse: [{ value: '', disabled: true }],
     }, { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) });
   }
 
@@ -262,6 +270,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.livraison.numLivraison = this.formGroup.get('numLivraison')?.value;
     this.livraison.codeBl = this.formGroup.get('codeBl')?.value;
     this.livraison.dateBl = this.formGroup.get('dateBl')?.value;
+    this.livraison.sysDate = this.formGroup.get('sysDate')?.value;
     this.livraison.dateReglement = this.formGroup.get('dateReglement')?.value;
     this.livraison.dateReglement2 = this.formGroup.get('dateReglement2')?.value;
     this.livraison.dateReglement3 = this.formGroup.get('dateReglement3')?.value;
@@ -293,6 +302,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
     //this.livraison.personnelAncienId = this.formGroup.get('personnelAncienId')?.value;
     this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
+    this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
   }
 
   openCloseDialogStock(openClose: boolean): void {
@@ -307,7 +317,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.formGroup.get('repertoireDesignation')?.disable();
     this.formGroup.get('repertoireTel1')?.disable();
     this.formGroup.get('repertoireTel2')?.disable();
-    this.formGroup.get('repertoireICE')?.disable();
+    this.formGroup.get('repertoireAdresse')?.disable();
   }
 
   onChangeIdRepertoire() {
@@ -318,7 +328,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         repertoireDesignation: this.repertoireSelected.designation,
         repertoireTel1: this.repertoireSelected.tel1,
         repertoireTel2: this.repertoireSelected.tel2,
-        repertoireICE: this.repertoireSelected.ice,
+        repertoireAdresse: this.repertoireSelected.adresse,
+        remarqueClient: this.repertoireSelected.observation,
       });
 
       this.disableRepertoireData();
@@ -327,7 +338,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         repertoireDesignation: '',
         repertoireTel1: '',
         repertoireTel2: '',
-        repertoireICE: '',
+        repertoireAdresse: '',
+        remarqueClient: '',
       });
 
       this.disableRepertoireData();
@@ -497,6 +509,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   mapFormGroupToObject(formGroup: FormGroup, livraison: Livraison): Livraison {
       livraison.dateBl = mapToDateTimeBackEnd(formGroup.get('dateBl')?.value);
+      livraison.sysDate = mapToDateTimeBackEnd(formGroup.get('sysDate')?.value);
       livraison.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
       livraison.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
       livraison.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
@@ -512,6 +525,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
       livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
       livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+      livraison.codeTransport = formGroup.get('codeTransport')?.value;
 
       return livraison;
   }
@@ -594,6 +608,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     
     livraison.infinity = infinity;
 	}
+
+  reglerNonRegler() {
+    this.livraison.reglerNonRegler = this.livraison.reglerNonRegler === 0 ? 1 : 0;
+  }
 
   updateNbrOperationRepertoire(livraison: Livraison) {
     if(this.oldLivraison) {

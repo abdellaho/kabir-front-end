@@ -6,7 +6,6 @@ export interface Stock {
   sysDate: Date;
   dateSuppression: Date | null;
   pahtGrossiste: number;
-  prixCommercial: number;
   tva: number;
   pattc: number;
   pvttc: number;
@@ -37,6 +36,7 @@ export interface Stock {
   prime1: number;
   prime2: number;
   prime3: number;
+  typeProduit: number;
   fournisseurId: bigint;
   fournisseur?: Fournisseur | null;
 }
@@ -48,7 +48,6 @@ export function initObjectStock(): Stock {
     sysDate: new Date(),
     dateSuppression: null,
     pahtGrossiste: 0,
-    prixCommercial: 0,
     tva: 0,
     pattc: 0,
     pvttc: 0,
@@ -79,6 +78,7 @@ export function initObjectStock(): Stock {
     archiver: false,
     supprimer: false,
     qteStockImport: 0,
+    typeProduit: 0,
     fournisseurId: BigInt(0),
     fournisseur: null,
   };

@@ -128,7 +128,7 @@
                         <td>{{ p.qteStockImport }}</td>
                         <td>{{ p.pattc }}</td>
                         <td>{{ p.pvttc }}</td>
-                        <td>{{ p.prixCommercial }}</td>
+                        <td>{{ p.prixVentMin2 }}</td>
                         <td>{{ p.prixVentMin1 }}</td>
                         <td>{{ p.remiseMax1 }}</td>
                         <td>{{ p.benifice | number: '1.2-3' }}</td>
@@ -197,8 +197,10 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
-                                    <label for="tva">{{ msg.components.stock.tva }}</label>
+                                    <p-select formControlName="typeProduit" inputId="typeProduit"
+                                        [options]="typeProduits" appendTo="body" optionLabel="label"
+                                        optionValue="value" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="typeProduit">{{ msg.components.stock.typeProduit }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -228,22 +230,9 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prixCommercial" [maxFractionDigits]="2"
-                                        inputId="prixCommercial"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prixCommercialMustBeGreatThanPattc'] || formGroup.get('prixCommercial')?.errors?.['negative'] }" />
-                                    <label for="prixCommercial">{{ msg.components.stock.prixCommercialMAj }}</label>
+                                    <p-input-number formControlName="benifice" inputId="benifice" [maxFractionDigits]="2" />
+                                    <label for="benifice">{{ msg.components.stock.benifice }}</label>
                                 </p-floatlabel>
-                                @if (formGroup.errors?.['prixCommercialMustBeGreatThanPattc'] ||
-                                formGroup.get('prixCommercial')?.errors?.['negative']) {
-                                @if (formGroup.errors?.['prixCommercialMustBeGreatThanPattc']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.stock.errors.prixCommercialMustBeGreatThanPattc }}</p-message>
-                                }
-                                @if (formGroup.get('prixCommercial')?.errors?.['negative']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
-                                }
-                                }
                             </div>
                         </div>
 
@@ -274,9 +263,8 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="benifice" inputId="benifice"
-                                        [maxFractionDigits]="2" />
-                                    <label for="benifice">{{ msg.components.stock.benifice }}</label>
+                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
+                                    <label for="tva">{{ msg.components.stock.tva }}</label>
                                 </p-floatlabel>
                             </div>
 
