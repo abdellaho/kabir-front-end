@@ -19,6 +19,8 @@ import { LivraisonUpdateComponent } from '@/components/livraison-component/livra
 import { LivraisonViewComponent } from '@/components/livraison-component/livraison-view-component/livraison-view-component';
 import { StockDepotComponent } from '@/components/stock-depot-component/stock-depot-component';
 import { AchatSimpleComponent } from '@/components/achat-simple-component/achat-simple-component';
+import { LoginComponent } from '@/components/login-component/login-component';
+import { AuthGuard } from '@/state/auth-guard';
 
 export const appRoutes: Routes = [
     {
@@ -27,22 +29,23 @@ export const appRoutes: Routes = [
         children: [
             { path: '', component: AcceuilComponent },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'parametrage', component: ParametrageComponent },
-            { path: 'pays', component: PaysComponent },
-            { path: 'ville', component: VilleComponent },
-            { path: 'absence', component: AbsenceComponent },
-            { path: 'fournisseur', component: FournisseurComponent },
-            { path: 'repertoire', component: RepertoireComponent },
-            { path: 'stock', component: StockComponent },
-            { path: 'voiture', component: VoitureComponent },
-            { path: 'etablissement', component: EtablissementComponent },
-            { path: 'prime', component: PrimeComponent },
-            { path: 'personnel', component: PersonnelComponent },
-            { path: 'livraison', component: LivraisonViewComponent },
-            { path: 'livraison-update', component: LivraisonUpdateComponent },
-            { path: 'stock-depot', component: StockDepotComponent },
-            { path: 'achat-simple', component: AchatSimpleComponent },
+            { path: 'parametrage', component: ParametrageComponent, canActivate: [AuthGuard] },
+            { path: 'pays', component: PaysComponent, canActivate: [AuthGuard] },
+            { path: 'ville', component: VilleComponent, canActivate: [AuthGuard] },
+            { path: 'absence', component: AbsenceComponent, canActivate: [AuthGuard] },
+            { path: 'fournisseur', component: FournisseurComponent, canActivate: [AuthGuard] },
+            { path: 'repertoire', component: RepertoireComponent, canActivate: [AuthGuard] },
+            { path: 'stock', component: StockComponent, canActivate: [AuthGuard] },
+            { path: 'voiture', component: VoitureComponent, canActivate: [AuthGuard] },
+            { path: 'etablissement', component: EtablissementComponent, canActivate: [AuthGuard] },
+            { path: 'prime', component: PrimeComponent, canActivate: [AuthGuard] },
+            { path: 'personnel', component: PersonnelComponent, canActivate: [AuthGuard] },
+            { path: 'livraison', component: LivraisonViewComponent, canActivate: [AuthGuard] },
+            { path: 'livraison-update', component: LivraisonUpdateComponent, canActivate: [AuthGuard] },
+            { path: 'stock-depot', component: StockDepotComponent, canActivate: [AuthGuard] },
+            { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
+            { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
     },

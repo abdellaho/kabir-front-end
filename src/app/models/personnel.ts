@@ -4,6 +4,7 @@ export interface Personnel {
     cin: string;
     login: string;
     password: string;
+    passwordFake: string;
     typePersonnel: number;
     etatComptePersonnel: boolean;
     tel1: string;
@@ -32,6 +33,7 @@ export function initObjectPersonnel(): Personnel {
         cin: '',
         login: '',
         password: '',
+        passwordFake: '',
         typePersonnel: 0,
         etatComptePersonnel: false,
         tel1: '',

@@ -1,5 +1,5 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { ApplicationConfig, ErrorHandler } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
@@ -7,12 +7,17 @@ import { appRoutes } from './app.routes';
 import { MessageService } from 'primeng/api';
 import Nora from '@primeuix/themes/nora';
 import { provideTranslateService } from "@ngx-translate/core";
+import { StateService } from '@/state/state-service';
+import { AuthSecurityService } from '@/state/auth-security-service';
+import { SanitizationService } from '@/state/sanitization-service';
+import { ErrorHandlerService } from '@/state/error-handling-service';
+import { authInterceptorFn } from '@/state/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         MessageService,
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withFetch()),
+        provideHttpClient(withFetch(), withInterceptors([authInterceptorFn])),
         provideAnimationsAsync(),
         provideTranslateService({
             lang: 'fr',
@@ -49,6 +54,10 @@ export const appConfig: ApplicationConfig = {
                 emptyMessage: 'Aucun résultat trouvé',
                 emptyFilterMessage: 'Aucun résultat trouvé'
             }
-        })
+        }),
+        StateService,
+        AuthSecurityService,
+        SanitizationService,
+        { provide: ErrorHandler, useClass: ErrorHandlerService }
     ]
 };

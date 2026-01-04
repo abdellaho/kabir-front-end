@@ -328,7 +328,7 @@ export class RepertoireComponent {
     return repertoire;
   }
 
-  async checkIfPaysExists(repertoire: Repertoire): Promise<boolean> {
+  async checkIfRepertoireExists(repertoire: Repertoire): Promise<boolean> {
     try {
       const existsObservable = this.repertoireService.exist(repertoire).pipe(
         catchError(error => {
@@ -347,8 +347,8 @@ export class RepertoireComponent {
     this.loadingService.show();
     let repertoireEdit: Repertoire = { ...this.repertoire };
     this.mapFormGroupToObject(this.formGroup, repertoireEdit);
-    let absenceSearch: Repertoire = { ...this.repertoire };
-    let trvErreur = await this.checkIfPaysExists(absenceSearch);
+    let repertoireSearch: Repertoire = { ...repertoireEdit };
+    let trvErreur = await this.checkIfRepertoireExists(repertoireSearch);
 
     if(!trvErreur) {
       this.mapFormGroupToObject(this.formGroup, this.repertoire);

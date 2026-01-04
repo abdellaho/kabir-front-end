@@ -31,7 +31,7 @@ export class LivraisonService {
     const objLivraison = this.omitLivraison(livraisonRequest.livraison);
     const objListDetLivraison = livraisonRequest.detLivraisons.map(detLivraison => this.omitDetLivraison(detLivraison));
 
-    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison};
+    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison };
     return this.http.post<Livraison>(ENDPOINTS.LIVRAISON.create, obj);
   }
 
@@ -39,7 +39,7 @@ export class LivraisonService {
     const objLivraison = this.omitLivraison(livraisonRequest.livraison);
     const objListDetLivraison = livraisonRequest.detLivraisons.map(detLivraison => this.omitDetLivraison(detLivraison));
 
-    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison};
+    const obj: LivraisonRequest = { livraison: objLivraison, detLivraisons: objListDetLivraison };
     return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.update(id), obj);
   }
 

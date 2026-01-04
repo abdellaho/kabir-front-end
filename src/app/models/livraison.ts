@@ -45,6 +45,8 @@ export interface Livraison {
   personnelAncienId?: bigint | null;
   repertoire: Repertoire | null;
   repertoireId: bigint;
+  repertoireIdOld: bigint | null;
+  repertoireObservation: string;
 }
 
 export function initObjectLivraison(): Livraison {
@@ -87,8 +89,10 @@ export function initObjectLivraison(): Livraison {
     personnelId: BigInt(0),
     personnelAncienId: null,
     repertoireId: BigInt(0),
+    repertoireIdOld: null,
     personnelAncien: null,
     personnel: null,
     repertoire: null,
+    repertoireObservation: "",
   };
 }

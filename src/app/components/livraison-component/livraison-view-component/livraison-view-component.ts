@@ -243,6 +243,7 @@ export class LivraisonViewComponent implements OnInit {
                 this.livraisonService.getByIdWithDetLivraison(selectedLivraison.id).subscribe({
                     next: (livraisonRequest) => {
                         selectedLivraison = livraisonRequest.livraison;
+                        selectedLivraison.repertoireIdOld = selectedLivraison.repertoireId;
                         listDetail = livraisonRequest.detLivraisons;
                     },
                     error: (error) => {

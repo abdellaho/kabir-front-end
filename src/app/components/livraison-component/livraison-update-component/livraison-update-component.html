@@ -357,41 +357,45 @@
 
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
             <div class="flex flex-col md:flex-row gap-2">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" style="width: 50% !important;">
-                        <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
-                            appendTo="body" optionLabel="designation" optionValue="id"
-                            (onChange)="onChangeIdStock()"
-                            style="width: 100% !important; height: 33px;"
-                            placeholder="{{ msg.components.livraison.selectStock }}" />
-                        <label for="stockId">{{ msg.components.livraison.stockId }}</label>
-                    </p-floatlabel>
+                <div class="w-1/3">
+                    <div class="flex flex-col gap-4 full-width">
+                        <p-floatlabel variant="on">
+                            <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
+                                appendTo="body" optionLabel="designation" optionValue="id"
+                                (onChange)="onChangeIdStock()"
+                                style="width: 100% !important; height: 33px;"
+                                placeholder="{{ msg.components.livraison.selectStock }}" />
+                            <label for="stockId">{{ msg.components.livraison.stockId }}</label>
+                        </p-floatlabel>
+                    </div>
                 </div>
+                
+                <div class="w-2/3 flex flex-col md:flex-row gap-2">
+                    <div class="flex flex-col gap-4 full-width">
+                        <p-floatlabel variant="on">
+                            <input pInputText id="codeTransport" formControlName="codeTransport" class="full-width" />
+                            <label for="codeTransport">{{ msg.components.livraison.codeTransport }}</label>
+                        </p-floatlabel>
+                    </div>
 
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" style="width: 50% !important;">
-                        <input pInputText id="codeTransport" formControlName="codeTransport" class="full-width" />
-                        <label for="codeTransport">{{ msg.components.livraison.codeTransport }}</label>
-                    </p-floatlabel>
-                </div>
+                    <div class="flex flex-col gap-4 full-width">
+                        <p-floatlabel variant="on">
+                            <input pInputText id="remarqueClient" formControlName="remarqueClient" class="full-width" />
+                            <label for="remarqueClient">{{ msg.components.livraison.remarqueClient }}</label>
+                        </p-floatlabel>
+                    </div>
 
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" style="width: 100% !important;">
-                        <input pInputText id="remarqueClient" formControlName="remarqueClient" class="full-width" />
-                        <label for="remarqueClient">{{ msg.components.livraison.remarqueClient }}</label>
-                    </p-floatlabel>
-                </div>
+                    <div class="flex flex-row gap-1 full-width" style="justify-content: center;">
+                        <button pRipple pButton [label]="msg.buttons.facturer" icon="pi pi-check" class="p-button-info"></button>
+                        <button pRipple pButton [label]="livraison.reglerNonRegler === 0 ? msg.buttons.nonRegler : msg.buttons.regler" [icon]="livraison.reglerNonRegler === 0 ? 'pi pi-times' : 'pi pi-check'" [ngClass]="livraison.reglerNonRegler === 0 ? 'p-button-danger' : 'p-button-success'" (click)="reglerNonRegler()"></button>
+                    </div>
 
-                <div class="flex flex-col gap-4 full-width">
-                    <p-button pRipple [label]="msg.buttons.facturer" icon="pi pi-check" class="p-button-info"></p-button>
-                    <p-button pRipple [label]="livraison.reglerNonRegler === 0 ? msg.buttons.nonRegler : msg.buttons.regler" [icon]="livraison.reglerNonRegler === 0 ? 'pi pi-check' : 'pi pi-times'" [class]="livraison.reglerNonRegler === 0 ? 'p-button-info' : 'p-button-danger'" (onClick)="reglerNonRegler()"></p-button>
-                </div>
-
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" style="width: 100% !important;">
-                        <p-date-picker id="sysDate" formControlName="sysDate" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
-                        <label for="sysDate">{{ msg.components.livraison.sysDate }}</label>
-                    </p-floatlabel>
+                    <div class="flex flex-col gap-4 full-width">
+                        <p-floatlabel variant="on">
+                            <p-date-picker id="sysDate" formControlName="sysDate" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                            <label for="sysDate">{{ msg.components.livraison.sysDate }}</label>
+                        </p-floatlabel>
+                    </div>
                 </div>
             </div>
         </div>

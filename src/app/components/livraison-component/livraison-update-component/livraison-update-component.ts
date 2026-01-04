@@ -3,15 +3,13 @@ import { DataService } from '@/shared/services/data-service';
 import { Router } from '@angular/router';
 import { initObjectLivraison, Livraison } from '@/models/livraison';
 import { DetLivraison, initObjectDetLivraison } from '@/models/det-livraison';
-import { Subscription, concatMap, delay, from } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { LivraisonService } from '@/services/livraison/livraison-service';
-import { DetLivraisonService } from '@/services/det-livraison/det-livraison-service';
 import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
-import { StockService } from '@/services/stock/stock-service';
 import { ajusterMontants, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
@@ -41,7 +39,6 @@ import { LivraisonValidator } from '@/validators/livraison-validator';
 import { Etablissement, initObjectEtablissement } from '@/models/etablissement';
 import { EtablissementService } from '@/services/etablissement/etablissement-service';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
-import { RepertoireService } from '@/services/repertoire/repertoire-service';
 
 @Component({
   selector: 'app-livraison-update-component',
@@ -99,9 +96,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   constructor(
     private livraisonService: LivraisonService,
-    private detLivraisonService: DetLivraisonService,
-    private repertoireService: RepertoireService,
-    private stockService: StockService,
     private formBuilder: FormBuilder,
     private dataService: DataService,
     private router: Router,
@@ -237,24 +231,11 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       numCheque3: [''],
       numCheque4: [''],
       mantantBL: [0],
-      //mantantBLReel: [0],
-      //mantantBLBenefice: [0],
-      //typePaiement: [''],
-      //mantantBLPourcent: [0],
-      //reglerNonRegler: [0],
-      //sysDate: [new Date()],
-      //infinity: [0],
-      //etatBultinPaie: [0],
-      //livrernonlivrer: [0],
-      //avecRemise: [false],
       mntReglement: [0],
       mntReglement2: [0],
       mntReglement3: [0],
       mntReglement4: [0],
-      //facturer100: [false],
-      //codeTransport: [''],
       personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-      //personnelAncienId: [null],
       repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
       stockId: [0],
       codeTransport: [''],
@@ -284,25 +265,14 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.livraison.numCheque3 = this.formGroup.get('numCheque3')?.value;
     this.livraison.numCheque4 = this.formGroup.get('numCheque4')?.value;
     this.livraison.mantantBL = this.formGroup.get('mantantBL')?.value;
-    //this.livraison.mantantBLReel = this.formGroup.get('mantantBLReel')?.value;
-    //this.livraison.mantantBLBenefice = this.formGroup.get('mantantBLBenefice')?.value;
-    // this.livraison.mantantBLPourcent = this.formGroup.get('mantantBLPourcent')?.value;
-    //this.livraison.typePaiement = this.formGroup.get('typePaiement')?.value;
-    //this.livraison.reglerNonRegler = this.formGroup.get('reglerNonRegler')?.value;
-    //this.livraison.infinity = this.formGroup.get('infinity')?.value;
-    //this.livraison.etatBultinPaie = this.formGroup.get('etatBultinPaie')?.value;
-    //this.livraison.livrernonlivrer = this.formGroup.get('livrernonlivrer')?.value;
-    //this.livraison.avecRemise = this.formGroup.get('avecRemise')?.value;
     this.livraison.mntReglement = this.formGroup.get('mntReglement')?.value;
     this.livraison.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
     this.livraison.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
     this.livraison.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
-    //this.livraison.facturer100 = this.formGroup.get('facturer100')?.value;
-    //this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
     this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
-    //this.livraison.personnelAncienId = this.formGroup.get('personnelAncienId')?.value;
     this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
     this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
+    this.livraison.repertoireObservation = this.formGroup.get('remarqueClient')?.value;
   }
 
   openCloseDialogStock(openClose: boolean): void {
@@ -526,62 +496,9 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
       livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
       livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
       livraison.codeTransport = formGroup.get('codeTransport')?.value;
+      livraison.repertoireObservation = formGroup.get('remarqueClient')?.value;
 
       return livraison;
-  }
-
-  updateQteStock(listDetLivraison: DetLivraison[], operationType: OperationType) {
-    if(listDetLivraison && listDetLivraison.length > 0) {
-      // Filter items that have a stockId
-      const itemsToUpdate = listDetLivraison.filter(detLivraison => detLivraison.stockId);
-      
-      // Process each item sequentially with 1 second delay between requests
-      from(itemsToUpdate).pipe(
-        concatMap((detLivraison: DetLivraison, index: number) => 
-          this.stockService.updateQteStock(detLivraison.stockId!, detLivraison.qteLivrer, operationType).pipe(
-            delay(index === itemsToUpdate.length - 1 ? 0 : 1000) // No delay after the last item
-          )
-        )
-      ).subscribe({
-        next: () => {
-        }, 
-        error: (err) => {
-          console.log(err);
-        }
-      });
-    }
-  }
-
-  updateStock(detLivraisonToAdd: DetLivraison[], detLivraisonToModify: DetLivraison[], detLivraisonToDelete: DetLivraison[], detLivraisonChanged: DetLivraison[]) {
-    if(detLivraisonToDelete && detLivraisonToDelete.length > 0) {
-      this.updateQteStock(detLivraisonToDelete, OperationType.DELETE);
-    }
-
-    if(detLivraisonChanged && detLivraisonChanged.length > 0) {
-      this.updateQteStock(detLivraisonChanged, OperationType.DELETE);
-    }
-
-    if(detLivraisonToModify && detLivraisonToModify.length > 0) {
-      this.updateQteStock(detLivraisonToModify, OperationType.ADD);
-    }
-    
-    if(detLivraisonToAdd && detLivraisonToAdd.length > 0) {
-      this.updateQteStock(detLivraisonToAdd, OperationType.ADD);
-    }
-  }
-
-  deleteListDetLivraison(detLivraisonToDelete: DetLivraison[]) {
-    if(detLivraisonToDelete && detLivraisonToDelete.length > 0) {
-      detLivraisonToDelete.forEach((detLivraison: DetLivraison) => {
-        let id: bigint = detLivraison.id ? detLivraison.id : BigInt(0);
-        this.detLivraisonService.delete(id).subscribe({
-          next: () => {
-          }, error: (err) => {
-            console.log(err);
-          }
-        });
-      });
-    }
   }
 
   giveMeMntBlBenefice(livraison: Livraison, detLivraisons: DetLivraison[], etablissement: Etablissement) {
@@ -613,33 +530,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.livraison.reglerNonRegler = this.livraison.reglerNonRegler === 0 ? 1 : 0;
   }
 
-  updateNbrOperationRepertoire(livraison: Livraison) {
-    if(this.oldLivraison) {
-      if(this.oldLivraison.repertoireId != livraison.repertoireId) {
-        this.repertoireService.updateNbrOperation(livraison.repertoireId!, OperationType.ADD).subscribe({
-          next: () => {
-          }, error: (err) => {
-            console.log(err);
-          }
-        });
-
-        this.repertoireService.updateNbrOperation(this.oldLivraison.repertoireId!, OperationType.DELETE).subscribe({
-          next: () => {
-          }, error: (err) => {
-            console.log(err);
-          }
-        });
-      }
-    } else {
-      this.repertoireService.updateNbrOperation(livraison.repertoireId!, OperationType.ADD).subscribe({
-        next: () => {
-        }, error: (err) => {
-          console.log(err);
-        }
-      });
-    }
-  }
-
   prepareLivraison() {
     this.giveMeMntBlBenefice(this.livraison, this.listDetLivraison, this.etablissement);
     this.giveMeMntReel(this.livraison, this.listDetLivraison);
@@ -661,15 +551,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison: this.livraison,
         detLivraisons: this.listDetLivraison
       };
-
-      console.log('livraisonRequest', livraisonRequest.detLivraisons);
       
       if(this.livraison.id) {
-        let detLivraisonToAdd: DetLivraison[] = this.listDetLivraison.filter((detLivraison: DetLivraison) => detLivraison.id === null);
-        let detLivraisonToDelete: DetLivraison[] = this.originalListDetLivraison.filter((detLivraisonOriginal: DetLivraison) => !this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.id === detLivraisonOriginal.id));
-        let detLivraisonChanged: DetLivraison[] = this.originalListDetLivraison.filter((detLivraisonOriginal: DetLivraison) => this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.id === detLivraisonOriginal.id));
-        let detLivraisonToModify: DetLivraison[] = this.listDetLivraison.filter((detLivraison: DetLivraison) => detLivraison.id !== null);
-
         this.livraisonService.update(this.livraison.id, livraisonRequest).subscribe({
           next: (data: Livraison) => {
             this.messageService.add({
@@ -677,10 +560,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               summary: this.msg.summary.labelSuccess,
               detail: this.msg.messages.messageUpdateSuccess,
             });
-
-            this.updateNbrOperationRepertoire(this.livraison);
-            this.updateStock(detLivraisonToAdd, detLivraisonToModify, detLivraisonToDelete, detLivraisonChanged);
-            this.deleteListDetLivraison(detLivraisonToDelete);
 
             this.router.navigate(['/livraison']);
           }, error: (err) => {
@@ -703,9 +582,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
               summary: this.msg.summary.labelSuccess,
               detail: this.msg.messages.messageAddSuccess,
             });
-
-            this.updateStock(this.listDetLivraison, [], [], []);
-            this.updateNbrOperationRepertoire(this.livraison);
 
             this.router.navigate(['/livraison']);
           }, error: (err) => {

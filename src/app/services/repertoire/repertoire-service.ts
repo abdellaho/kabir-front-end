@@ -46,6 +46,7 @@ export class RepertoireService {
 
   exist(repertoire: Repertoire): Observable<boolean> {
     const serializedObj = this.serialization(repertoire);
+    console.log("serializedObj", serializedObj);
     return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
   }
 

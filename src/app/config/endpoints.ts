@@ -84,7 +84,14 @@ export const ENDPOINTS = {
     delete: (id: bigint) => `${BASE_URL}/personnel/${id}`,
     exist: `${BASE_URL}/personnel/exist`,
     search: `${BASE_URL}/personnel/search`,
-    present: `${BASE_URL}/personnel/present`
+    present: `${BASE_URL}/personnel/present`,
+    auth: {
+      login: `${BASE_URL}/personnel/auth/login`,
+      register: `${BASE_URL}/personnel/auth/register`,
+      refresh: `${BASE_URL}/personnel/auth/refresh-token`,
+      logout: `${BASE_URL}/personnel/auth/logout`,
+      adminExist: `${BASE_URL}/personnel/auth/admin-exist`,
+    }
   },
   PRIME: {
     getAll: `${BASE_URL}/prime`,

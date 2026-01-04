@@ -54,6 +54,10 @@ export class PersonnelService {
     return this.http.post<Personnel[]>(ENDPOINTS.PERSONNEL.present, body);
   }
 
+  adminExist(): Observable<boolean> {
+    return this.http.get<boolean>(ENDPOINTS.PERSONNEL.auth.adminExist);
+  }
+
   serialization(obj: Personnel | PersonnelSearch): any {
     return {
       ...obj,

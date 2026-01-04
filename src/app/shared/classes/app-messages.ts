@@ -507,7 +507,7 @@ export const APP_MESSAGES = {
         actualiser: 'Actualiser',
         facturer: 'Facturer',
         regler: 'Régler',
-        nonRegler: 'Non Régler',
+        nonRegler: 'N.Régler',
     },
     messages: {
         miseAJour: 'Mise à jour',
