@@ -1,6 +1,6 @@
 import { environment } from "src/environments/environment";
 
-const BASE_URL = environment.production ? 'https://kabir-backend-nest-js.vercel.app/api' : 'http://localhost:8080/api';
+const BASE_URL = environment.production ? '/api' : 'http://localhost:8080/api';
 const FACTURE = `facture`;
 const BON_SORTIE = `bon-sortie`;
 
