@@ -39,6 +39,7 @@ import { LivraisonValidator } from '@/validators/livraison-validator';
 import { Etablissement, initObjectEtablissement } from '@/models/etablissement';
 import { EtablissementService } from '@/services/etablissement/etablissement-service';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
+import { StateService } from '@/state/state-service';
 
 @Component({
   selector: 'app-livraison-update-component',
@@ -69,6 +70,7 @@ import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 })
 export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
+  personnelCreationId: number | null = null;
   submitted: boolean = false;
   etablissement: Etablissement = initObjectEtablissement();
   oldLivraison: Livraison | null = null;
@@ -96,6 +98,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
   constructor(
     private livraisonService: LivraisonService,
+    private stateService: StateService,
     private formBuilder: FormBuilder,
     private dataService: DataService,
     private router: Router,
@@ -108,6 +111,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     this.submitted = false;
     this.initFormGroupStock();
     this.initFormGroup();
+    this.personnelCreationId = this.stateService.getState().user?.id || null;
     
     this.subscription = this.dataService.currentData$.subscribe((data) => {
       if (!data) {
@@ -575,6 +579,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
           }
         });
       } else {
+        livraisonRequest.livraison.employeOperateurId = BigInt(this.personnelCreationId || 0);
         this.livraisonService.create(livraisonRequest).subscribe({
           next: (data: Livraison) => {
             this.messageService.add({

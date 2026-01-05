@@ -27,7 +27,7 @@ export const appRoutes: Routes = [
         path: '',
         component: AppLayout,
         children: [
-            { path: '', component: AcceuilComponent },
+            { path: '', component: AcceuilComponent, canActivate: [AuthGuard] },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'parametrage', component: ParametrageComponent, canActivate: [AuthGuard] },
             { path: 'pays', component: PaysComponent, canActivate: [AuthGuard] },

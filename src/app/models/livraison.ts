@@ -38,6 +38,7 @@ export interface Livraison {
   facturer100: boolean;
   codeTransport: string;
   employeOperateurId: bigint | null;
+  employeOperateurDesignation: string;
   employeOperateur?: Employe | null;
   personnel: Personnel | null;
   personnelId: bigint;
@@ -85,6 +86,7 @@ export function initObjectLivraison(): Livraison {
     facturer100: false,
     codeTransport: "",
     employeOperateurId: null,
+    employeOperateurDesignation: "",
     employeOperateur: null,
     personnelId: BigInt(0),
     personnelAncienId: null,

@@ -91,6 +91,7 @@ export const ENDPOINTS = {
       refresh: `${BASE_URL}/personnel/auth/refresh-token`,
       logout: `${BASE_URL}/personnel/auth/logout`,
       adminExist: `${BASE_URL}/personnel/auth/admin-exist`,
+      me: `${BASE_URL}/personnel/auth/me`,
     }
   },
   PRIME: {

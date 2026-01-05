@@ -10,7 +10,8 @@ export const PersonnelValidator: ValidatorFn = (control: AbstractControl): Valid
         return null;
     }
 
-    if(tel1 && tel2 && tel1?.value !== '' && tel2?.value !== '' && tel1?.value === tel2?.value) {
+    if(tel1 && tel2 && tel1?.value !== '' && tel2?.value !== '' && tel1?.value === tel2?.value && tel1?.value !== null && tel2?.value !== null) {
+        console.log('tel1', tel1?.value, 'tel2', tel2?.value);
         return { tel1EqualTel2: true };
     } else {
         return null;

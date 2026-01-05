@@ -1,17 +1,18 @@
 // state.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, distinctUntilChanged, shareReplay, takeUntil } from 'rxjs/operators';
+import { map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 
 export interface AppState {
   user: UserState | null;
   loading: boolean;
+  connected: boolean;
   error: string | null;
   [key: string]: any;
 }
 
 export interface UserState {
-  id: string;
+  id: number | null;
   email: string;
   role: string;
   permissions: string[];
@@ -24,9 +25,24 @@ export interface UserState {
 export class StateService {
   private readonly initialState: AppState = {
     user: null,
+    connected: false,
     loading: false,
     error: null
   };
+
+  getInitialUserState(): UserState {
+    return {
+      id: null,
+      email: '',
+      role: '',
+      permissions: [],
+      token: null
+    };
+  }
+
+  getInitialState(): AppState {
+    return this.initialState;
+  }
 
   private state$ = new BehaviorSubject<AppState>(this.initialState);
   private destroy$ = new Subject<void>();

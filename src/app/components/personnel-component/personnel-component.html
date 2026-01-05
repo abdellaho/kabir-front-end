@@ -31,7 +31,7 @@
 
       <p-table #dt [value]="listPersonnel" dataKey="id" [rows]="10" [showGridlines]="true" [paginator]="true"
         selectionMode="single" [(selection)]="selectedPersonnel"
-        [globalFilterFields]="['designation', 'cin', 'login', 'tel1', 'tel2']" [rowsPerPageOptions]="[10, 20, 30]"
+        [globalFilterFields]="['designation', 'cin', 'email', 'tel1', 'tel2']" [rowsPerPageOptions]="[10, 20, 30]"
         [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
         <ng-template #header>
@@ -185,8 +185,8 @@
 
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="login" formControlName="login" />
-                  <label for="login">{{ msg.components.personnel.login }}</label>
+                  <input pInputText id="email" formControlName="email" />
+                  <label for="email">{{ msg.components.personnel.email }}</label>
                 </p-floatlabel>
               </div>
             </div>

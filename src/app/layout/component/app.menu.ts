@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { AuthSecurityService } from '@/state/auth-security-service';
 
 @Component({
     selector: 'app-menu',
@@ -18,7 +19,14 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 })
 export class AppMenu {
     model: MenuItem[] = [];
+    private readonly authService = inject(AuthSecurityService);
+    private readonly router = inject(Router);
     msg = APP_MESSAGES;
+
+    logout(): void {
+        this.authService.logout();
+        this.router.navigate(['/login']);
+    }
 
     ngOnInit() {
         this.model = [
@@ -53,6 +61,10 @@ export class AppMenu {
             {
                 label: '',
                 items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-simple'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
             },
             /* {
                 label: 'UI Components',
@@ -184,4 +196,5 @@ export class AppMenu {
             } */
         ];
     }
+    
 }

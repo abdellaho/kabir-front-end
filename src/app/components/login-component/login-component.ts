@@ -13,6 +13,8 @@ import { PersonnelService } from '@/services/personnel/personnel-service';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
+import { SkeletonModule } from 'primeng/skeleton';
+import { StateService } from '@/state/state-service';
 
 @Component({
   selector: 'app-login-component',
@@ -23,6 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     ButtonModule, 
     RippleModule,
+    SkeletonModule,
     CommonModule,
     ReactiveFormsModule,
     FormsModule
@@ -34,18 +37,28 @@ export class LoginComponent implements OnInit{
 
   formGroup!: FormGroup;
   adminExist: boolean = false;
+  loading: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private personnelService: PersonnelService,
+    private stateService: StateService,
     private router: Router,
     private authService: AuthSecurityService,
     private messageService: MessageService
   ) { }
 
   async ngOnInit() {
-    this.adminExist = await this.checkAdminExist();
-    this.initForm();
+    this.loading = true; // Set loading to true at the start
+    try {
+      this.adminExist = await this.checkAdminExist();
+    } catch (error) {
+      console.error('Error during init:', error);
+      this.adminExist = false; // Fallback value
+    } finally {
+      this.initForm();
+      this.loading = false; // Always set to false after completion
+    }
   }
 
   async checkAdminExist(): Promise<boolean> {
@@ -68,10 +81,12 @@ export class LoginComponent implements OnInit{
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.minLength(1)]],
       rememberMe: [false],
-    })
+    });
   }
 
   login() {
+    this.stateService.setState({ loading: true, error: null });
+
     const authRequest: AuthRequest = {
       email: this.formGroup.get('email')?.value,
       password: this.formGroup.get('password')?.value
@@ -83,12 +98,16 @@ export class LoginComponent implements OnInit{
           this.router.navigate(['/']);
         },
         error: (error) => {
-          console.log(error);
+          this.stateService.setState({ loading: false, error: error });
+          console.log('error', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message
           });
+        }, 
+        complete: () => {
+          this.stateService.setState({ loading: false });
         }
       });
     } else {
@@ -97,12 +116,16 @@ export class LoginComponent implements OnInit{
           this.router.navigate(['/']);
         },
         error: (error) => {
+          this.stateService.setState({ loading: false, error: error });
           console.log(error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message
           });
+        },
+        complete: () => {
+          this.stateService.setState({ loading: false });
         }
       });
     }

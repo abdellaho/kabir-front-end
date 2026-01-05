@@ -1,6 +1,6 @@
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
+import { filteredTypePersonnel, filteredTypePersonnelAll, TypePersonnel } from '@/shared/enums/type-personnel';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -209,7 +209,7 @@ export class PersonnelComponent implements OnInit {
         this.formGroup = this.formBuilder.group({
             designation: ['', [Validators.required, Validators.min(1)]],
             cin: ['', [Validators.required, Validators.min(1)]],
-            login: [''],
+            email: ['', [Validators.email]],
             password: [''],
             typePersonnel: [0, [Validators.required, Validators.min(1)]],
             dateEntrer: [new Date()],
@@ -218,7 +218,7 @@ export class PersonnelComponent implements OnInit {
             adresse: [''],
             salaire: [null],
             etatComptePersonnel: [true]
-        }, { validators: [PersonnelValidator] });
+        }, { validators: [ PersonnelValidator ] });
     }
 
     initFormGroupRole() {
@@ -235,6 +235,7 @@ export class PersonnelComponent implements OnInit {
     }
 
     viderAjouter() {
+        this.typePersonnel = filteredTypePersonnelAll;
         this.openCloseDialogAjouter(true);
         this.submitted = false;
         this.personnel = initObjectPersonnel();
@@ -245,10 +246,16 @@ export class PersonnelComponent implements OnInit {
         if (personnelEdit && personnelEdit.id) {
             this.personnel = personnelEdit;
             if (operation === 1) {
+                if(this.personnel.typePersonnel === 1) {
+                    this.typePersonnel = filteredTypePersonnel;
+                } else{
+                    this.typePersonnel = filteredTypePersonnelAll;
+                }
+
                 this.formGroup.patchValue({
                     designation: this.personnel.designation,
                     cin: this.personnel.cin,
-                    login: this.personnel.login,
+                    email: this.personnel.email,
                     password: '', //this.personnel.password,
                     typePersonnel: this.personnel.typePersonnel,
                     dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
@@ -311,8 +318,9 @@ export class PersonnelComponent implements OnInit {
         if(type === 0){
             personnel.designation = formGroup.get('designation')?.value;
             personnel.cin = formGroup.get('cin')?.value;
-            personnel.login = formGroup.get('login')?.value;
-            personnel.password = formGroup.get('password')?.value;
+            personnel.email = formGroup.get('email')?.value;
+            personnel.login = formGroup.get('email')?.value;
+            personnel.passwordFake = formGroup.get('password')?.value;
             personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
             personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
             personnel.tel1 = formGroup.get('tel1')?.value;

@@ -17,6 +17,7 @@ export const APP_MESSAGES = {
       acceuil: 'Acceuil',
       livraison: 'Livraison',
       stockDepot: 'Stock Dépôt',
+      deconnexion: 'Déconnexion'
     },
     components: {
         ville: {
@@ -63,6 +64,7 @@ export const APP_MESSAGES = {
             designation: 'Designation',
             cin: 'CIN',
             login: 'Login',
+            email: 'Email',
             password: 'Password',
             typePersonnel: 'Type Personnel',
             dateEntrer: 'Date Entrer',

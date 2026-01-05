@@ -1,7 +1,7 @@
 // auth-security.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, timer, throwError } from 'rxjs';
-import { map, switchMap, tap, catchError, shareReplay } from 'rxjs/operators';
+import { Observable, BehaviorSubject, timer, throwError, of } from 'rxjs';
+import { map, switchMap, tap, catchError, shareReplay, finalize } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { StateService, UserState } from './state-service';
 import { AuthRequest } from './auth-request';
@@ -19,6 +19,7 @@ export class AuthSecurityService {
     
   private tokenRefreshTimer$: Observable<number> | null = null;
   private isAuthenticated$ = new BehaviorSubject<boolean>(false);
+  private userFetchInProgress = false; // Prevent multiple concurrent fetches
 
   constructor(
     private http: HttpClient,
@@ -31,23 +32,57 @@ export class AuthSecurityService {
   private initializeAuth(): void {
     const token = this.getToken();
     if (token && !this.isTokenExpired()) {
-      this.isAuthenticated$.next(true);
-      this.setupTokenRefresh();
+      // Fetch user details using token before setting authenticated
+      this.fetchCurrentUser().pipe(
+        tap(user => {
+          this.stateService.setState({ user, connected: true });
+          this.isAuthenticated$.next(true);
+          this.setupTokenRefresh();
+        }),
+        catchError(err => {
+          console.error('Failed to fetch user on init:', err);
+          this.clearAuth(); // Clear invalid session
+          return of(null);
+        }),
+        finalize(() => {
+          this.userFetchInProgress = false;
+        })
+      ).subscribe();
     } else {
       this.clearAuth();
     }
   }
 
+  private fetchCurrentUser(): Observable<UserState> {
+    if (this.userFetchInProgress) {
+      return of(this.stateService.getInitialUserState()); // Or handle pending, but simple guard here
+    }
+    this.userFetchInProgress = true;
+
+    const headers = { Authorization: `Bearer ${this.getToken()}` };
+    const refreshToken = this.getToken();
+    
+    return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.me, { refreshToken }, { headers }).pipe( // Assume '/me' endpoint returns { user: { id, email, role, permissions } }
+      map(response => ({
+        id: response.user.id,
+        email: response.user.email,
+        role: response.user.role,
+        permissions: response.user.permissions || [],
+        token: this.getToken() // Reuse current token
+      })),
+      catchError(this.handleAuthError.bind(this))
+    );
+  }
+
   register(authRequest: AuthRequest): Observable<UserState> {
     return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.register, authRequest).pipe(
       tap(response => {
-        console.log(response);
         this.storeAuthData(response);
         this.isAuthenticated$.next(true);
         this.setupTokenRefresh();
       }),
       map(response => this.extractUserState(response)),
-      tap(user => this.stateService.setState({ user })),
+      tap(user => this.stateService.setState({ user, connected: true })),
       catchError(this.handleAuthError.bind(this))
     );
   }
@@ -61,21 +96,14 @@ export class AuthSecurityService {
         this.setupTokenRefresh();
       }),
       map(response => this.extractUserState(response)),
-      tap(user => this.stateService.setState({ user })),
+      tap(user => this.stateService.setState({ user, connected: true })),
       catchError(this.handleAuthError.bind(this))
     );
   }
 
   // Logout
-  logout(): Observable<void> {
-    let refreshToken = { refreshToken: '' };
-    return this.http.post<void>(ENDPOINTS.PERSONNEL.auth.logout, refreshToken).pipe(
-      tap(() => this.clearAuth()),
-      catchError(err => {
-        this.clearAuth();
-        return throwError(() => err);
-      })
-    );
+  logout() {
+    this.clearAuth();
   }
 
   // Refresh token
@@ -168,7 +196,7 @@ export class AuthSecurityService {
     sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
     sessionStorage.removeItem(this.TOKEN_EXPIRY_KEY);
     this.isAuthenticated$.next(false);
-    this.stateService.setState({ user: null });
+    this.stateService.setState({ user: null, connected: false });
   }
 
   // Handle authentication errors
