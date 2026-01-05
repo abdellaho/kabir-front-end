@@ -61,6 +61,8 @@ export const APP_MESSAGES = {
         },
         personnel: {
             label: 'Personnel',
+            emailRequired: 'Email est obligatoire',
+            motDePasseRequired: 'Mot de passe est obligatoire',
             designation: 'Designation',
             cin: 'CIN',
             login: 'Login',

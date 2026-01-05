@@ -359,9 +359,42 @@ export class PersonnelComponent implements OnInit {
         }
     }
 
+    checkEmailAndPassword(autoriser: boolean): boolean {
+        if((this.formGroup.get('email')?.value !== null && this.formGroup.get('email')?.value.trim() !== '') 
+            && ((this.formGroup.get('motDePasse')?.value === null || this.formGroup.get('motDePasse')?.value.trim() === '') && (this.personnel.password === null || this.personnel.password.trim() === ''))){
+            autoriser = false;
+            this.messageService.add({
+                severity: 'error',
+                summary: this.msg.summary.labelError,
+                detail: this.msg.components.personnel.motDePasseRequired,
+                life: 3000
+            });
+            return autoriser;
+        }
+
+        if(this.formGroup.get('motDePasse')?.value !== null && this.formGroup.get('motDePasse')?.value.trim() !== '' && (this.formGroup.get('email')?.value === null || this.formGroup.get('email')?.value.trim() === '')){
+            autoriser = false;
+            this.messageService.add({
+                severity: 'error',
+                summary: this.msg.summary.labelError,
+                detail: this.msg.components.personnel.emailRequired,
+                life: 3000
+            });
+            return autoriser;
+        }
+
+        return autoriser;
+    }
+
     async miseAjour(): Promise<void> {
         this.loadingService.show();
         let personnelEdit: Personnel = { ...this.personnel };
+        let autoriser: boolean = true;
+        autoriser = this.checkEmailAndPassword(autoriser);
+        if (!autoriser) {
+            this.loadingService.hide();
+            return;
+        }
         personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit, 0);
         //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
         let trvErreur = await this.checkIfExists(personnelEdit);
