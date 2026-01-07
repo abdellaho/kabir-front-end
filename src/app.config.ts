@@ -13,12 +13,13 @@ import { SanitizationService } from '@/state/sanitization-service';
 import { ErrorHandlerService } from '@/state/error-handling-service';
 import { authInterceptorFn } from '@/state/auth.interceptor';
 import { bigIntInterceptor } from '@/shared/interceptors/big-int-interceptor';
+import { httpErrorInterceptor } from '@/shared/interceptors/http-error.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         MessageService,
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withFetch(), withInterceptors([ authInterceptorFn, bigIntInterceptor ])),
+        provideHttpClient(withFetch(), withInterceptors([ authInterceptorFn, bigIntInterceptor, httpErrorInterceptor ])),
         provideAnimationsAsync(),
         provideTranslateService({
             lang: 'fr',

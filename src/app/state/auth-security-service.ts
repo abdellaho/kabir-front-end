@@ -6,6 +6,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { StateService, UserState } from './state-service';
 import { AuthRequest } from './auth-request';
 import { ENDPOINTS } from '@/config/endpoints';
+import { Erreur } from '@/shared/classes/erreur';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class AuthSecurityService {
     private http: HttpClient,
     private stateService: StateService
   ) {
-    this.initializeAuth();
+    //this.initializeAuth();
   }
 
   // Initialize authentication state
@@ -70,7 +71,6 @@ export class AuthSecurityService {
         permissions: response.user.permissions || [],
         token: this.getToken() // Reuse current token
       })),
-      catchError(this.handleAuthError.bind(this))
     );
   }
 
@@ -79,11 +79,9 @@ export class AuthSecurityService {
       tap(response => {
         this.storeAuthData(response);
         this.isAuthenticated$.next(true);
-        this.setupTokenRefresh();
       }),
       map(response => this.extractUserState(response)),
       tap(user => this.stateService.setState({ user, connected: true })),
-      catchError(this.handleAuthError.bind(this))
     );
   }
 
@@ -93,11 +91,9 @@ export class AuthSecurityService {
       tap(response => {
         this.storeAuthData(response);
         this.isAuthenticated$.next(true);
-        this.setupTokenRefresh();
       }),
       map(response => this.extractUserState(response)),
       tap(user => this.stateService.setState({ user, connected: true })),
-      catchError(this.handleAuthError.bind(this))
     );
   }
 
@@ -109,15 +105,29 @@ export class AuthSecurityService {
   // Refresh token
   refreshToken(): Observable<any> {
     const refreshToken = this.getRefreshToken();
+    
     if (!refreshToken) {
-      return throwError(() => new Error('No refresh token available'));
+      return throwError(() => ({
+        status: 401,
+        message: 'No refresh token available',
+        error: 'Authentication Error',
+        timestamp: new Date().toISOString(),
+        path: ENDPOINTS.PERSONNEL.auth.refresh
+      } as Erreur));
     }
 
-    return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.refresh, { refreshToken }).pipe(
-      tap(response => this.storeAuthData(response)),
-      catchError(err => {
-        this.clearAuth();
-        return throwError(() => err);
+    return this.http.post(ENDPOINTS.PERSONNEL.auth.refresh, { refreshToken }).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem('access_token', response.token);
+        }
+        if (response.refreshToken) {
+          localStorage.setItem('refresh_token', response.refreshToken);
+        }
+      }),
+      catchError((error) => {
+        this.logout(); // Clear tokens if refresh fails
+        return throwError(() => error);
       })
     );
   }

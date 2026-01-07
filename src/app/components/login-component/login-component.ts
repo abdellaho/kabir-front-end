@@ -15,6 +15,8 @@ import { MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 import { StateService } from '@/state/state-service';
+import { Erreur } from '@/shared/classes/erreur';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login-component',
@@ -26,6 +28,7 @@ import { StateService } from '@/state/state-service';
     ButtonModule, 
     RippleModule,
     SkeletonModule,
+    ToastModule,
     CommonModule,
     ReactiveFormsModule,
     FormsModule
@@ -97,13 +100,13 @@ export class LoginComponent implements OnInit{
         next: (response) => {
           this.router.navigate(['/']);
         },
-        error: (error) => {
-          this.stateService.setState({ loading: false, error: error });
+        error: (error: Erreur) => {
+          this.stateService.setState({ loading: false, error: error.message });
           console.log('error', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error.message
+            detail: error.message
           });
         }, 
         complete: () => {
@@ -115,13 +118,13 @@ export class LoginComponent implements OnInit{
         next: (response) => {
           this.router.navigate(['/']);
         },
-        error: (error) => {
-          this.stateService.setState({ loading: false, error: error });
+        error: (error: Erreur) => {
+          this.stateService.setState({ loading: false, error: error.message });
           console.log(error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error.message
+            detail: error.message
           });
         },
         complete: () => {
