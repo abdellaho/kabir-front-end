@@ -3,6 +3,8 @@ import { environment } from "src/environments/environment";
 const BASE_URL = environment.production ? '/api' : 'http://localhost:8080/api';
 const FACTURE = `facture`;
 const BON_SORTIE = `bon-sortie`;
+const ACHAT_FACTURE = `achat-facture`;
+const ACHAT_SIMPLE = `achat-simple`;
 
 export const ENDPOINTS = {
   VILLE: {
@@ -165,14 +167,25 @@ export const ENDPOINTS = {
     getLastNumBonSortie: `${BASE_URL}/${BON_SORTIE}/last-num-bon-sortie`
   },
   ACHAT_SIMPLE: {
-    getAll: `${BASE_URL}/achat-simple`,
-    getById: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
-    getByIdRequest: (id: bigint) => `${BASE_URL}/achat-simple/response/${id}`,
-    create: `${BASE_URL}/achat-simple`,
-    update: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
-    delete: (id: bigint) => `${BASE_URL}/achat-simple/${id}`,
-    exist: `${BASE_URL}/achat-simple/exist`,
-    search: `${BASE_URL}/achat-simple/search`,
-    present: `${BASE_URL}/achat-simple/present`
-  }
+    getAll: `${BASE_URL}/${ACHAT_SIMPLE}`,
+    getById: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/response/${id}`,
+    create: `${BASE_URL}/${ACHAT_SIMPLE}`,
+    update: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/${id}`,
+    exist: `${BASE_URL}/${ACHAT_SIMPLE}/exist`,
+    search: `${BASE_URL}/${ACHAT_SIMPLE}/search`,
+    present: `${BASE_URL}/${ACHAT_SIMPLE}/present`,
+    getLastNumAchatSimple: `${BASE_URL}/${ACHAT_SIMPLE}/last-num-achat-simple`
+  },
+  ACHAT_FACTURE: {
+    getAll: `${BASE_URL}/${ACHAT_FACTURE}`,
+    getById: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
+    getByIdRequest: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/response/${id}`,
+    create: `${BASE_URL}/${ACHAT_FACTURE}`,
+    update: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
+    delete: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
+    search: `${BASE_URL}/${ACHAT_FACTURE}/search`,
+    getLastNumAchatFacture: `${BASE_URL}/${ACHAT_FACTURE}/last-num-achat-facture`
+  },
 };
