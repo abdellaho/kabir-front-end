@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
@@ -72,7 +72,7 @@ export class AchatFactureComponent {
   mapOfStock: Map<number, string> = new Map<number, string>();
   mapOfFournisseur: Map<number, string> = new Map<number, string>();
   dialogSupprimer: boolean = false;
-  dialogSupprimerDetAchatSimple: boolean = false;
+  dialogSupprimerDetAchatFacture: boolean = false;
   dialogAjouter: boolean = false;
   submitted: boolean = false;
   formGroup!: FormGroup;
@@ -173,117 +173,103 @@ export class AchatFactureComponent {
       });
   }
 
-  public void validerProduits() {
+  validerProduits() {
 		boolean trvErreur = controleProduit();
 		if (trvErreur == false) {
 			int qteachet = 0;
 			int Totqqte = 0;
 			int ug = 0;
 
-			if (detachatfacture.getQteacheter() > 0) {
-				qteachet = detachatfacture.getQteacheter();
+			if (this.detAchatFacture.qteacheter > 0) {
+				qteachet = this.detAchatFacture.qteacheter;
 			}
-			if (detachatfacture.getUnitegratuit() > 0) {
-				ug = detachatfacture.getUnitegratuit();
+			if (this.detAchatFacture.unitegratuit > 0) {
+				ug = this.detAchatFacture.unitegratuit;
 			}
-			Stock stockMod = stockService.findById(stock.getId());
-			Totqqte = stockMod.getQteFacturer() + (qteachet + ug);
-			stockMod.setQteFacturer(Totqqte);
-			detachatfacture.setStock(stockMod);
 
-			listDetachatfacture.add(detachatfacture);
-			idStock = 0;
+			this.listDetAchatFacture.push(this.detAchatFacture);
+			this.idStock = 0;
 			
-			achatfacture.setMantantTotTTC(giveMeTotalMntTTc(listDetachatfacture));
-			achatfacture.setMantantTotHT(giveMeTotalMntHT(listDetachatfacture));
-			achatfacture.setTva20(giveMeTotalMntTVA20(listDetachatfacture));
-			achatfacture.setTva7(giveMeTotalMntTVA7(listDetachatfacture));
+			this.achatFacture.setMantantTotTTC(this.giveMeTotalMntTTc(this.listDetAchatFacture));
+			this.achatFacture.setMantantTotHT(this.giveMeTotalMntHT(this.listDetAchatFacture));
+			this.achatFacture.setTva20(this.giveMeTotalMntTVA20(this.listDetAchatFacture));
+			this.achatFacture.setTva7(this.giveMeTotalMntTVA7(this.listDetAchatFacture));
 			
-			calculerMntTtc();
-			
-			PrimeFaces.current().executeScript("PF('dialogAddDetLivraison').hide()");
+			this.calculerMntTtc();
 		}
 	}
 
-  public void afficherProduitsAchatFac() {
-		if (idStock != 0) {
-			initObjectStock();
-			initObjectDetachatfacture();
-			
-			stock = stockService.findById(idStock);
-			
-			boolean existe = listDetachatfacture.stream().anyMatch(e -> e.getStock().getId().equals(idStock));
+  afficherProduitsAchatFac() {
+    if(this.formGroup.get('stockId')?.value > BigInt(0)) {
+        initObjectStock();
+        this.detAchatFacture = initObjectDetAchatFacture();
+        
+        let existe: boolean = this.listDetAchatFacture.find(e => e.stockId === this.formGroup.get('stockId')?.value);
 
-			if (existe == false) {
-				detachatfacture.setRemiseAchat(0.0);
-				detachatfacture.setQteacheter(0);
-				detachatfacture.setUnitegratuit(0);
-				detachatfacture.setPrixAchatHt(stock.getPahtGrossiste());
-				detachatfacture.setPrixVenteAchatHT(stock.getPvaht());
+        if (existe == false) {
+            this.detAchatFacture.setRemiseAchat(0.0);
+            this.detAchatFacture.setQteacheter(0);
+            this.detAchatFacture.setUnitegratuit(0);
+            this.detAchatFacture.setPrixAchatHt(stock.getPahtGrossiste());
+            this.detAchatFacture.setPrixVenteAchatHT(stock.getPvaht());
 
-				detachatfacture.setPrixAchatTtc(stock.getPattc());
-				detachatfacture.setPrixVenteTtc(stock.getPvttc());
-				detachatfacture.setBenepourcentage(stock.getBenifice());
+            this.detAchatFacture.setPrixAchatTtc(stock.getPattc());
+            this.detAchatFacture.setPrixVenteTtc(stock.getPvttc());
+            this.detAchatFacture.setBenepourcentage(stock.getBenifice());
 
-				detachatfacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
-				detachatfacture.setBenepourcentage(stock.getBenifice());
-				detachatfacture.setStock(stock);
+            this.detAchatFacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
+            this.detAchatFacture.setBenepourcentage(stock.getBenifice());
+            this.detAchatFacture.setStock(stock);
+        }
+    }
+}
 
-				PrimeFaces.current().executeScript("PF('dialogAddDetLivraison').show()");
-			} else {
-				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(bundle.getString("ceproduiExiste"));
-				context.addMessage(null, message);
-			}
-		}
-	}
-
-  public void viderAjouter() {
-		initObjectsAjout();
-		
-		int num = 0;
-		num = givemeMaxLiv();
-		String codbl = num + "";
-		String codeBLe = "";
-		if (codbl.length() == 1) {
-			codeBLe = "A000" + num;
-		} else if (codbl.length() == 2) {
-			codeBLe = "A00" + num;
-		}
-		if (codbl.length() >= 3) {
-			codeBLe = "A0" + num;
-		}
-		
-		achatfacture.setTypeReglment(1);
-		achatfacture.setNumAchat(num);
-		achatfacture.setCodeAF(codeBLe);
-		achatfacture.setManuelAutoMatique(1);
-	}
+  viderAjouter() {
+    initObjectsAjout();
+    
+    int num = 0;
+    num = givemeMaxLiv();
+    String codbl = num + "";
+    String codeBLe = "";
+    if (codbl.length() == 1) {
+        codeBLe = "A000" + num;
+    } else if (codbl.length() == 2) {
+        codeBLe = "A00" + num;
+    }
+    if (codbl.length() >= 3) {
+        codeBLe = "A0" + num;
+    }
+    
+    this.achatFacture.setTypeReglment(1);
+    this.achatFacture.setNumAchat(num);
+    this.achatFacture.setCodeAF(codeBLe);
+    this.achatFacture.setManuelAutoMatique(1);
+}
 	
-	public void miseAjour() {
+	/*public void miseAjour() {
 		boolean trvErreur = controle();
 		if(trvErreur == false) {
 			Repertoire repertoireFour = new Repertoire();
 			repertoireFour.setId(idRepertoireFournisseur);
-			achatfacture.setRepertoire(repertoireFour);
+			this.achatFacture.setRepertoire(repertoireFour);
 			
-			if(null != achatfacture.getId() && achatfacture.getId() != 0) {
-				//achatfacture.setMantantTotHTVA(achatfacture.getTvaArbtraire());
-				achatfacture.setTvaArbtraire(achatfacture.getMantantTotHTVA());
-				achatfactureService.modifier(achatfacture);
+			if(null != this.achatFacture.getId() && this.achatFacture.getId() != 0) {
+				//this.achatFacture.setMantantTotHTVA(this.achatFacture.getTvaArbtraire());
+				this.achatFacture.setTvaArbtraire(this.achatFacture.getMantantTotHTVA());
+				achatfactureService.modifier(this.achatFacture);
 				
-				supprimerListeDetAchatFact(achatfacture.getId());
-				ajouterDetAchatLivr(listDetachatfacture, achatfacture);
+				supprimerListeDetAchatFact(this.achatFacture.getId());
+				ajouterDetAchatLivr(this.listDetAchatFacture, this.achatFacture);
 				
 				PrimeFaces.current().executeScript("PF('dialogAjouter').hide();");
 			}else {
-				//achatfacture.setMantantTotHTVA(achatfacture.getTvaArbtraire());
-				achatfacture.setTvaArbtraire(achatfacture.getMantantTotHTVA());
-				achatfacture.setSysDate(new Date());
-				achatfacture.setEmployeOperateur(utilisateurConnecte);
+				//this.achatFacture.setMantantTotHTVA(this.achatFacture.getTvaArbtraire());
+				this.achatFacture.setTvaArbtraire(this.achatFacture.getMantantTotHTVA());
+				this.achatFacture.setSysDate(new Date());
+				this.achatFacture.setEmployeOperateur(utilisateurConnecte);
 				
-				achatfactureService.ajouter(achatfacture);
-				ajouterDetAchatLivr(listDetachatfacture, achatfacture);
+				achatfactureService.ajouter(this.achatFacture);
+				ajouterDetAchatLivr(this.listDetAchatFacture, this.achatFacture);
 			}
 			
 			initListDetachatfacture();
@@ -291,7 +277,7 @@ export class AchatFactureComponent {
 			initObjectsAjout();
 			rechercher();
 		}
-	}
+	}*/
 
   onChangeIdStock() {
       if(this.formGroup.get('stockId')?.value > BigInt(0)) {
@@ -312,19 +298,18 @@ export class AchatFactureComponent {
           });
       
           if(!isExistStock) {
-            detachatfacture.setRemiseAchat(0.0);
-				detachatfacture.setQteacheter(0);
-				detachatfacture.setUnitegratuit(0);
-				detachatfacture.setPrixAchatHt(stock.getPahtGrossiste());
-				detachatfacture.setPrixVenteAchatHT(stock.getPvaht());
+            this.detAchatFacture.setRemiseAchat(0.0);
+				this.detAchatFacture.setQteacheter(0);
+				this.detAchatFacture.setUnitegratuit(0);
+				this.detAchatFacture.setPrixAchatHt(stock.getPahtGrossiste());
+				this.detAchatFacture.setPrixVenteAchatHT(stock.getPvaht());
 
-				detachatfacture.setPrixAchatTtc(stock.getPattc());
-				detachatfacture.setPrixVenteTtc(stock.getPvttc());
-				detachatfacture.setBenepourcentage(stock.getBenifice());
+				this.detAchatFacture.setPrixAchatTtc(stock.getPattc());
+				this.detAchatFacture.setPrixVenteTtc(stock.getPvttc());
+				this.detAchatFacture.setBenepourcentage(stock.getBenifice());
 
-				detachatfacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
-				detachatfacture.setBenepourcentage(stock.getBenifice());
-				detachatfacture.setStock(stock);
+				this.detAchatFacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
+				this.detAchatFacture.setStock(stock);
 
               this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
               this.formGroup.patchValue({
@@ -364,7 +349,7 @@ export class AchatFactureComponent {
           if (operation === 1) {
               this.openCloseDialogAjouter(true);
           } else if (operation === 2) {
-              this.openCloseDialogSupprimerDetAchatSimple(true);
+              this.openCloseDialogSupprimerDetAchatFacture(true);
           }
       }
   }
@@ -382,267 +367,245 @@ export class AchatFactureComponent {
         });
   }
 
-  public void validerProduits() {
-		boolean trvErreur = controleProduit();
-		if (trvErreur == false) {
-			int qteachet = 0;
-			int Totqqte = 0;
-			int ug = 0;
+    validerProduits() {
+        let qteachet: number = 0;
+        let Totqqte: number = 0;
+        let ug: number = 0;
 
-			if (detachatfacture.getQteacheter() > 0) {
-				qteachet = detachatfacture.getQteacheter();
-			}
-			if (detachatfacture.getUnitegratuit() > 0) {
-				ug = detachatfacture.getUnitegratuit();
-			}
-			Stock stockMod = stockService.findById(stock.getId());
-			Totqqte = stockMod.getQteFacturer() + (qteachet + ug);
-			stockMod.setQteFacturer(Totqqte);
-			detachatfacture.setStock(stockMod);
+        if (this.detAchatFacture.qteacheter > 0) {
+            qteachet = this.detAchatFacture.qteacheter;
+        }
+        if (this.detAchatFacture.unitegratuit > 0) {
+            ug = this.detAchatFacture.unitegratuit;
+        }
 
-			listDetachatfacture.add(detachatfacture);
-			idStock = 0;
-			
-			achatfacture.setMantantTotTTC(giveMeTotalMntTTc(listDetachatfacture));
-			achatfacture.setMantantTotHT(giveMeTotalMntHT(listDetachatfacture));
-			achatfacture.setTva20(giveMeTotalMntTVA20(listDetachatfacture));
-			achatfacture.setTva7(giveMeTotalMntTVA7(listDetachatfacture));
-			
-			calculerMntTtc();
-			
-			PrimeFaces.current().executeScript("PF('dialogAddDetLivraison').hide()");
-		}
-	}
+        this.listDetAchatFacture.push(this.detAchatFacture);
+        
+        this.achatFacture.mantantTotTTC = this.giveMeTotalMntTTc(this.listDetAchatFacture);
+        this.achatFacture.mantantTotHT = this.giveMeTotalMntHT(this.listDetAchatFacture);
+        this.achatFacture.tva20 = this.giveMeTotalMntTVA20(this.listDetAchatFacture);
+        this.achatFacture.tva7 = this.giveMeTotalMntTVA7(this.listDetAchatFacture);
+        
+        this.calculerMntTtc();
+    }
 
-  public void calculerMontProd() {
-		if (detachatfacture != null) {
-			double prv = 0.0;
-			double prattc = 0.0;
-			int qteLivr = 0;
-			double rmiseLivr = 0.0;
-			double mntPro = 0.0;
+  calculerMontProd() {
+		if (this.detAchatFacture != null) {
+			let prv = 0.0;
+			let prattc = 0.0;
+			let qteLivr = 0;
+			let rmiseLivr = 0.0;
+			let mntPro = 0.0;
 			
-			if (detachatfacture.getPrixVenteTtc() > 0.0) {
-				prv = detachatfacture.getPrixVenteTtc();
+			if (this.detAchatFacture.prixVenteTtc > 0.0) {
+				prv = this.detAchatFacture.prixVenteTtc;
 			}
-			if (detachatfacture.getPrixAchatTtc() > 0.0) {
-				prattc = detachatfacture.getPrixAchatTtc();
+			if (this.detAchatFacture.prixAchatTtc > 0.0) {
+				prattc = this.detAchatFacture.prixAchatTtc;
 			}
-			if (detachatfacture.getQteacheter() > 0) {
-				qteLivr = detachatfacture.getQteacheter();
+			if (this.detAchatFacture.qteacheter > 0) {
+				qteLivr = this.detAchatFacture.qteacheter;
 			}
-			if (detachatfacture.getRemiseAchat() > 0) {
-				rmiseLivr = detachatfacture.getRemiseAchat();
+			if (this.detAchatFacture.remiseAchat > 0) {
+				rmiseLivr = this.detAchatFacture.remiseAchat;
 			}
 
-			if (detachatfacture.getRemiseAchat() == 0.0 && detachatfacture.getUnitegratuit() == 0) {
+			if (this.detAchatFacture.remiseAchat == 0.0 && this.detAchatFacture.unitegratuit == 0) {
 				mntPro = (prattc * qteLivr) - (((prattc * qteLivr) * rmiseLivr) / 100);
 			} else {
 				mntPro = (prv * qteLivr) - (((prv * qteLivr) * rmiseLivr) / 100);
 			}
 
-			detachatfacture.setMantantTTC(mntPro);
-			if (detachatfacture.getStock().getTva() == 7) {
-				double tv7 = 1.07;
-				double prhht = detachatfacture.getMantantTTC() / tv7;
-				detachatfacture.setMantantHt(prhht);
-				detachatfacture.setTva7(detachatfacture.getMantantTTC() - detachatfacture.getMantantHt());
+			this.detAchatFacture.mantantTTC = mntPro;
+			if (this.detAchatFacture.stock?.tva == 7) {
+				let tv7 = 1.07;
+				let prhht = this.detAchatFacture.mantantTTC / tv7;
+				this.detAchatFacture.mantantHt = prhht;
+				this.detAchatFacture.tva7 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
 
-				detachatfacture.setTva20(0.0);
+				this.detAchatFacture.tva20 = 0.0;
 			} else {
-				double tv7 = 1.2;
-				double prhht = detachatfacture.getMantantTTC() / tv7;
-				detachatfacture.setMantantHt(prhht);
-				detachatfacture.setTva20(detachatfacture.getMantantTTC() - detachatfacture.getMantantHt());
+				let tv7 = 1.2;
+				let prhht = this.detAchatFacture.mantantTTC / tv7;
+				this.detAchatFacture.mantantHt = prhht;
+				this.detAchatFacture.tva20 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
 
-				detachatfacture.setTva7(0.0);
+				this.detAchatFacture.tva7 = 0.0;
 			}
-			
-			int Totqqte = 0;
-
-			Stock stockMod = stockService.findById(stock.getId());
-			Totqqte = stockMod.getQteStock() - qteLivr;
-			stockMod.setQteStock(Totqqte);
-			
-			detachatfacture.setStock(stockMod);
 		}
 	}
 	
-	public void calculerDroitSuuplemntaire() {
-		if (achatfacture.getId() != null && achatfacture.getId() != 0) {
-			double MNTTCCC = 0.0;
-			double supAncien = 0.0;
-			Achatfacture acht = achatfactureService.findById(achatfacture.getId());
+	calculerDroitSuuplemntaire() {
+		if (this.achatFacture.id) {
+			let MNTTCCC = 0.0;
+			let supAncien = 0.0;
+			let acht = this.achatFactureService.findById(this.achatFacture.id);
 			MNTTCCC = acht.getMantantTotTTC();
 			if (acht.getMontantDroitSupplementaire() != 0) {
 				supAncien = acht.getMontantDroitSupplementaire();
 			}
-			if (achatfacture != null && achatfacture.getMontantDroitSupplementaire() != 0) {
-				if (achatfacture.getMontantDroitSupplementaire() - supAncien == 0) {
-					if (achatfacture.getMantantTotTTC() == 0) {
-						achatfacture.setMantantTotTTC(achatfacture.getMontantDroitSupplementaire());
+			if (this.achatFacture != null && this.achatFacture.montantDroitSupplementaire != 0) {
+				if (this.achatFacture.montantDroitSupplementaire - supAncien == 0) {
+					if (this.achatFacture.mantantTotTTC == 0) {
+						this.achatFacture.mantantTotTTC = this.achatFacture.montantDroitSupplementaire;
 					} else {
-						achatfacture.setMantantTotTTC(acht.getMantantTotTTC());
+						this.achatFacture.mantantTotTTC = acht.getMantantTotTTC();
 					}
 				} else {
-					double mnttvvaa = 0.0;
-					if (achatfacture.getMontantTVA7() != 0) {
-						mnttvvaa += achatfacture.getMontantTVA7();
+					let mnttvvaa = 0.0;
+					if (this.achatFacture.montantTVA7 != 0) {
+						mnttvvaa += this.achatFacture.montantTVA7;
 					}
-					if (achatfacture.getMontantTVA10() != 0) {
-						mnttvvaa += achatfacture.getMontantTVA10();
+					if (this.achatFacture.montantTVA10 != 0) {
+						mnttvvaa += this.achatFacture.montantTVA10;
 					}
-					if (achatfacture.getMontantTVA14() != 0) {
-						mnttvvaa += achatfacture.getMontantTVA14();
+					if (this.achatFacture.montantTVA14 != 0) {
+						mnttvvaa += this.achatFacture.montantTVA14;
 					}
-					if (achatfacture.getMontantTVA20() != 0) {
-						mnttvvaa += achatfacture.getMontantTVA20();
+					if (this.achatFacture.montantTVA20 != 0) {
+						mnttvvaa += this.achatFacture.montantTVA20;
 					}
-					double droSup = achatfacture.getMontantDroitSupplementaire();
+					let droSup = this.achatFacture.montantDroitSupplementaire;
 					
-					achatfacture.setTvaArbtraire(mnttvvaa);
-					achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + mnttvvaa + droSup);
+					this.achatFacture.tvaArbtraire = mnttvvaa;
+					this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + mnttvvaa + droSup;
 				}
 			} else {
-				achatfacture.setMantantTotTTC(MNTTCCC - supAncien);
-				if (achatfacture.getMontantTVA7() != 0) {
-					calculerTva7();
-				} else if (achatfacture.getMontantTVA10() != 0) {
-					calculerTva10();
-				} else if (achatfacture.getMontantTVA14() != 0) {
-					calculerTva14();
-				} else if (achatfacture.getMontantTVA20() != 0) {
-					calculerTva20();
+				this.achatFacture.mantantTotTTC = MNTTCCC - supAncien;
+				if (this.achatFacture.montantTVA7 != 0) {
+					this.calculerTva7();
+				} else if (this.achatFacture.montantTVA10 != 0) {
+					this.calculerTva10();
+				} else if (this.achatFacture.montantTVA14 != 0) {
+					this.calculerTva14();
+				} else if (this.achatFacture.montantTVA20 != 0) {
+					this.calculerTva20();
 				} else {
-					calculerAllTva();
+					this.calculerAllTva();
 				}
 			}
 		} else {
-			if (achatfacture != null && achatfacture.getMontantDroitSupplementaire() != 0) {
-				calculerAllTva();
+			if (this.achatFacture != null && this.achatFacture.montantDroitSupplementaire != 0) {
+				this.calculerAllTva();
 			} else {
-				if (achatfacture.getMontantTVA7() != 0) {
-					calculerTva7();
-				} else if (achatfacture.getMontantTVA10() != 0) {
-					calculerTva10();
-				} else if (achatfacture.getMontantTVA14() != 0) {
-					calculerTva14();
-				} else if (achatfacture.getMontantTVA20() != 0) {
-					calculerTva20();
+				if (this.achatFacture.montantTVA7 != 0) {
+					this.calculerTva7();
+				} else if (this.achatFacture.montantTVA10 != 0) {
+					this.calculerTva10();
+				} else if (this.achatFacture.montantTVA14 != 0) {
+					this.calculerTva14();
+				} else if (this.achatFacture.montantTVA20 != 0) {
+					this.calculerTva20();
 				} else {
-					calculerAllTva();
+					this.calculerAllTva();
 				}
 			}
 		}
 	}
 
-	public void calculerTva7() {
-		if (achatfacture != null) {
-			if (achatfacture.getMontantTVA20() != 0 || achatfacture.getMontantTVA14() != 0 || achatfacture.getMontantTVA10() != 0) {
-				calculerAllTva();
+	calculerTva7() {
+		if (this.achatFacture != null) {
+			if (this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA14 != 0 || this.achatFacture.montantTVA10 != 0) {
+				this.calculerAllTva();
 			} else {
-				double drSup = achatfacture.getMontantDroitSupplementaire();
+				let drSup = this.achatFacture.montantDroitSupplementaire;
 				
-				achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + achatfacture.getMontantTVA7() + drSup);
-				achatfacture.setTvaArbtraire(achatfacture.getMontantTVA7());
+				this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA7 + drSup;
+				this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA7;
 			}
 		}
 	}
 
-	public void calculerTva20() {
-		if (achatfacture != null) {
-			if (achatfacture.getMontantTVA7() != 0 || achatfacture.getMontantTVA14() != 0 || achatfacture.getMontantTVA10() != 0) {
-				calculerAllTva();
+	calculerTva20() {
+		if (this.achatFacture != null) {
+			if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA14 != 0 || this.achatFacture.montantTVA10 != 0) {
+				this.calculerAllTva();
 			} else {
-				double drSup = achatfacture.getMontantDroitSupplementaire();
+				let drSup = this.achatFacture.montantDroitSupplementaire;
 				
-				achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + achatfacture.getMontantTVA20() + drSup);
-				achatfacture.setTvaArbtraire(achatfacture.getMontantTVA20());
+				this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA20 + drSup;
+				this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA20;
 			}
 		}
 	}
 
-	public void calculerTva10() {
-		if (achatfacture != null) {
-			if (achatfacture.getMontantTVA7() != 0 || achatfacture.getMontantTVA20() != 0 || achatfacture.getMontantTVA14() != 0) {
-				calculerAllTva();
+	calculerTva10() {
+		if (this.achatFacture != null) {
+			if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA14 != 0) {
+				this.calculerAllTva();
 			} else {
-				double drSup = achatfacture.getMontantDroitSupplementaire();
+				let drSup = this.achatFacture.montantDroitSupplementaire;
 				
-				achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + achatfacture.getMontantTVA10() + drSup);
-				achatfacture.setTvaArbtraire(achatfacture.getMontantTVA10());
+				this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA10 + drSup;
+				this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA10;
 			}
 		}
 	}
 
-	public void calculerTva14() {
-		if (achatfacture != null) {
-			if (achatfacture.getMontantTVA7() != 0 || achatfacture.getMontantTVA20() != 0 || achatfacture.getMontantTVA10() != 0) {
-				calculerAllTva();
+	calculerTva14() {
+		if (this.achatFacture != null) {
+			if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA10 != 0) {
+				this.calculerAllTva();
 			} else {
-				double drSup = achatfacture.getMontantDroitSupplementaire();
+				let drSup = this.achatFacture.montantDroitSupplementaire;
 				
-				achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + achatfacture.getMontantTVA14() + drSup);
-				achatfacture.setTvaArbtraire(achatfacture.getMontantTVA14());
+				this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA14 + drSup;
+				this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA14;
 			}
 		}
 	}
 
-	public void calculerAllTva() {
-		if (achatfacture != null && achatfacture.getMantantTotHT() != 0) {
-			double mnttvvaa = 0.0;
-			if (achatfacture.getMontantTVA7() != 0) {
-				mnttvvaa += achatfacture.getMontantTVA7();
+	calculerAllTva() {
+		if (this.achatFacture != null && this.achatFacture.mantantTotHT != 0) {
+			let mnttvvaa = 0.0;
+			if (this.achatFacture.montantTVA7 != 0) {
+				mnttvvaa += this.achatFacture.montantTVA7;
 			}
-			if (achatfacture.getMontantTVA10() != 0) {
-				mnttvvaa += achatfacture.getMontantTVA10();
+			if (this.achatFacture.montantTVA10 != 0) {
+				mnttvvaa += this.achatFacture.montantTVA10;
 			}
-			if (achatfacture.getMontantTVA14() != 0) {
-				mnttvvaa += achatfacture.getMontantTVA14();
+			if (this.achatFacture.montantTVA14 != 0) {
+				mnttvvaa += this.achatFacture.montantTVA14;
 			}
-			if (achatfacture.getMontantTVA20() != 0) {
-				mnttvvaa += achatfacture.getMontantTVA20();
+			if (this.achatFacture.montantTVA20 != 0) {
+				mnttvvaa += this.achatFacture.montantTVA20;
 			}
-			double droSup = achatfacture.getMontantDroitSupplementaire();
-			achatfacture.setTvaArbtraire(mnttvvaa);
-			achatfacture.setMantantTotTTC(achatfacture.getMantantTotHT() + mnttvvaa + droSup);
+			let droSup = this.achatFacture.montantDroitSupplementaire;
+			this.achatFacture.tvaArbtraire = mnttvvaa;
+			this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + mnttvvaa + droSup;
 		}
 	}
 
-  private double giveMeTotalMntHT(List<Detachatfacture> listDetachatfacture2) {
-		double mntp = 0.0;
-		for (Detachatfacture detachatfactures : listDetachatfacture2) {
-			mntp += detachatfactures.getMantantHt();
+  private giveMeTotalMntHT(listDetachatfacture2: DetAchatFacture[]) {
+		let mntp = 0.0;
+		for (let detachatfactures of listDetachatfacture2) {
+			mntp += detachatfactures.mantantHt;
 		}
-		double tot = methodCommun.convertrDouble(mntp);
-		return tot;
+		return mntp;
 	}
 
-	private double giveMeTotalMntTTc(List<Detachatfacture> listDetachatfacture2) {
-		double mntp = 0.0;
-		for (Detachatfacture detachatfactures : listDetachatfacture2) {
-			mntp += detachatfactures.getMantantTTC();
+	private giveMeTotalMntTTc(listDetachatfacture2: DetAchatFacture[]) {
+		let mntp = 0.0;
+		for (let detachatfactures of listDetachatfacture2) {
+			mntp += detachatfactures.mantantTTC;
 		}
-		double tot = methodCommun.convertrDouble(mntp);
-		return tot;
+		return mntp;
 	}
 	
-	private double giveMeTotalMntTVA7(List<Detachatfacture> listDetachatfacture2) {
-		double mntp = 0.0;
-		for (Detachatfacture detachatfactures : listDetachatfacture2) {
-			mntp += detachatfactures.getTva7();
+	private giveMeTotalMntTVA7(listDetachatfacture2: DetAchatFacture[]) {
+		let mntp = 0.0;
+		for (let detachatfactures of listDetachatfacture2) {
+			mntp += detachatfactures.tva7;
 		}
-		double tot = methodCommun.convertrDouble(mntp);
-		return tot;
+		return mntp;
 	}
 
-	private double giveMeTotalMntTVA20(List<Detachatfacture> listDetachatfacture2) {
-		double mntp = 0.0;
-		for (Detachatfacture detachatfactures : listDetachatfacture2) {
-			mntp += detachatfactures.getTva20();
+	private giveMeTotalMntTVA20(listDetachatfacture2: DetAchatFacture[]) {
+		let mntp = 0.0;
+		for (let detachatfactures of listDetachatfacture2) {
+			mntp += detachatfactures.tva20;
 		}
-		double tot = methodCommun.convertrDouble(mntp);
-		return tot;
+		return mntp;
 	}
 
   validerDetAchatFacture() {
@@ -650,13 +613,11 @@ export class AchatFactureComponent {
           let detAchatFacture: DetAchatFacture = initObjectDetAchatFacture();
           detAchatFacture.stockId = this.formGroup.get('stockId')?.value;
           detAchatFacture.qteacheter = this.formGroup.get('qte')?.value;
-          detAchatFacture.pr = this.formGroup.get('prixVente')?.value;
           detAchatFacture.remiseAchat = this.formGroup.get('remiseAchat')?.value;
           detAchatFacture.unitegratuit = this.formGroup.get('unitegratuit')?.value;
           
           let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
           detAchatFacture.stock = stock;
-          detAchatFacture.montant = (detAchatFacture.qte * detAchatFacture.prixVente) - (detAchatFacture.qte * detAchatFacture.prixVente * detAchatFacture.remise * 0.01);
 
           this.listDetAchatFacture.push(detAchatFacture);
           
@@ -669,7 +630,7 @@ export class AchatFactureComponent {
       this.listDetAchatFacture = this.listDetAchatFacture.filter((detAchatFacture: DetAchatFacture) => detAchatFacture.stockId !== this.detAchatFacture.stockId);
       this.calculerTotal();
       this.formGroup.updateValueAndValidity();
-      this.openCloseDialogSupprimerDetAchatSimple(false);
+      this.openCloseDialogSupprimerDetAchatFacture(false);
   }
 
   openCloseDialogAjouter(openClose: boolean): void {
@@ -706,7 +667,7 @@ export class AchatFactureComponent {
               this.achatFactureService.getByIdRequest(achatSimpleEdit.id).subscribe({
                   next: (data: AchatFactureRequest) => {
                       this.achatFacture = data.achatFacture;
-                      this.listDetAchatFacture = data.detAchatSimples;
+                      this.listDetAchatFacture = data.detAchatFactures;
 
                       this.listDetAchatFacture.forEach((detAchatFacture: DetAchatFacture) => {
                           if(detAchatFacture.stockId && detAchatFacture.stockId !== BigInt(0)) {
