@@ -173,77 +173,49 @@ export class AchatFactureComponent {
       });
   }
 
-  validerProduits() {
-		boolean trvErreur = controleProduit();
-		if (trvErreur == false) {
-			int qteachet = 0;
-			int Totqqte = 0;
-			int ug = 0;
-
-			if (this.detAchatFacture.qteacheter > 0) {
-				qteachet = this.detAchatFacture.qteacheter;
-			}
-			if (this.detAchatFacture.unitegratuit > 0) {
-				ug = this.detAchatFacture.unitegratuit;
-			}
-
-			this.listDetAchatFacture.push(this.detAchatFacture);
-			this.idStock = 0;
-			
-			this.achatFacture.setMantantTotTTC(this.giveMeTotalMntTTc(this.listDetAchatFacture));
-			this.achatFacture.setMantantTotHT(this.giveMeTotalMntHT(this.listDetAchatFacture));
-			this.achatFacture.setTva20(this.giveMeTotalMntTVA20(this.listDetAchatFacture));
-			this.achatFacture.setTva7(this.giveMeTotalMntTVA7(this.listDetAchatFacture));
-			
-			this.calculerMntTtc();
-		}
-	}
-
   afficherProduitsAchatFac() {
     if(this.formGroup.get('stockId')?.value > BigInt(0)) {
-        initObjectStock();
+        let stock: Stock = this.listStock.find(e => e.id === this.formGroup.get('stockId')?.value) || initObjectStock();;
         this.detAchatFacture = initObjectDetAchatFacture();
         
-        let existe: boolean = this.listDetAchatFacture.find(e => e.stockId === this.formGroup.get('stockId')?.value);
+        let existe: boolean = this.listDetAchatFacture.some(e => e.stockId === this.formGroup.get('stockId')?.value);
 
         if (existe == false) {
-            this.detAchatFacture.setRemiseAchat(0.0);
-            this.detAchatFacture.setQteacheter(0);
-            this.detAchatFacture.setUnitegratuit(0);
-            this.detAchatFacture.setPrixAchatHt(stock.getPahtGrossiste());
-            this.detAchatFacture.setPrixVenteAchatHT(stock.getPvaht());
+            this.detAchatFacture.remiseAchat = 0;
+            this.detAchatFacture.qteacheter = 0;
+            this.detAchatFacture.unitegratuit = 0;
+            this.detAchatFacture.prixAchatHt = stock?.pahtGrossiste;
+            this.detAchatFacture.prixVenteAchatHT = stock?.pvaht;
 
-            this.detAchatFacture.setPrixAchatTtc(stock.getPattc());
-            this.detAchatFacture.setPrixVenteTtc(stock.getPvttc());
-            this.detAchatFacture.setBenepourcentage(stock.getBenifice());
+            this.detAchatFacture.prixAchatTtc = stock?.pattc;
+            this.detAchatFacture.prixVenteTtc = stock?.pvttc;
+            this.detAchatFacture.benepourcentage = stock?.benifice;
 
-            this.detAchatFacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
-            this.detAchatFacture.setBenepourcentage(stock.getBenifice());
-            this.detAchatFacture.setStock(stock);
+            this.detAchatFacture.beneficeDH = stock?.pvttc - stock?.pattc;
+            this.detAchatFacture.benepourcentage = stock?.benifice;
+            this.detAchatFacture.stock = stock;
         }
     }
 }
 
-  viderAjouter() {
-    initObjectsAjout();
-    
-    int num = 0;
-    num = givemeMaxLiv();
-    String codbl = num + "";
-    String codeBLe = "";
-    if (codbl.length() == 1) {
+  viderAjouter1() {
+    let num = 0;
+    num = this.givemeMaxLiv();
+    let codbl = num + "";
+    let codeBLe = "";
+    if (codbl.length == 1) {
         codeBLe = "A000" + num;
-    } else if (codbl.length() == 2) {
+    } else if (codbl.length == 2) {
         codeBLe = "A00" + num;
     }
-    if (codbl.length() >= 3) {
+    if (codbl.length >= 3) {
         codeBLe = "A0" + num;
     }
     
-    this.achatFacture.setTypeReglment(1);
-    this.achatFacture.setNumAchat(num);
-    this.achatFacture.setCodeAF(codeBLe);
-    this.achatFacture.setManuelAutoMatique(1);
+    this.achatFacture.typeReglment = 1;
+    this.achatFacture.numAchat = num;
+    this.achatFacture.codeAF = codeBLe;
+    this.achatFacture.manuelAutoMatique = 1;
 }
 	
 	/*public void miseAjour() {
@@ -281,8 +253,8 @@ export class AchatFactureComponent {
 
   onChangeIdStock() {
       if(this.formGroup.get('stockId')?.value > BigInt(0)) {
+        let stock: Stock = this.listStock.find(e => e.id === this.formGroup.get('stockId')?.value) || initObjectStock();
           this.isValid = false;
-          this.stock = initObjectStock();
           let isExistStock: boolean = false;
 
           this.listDetAchatFacture.forEach((detAchatFacture: DetAchatFacture) => {
@@ -298,18 +270,18 @@ export class AchatFactureComponent {
           });
       
           if(!isExistStock) {
-            this.detAchatFacture.setRemiseAchat(0.0);
-				this.detAchatFacture.setQteacheter(0);
-				this.detAchatFacture.setUnitegratuit(0);
-				this.detAchatFacture.setPrixAchatHt(stock.getPahtGrossiste());
-				this.detAchatFacture.setPrixVenteAchatHT(stock.getPvaht());
+            this.detAchatFacture.remiseAchat = 0.0;
+				this.detAchatFacture.qteacheter = 0;
+				this.detAchatFacture.unitegratuit = 0;
+				this.detAchatFacture.prixAchatHt = stock.pahtGrossiste;
+				this.detAchatFacture.prixVenteAchatHT = stock.pvaht;
 
-				this.detAchatFacture.setPrixAchatTtc(stock.getPattc());
-				this.detAchatFacture.setPrixVenteTtc(stock.getPvttc());
-				this.detAchatFacture.setBenepourcentage(stock.getBenifice());
+				this.detAchatFacture.prixAchatTtc = stock.pattc;
+				this.detAchatFacture.prixVenteTtc = stock.pvttc;
+				this.detAchatFacture.benepourcentage = stock.benifice;
 
-				this.detAchatFacture.setBeneficeDH(stock.getPvttc() - stock.getPattc());
-				this.detAchatFacture.setStock(stock);
+				this.detAchatFacture.beneficeDH = stock.pvttc - stock.pattc;
+				this.detAchatFacture.stock = stock;
 
               this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
               this.formGroup.patchValue({
@@ -355,15 +327,15 @@ export class AchatFactureComponent {
   }
 
   calculerTotal() {
-        let montant: number = 0;
+        let mantantTTC: number = 0;
         if(this.listDetAchatFacture && this.listDetAchatFacture.length > 0) {
             this.listDetAchatFacture.forEach((detAchatFacture: DetAchatFacture) => {
-                montant += detAchatFacture.montant;
+                mantantTTC += detAchatFacture.mantantTTC;
             });
         }
 
         this.formGroup.patchValue({
-            montant,
+            mantantTTC,
         });
   }
 
@@ -386,7 +358,7 @@ export class AchatFactureComponent {
         this.achatFacture.tva20 = this.giveMeTotalMntTVA20(this.listDetAchatFacture);
         this.achatFacture.tva7 = this.giveMeTotalMntTVA7(this.listDetAchatFacture);
         
-        this.calculerMntTtc();
+        //this.calculerMntTtc();
     }
 
   calculerMontProd() {
