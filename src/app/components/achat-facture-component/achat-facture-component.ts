@@ -28,6 +28,7 @@ import { MessageService } from 'primeng/api';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { LoadingService } from '@/shared/services/loading-service';
 import { OperationType } from '@/shared/enums/operation-type';
+import { AchatFactureValidator } from '@/validators/achat-facture-validator';
 
 @Component({
   selector: 'app-achat-facture-component',
@@ -56,9 +57,15 @@ export class AchatFactureComponent {
   
   //Achat/BL
   //Buttons : Ajouter, Rechercher, Actualiser, Consulter
-  //Tableau --> AchatBL ---> Date BL | Fournisseur | N BL Externe | Montant TTC | Actions
-  // Ajouter --> Modal --> Date BL + Fournisseur + N BL Externe + Montant TTC + combo Produit + List Produits
-  //Designation + Qte Stock + prix vente + qte + uniteGratuite + remise
+  //Tableau --> Fournisseur ---> Date | ICE | Date paiement |Paiement Type | Cheque N | N° Fature |  MT TTC | Actions
+  //Ajouter --> Modal --> Fournisseur + ICE + N° Facture + Date Facture + Date Paiement + Paiement Type + Cheque N 
+  // || TVA7 Manuelle + TVA10 Manuelle + TVA12 Manuelle + TVA14 Manuelle + TVA20 Manuelle +  HT 
+  // || HT7 + HT10 + HT12 + HT14 + HT20 + HT + Total HT
+  // || TVA7 + TVA10 + TVA12 + TVA14 + TVA20 + TVA + Total TVA
+  // || TTC7 + TTC10 + TTC12 + TTC14 + TTC20 + Total TTC
+  // Total MT Produit
+  // || combo Produit + List Produits
+  //Designation + St Facturé (qte facturé) + qte Acheté + uniteGratuite + Mt Produit + Action (delete)
 
   isValid: boolean = false;
   listStock: Stock[] = [];
@@ -105,26 +112,56 @@ export class AchatFactureComponent {
   }
 
   initFormGroup() {
+    /*
+    Fournisseur + ICE + N° Facture + Date Facture + Date Paiement + Paiement Type + Cheque N 
+  // || TVA7 Manuelle + TVA10 Manuelle + TVA12 Manuelle + TVA14 Manuelle + TVA20 Manuelle +  HT 
+  // || HT7 + HT10 + HT12 + HT14 + HT20 + HT + Total HT
+  // || TVA7 + TVA10 + TVA12 + TVA14 + TVA20 + TVA + Total TVA
+  // || TTC7 + TTC10 + TTC12 + TTC14 + TTC20 + Total TTC
+  // Total MT Produit
+    */
       this.formGroup = this.formBuilder.group({
-          dateOperation: [new Date(), [Validators.required]],
-          stockId: [BigInt(0)],
-          fournisseurId: [BigInt(0)],
-          numBlExterne: [''],
-          montant: [{ value: 0, disabled: true }],
-          designation: [{ value: '', disabled: true }],
-          qteStock: [{ value: 0, disabled: true }],
-          qte: [1],
-          prixVente: [0],
-          remise: [0],
-          uniteGratuite: [0],
-      }, { validators: [AchatSimpleValidator({ getListDetAchatSimple: () => this.listDetAchatFacture })] });
+          fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
+          ice: [''],
+          numFacture: [''],
+          dateFacture: [new Date(), [Validators.required]],
+          datePaiement: [new Date(), [Validators.required]],
+          typePaiement: [0, [Validators.required]],
+          chequeNum: [''],
+          tva7Manuelle: [0],
+          tva10Manuelle: [0],
+          tva12Manuelle: [0],
+          tva14Manuelle: [0],
+          tva20Manuelle: [0],
+          ht7: [0],
+          ht10: [0],
+          ht12: [0],
+          ht14: [0],
+          ht20: [0],
+          ht: [0],
+          totalHt: [0],
+          tva7: [0],
+          tva10: [0],
+          tva12: [0],
+          tva14: [0],
+          tva20: [0],
+          tva: [0],
+          totalTva: [0],
+          ttc7: [0],
+          ttc10: [0],
+          ttc12: [0],
+          ttc14: [0],
+          ttc20: [0],
+          totalTtc: [0],
+          totalMtProduit: [0],
+      }, { validators: [AchatFactureValidator()] });
   }
 
   search() {
-      this.getAllStockDepot();
+      this.getAllAchatFacture();
   }
 
-  getAllStockDepot(): void {
+  getAllAchatFacture(): void {
       this.listAchatFacture = [];
       this.achatFactureService.getAll().subscribe({
           next: (data: AchatFacture[]) => {
@@ -196,26 +233,6 @@ export class AchatFactureComponent {
             this.detAchatFacture.stock = stock;
         }
     }
-}
-
-  viderAjouter1() {
-    let num = 0;
-    num = this.givemeMaxLiv();
-    let codbl = num + "";
-    let codeBLe = "";
-    if (codbl.length == 1) {
-        codeBLe = "A000" + num;
-    } else if (codbl.length == 2) {
-        codeBLe = "A00" + num;
-    }
-    if (codbl.length >= 3) {
-        codeBLe = "A0" + num;
-    }
-    
-    this.achatFacture.typeReglment = 1;
-    this.achatFacture.numAchat = num;
-    this.achatFacture.codeAF = codeBLe;
-    this.achatFacture.manuelAutoMatique = 1;
 }
 	
 	/*public void miseAjour() {
@@ -617,11 +634,41 @@ export class AchatFactureComponent {
       this.dialogSupprimerDetAchatFacture = openClose;
   }
 
-  viderAjouter() {
+  async getLastNumAchatFacture(): Promise<number> {
+    let numAchat: number = 0;
+
+    this.achatFactureService.getLastNumAchat(this.achatFacture).subscribe({
+        next: (data: number) => {
+            numAchat = data;
+        }
+    });
+    
+    return numAchat;
+  }
+
+  generateNumAchat(achatFacture: AchatFacture): string {
+        let codbl = achatFacture.numAchat + "";
+        let codeBLe = "";
+        if (codbl.length == 1) {
+            codeBLe = "A000" + achatFacture.numAchat;
+        } else if (codbl.length == 2) {
+            codeBLe = "A00" + achatFacture.numAchat;
+        }
+        if (codbl.length >= 3) {
+            codeBLe = "A0" + achatFacture.numAchat;
+        }
+
+        return codeBLe;
+  }
+
+  async viderAjouter() {
       this.openCloseDialogAjouter(true);
       this.submitted = false;
       this.listDetAchatFacture = [];
       this.achatFacture = initObjectAchatFacture();
+      let numAchat: number = await this.getLastNumAchatFacture();
+      this.achatFacture.numAchat = numAchat;
+      this.achatFacture.codeAF = this.generateNumAchat(this.achatFacture);
       this.initFormGroup();
   }
 
@@ -633,10 +680,10 @@ export class AchatFactureComponent {
       return getElementFromMap(this.mapOfFournisseur, id);
   }
 
-  recupperer(operation: number, achatSimpleEdit: AchatFacture) {
-      if (achatSimpleEdit && achatSimpleEdit.id) {
+  recupperer(operation: number, achatFactureEdit: AchatFacture) {
+      if (achatFactureEdit && achatFactureEdit.id) {
           if (operation === 1) {
-              this.achatFactureService.getByIdRequest(achatSimpleEdit.id).subscribe({
+              this.achatFactureService.getByIdRequest(achatFactureEdit.id).subscribe({
                   next: (data: AchatFactureRequest) => {
                       this.achatFacture = data.achatFacture;
                       this.listDetAchatFacture = data.detAchatFactures;
@@ -647,19 +694,79 @@ export class AchatFactureComponent {
                               detAchatFacture.stock = stock;
                           }
                       });
+
+                      let fournisseur: Fournisseur = this.listFournisseur.find((fournisseur: Fournisseur) => fournisseur.id === this.achatFacture.fournisseurId) || initObjectFournisseur();
+
+                      /*
+                      fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
+          ice: [''],
+          numFacture: [''],
+          dateFacture: [new Date(), [Validators.required]],
+          datePaiement: [new Date(), [Validators.required]],
+          typePaiement: [0, [Validators.required]],
+          chequeNum: [''],
+          tva7Manuelle: [0],
+          tva10Manuelle: [0],
+          tva12Manuelle: [0],
+          tva14Manuelle: [0],
+          tva20Manuelle: [0],
+          ht7: [0],
+          ht10: [0],
+          ht12: [0],
+          ht14: [0],
+          ht20: [0],
+          ht: [0],
+          totalHt: [0],
+          tva7: [0],
+          tva10: [0],
+          tva12: [0],
+          tva14: [0],
+          tva20: [0],
+          tva: [0],
+          totalTva: [0],
+          ttc7: [0],
+          ttc10: [0],
+          ttc12: [0],
+          ttc14: [0],
+          ttc20: [0],
+          totalTtc: [0],
+          totalMtProduit: [0],
+                      */
                       
                       this.formGroup.patchValue({
-                          uniteGratuite: 0,
-                          qteStock: 0,
-                          prixVente: 0,
-                          remise: 0,
-                          designation: '',
-                          stockId: BigInt(0),
-                          qte: 1,
-                          dateOperation: new Date(this.achatFacture.dateOperation),
                           fournisseurId: this.achatFacture.fournisseurId,
-                          numBlExterne: this.achatFacture.numBlExterne,
-                          montant: this.achatFacture.montant,
+                          ice: fournisseur.ice,
+                          numFacture: this.achatFacture.numAchat,
+                          dateFacture: this.achatFacture.dateAF,
+                          datePaiement: this.achatFacture.dateReglement,
+                          typePaiement: this.achatFacture.typeReglment,
+                          chequeNum: this.achatFacture.numCheque,
+                          tva7Manuelle: this.achatFacture.mntManuelTva7,
+                          tva10Manuelle: this.achatFacture.mntManuelTva10,
+                          tva12Manuelle: this.achatFacture.mntManuelTva12,
+                          tva14Manuelle: this.achatFacture.mntManuelTva14,
+                          tva20Manuelle: this.achatFacture.mntManuelTva20,
+                          ht7: this.achatFacture.mntHtTVA7,
+                          ht10: this.achatFacture.mntHtTVA10,
+                          ht12: this.achatFacture.mntHtTVA12,
+                          ht14: this.achatFacture.mntHtTVA14,
+                          ht20: this.achatFacture.mntHtTVA20,
+                          ht: this.achatFacture.mntHt,
+                          totalHt: this.achatFacture.mntHtTVA,
+                          tva7: this.achatFacture.montantTVA7,
+                          tva10: this.achatFacture.montantTVA10,
+                          tva12: this.achatFacture.montantTVA12,
+                          tva14: this.achatFacture.montantTVA14,
+                          tva20: this.achatFacture.montantTVA20,
+                          tva: this.achatFacture.tva,
+                          totalTva: this.achatFacture.montantTVA,
+                          ttc7: this.achatFacture.mntTtcTVA7,
+                          ttc10: this.achatFacture.mntTtcTVA10,
+                          ttc12: this.achatFacture.mntTtcTVA12,
+                          ttc14: this.achatFacture.mntTtcTVA14,
+                          ttc20: this.achatFacture.mntTtcTVA20,
+                          totalTtc: this.achatFacture.mntTtc,
+                          totalMtProduit: this.achatFacture.totalMtProduit,
                       });
 
                       this.formGroup.get('designation')?.disable();
@@ -674,7 +781,7 @@ export class AchatFactureComponent {
                   }
               });
           } else if (operation === 2) {
-              this.achatFacture = structuredClone(achatSimpleEdit);
+              this.achatFacture = structuredClone(achatFactureEdit);
               this.openCloseDialogSupprimer(true);
           }
       } else {

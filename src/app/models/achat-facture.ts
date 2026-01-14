@@ -51,6 +51,7 @@ export interface AchatFacture {
   montantDroitSupplementaire: number;
   disabledHT: boolean;
   disabledManuel: boolean;
+  fournisseurId: bigint | null;
 }
 
 export function initObjectAchatFacture(): AchatFacture {
@@ -107,5 +108,6 @@ export function initObjectAchatFacture(): AchatFacture {
     montantDroitSupplementaire: 0,
     disabledHT: false,
     disabledManuel: false,
+    fournisseurId: null,
   };
 }

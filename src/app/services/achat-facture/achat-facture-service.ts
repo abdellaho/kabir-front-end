@@ -41,5 +41,9 @@ export class AchatFactureService {
   search(achatFacture: AchatFacture): Observable<AchatFacture[]> {
     return this.http.post<AchatFacture[]>(this.ENDPOINTS.search, achatFacture);
   }
+
+  getLastNumAchat(achatFacture: AchatFacture): Observable<number> {
+    return this.http.post<number>(this.ENDPOINTS.getLastNumAchatFacture, achatFacture);
+  }
   
 }
