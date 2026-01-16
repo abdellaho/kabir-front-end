@@ -16,13 +16,16 @@ export interface AchatFacture {
   typeReglment: number;
   typePaiement: string;
   numCheque: string;
+  mntHt: number;
+  montantTVA: number;
+  totalMntProduit: number;
   mantantTotHT: number;
   mantantTotHTVA: number;
   mantantTotTTC: number;
   tva20: number;
   tva7: number;
   tvaArbtraire: number;
-  manuelAutoMatique: number;
+  manuelAutomatique: number;
   mntManuelTva7: number;
   mntManuelTva10: number;
   mntManuelTva12: number;
@@ -73,13 +76,16 @@ export function initObjectAchatFacture(): AchatFacture {
     typeReglment: 0,
     typePaiement: '',
     numCheque: '',
+    mntHt: 0,
+    montantTVA: 0,
+    totalMntProduit: 0,
     mantantTotHT: 0,
     mantantTotHTVA: 0,
     mantantTotTTC: 0,
     tva20: 0,
     tva7: 0,
     tvaArbtraire: 0,
-    manuelAutoMatique: 0,
+    manuelAutomatique: 0,
     mntManuelTva7: 0,
     mntManuelTva10: 0,
     mntManuelTva12: 0,

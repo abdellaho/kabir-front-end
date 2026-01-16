@@ -3,61 +3,61 @@ export const APP_MESSAGES = {
         default: 'en-US'
     },
     menu: {
-      ville: 'Ville',
-      etablissement: 'Société',
-      voiture: 'Voiture',
-      prime: 'Prime',
-      personnel: 'Personnel',
-      fournisseur: 'Fournisseur',
-      absence: 'Présence',
-      stock: 'Stock',
-      achatSimple: 'Achat Simple',
-      repertoire: 'Repertoire',
-      parametrage: 'Paramétrage',
-      acceuil: 'Acceuil',
-      livraison: 'Livraison',
-      stockDepot: 'Stock Dépôt',
-      deconnexion: 'Déconnexion'
+        ville: 'Ville',
+        etablissement: 'Société',
+        voiture: 'Voiture',
+        prime: 'Prime',
+        personnel: 'Personnel',
+        fournisseur: 'Fournisseur',
+        absence: 'Présence',
+        stock: 'Stock',
+        achatSimple: 'Achat Simple',
+        repertoire: 'Repertoire',
+        parametrage: 'Paramétrage',
+        acceuil: 'Acceuil',
+        livraison: 'Livraison',
+        stockDepot: 'Stock Dépôt',
+        achatFacture: 'Achat Facture',
+        deconnexion: 'Déconnexion'
     },
     components: {
         ville: {
             label: 'Ville',
             nomVille: 'Nom Ville',
             codePostal: 'Code Postal',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette ville ?',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette ville ?'
         },
-        etablissement:
-            {
-                label: 'Société',
-                nomEtablissement: 'Nom Société',
-                ice: 'ICE',
-                rc: 'RC',
-                patente: 'Patente',
-                email: 'Email',
-                adresse: 'Adresse',
-                siteWeb: 'Site Web',
-                port: 'Port',
-                hostMail: 'Serveur (SMTP)',
-                passwordMail: 'Mot de passe',
-                lienDbDump: 'Lien Db Dump',
-                lienBackupDB: 'Lien Backup DB',
-                cheminBD: 'Chemin BD',
-                pourcentageLiv: 'Taux de risque %',
-                tel1: 'Tel1',
-                tel2: 'Tel2',
-                tel3: 'Tel3',
-            },
+        etablissement: {
+            label: 'Société',
+            nomEtablissement: 'Nom Société',
+            ice: 'ICE',
+            rc: 'RC',
+            patente: 'Patente',
+            email: 'Email',
+            adresse: 'Adresse',
+            siteWeb: 'Site Web',
+            port: 'Port',
+            hostMail: 'Serveur (SMTP)',
+            passwordMail: 'Mot de passe',
+            lienDbDump: 'Lien Db Dump',
+            lienBackupDB: 'Lien Backup DB',
+            cheminBD: 'Chemin BD',
+            pourcentageLiv: 'Taux de risque %',
+            tel1: 'Tel1',
+            tel2: 'Tel2',
+            tel3: 'Tel3'
+        },
         voiture: {
             label: 'Voiture',
             numVoiture: 'N° Voiture',
             kmMax: 'KM Max',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce voiture ?',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce voiture ?'
         },
         prime: {
             label: 'Prime',
             montant: 'Montant',
             prime: 'Prime',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce prime ?',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce prime ?'
         },
         personnel: {
             label: 'Personnel',
@@ -87,7 +87,7 @@ export const APP_MESSAGES = {
             errors: {
                 tel1AndTel2Identique: 'Tel1 et Tel2 sont identique'
             }
-        } ,
+        },
         fournisseur: {
             label: 'Fournisseur',
             designation: 'Designation',
@@ -114,7 +114,7 @@ export const APP_MESSAGES = {
             apresMidi: 'Soir',
             personnel: 'Personnel',
             dateAbsence: 'Date',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce présence ?',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce présence ?'
         },
         stock: {
             label: 'Stock Exposé',
@@ -250,7 +250,7 @@ export const APP_MESSAGES = {
             errors: {
                 tel1AndTel2Identique: 'Tel1 et Tel2 sont identique',
                 tel1AndTel3Identique: 'Tel1 et Tel3 sont identique',
-                tel2AndTel3Identique: 'Tel2 et Tel3 sont identique',
+                tel2AndTel3Identique: 'Tel2 et Tel3 sont identique'
             }
         },
         livraison: {
@@ -306,7 +306,7 @@ export const APP_MESSAGES = {
                 tel2: 'Tel2',
                 tel3: 'Tel3',
                 ice: 'ICE',
-                adresse: 'Adresse',
+                adresse: 'Adresse'
             },
             stock: {
                 label: 'Produit',
@@ -321,7 +321,7 @@ export const APP_MESSAGES = {
                 montantProduit: 'Montant Produit',
                 prixVenteMin: 'Prix Vente Min',
                 remiseMax: 'Remise Max',
-                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?'
             },
             errors: {
                 mntReglementRequired: 'Mnt Réglement doit être supérieur à 0',
@@ -363,7 +363,7 @@ export const APP_MESSAGES = {
                 numChequeRequired: 'Num Cheque est obligatoire',
                 numCheque2Required: 'Num Cheque 2 est obligatoire',
                 numCheque3Required: 'Num Cheque 3 est obligatoire',
-                numCheque4Required: 'Num Cheque 4 est obligatoire',
+                numCheque4Required: 'Num Cheque 4 est obligatoire'
             }
         },
         bonSortie: {
@@ -372,7 +372,7 @@ export const APP_MESSAGES = {
             dateBonSortie: 'Date Bon Sortie',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bon sortie ?',
             detailBonSortie: {
-                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce détail de bon sortie ?',
+                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce détail de bon sortie ?'
             }
         },
         facture: {
@@ -419,7 +419,7 @@ export const APP_MESSAGES = {
                 tel1: 'Tel1',
                 tel2: 'Tel2',
                 tel3: 'Tel3',
-                ice: 'ICE',
+                ice: 'ICE'
             },
             stock: {
                 label: 'Produit',
@@ -436,7 +436,7 @@ export const APP_MESSAGES = {
                 montantProduit: 'Montant Produit',
                 prixVenteMin: 'Prix Vente Min',
                 remiseMax: 'Remise Max',
-                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?'
             },
             errors: {
                 mntReglementRequired: 'Mnt Réglement doit être supérieur à 0',
@@ -479,14 +479,28 @@ export const APP_MESSAGES = {
                 numCheque2Required: 'Num Cheque 2 est obligatoire',
                 numCheque3Required: 'Num Cheque 3 est obligatoire',
                 numCheque4Required: 'Num Cheque 4 est obligatoire',
-                remiseFactureMustBeAtMostEqualRemiseMax: 'Remise Facture doit être inférieur ou égal au Remise Max',
+                remiseFactureMustBeAtMostEqualRemiseMax: 'Remise Facture doit être inférieur ou égal au Remise Max'
             }
         },
+        achatFacture: {
+            label: 'Achat Facture',
+            numeroFacExterne: 'Numéro Facture Externe',
+            dateAF: 'Date Achat Facture',
+            dateReglement: 'Date Réglement',
+            typeReglment: 'Type Réglement',
+            fournisseurId: 'Fournisseur',
+            fournisseurIce: 'ICE',
+            numCheque: 'Num Cheque',
+            remiseFacture: 'Remise Facture',
+            mntReglement: 'Mnt Réglement',
+            listDetAchatFacture: 'Liste des produits',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cet achat facture ?'
+        },
         parametrage: 'Paramétrage',
-        acceuil: 'Acceuil',
+        acceuil: 'Acceuil'
     },
     formats: {
-        date_Format_DDMMYY: 'dd/mm/yy',
+        date_Format_DDMMYY: 'dd/mm/yy'
     },
     tableSearch: {
         labelClear: 'Actualiser',
@@ -511,7 +525,7 @@ export const APP_MESSAGES = {
         actualiser: 'Actualiser',
         facturer: 'Facturer',
         regler: 'Régler',
-        nonRegler: 'N.Régler',
+        nonRegler: 'N.Régler'
     },
     messages: {
         miseAJour: 'Mise à jour',
@@ -519,8 +533,8 @@ export const APP_MESSAGES = {
         confirm: 'Confirmer',
         required: '* Champs obligatoire',
         saved: '',
-        messageError: 'Veuillez réessayer l\'opération',
-        messageErrorProduite: 'Une erreur s\'est produite',
+        messageError: "Veuillez réessayer l'opération",
+        messageErrorProduite: "Une erreur s'est produite",
         messageSuccess: 'Opération effectuée avec succès',
         messageAddSuccess: 'Ajout effectué avec succès',
         messageDeleteSuccess: 'Suppression effectuée avec succès',
@@ -531,7 +545,7 @@ export const APP_MESSAGES = {
     summary: {
         labelError: 'Erreur',
         labelSuccess: 'Succès',
-        labelInfo: 'Info',
+        labelInfo: 'Info'
     },
     table: {
         columns: {
