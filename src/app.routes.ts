@@ -21,6 +21,7 @@ import { StockDepotComponent } from '@/components/stock-depot-component/stock-de
 import { AchatSimpleComponent } from '@/components/achat-simple-component/achat-simple-component';
 import { LoginComponent } from '@/components/login-component/login-component';
 import { AuthGuard } from '@/state/auth-guard';
+import { AchatFactureComponent } from '@/components/achat-facture-component/achat-facture-component';
 
 export const appRoutes: Routes = [
     {
@@ -44,6 +45,7 @@ export const appRoutes: Routes = [
             { path: 'livraison-update', component: LivraisonUpdateComponent, canActivate: [AuthGuard] },
             { path: 'stock-depot', component: StockDepotComponent, canActivate: [AuthGuard] },
             { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
+            { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

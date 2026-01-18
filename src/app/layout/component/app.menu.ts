@@ -64,6 +64,10 @@ export class AppMenu {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.achatFacture, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-facture'] }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
             },
             /* {

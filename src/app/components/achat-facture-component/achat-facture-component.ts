@@ -29,6 +29,8 @@ import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { LoadingService } from '@/shared/services/loading-service';
 import { OperationType } from '@/shared/enums/operation-type';
 import { AchatFactureValidator } from '@/validators/achat-facture-validator';
+import { filteredTypeReglement } from '@/shared/enums/type-reglement';
+import { DetAchatFactureValidator } from '@/validators/det-achat-facture-validator';
 
 @Component({
     selector: 'app-achat-facture-component',
@@ -78,11 +80,15 @@ export class AchatFactureComponent {
     stock: Stock = initObjectStock();
     mapOfStock: Map<number, string> = new Map<number, string>();
     mapOfFournisseur: Map<number, string> = new Map<number, string>();
+    mapOfFournisseurICE: Map<number, string> = new Map<number, string>();
+    typeReglements: { label: string, value: number }[] = filteredTypeReglement;
     dialogSupprimer: boolean = false;
+    dialogAjouterDetAchatFacture: boolean = false;
     dialogSupprimerDetAchatFacture: boolean = false;
     dialogAjouter: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
+    formGroupDetAchatFacture!: FormGroup;
     msg = APP_MESSAGES;
     readonly BigInt = BigInt; // Expose BigInt to template
 
@@ -100,6 +106,7 @@ export class AchatFactureComponent {
         this.getAllStock();
         this.getAllFournisseur();
         this.initFormGroup();
+        this.initFormGroupDetAchatFacture();
     }
 
     clear(table: Table) {
@@ -109,6 +116,16 @@ export class AchatFactureComponent {
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
+
+    initFormGroupDetAchatFacture() {
+        this.formGroupDetAchatFacture = this.formBuilder.group({
+          designation: [{ value: this.stock.designation, disabled: true }],
+          pattc: [{ value: this.stock.pattc, disabled: true }],
+          qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
+          qteacheter: [1, [Validators.required]],
+          unitegratuit: [0],
+        }, { validators: DetAchatFactureValidator({ stock: this.stock }) });
+      }
 
     initFormGroup() {
         /*
@@ -155,6 +172,7 @@ export class AchatFactureComponent {
     */
         this.formGroup = this.formBuilder.group(
             {
+                stockId: [BigInt(0)],
                 fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
                 ice: [''],
                 numeroFacExterne: [''],
@@ -174,19 +192,19 @@ export class AchatFactureComponent {
                 mntHtTVA20: [0],
                 mntHt: [0],
                 mantantTotHT: [0],
-                montantTVA7: [0],
-                montantTVA10: [0],
-                montantTVA12: [0],
-                montantTVA14: [0],
-                montantTVA20: [0],
-                montantTVA: [0],
+                montantTVA7: [{ value: 0, disabled: true }],
+                montantTVA10: [{ value: 0, disabled: true }],
+                montantTVA12: [{ value: 0, disabled: true }],
+                montantTVA14: [{ value: 0, disabled: true }],
+                montantTVA20: [{ value: 0, disabled: true }],
+                montantTVA: [{ value: 0, disabled: true }],
                 mantantTotHTVA: [0],
-                mntTtcTVA7: [0],
-                mntTtcTVA10: [0],
-                mntTtcTVA12: [0],
-                mntTtcTVA14: [0],
-                mntTtcTVA20: [0],
-                mntTtc: [0],
+                mntTtcTVA7: [{ value: 0, disabled: true }],
+                mntTtcTVA10: [{ value: 0, disabled: true }],
+                mntTtcTVA12: [{ value: 0, disabled: true }],
+                mntTtcTVA14: [{ value: 0, disabled: true }],
+                mntTtcTVA20: [{ value: 0, disabled: true }],
+                mntTtc: [{ value: 0, disabled: true }],
                 totalMntProduit: [0]
             },
             { validators: [AchatFactureValidator()] }
@@ -222,6 +240,7 @@ export class AchatFactureComponent {
                 initFournisseur.id = BigInt(0);
                 this.listFournisseur = [initFournisseur, ...data];
                 this.mapOfFournisseur = arrayToMap(this.listFournisseur, 'id', ['designation'], ['']);
+                this.mapOfFournisseurICE = arrayToMap(this.listFournisseur, 'id', ['ice'], ['']);
             },
             error: (error: any) => {
                 console.error(error);
@@ -310,7 +329,23 @@ export class AchatFactureComponent {
 		}
 	}*/
 
+    onChangeFournisseurId() {
+        let fournisseurId: bigint = this.formGroup.get('fournisseurId')?.value;
+        let ice: string = '';
+        if (fournisseurId > BigInt(0)) {
+            let fournisseur: Fournisseur = this.listFournisseur.find((e) => e.id === fournisseurId) || initObjectFournisseur();
+            if(fournisseur && fournisseur.id !== BigInt(0)) {
+                ice = fournisseur.ice;
+            }
+        }
+
+        this.formGroup.patchValue({
+            ice: ice
+        });
+    }
+
     onChangeIdStock() {
+        this.initFormGroupDetAchatFacture();
         if (this.formGroup.get('stockId')?.value > BigInt(0)) {
             let stock: Stock = this.listStock.find((e) => e.id === this.formGroup.get('stockId')?.value) || initObjectStock();
             this.isValid = false;
@@ -343,7 +378,7 @@ export class AchatFactureComponent {
                 this.detAchatFacture.stock = stock;
 
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-                this.formGroup.patchValue({
+                this.formGroupDetAchatFacture.patchValue({
                     uniteGratuite: 0,
                     qteStock: this.stock.qteStock,
                     prixVente: this.stock.pvttc,
@@ -352,16 +387,22 @@ export class AchatFactureComponent {
                     designation: this.stock.designation
                 });
 
-                this.formGroup.get('designation')?.disable();
-                this.formGroup.get('qteStock')?.disable();
+                this.formGroupDetAchatFacture.get('designation')?.disable();
+                this.formGroupDetAchatFacture.get('qteStock')?.disable();
                 this.isValid = true;
+
+                this.formGroup.patchValue({
+                    stockId: BigInt(0)
+                });
             }
+
+            this.openCloseDialogAjouterDetAchatFacture(true);
         }
     }
 
     initDetAchatSimpleFormInformation() {
         this.stock = initObjectStock();
-        this.formGroup.patchValue({
+        this.formGroupDetAchatFacture.patchValue({
             stockId: BigInt(0),
             prixVente: 0,
             qteStock: 0,
@@ -374,9 +415,9 @@ export class AchatFactureComponent {
         this.formGroup.get('qteStock')?.disable();
     }
 
-    recuppererDetAchatSimple(operation: number, detAchatSimpleEdit: DetAchatFacture) {
-        if (detAchatSimpleEdit && detAchatSimpleEdit.stockId) {
-            this.detAchatFacture = structuredClone(detAchatSimpleEdit);
+    recuppererDetAchatFacture(operation: number, detAchatFactureEdit: DetAchatFacture) {
+        if (detAchatFactureEdit && detAchatFactureEdit.stockId) {
+            this.detAchatFacture = structuredClone(detAchatFactureEdit);
             if (operation === 1) {
                 this.openCloseDialogAjouter(true);
             } else if (operation === 2) {
@@ -398,74 +439,153 @@ export class AchatFactureComponent {
         });
     }
 
+    calculerMntTtc() {
+        this.achatFacture.mntTtc = 0;
+        if(this.listDetAchatFacture && this.listDetAchatFacture.length > 0) {
+            let total = this.listDetAchatFacture.reduce((acc, detAchatFacture) => acc + detAchatFacture.mantantTTC, 0);
+            this.achatFacture.mntTtc = total;
+        }
+
+        this.formGroup.patchValue({
+            totalMntProduit: this.achatFacture.mntTtc
+        });
+	}
+
     validerProduits() {
         let qteachet: number = 0;
         let Totqqte: number = 0;
         let ug: number = 0;
 
-        if (this.detAchatFacture.qteacheter > 0) {
-            qteachet = this.detAchatFacture.qteacheter;
+        if (this.formGroupDetAchatFacture.get('qteacheter')?.value > 0) {
+            qteachet = this.formGroupDetAchatFacture.get('qteacheter')?.value;
         }
-        if (this.detAchatFacture.unitegratuit > 0) {
-            ug = this.detAchatFacture.unitegratuit;
+        if (this.formGroupDetAchatFacture.get('unitegratuit')?.value > 0) {
+            ug = this.formGroupDetAchatFacture.get('unitegratuit')?.value;
         }
 
+        this.detAchatFacture.qteacheter = qteachet;
+        this.detAchatFacture.unitegratuit = ug;
+        this.detAchatFacture.mantantTTC = this.detAchatFacture.qteacheter * this.detAchatFacture.prixAchatTtc;
+
         this.listDetAchatFacture.push(this.detAchatFacture);
+
+        this.detAchatFacture = initObjectDetAchatFacture();
 
         this.achatFacture.mantantTotTTC = this.giveMeTotalMntTTc(this.listDetAchatFacture);
         this.achatFacture.mantantTotHT = this.giveMeTotalMntHT(this.listDetAchatFacture);
         this.achatFacture.tva20 = this.giveMeTotalMntTVA20(this.listDetAchatFacture);
         this.achatFacture.tva7 = this.giveMeTotalMntTVA7(this.listDetAchatFacture);
 
-        //this.calculerMntTtc();
+        this.calculerMntTtc();
+        this.openCloseDialogAjouterDetAchatFacture(false);
     }
 
     onChangeTVAManuel(tva: number) {
-        if (null != this.achatFacture) {
-            this.disableHT();
-
-            if (tva === 7) {
-                this.achatFacture.montantTVA7 = this.achatFacture.mntManuelTva7;
-            } else if (tva === 10) {
-                this.achatFacture.montantTVA10 = this.achatFacture.mntManuelTva10;
-            } else if (tva === 12) {
-                this.achatFacture.montantTVA12 = this.achatFacture.mntManuelTva12;
-            } else if (tva === 14) {
-                this.achatFacture.montantTVA14 = this.achatFacture.mntManuelTva14;
-            } else if (tva === 20) {
-                this.achatFacture.montantTVA20 = this.achatFacture.mntManuelTva20;
-            }
-
-            this.calculerTotHT();
-            this.calculerTotTVA();
-            this.calculerTotTTC();
+        if (tva === 7) {
+            this.achatFacture.mntManuelTva7 = this.formGroup.get('mntManuelTva7')?.value;
+        } else if (tva === 10) {
+            this.achatFacture.mntManuelTva10 = this.formGroup.get('mntManuelTva10')?.value;
+        } else if (tva === 12) {
+            this.achatFacture.mntManuelTva12 = this.formGroup.get('mntManuelTva12')?.value;
+        } else if (tva === 14) {
+            this.achatFacture.mntManuelTva14 = this.formGroup.get('mntManuelTva14')?.value;
+        } else if (tva === 20) {
+            this.achatFacture.mntManuelTva20 = this.formGroup.get('mntManuelTva20')?.value;
         }
+
+        this.disableHT();
+        this.calculerTotHT();
+        this.calculerTotTVA();
+        this.calculerTotTTC();
     }
 
     onChangeTVA(tva: number) {
-        if (null != this.achatFacture) {
-            this.disableManuel();
+        console.log('tva', tva);
+        if (tva === 7) {
+            this.achatFacture.mntHtTVA7 = this.formGroup.get('mntHtTVA7')?.value;
+            this.achatFacture.montantTVA7 = this.achatFacture.mntHtTVA7 * 0.07;
+            this.achatFacture.mntTtcTVA7 = this.achatFacture.mntHtTVA7 + this.achatFacture.montantTVA7;
+            console.log('mntHtTVA7', this.achatFacture.mntHtTVA7);
+            console.log('montantTVA7', this.achatFacture.montantTVA7);
+            console.log('mntTtcTVA7', this.achatFacture.mntTtcTVA7);
+            
+            this.formGroup.patchValue({
+                montantTVA7: this.achatFacture.montantTVA7,
+                mntTtcTVA7: this.achatFacture.mntTtcTVA7
+            });
+        } else if (tva === 10) {
+            this.achatFacture.mntHtTVA10 = this.formGroup.get('mntHtTVA10')?.value;
+            this.achatFacture.montantTVA10 = this.achatFacture.mntHtTVA10 * 0.1;
+            this.achatFacture.mntTtcTVA10 = this.achatFacture.mntHtTVA10 + this.achatFacture.montantTVA10;
+            
+            this.formGroup.patchValue({
+                montantTVA10: this.achatFacture.montantTVA10,
+                mntTtcTVA10: this.achatFacture.mntTtcTVA10
+            });
+        } else if (tva === 12) {
+            this.achatFacture.mntHtTVA12 = this.formGroup.get('mntHtTVA12')?.value;
+            this.achatFacture.montantTVA12 = this.achatFacture.mntHtTVA12 * 0.12;
+            this.achatFacture.mntTtcTVA12 = this.achatFacture.mntHtTVA12 + this.achatFacture.montantTVA12;
+            
+            this.formGroup.patchValue({
+                montantTVA12: this.achatFacture.montantTVA12,
+                mntTtcTVA12: this.achatFacture.mntTtcTVA12
+            });
+        } else if (tva === 14) {
+            this.achatFacture.mntHtTVA14 = this.formGroup.get('mntHtTVA14')?.value;
+            this.achatFacture.montantTVA14 = this.achatFacture.mntHtTVA14 * 0.14;
+            this.achatFacture.mntTtcTVA14 = this.achatFacture.mntHtTVA14 + this.achatFacture.montantTVA14;
+            
+            this.formGroup.patchValue({
+                montantTVA14: this.achatFacture.montantTVA14,
+                mntTtcTVA14: this.achatFacture.mntTtcTVA14
+            });
+        } else if (tva === 20) {
+            this.achatFacture.mntHtTVA20 = this.formGroup.get('mntHtTVA20')?.value;
+            this.achatFacture.montantTVA20 = this.achatFacture.mntHtTVA20 * 0.2;
+            this.achatFacture.mntTtcTVA20 = this.achatFacture.mntHtTVA20 + this.achatFacture.montantTVA20;
+            
+            this.formGroup.patchValue({
+                montantTVA20: this.achatFacture.montantTVA20,
+                mntTtcTVA20: this.achatFacture.mntTtcTVA20
+            });
+        }
 
-            if (tva === 7) {
-                this.achatFacture.montantTVA7 = this.achatFacture.mntHtTVA7 * 0.07;
-                this.achatFacture.mntTtcTVA7 = this.achatFacture.mntHtTVA7 + this.achatFacture.montantTVA7;
-            } else if (tva === 10) {
-                this.achatFacture.montantTVA10 = this.achatFacture.mntHtTVA10 * 0.1;
-                this.achatFacture.mntTtcTVA10 = this.achatFacture.mntHtTVA10 + this.achatFacture.montantTVA10;
-            } else if (tva === 12) {
-                this.achatFacture.montantTVA12 = this.achatFacture.mntHtTVA12 * 0.12;
-                this.achatFacture.mntTtcTVA12 = this.achatFacture.mntHtTVA12 + this.achatFacture.montantTVA12;
-            } else if (tva === 14) {
-                this.achatFacture.montantTVA14 = this.achatFacture.mntHtTVA14 * 0.14;
-                this.achatFacture.mntTtcTVA14 = this.achatFacture.mntHtTVA14 + this.achatFacture.montantTVA14;
-            } else if (tva === 20) {
-                this.achatFacture.montantTVA20 = this.achatFacture.mntHtTVA20 * 0.2;
-                this.achatFacture.mntTtcTVA20 = this.achatFacture.mntHtTVA20 + this.achatFacture.montantTVA20;
-            }
+        this.disableManuel();
+        this.calculerTotHT();
+        this.calculerTotTVA();
+        this.calculerTotTTC();
+    }
 
-            this.calculerTotHT();
-            this.calculerTotTVA();
-            this.calculerTotTTC();
+    disableTVA(disabled: boolean) {
+        if (disabled) {
+            this.formGroup.get('mntHtTVA7')?.disable();
+            this.formGroup.get('mntHtTVA10')?.disable();
+            this.formGroup.get('mntHtTVA12')?.disable();
+            this.formGroup.get('mntHtTVA14')?.disable();
+            this.formGroup.get('mntHtTVA20')?.disable();
+        } else {
+            this.formGroup.get('mntHtTVA7')?.enable();
+            this.formGroup.get('mntHtTVA10')?.enable();
+            this.formGroup.get('mntHtTVA12')?.enable();
+            this.formGroup.get('mntHtTVA14')?.enable();
+            this.formGroup.get('mntHtTVA20')?.enable();
+        }
+    }
+
+    disableHTManuelle(disabled: boolean) {
+        if (disabled) {
+            this.formGroup.get('mntManuelTva7')?.disable();
+            this.formGroup.get('mntManuelTva10')?.disable();
+            this.formGroup.get('mntManuelTva12')?.disable();
+            this.formGroup.get('mntManuelTva14')?.disable();
+            this.formGroup.get('mntManuelTva20')?.disable();
+        } else {
+            this.formGroup.get('mntManuelTva7')?.enable();
+            this.formGroup.get('mntManuelTva10')?.enable();
+            this.formGroup.get('mntManuelTva12')?.enable();
+            this.formGroup.get('mntManuelTva14')?.enable();
+            this.formGroup.get('mntManuelTva20')?.enable();
         }
     }
 
@@ -475,6 +595,10 @@ export class AchatFactureComponent {
         } else {
             this.achatFacture.disabledHT = true;
         }
+
+        console.log("disabledHT : ", this.achatFacture.disabledHT);
+        this.disableTVA(this.achatFacture.disabledHT);
+        this.disableHTManuelle(false);
     }
 
     disableManuel() {
@@ -483,24 +607,28 @@ export class AchatFactureComponent {
         } else {
             this.achatFacture.disabledManuel = true;
         }
+
+        console.log("disabledManuel : ", this.achatFacture.disabledManuel);
+        this.disableTVA(false);
+        this.disableHTManuelle(this.achatFacture.disabledManuel);
     }
 
     calculerTotHT() {
-        if (null != this.achatFacture) {
-            this.achatFacture.mantantTotHT = this.achatFacture.mntHt + this.achatFacture.mntHtTVA7 + this.achatFacture.mntHtTVA10 + this.achatFacture.mntHtTVA12 + this.achatFacture.mntHtTVA14 + this.achatFacture.mntHtTVA20;
-        }
+        this.formGroup.patchValue({
+            mantantTotHT: this.formGroup.get('mntHt')?.value + this.formGroup.get('mntHtTVA7')?.value + this.formGroup.get('mntHtTVA10')?.value + this.formGroup.get('mntHtTVA12')?.value + this.formGroup.get('mntHtTVA14')?.value + this.formGroup.get('mntHtTVA20')?.value
+        });
     }
 
     calculerTotTVA() {
-        if (null != this.achatFacture) {
-            this.achatFacture.mantantTotHTVA = this.achatFacture.montantTVA7 + this.achatFacture.montantTVA10 + this.achatFacture.montantTVA12 + this.achatFacture.montantTVA14 + this.achatFacture.montantTVA20;
-        }
+        this.formGroup.patchValue({
+            mantantTotHTVA: this.formGroup.get('montantTVA7')?.value + this.formGroup.get('montantTVA10')?.value + this.formGroup.get('montantTVA12')?.value + this.formGroup.get('montantTVA14')?.value + this.formGroup.get('montantTVA20')?.value
+        });
     }
 
     calculerTotTTC() {
-        if (null != this.achatFacture) {
-            this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.mantantTotHTVA;
-        }
+        this.formGroup.patchValue({
+            mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + this.formGroup.get('mantantTotHTVA')?.value
+        });
     }
 
     calculerMontProd() {
@@ -517,14 +645,14 @@ export class AchatFactureComponent {
             if (this.detAchatFacture.prixAchatTtc > 0.0) {
                 prattc = this.detAchatFacture.prixAchatTtc;
             }
-            if (this.detAchatFacture.qteacheter > 0) {
-                qteLivr = this.detAchatFacture.qteacheter;
+            if (this.formGroup.get('qteacheter')?.value > 0) {
+                qteLivr = this.formGroup.get('qteacheter')?.value;
             }
             if (this.detAchatFacture.remiseAchat > 0) {
                 rmiseLivr = this.detAchatFacture.remiseAchat;
             }
 
-            if (this.detAchatFacture.remiseAchat == 0.0 && this.detAchatFacture.unitegratuit == 0) {
+            if (this.detAchatFacture.remiseAchat == 0.0 && this.formGroup.get('unitegratuit')?.value == 0) {
                 mntPro = prattc * qteLivr - (prattc * qteLivr * rmiseLivr) / 100;
             } else {
                 mntPro = prv * qteLivr - (prv * qteLivr * rmiseLivr) / 100;
@@ -618,106 +746,106 @@ export class AchatFactureComponent {
     }
 
     calculerTva7() {
-        if (this.achatFacture != null) {
-            if (this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA14 != 0 || this.achatFacture.montantTVA10 != 0) {
-                this.calculerAllTva();
-            } else {
-                let drSup = this.achatFacture.montantDroitSupplementaire;
+        if (this.formGroup.get('montantTVA20')?.value != 0 || this.formGroup.get('montantTVA14')?.value != 0 || this.formGroup.get('montantTVA10')?.value != 0) {
+            this.calculerAllTva();
+        } else {
+            let drSup = this.formGroup.get('montantDroitSupplementaire')?.value;
 
-                this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA7 + drSup;
-                this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA7;
-            }
+            this.formGroup.patchValue({
+                mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + this.formGroup.get('montantTVA7')?.value + drSup
+            });
+            this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA7;
         }
     }
 
     calculerTva20() {
-        if (this.achatFacture != null) {
-            if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA14 != 0 || this.achatFacture.montantTVA10 != 0) {
-                this.calculerAllTva();
-            } else {
-                let drSup = this.achatFacture.montantDroitSupplementaire;
+        if (this.formGroup.get('montantTVA7')?.value != 0 || this.formGroup.get('montantTVA14')?.value != 0 || this.formGroup.get('montantTVA10')?.value != 0) {
+            this.calculerAllTva();
+        } else {
+            let drSup = this.formGroup.get('montantDroitSupplementaire')?.value;
 
-                this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA20 + drSup;
-                this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA20;
-            }
+            this.formGroup.patchValue({
+                mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + this.formGroup.get('montantTVA20')?.value + drSup
+            });
+            //this.formGroup.get('tvaArbtraire')?.setValue(this.formGroup.get('montantTVA20')?.value);
         }
     }
 
     calculerTva10() {
-        if (this.achatFacture != null) {
-            if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA14 != 0) {
-                this.calculerAllTva();
-            } else {
-                let drSup = this.achatFacture.montantDroitSupplementaire;
+        if (this.formGroup.get('montantTVA7')?.value != 0 || this.formGroup.get('montantTVA20')?.value != 0 || this.formGroup.get('montantTVA14')?.value != 0) {
+            this.calculerAllTva();
+        } else {
+            let drSup = this.formGroup.get('montantDroitSupplementaire')?.value;
 
-                this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA10 + drSup;
-                this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA10;
-            }
+            this.formGroup.patchValue({
+                mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + this.formGroup.get('montantTVA10')?.value + drSup
+            });
+            //this.formGroup.get('tvaArbtraire')?.setValue(this.formGroup.get('montantTVA10')?.value);
         }
     }
 
     calculerTva14() {
-        if (this.achatFacture != null) {
-            if (this.achatFacture.montantTVA7 != 0 || this.achatFacture.montantTVA20 != 0 || this.achatFacture.montantTVA10 != 0) {
-                this.calculerAllTva();
-            } else {
-                let drSup = this.achatFacture.montantDroitSupplementaire;
+        if (this.formGroup.get('montantTVA7')?.value != 0 || this.formGroup.get('montantTVA20')?.value != 0 || this.formGroup.get('montantTVA10')?.value != 0) {
+            this.calculerAllTva();
+        } else {
+            let drSup = this.formGroup.get('montantDroitSupplementaire')?.value;
 
-                this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + this.achatFacture.montantTVA14 + drSup;
-                this.achatFacture.tvaArbtraire = this.achatFacture.montantTVA14;
-            }
+            this.formGroup.patchValue({
+                mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + this.formGroup.get('montantTVA14')?.value + drSup
+            });
+            //this.formGroup.get('tvaArbtraire')?.setValue(this.formGroup.get('montantTVA14')?.value);
         }
     }
 
     calculerAllTva() {
-        if (this.achatFacture != null && this.achatFacture.mantantTotHT != 0) {
-            let mnttvvaa = 0.0;
-            if (this.achatFacture.montantTVA7 != 0) {
-                mnttvvaa += this.achatFacture.montantTVA7;
-            }
-            if (this.achatFacture.montantTVA10 != 0) {
-                mnttvvaa += this.achatFacture.montantTVA10;
-            }
-            if (this.achatFacture.montantTVA14 != 0) {
-                mnttvvaa += this.achatFacture.montantTVA14;
-            }
-            if (this.achatFacture.montantTVA20 != 0) {
-                mnttvvaa += this.achatFacture.montantTVA20;
-            }
-
-            let droSup = this.achatFacture.montantDroitSupplementaire;
-            this.achatFacture.tvaArbtraire = mnttvvaa;
-            this.achatFacture.mantantTotTTC = this.achatFacture.mantantTotHT + mnttvvaa + droSup;
+        let mnttvvaa = 0.0;
+        if (this.formGroup.get('montantTVA7')?.value != 0) {
+            mnttvvaa += this.formGroup.get('montantTVA7')?.value;
         }
+        if (this.formGroup.get('montantTVA10')?.value != 0) {
+            mnttvvaa += this.formGroup.get('montantTVA10')?.value;
+        }
+        if (this.formGroup.get('montantTVA14')?.value != 0) {
+            mnttvvaa += this.formGroup.get('montantTVA14')?.value;
+        }
+        if (this.formGroup.get('montantTVA20')?.value != 0) {
+            mnttvvaa += this.formGroup.get('montantTVA20')?.value;
+        }
+
+        let droSup = this.formGroup.get('montantDroitSupplementaire')?.value;
+        //this.formGroup.get('tvaArbtraire')?.setValue(mnttvvaa);
+        this.formGroup.patchValue({
+            mantantTotTTC: this.formGroup.get('mantantTotHT')?.value + mnttvvaa + droSup
+        });
     }
 
-    private giveMeTotalMntHT(listDetachatfacture2: DetAchatFacture[]) {
+    giveMeTotalMntHT(listDetachatfacture: DetAchatFacture[]) : number {
         let mntp = 0.0;
-        for (let detachatfactures of listDetachatfacture2) {
+        for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.mantantHt;
         }
         return mntp;
     }
 
-    private giveMeTotalMntTTc(listDetachatfacture2: DetAchatFacture[]) {
+    giveMeTotalMntTTc(listDetachatfacture: DetAchatFacture[]) : number {
         let mntp = 0.0;
-        for (let detachatfactures of listDetachatfacture2) {
+        for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.mantantTTC;
         }
         return mntp;
     }
 
-    private giveMeTotalMntTVA7(listDetachatfacture2: DetAchatFacture[]) {
+    giveMeTotalMntTVA7(listDetachatfacture: DetAchatFacture[]) : number {
         let mntp = 0.0;
-        for (let detachatfactures of listDetachatfacture2) {
+        for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.tva7;
         }
         return mntp;
     }
 
-    private giveMeTotalMntTVA20(listDetachatfacture2: DetAchatFacture[]) {
+    giveMeTotalMntTVA20(listDetachatfacture: DetAchatFacture[]) : number {
         let mntp = 0.0;
-        for (let detachatfactures of listDetachatfacture2) {
+        for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.tva20;
         }
         return mntp;
@@ -743,6 +871,7 @@ export class AchatFactureComponent {
     supprimerDetAchatFacture() {
         this.listDetAchatFacture = this.listDetAchatFacture.filter((detAchatFacture: DetAchatFacture) => detAchatFacture.stockId !== this.detAchatFacture.stockId);
         this.calculerTotal();
+        this.calculerMntTtc();
         this.formGroup.updateValueAndValidity();
         this.openCloseDialogSupprimerDetAchatFacture(false);
     }
@@ -753,6 +882,10 @@ export class AchatFactureComponent {
 
     openCloseDialogSupprimer(openClose: boolean): void {
         this.dialogSupprimer = openClose;
+    }
+
+    openCloseDialogAjouterDetAchatFacture(openClose: boolean): void {
+        this.dialogAjouterDetAchatFacture = openClose;
     }
 
     openCloseDialogSupprimerDetAchatFacture(openClose: boolean): void {
@@ -804,6 +937,15 @@ export class AchatFactureComponent {
 
     getDesignationFournisseur(id: number): string {
         return getElementFromMap(this.mapOfFournisseur, id);
+    }
+
+    getICE(id: number): string {
+        return getElementFromMap(this.mapOfFournisseurICE, id);
+    }
+
+    getTypeReglement(typeReglement: number): string {
+        let filteredTypeReglement = this.typeReglements.filter((type) => type.value === typeReglement);
+        return filteredTypeReglement.length > 0 ? filteredTypeReglement[0].label : '';
     }
 
     recupperer(operation: number, achatFactureEdit: AchatFacture) {
