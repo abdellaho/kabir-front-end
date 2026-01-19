@@ -2,9 +2,9 @@ import { AchatFacture } from "./achat-facture";
 import { Stock } from "./stock";
 
 export interface DetAchatFacture {
-  id: bigint;
-  unitegratuit: number;
-  qteacheter: number;
+  id: bigint | null;
+  uniteGratuit: number;
+  qteAcheter: number;
   prixAchatHt: number;
   prixAchatTtc: number;
   remiseAchat: number;
@@ -13,20 +13,22 @@ export interface DetAchatFacture {
   mantantTTC: number;
   prixVenteAchatHT: number;
   beneficeDH: number;
-  benepourcentage: number;
+  benePourcentage: number;
   tva20: number;
   tva7: number;
-  achatFactureId: bigint;
-  achatFacture?: AchatFacture | null;
-  stockId: bigint;
-  stock?: Stock | null;
+  achatFactureId: bigint | null;
+  achatFactureCodeAF: string;
+  stockId: bigint | null;
+  stockDesignation: string;
+  stockQteStock: number;
+  stock: Stock | null;
 }
 
 export function initObjectDetAchatFacture(): DetAchatFacture {
   return {
-    id: BigInt(0),
-    unitegratuit: 0,
-    qteacheter: 0,
+    id: null,
+    uniteGratuit: 0,
+    qteAcheter: 0,
     prixAchatHt: 0,
     prixAchatTtc: 0,
     remiseAchat: 0,
@@ -35,12 +37,14 @@ export function initObjectDetAchatFacture(): DetAchatFacture {
     mantantTTC: 0,
     prixVenteAchatHT: 0,
     beneficeDH: 0,
-    benepourcentage: 0,
+    benePourcentage: 0,
     tva20: 0,
     tva7: 0,
-    achatFactureId: BigInt(0),
-    achatFacture: null,
-    stockId: BigInt(0),
+    achatFactureId: null,
+    achatFactureCodeAF: '',
+    stockId: null,
+    stockDesignation: '',
+    stockQteStock: 0,
     stock: null,
   };
 }

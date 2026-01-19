@@ -186,6 +186,7 @@ export const ENDPOINTS = {
     update: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
     delete: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
     search: `${BASE_URL}/${ACHAT_FACTURE}/search`,
+    exist: `${BASE_URL}/${ACHAT_FACTURE}/exist`,
     getLastNumAchatFacture: `${BASE_URL}/${ACHAT_FACTURE}/last-num-achat-facture`
   },
 };

@@ -14,36 +14,43 @@ export function AchatFactureValidator(): ValidatorFn {
         const dateReglement = get('dateReglement')?.value;
         const typeReglment = get('typeReglment')?.value;
         const fournisseurId = get('fournisseurId')?.value;
-        const numAchat = get('numAchat')?.value;
+        //const numAchat = get('numAchat')?.value;
         const numCheque = get('numCheque')?.value;
 
         if (dateAF === null || dateAF === undefined || dateAF === '') {
+            console.log('Error dateAF : ', dateAF)
             addError('dateAFRequired');
         }
 
         if (numeroFacExterne === null || numeroFacExterne === undefined || numeroFacExterne.trim() === '') {
+            console.log('Error numeroFacExterne : ', numeroFacExterne)
             addError('numeroFacExterneRequired');
         }
 
         if (dateReglement === null || dateReglement === undefined || dateReglement === '') {
+            console.log('Error dateReglement : ', dateReglement)
             addError('dateReglementRequired');
         }
 
         if (!hasError) {
             if (dateReglement.getTime() < dateAF.getTime()) {
+                console.log('Error dateReglementBeforeDateAF : ', dateReglement)
                 addError('dateReglementBeforeDateAF');
             }
         }
 
         if (fournisseurId === null || fournisseurId === undefined || fournisseurId === BigInt(0)) {
+            console.log('Error fournisseurId : ', fournisseurId)
             addError('fournisseurIdRequired');
         }
 
-        if (numAchat === null || numAchat === undefined || numAchat.trim() === '') {
+        /*if (numAchat === null || numAchat === undefined || numAchat.trim() === '') {
+            console.log('Error numAchat : ', numAchat)
             addError('numAchatRequired');
-        }
+        }*/
 
         if (typeReglment === 1 && (numCheque === null || numCheque === undefined || numCheque.trim() === '')) {
+            console.log('Error numCheque : ', numCheque)
             addError('numChequeRequired');
         }
 

@@ -20,7 +20,7 @@ import { AchatFacture, initObjectAchatFacture } from '@/models/achat-facture';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { TypeSearch } from '@/shared/enums/type-search';
-import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, omit, toLocalDate } from '@/shared/classes/generic-methods';
 import { AchatFactureRequest } from '@/shared/classes/achat-facture-request';
 import { AchatFactureService } from '@/services/achat-facture/achat-facture-service';
 import { StockService } from '@/services/stock/stock-service';
@@ -31,6 +31,7 @@ import { OperationType } from '@/shared/enums/operation-type';
 import { AchatFactureValidator } from '@/validators/achat-facture-validator';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
 import { DetAchatFactureValidator } from '@/validators/det-achat-facture-validator';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
     selector: 'app-achat-facture-component',
@@ -122,8 +123,8 @@ export class AchatFactureComponent {
           designation: [{ value: this.stock.designation, disabled: true }],
           pattc: [{ value: this.stock.pattc, disabled: true }],
           qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
-          qteacheter: [1, [Validators.required]],
-          unitegratuit: [0],
+          qteAcheter: [1, [Validators.required]],
+          uniteGratuit: [0],
         }, { validators: DetAchatFactureValidator({ stock: this.stock }) });
       }
 
@@ -174,11 +175,11 @@ export class AchatFactureComponent {
             {
                 stockId: [BigInt(0)],
                 fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
-                ice: [''],
+                ice: [{ value: '', disabled: true }],
                 numeroFacExterne: [''],
                 dateAF: [new Date(), [Validators.required]],
                 dateReglement: [new Date(), [Validators.required]],
-                typeReglment: [0, [Validators.required]],
+                typeReglment: [0],
                 numCheque: [''],
                 mntManuelTva7: [0],
                 mntManuelTva10: [0],
@@ -191,21 +192,21 @@ export class AchatFactureComponent {
                 mntHtTVA14: [0],
                 mntHtTVA20: [0],
                 mntHt: [0],
-                mantantTotHT: [0],
+                mantantTotHT: [{ value: 0, disabled: true }],
                 montantTVA7: [{ value: 0, disabled: true }],
                 montantTVA10: [{ value: 0, disabled: true }],
                 montantTVA12: [{ value: 0, disabled: true }],
                 montantTVA14: [{ value: 0, disabled: true }],
                 montantTVA20: [{ value: 0, disabled: true }],
                 montantTVA: [{ value: 0, disabled: true }],
-                mantantTotHTVA: [0],
+                mantantTotHTVA: [{ value: 0, disabled: true }],
                 mntTtcTVA7: [{ value: 0, disabled: true }],
                 mntTtcTVA10: [{ value: 0, disabled: true }],
                 mntTtcTVA12: [{ value: 0, disabled: true }],
                 mntTtcTVA14: [{ value: 0, disabled: true }],
                 mntTtcTVA20: [{ value: 0, disabled: true }],
-                mntTtc: [{ value: 0, disabled: true }],
-                totalMntProduit: [0]
+                mantantTotTTC: [{ value: 0, disabled: true }],
+                totalMntProduit: [{ value: 0, disabled: true }]
             },
             { validators: [AchatFactureValidator()] }
         );
@@ -280,17 +281,17 @@ export class AchatFactureComponent {
 
             if (existe == false) {
                 this.detAchatFacture.remiseAchat = 0;
-                this.detAchatFacture.qteacheter = 0;
-                this.detAchatFacture.unitegratuit = 0;
+                this.detAchatFacture.qteAcheter = 0;
+                this.detAchatFacture.uniteGratuit = 0;
                 this.detAchatFacture.prixAchatHt = stock?.pahtGrossiste;
                 this.detAchatFacture.prixVenteAchatHT = stock?.pvaht;
 
                 this.detAchatFacture.prixAchatTtc = stock?.pattc;
                 this.detAchatFacture.prixVenteTtc = stock?.pvttc;
-                this.detAchatFacture.benepourcentage = stock?.benifice;
+                this.detAchatFacture.benePourcentage = stock?.benifice;
 
                 this.detAchatFacture.beneficeDH = stock?.pvttc - stock?.pattc;
-                this.detAchatFacture.benepourcentage = stock?.benifice;
+                this.detAchatFacture.benePourcentage = stock?.benifice;
                 this.detAchatFacture.stock = stock;
             }
         }
@@ -364,31 +365,31 @@ export class AchatFactureComponent {
             });
 
             if (!isExistStock) {
+                this.detAchatFacture.stockId = this.formGroup.get('stockId')?.value;
                 this.detAchatFacture.remiseAchat = 0.0;
-                this.detAchatFacture.qteacheter = 0;
-                this.detAchatFacture.unitegratuit = 0;
+                this.detAchatFacture.qteAcheter = 0;
+                this.detAchatFacture.uniteGratuit = 0;
                 this.detAchatFacture.prixAchatHt = stock.pahtGrossiste;
                 this.detAchatFacture.prixVenteAchatHT = stock.pvaht;
 
                 this.detAchatFacture.prixAchatTtc = stock.pattc;
                 this.detAchatFacture.prixVenteTtc = stock.pvttc;
-                this.detAchatFacture.benepourcentage = stock.benifice;
+                this.detAchatFacture.benePourcentage = stock.benifice;
 
                 this.detAchatFacture.beneficeDH = stock.pvttc - stock.pattc;
                 this.detAchatFacture.stock = stock;
 
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroupDetAchatFacture.patchValue({
-                    uniteGratuite: 0,
-                    qteStock: this.stock.qteStock,
-                    prixVente: this.stock.pvttc,
-                    remise: 0,
-                    qte: 1,
-                    designation: this.stock.designation
+                    designation: this.stock.designation,
+                    qteFacturer: this.stock.qteFacturer,
+                    pattc: this.stock.pattc,
+                    qteAcheter: 1,
+                    uniteGratuit: 0
                 });
 
                 this.formGroupDetAchatFacture.get('designation')?.disable();
-                this.formGroupDetAchatFacture.get('qteStock')?.disable();
+                this.formGroupDetAchatFacture.get('qteFacturer')?.disable();
                 this.isValid = true;
 
                 this.formGroup.patchValue({
@@ -456,23 +457,23 @@ export class AchatFactureComponent {
         let Totqqte: number = 0;
         let ug: number = 0;
 
-        if (this.formGroupDetAchatFacture.get('qteacheter')?.value > 0) {
-            qteachet = this.formGroupDetAchatFacture.get('qteacheter')?.value;
+        if (this.formGroupDetAchatFacture.get('qteAcheter')?.value > 0) {
+            qteachet = this.formGroupDetAchatFacture.get('qteAcheter')?.value;
         }
-        if (this.formGroupDetAchatFacture.get('unitegratuit')?.value > 0) {
-            ug = this.formGroupDetAchatFacture.get('unitegratuit')?.value;
+        if (this.formGroupDetAchatFacture.get('uniteGratuit')?.value > 0) {
+            ug = this.formGroupDetAchatFacture.get('uniteGratuit')?.value;
         }
 
-        this.detAchatFacture.qteacheter = qteachet;
-        this.detAchatFacture.unitegratuit = ug;
-        this.detAchatFacture.mantantTTC = this.detAchatFacture.qteacheter * this.detAchatFacture.prixAchatTtc;
+        this.detAchatFacture.qteAcheter = qteachet;
+        this.detAchatFacture.uniteGratuit = ug;
+        this.detAchatFacture.mantantTTC = this.detAchatFacture.qteAcheter * this.detAchatFacture.prixAchatTtc;
 
         this.listDetAchatFacture.push(this.detAchatFacture);
 
         this.detAchatFacture = initObjectDetAchatFacture();
 
-        this.achatFacture.mantantTotTTC = this.giveMeTotalMntTTc(this.listDetAchatFacture);
-        this.achatFacture.mantantTotHT = this.giveMeTotalMntHT(this.listDetAchatFacture);
+        //this.achatFacture.mantantTotTTC = this.giveMeTotalMntTTc(this.listDetAchatFacture);
+        //this.achatFacture.mantantTotHT = this.giveMeTotalMntHT(this.listDetAchatFacture);
         this.achatFacture.tva20 = this.giveMeTotalMntTVA20(this.listDetAchatFacture);
         this.achatFacture.tva7 = this.giveMeTotalMntTVA7(this.listDetAchatFacture);
 
@@ -482,15 +483,35 @@ export class AchatFactureComponent {
 
     onChangeTVAManuel(tva: number) {
         if (tva === 7) {
+            this.formGroup.patchValue({
+                montantTVA7: this.formGroup.get('mntManuelTva7')?.value
+            });
             this.achatFacture.mntManuelTva7 = this.formGroup.get('mntManuelTva7')?.value;
+            this.achatFacture.montantTVA7 = this.formGroup.get('mntManuelTva7')?.value;
         } else if (tva === 10) {
+            this.formGroup.patchValue({
+                montantTVA10: this.formGroup.get('mntManuelTva10')?.value
+            });
             this.achatFacture.mntManuelTva10 = this.formGroup.get('mntManuelTva10')?.value;
+            this.achatFacture.montantTVA10 = this.formGroup.get('mntManuelTva10')?.value;
         } else if (tva === 12) {
+            this.formGroup.patchValue({
+                montantTVA12: this.formGroup.get('mntManuelTva12')?.value
+            });
             this.achatFacture.mntManuelTva12 = this.formGroup.get('mntManuelTva12')?.value;
+            this.achatFacture.montantTVA12 = this.formGroup.get('mntManuelTva12')?.value;
         } else if (tva === 14) {
+            this.formGroup.patchValue({
+                montantTVA14: this.formGroup.get('mntManuelTva14')?.value
+            });
             this.achatFacture.mntManuelTva14 = this.formGroup.get('mntManuelTva14')?.value;
+            this.achatFacture.montantTVA14 = this.formGroup.get('mntManuelTva14')?.value;
         } else if (tva === 20) {
+            this.formGroup.patchValue({
+                montantTVA20: this.formGroup.get('mntManuelTva20')?.value
+            });
             this.achatFacture.mntManuelTva20 = this.formGroup.get('mntManuelTva20')?.value;
+            this.achatFacture.montantTVA20 = this.formGroup.get('mntManuelTva20')?.value;
         }
 
         this.disableHT();
@@ -505,9 +526,6 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA7 = this.formGroup.get('mntHtTVA7')?.value;
             this.achatFacture.montantTVA7 = this.achatFacture.mntHtTVA7 * 0.07;
             this.achatFacture.mntTtcTVA7 = this.achatFacture.mntHtTVA7 + this.achatFacture.montantTVA7;
-            console.log('mntHtTVA7', this.achatFacture.mntHtTVA7);
-            console.log('montantTVA7', this.achatFacture.montantTVA7);
-            console.log('mntTtcTVA7', this.achatFacture.mntTtcTVA7);
             
             this.formGroup.patchValue({
                 montantTVA7: this.achatFacture.montantTVA7,
@@ -617,6 +635,7 @@ export class AchatFactureComponent {
         this.formGroup.patchValue({
             mantantTotHT: this.formGroup.get('mntHt')?.value + this.formGroup.get('mntHtTVA7')?.value + this.formGroup.get('mntHtTVA10')?.value + this.formGroup.get('mntHtTVA12')?.value + this.formGroup.get('mntHtTVA14')?.value + this.formGroup.get('mntHtTVA20')?.value
         });
+        console.log("mantantTotHT : ", this.formGroup.get('mantantTotHT')?.value);
     }
 
     calculerTotTVA() {
@@ -632,48 +651,56 @@ export class AchatFactureComponent {
     }
 
     calculerMontProd() {
-        if (this.detAchatFacture != null) {
-            let prv = 0.0;
-            let prattc = 0.0;
-            let qteLivr = 0;
-            let rmiseLivr = 0.0;
-            let mntPro = 0.0;
+        let prv = 0.0;
+        let prattc = 0.0;
+        let qteLivr = 0;
+        let rmiseLivr = 0.0;
+        let mntPro = 0.0;
 
-            if (this.detAchatFacture.prixVenteTtc > 0.0) {
-                prv = this.detAchatFacture.prixVenteTtc;
-            }
-            if (this.detAchatFacture.prixAchatTtc > 0.0) {
-                prattc = this.detAchatFacture.prixAchatTtc;
-            }
-            if (this.formGroup.get('qteacheter')?.value > 0) {
-                qteLivr = this.formGroup.get('qteacheter')?.value;
-            }
-            if (this.detAchatFacture.remiseAchat > 0) {
-                rmiseLivr = this.detAchatFacture.remiseAchat;
-            }
+        if (this.detAchatFacture.prixVenteTtc > 0.0) {
+            prv = this.detAchatFacture.prixVenteTtc;
+            console.log("prixVenteTtc : ", prv);
+        }
+        if (this.detAchatFacture.prixAchatTtc > 0.0) {
+            prattc = this.detAchatFacture.prixAchatTtc;
+            console.log("prattc : ", prattc);
+        }
+        if (this.formGroupDetAchatFacture.get('qteAcheter')?.value > 0) {
+            qteLivr = this.formGroupDetAchatFacture.get('qteAcheter')?.value;
+            console.log("qteLivr : ", qteLivr);
+        }
+        if (this.detAchatFacture.remiseAchat > 0) {
+            rmiseLivr = this.detAchatFacture.remiseAchat;
+            console.log("rmiseLivr : ", rmiseLivr);
+        }
 
-            if (this.detAchatFacture.remiseAchat == 0.0 && this.formGroup.get('unitegratuit')?.value == 0) {
-                mntPro = prattc * qteLivr - (prattc * qteLivr * rmiseLivr) / 100;
-            } else {
-                mntPro = prv * qteLivr - (prv * qteLivr * rmiseLivr) / 100;
-            }
+        if (this.detAchatFacture.remiseAchat == 0.0 && this.formGroupDetAchatFacture.get('uniteGratuit')?.value == 0) {
+            console.log("prattc : ", prattc, " qteLivr : ", qteLivr, " rmiseLivr : ", rmiseLivr, " mntPro : ", mntPro);
+            mntPro = prattc * qteLivr - (prattc * qteLivr * rmiseLivr) / 100;
+            console.log("mntPro : ", mntPro);
+        } else {
+            console.log("prv : ", prv, " qteLivr : ", qteLivr, " rmiseLivr : ", rmiseLivr, " mntPro : ", mntPro);
+            mntPro = prv * qteLivr - (prv * qteLivr * rmiseLivr) / 100;
+            console.log("mntPro : ", mntPro);
+        }
 
-            this.detAchatFacture.mantantTTC = mntPro;
-            if (this.detAchatFacture.stock?.tva == 7) {
-                let tv7 = 1.07;
-                let prhht = this.detAchatFacture.mantantTTC / tv7;
-                this.detAchatFacture.mantantHt = prhht;
-                this.detAchatFacture.tva7 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
-
-                this.detAchatFacture.tva20 = 0.0;
-            } else {
-                let tv7 = 1.2;
-                let prhht = this.detAchatFacture.mantantTTC / tv7;
-                this.detAchatFacture.mantantHt = prhht;
-                this.detAchatFacture.tva20 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
-
-                this.detAchatFacture.tva7 = 0.0;
-            }
+        this.detAchatFacture.mantantTTC = mntPro;
+        if (this.detAchatFacture.stock?.tva === 7) {
+            console.log("tva7 : ", this.detAchatFacture.stock?.tva)
+            let tv7 = 1.07;
+            let prhht = this.detAchatFacture.mantantTTC / tv7;
+            console.log("mantantHt : ", prhht, " mantantTTC : ", this.detAchatFacture.mantantTTC)
+            this.detAchatFacture.mantantHt = prhht;
+            this.detAchatFacture.tva7 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
+            this.detAchatFacture.tva20 = 0.0;
+        } else {
+            console.log("tva20 : ", this.detAchatFacture.stock?.tva)
+            let tv20 = 1.2;
+            let prhht = this.detAchatFacture.mantantTTC / tv20;
+            console.log("mantantHt : ", prhht, " mantantTTC : ", this.detAchatFacture.mantantTTC)
+            this.detAchatFacture.mantantHt = prhht;
+            this.detAchatFacture.tva20 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
+            this.detAchatFacture.tva7 = 0.0;
         }
     }
 
@@ -855,8 +882,8 @@ export class AchatFactureComponent {
         if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qte')?.value > 0) {
             let detAchatFacture: DetAchatFacture = initObjectDetAchatFacture();
             detAchatFacture.stockId = this.formGroup.get('stockId')?.value;
-            detAchatFacture.qteacheter = this.formGroup.get('qte')?.value;
-            detAchatFacture.unitegratuit = this.formGroup.get('unitegratuit')?.value;
+            detAchatFacture.qteAcheter = this.formGroup.get('qte')?.value;
+            detAchatFacture.uniteGratuit = this.formGroup.get('uniteGratuit')?.value;
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
             detAchatFacture.stock = stock;
@@ -1046,8 +1073,11 @@ export class AchatFactureComponent {
 
     mapFormGroupToObject(formGroup: FormGroup, achatFacture: AchatFacture): AchatFacture {
         achatFacture.fournisseurId = formGroup.get('fournisseurId')?.value;
-        achatFacture.dateAF = mapToDateTimeBackEnd(formGroup.get('dateAF')?.value);
-        achatFacture.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
+        achatFacture.dateAF = toLocalDate(mapToDateTimeBackEnd(formGroup.get('dateAF')?.value));
+        achatFacture.dateReglement = toLocalDate(mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value));
+        achatFacture.dateAvances = toLocalDate(mapToDateTimeBackEnd(achatFacture.dateAvances));
+        achatFacture.sysDate = mapToDateTimeBackEnd(achatFacture.sysDate);
+        achatFacture.numeroFacExterne = formGroup.get('numeroFacExterne')?.value;
         achatFacture.typeReglment = formGroup.get('typeReglment')?.value;
         achatFacture.numCheque = formGroup.get('numCheque')?.value;
         achatFacture.mntManuelTva7 = formGroup.get('mntManuelTva7')?.value;
@@ -1066,9 +1096,29 @@ export class AchatFactureComponent {
         achatFacture.mntTtcTVA14 = formGroup.get('mntTtcTVA14')?.value;
         achatFacture.mntTtcTVA20 = formGroup.get('mntTtcTVA20')?.value;
         achatFacture.mntTtc = formGroup.get('mntTtc')?.value;
+        achatFacture.mntHt = formGroup.get('mntHt')?.value;
+        achatFacture.mantantTotTTC = formGroup.get('mantantTotTTC')?.value;
+        achatFacture.mantantTotHTVA = formGroup.get('mantantTotHTVA')?.value;
+        achatFacture.mantantTotHT = formGroup.get('mantantTotHT')?.value;
+        achatFacture.totalMntProduit = formGroup.get('totalMntProduit')?.value;
         achatFacture.tvaArbtraire = this.achatFacture.mantantTotHTVA;
 
         return achatFacture;
+    }
+
+    async checkIfExists(achatFacture: AchatFacture): Promise<boolean> {
+        try {
+            const existsObservable = this.achatFactureService.exist(achatFacture).pipe(
+                catchError(error => {
+                    console.error('Error in achatFacture existence observable:', error);
+                    return of(false); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if achatFacture exists:', error);
+            return false;
+        }
     }
 
     async miseAjour(): Promise<void> {
@@ -1076,10 +1126,13 @@ export class AchatFactureComponent {
         this.loadingService.show();
         let achatFactureEdit: AchatFacture = { ...this.achatFacture };
         this.mapFormGroupToObject(this.formGroup, achatFactureEdit);
-        let trvErreur = false; // await this.checkIfExists(achatFactureEdit);
+        let trvErreur = await this.checkIfExists(achatFactureEdit);
 
         if (!trvErreur) {
             this.achatFacture = this.mapFormGroupToObject(this.formGroup, this.achatFacture);
+            this.listDetAchatFacture.forEach(detAchatFacture => {
+                detAchatFacture.stock = null;
+            });
 
             let achatFactureRequest: AchatFactureRequest = { achatFacture: { ...this.achatFacture }, detAchatFactures: this.listDetAchatFacture };
 

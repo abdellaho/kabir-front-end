@@ -238,7 +238,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHt" formControlName="mntHt" appendTo="body"
+                                    <p-input-number id="mntHt" formControlName="mntHt" appendTo="body" (onBlur)="onChangeTVAManuel(0)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHt')?.invalid }" />
                                     <label for="mntHt">{{ msg.components.achatFacture.mntHt }}</label>
                                 </p-floatlabel>
@@ -338,9 +338,9 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA" formControlName="montantTVA" appendTo="body"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA')?.invalid }" />
-                                    <label for="montantTVA">{{ msg.components.achatFacture.montantTVA }}</label>
+                                    <p-input-number id="mantantTotHTVA" formControlName="mantantTotHTVA" appendTo="body"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mantantTotHTVA')?.invalid }" />
+                                    <label for="mantantTotHTVA">{{ msg.components.achatFacture.mantantTotHTVA }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -388,9 +388,9 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtc" formControlName="mntTtc" appendTo="body"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtc')?.invalid }" />
-                                    <label for="mntTtc">{{ msg.components.achatFacture.mntTtc }}</label>
+                                    <p-input-number id="mantantTotTTC" formControlName="mantantTotTTC" appendTo="body"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mantantTotTTC')?.invalid }" />
+                                    <label for="mantantTotTTC">{{ msg.components.achatFacture.mantantTotTTC }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -475,8 +475,8 @@
                                 <tr [pSelectableRow]="p">
                                     <td>{{ p.stock.designation }}</td>
                                     <td>{{ p.stock.qteFacturer }}</td>
-                                    <td>{{ p.qteacheter }}</td>
-                                    <td>{{ p.unitegratuit }}</td>
+                                    <td>{{ p.qteAcheter }}</td>
+                                    <td>{{ p.uniteGratuit }}</td>
                                     <td>{{ p.mantantTTC }}</td>
                                     <td style="width: 5%; min-width: 7rem">
                                         <div class="flex gap-2">
@@ -559,15 +559,15 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="qteacheter" id="qteacheter" inputId="qteacheter" [min]="1" (onBlur)="calculerMontProd()" />
-                                    <label for="qteacheter">{{ msg.components.achatFacture.detAchatFacture.qteacheter }}</label>
+                                    <p-inputNumber formControlName="qteAcheter" id="qteAcheter" inputId="qteAcheter" [min]="1" (onBlur)="calculerMontProd()" />
+                                    <label for="qteAcheter">{{ msg.components.achatFacture.detAchatFacture.qteacheter }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="unitegratuit" id="unitegratuit" inputId="unitegratuit" />
-                                    <label for="unitegratuit">{{ msg.components.achatFacture.detAchatFacture.unitegratuit }}</label>
+                                    <p-inputNumber formControlName="uniteGratuit" id="uniteGratuit" inputId="uniteGratuit" />
+                                    <label for="uniteGratuit">{{ msg.components.achatFacture.detAchatFacture.unitegratuit }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>

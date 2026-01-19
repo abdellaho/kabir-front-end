@@ -45,5 +45,9 @@ export class AchatFactureService {
   getLastNumAchat(achatFacture: AchatFacture): Observable<number> {
     return this.http.post<number>(this.ENDPOINTS.getLastNumAchatFacture, achatFacture);
   }
+
+  exist(achatFacture: AchatFacture): Observable<boolean> {
+    return this.http.post<boolean>(this.ENDPOINTS.exist, achatFacture);
+  }
   
 }

@@ -1,10 +1,10 @@
 export interface AchatFacture {
-  id: bigint;
+  id: bigint | null;
   codeAF: string;
   numAchat: number;
-  dateAF: Date;
-  sysDate: Date;
-  dateAvances: Date;
+  dateAF: Date | string;
+  sysDate: Date | string;
+  dateAvances: Date | string;
   mantantAvancs: number;
   prixNormalAchatHt: number;
   numeroFacExterne: string;
@@ -12,7 +12,7 @@ export interface AchatFacture {
   mantantAF: number;
   mantantBFBenefice: number;
   montantNonTaxable: number;
-  dateReglement: Date;
+  dateReglement: Date | string;
   typeReglment: number;
   typePaiement: string;
   numCheque: string;
@@ -59,7 +59,7 @@ export interface AchatFacture {
 
 export function initObjectAchatFacture(): AchatFacture {
   return {
-    id: BigInt(0),
+    id: null,
     codeAF: '',
     numAchat: 0,
     dateAF: new Date(),

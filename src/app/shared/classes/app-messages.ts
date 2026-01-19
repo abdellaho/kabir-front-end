@@ -494,6 +494,7 @@ export const APP_MESSAGES = {
             remiseFacture: 'Remise Facture',
             mntReglement: 'Mnt Réglement',
             mantantTotTTC: 'Montant TTC',
+            mantantTotHTVA: 'Montant HT TVA',
             listDetAchatFacture: 'Liste des produits',
             mntManuelTva7: 'Mnt Manuelle Tva 7',
             mntManuelTva10: 'Mnt Manuelle Tva 10',

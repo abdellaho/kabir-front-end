@@ -97,7 +97,14 @@ export function mapToDateBackEnd(dateToMap: Date): Date {
   return new Date(formattedDate[2] + '-' + formattedDate[1] + '-' + formattedDate[0]);
 }
 
-export function mapToDateTimeBackEnd(dateToMap: Date): Date {
+export function toLocalDate(date: Date): string {
+  return date.toISOString().substring(0, 10);
+}
+
+export function mapToDateTimeBackEnd(dateToMap: Date | string): Date {
+  if (typeof dateToMap === 'string') {
+    dateToMap = new Date(dateToMap);
+  }
   // Extract individual components of the Date object
   const year = dateToMap.getFullYear();
   const month = String(dateToMap.getMonth() + 1).padStart(2, '0'); // Months are zero-based
