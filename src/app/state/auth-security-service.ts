@@ -27,7 +27,9 @@ export class AuthSecurityService {
     constructor(
         private http: HttpClient,
         private stateService: StateService
-    ) {
+    ) {}
+
+    initAuth(): void {
         this.initializeAuth();
         this.setupActivityListeners();
     }
