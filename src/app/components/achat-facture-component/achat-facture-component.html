@@ -85,8 +85,8 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
-                        <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.dateAF | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getICE(p.fournisseurId) }}</td>
                         <td>{{ p.dateReglement | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getTypeReglement(p.typeReglment) }}</td>

@@ -22,6 +22,7 @@ import { AchatSimpleComponent } from '@/components/achat-simple-component/achat-
 import { LoginComponent } from '@/components/login-component/login-component';
 import { AuthGuard } from '@/state/auth-guard';
 import { AchatFactureComponent } from '@/components/achat-facture-component/achat-facture-component';
+import { LoginGuard } from '@/state/guards/login-guard';
 
 export const appRoutes: Routes = [
     {
@@ -47,7 +48,7 @@ export const appRoutes: Routes = [
             { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
             { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
-            { path: 'login', component: LoginComponent },
+            { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
     },

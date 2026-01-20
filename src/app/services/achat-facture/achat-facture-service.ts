@@ -6,48 +6,45 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AchatFactureService {
+    private readonly ENDPOINTS = ENDPOINTS.ACHAT_FACTURE;
+    constructor(private http: HttpClient) {}
 
-  
-  private readonly ENDPOINTS = ENDPOINTS.ACHAT_FACTURE;
-  constructor(private http: HttpClient) { }
+    getAll(): Observable<AchatFacture[]> {
+        return this.http.get<AchatFacture[]>(this.ENDPOINTS.getAll);
+    }
 
-  getAll(): Observable<AchatFacture[]> {
-    return this.http.get<AchatFacture[]>(this.ENDPOINTS.getAll);
-  }
+    getById(id: bigint): Observable<AchatFacture> {
+        return this.http.get<AchatFacture>(this.ENDPOINTS.getById(id));
+    }
 
-  getById(id: bigint): Observable<AchatFacture> {
-    return this.http.get<AchatFacture>(this.ENDPOINTS.getById(id));
-  }
+    getByIdRequest(id: bigint): Observable<AchatFactureRequest> {
+        return this.http.get<AchatFactureRequest>(this.ENDPOINTS.getByIdRequest(id));
+    }
 
-  getByIdRequest(id: bigint): Observable<AchatFactureRequest> {
-    return this.http.get<AchatFactureRequest>(this.ENDPOINTS.getByIdRequest(id));
-  }
+    create(achatFactureRequest: AchatFactureRequest): Observable<AchatFacture> {
+        return this.http.post<AchatFacture>(this.ENDPOINTS.create, achatFactureRequest);
+    }
 
-  create(achatFactureRequest: AchatFactureRequest): Observable<AchatFacture> {
-    return this.http.post<AchatFacture>(this.ENDPOINTS.create, achatFactureRequest);
-  }
+    update(id: bigint, achatFactureRequest: AchatFactureRequest): Observable<AchatFacture> {
+        return this.http.patch<AchatFacture>(this.ENDPOINTS.update(id), achatFactureRequest);
+    }
 
-  update(id: bigint, achatFactureRequest: AchatFactureRequest): Observable<AchatFacture> {
-    return this.http.put<AchatFacture>(this.ENDPOINTS.update(id), achatFactureRequest);
-  }
+    delete(id: bigint): Observable<void> {
+        return this.http.delete<void>(this.ENDPOINTS.delete(id));
+    }
 
-  delete(id: bigint): Observable<void> {
-    return this.http.delete<void>(this.ENDPOINTS.delete(id));
-  }
+    search(achatFacture: AchatFacture): Observable<AchatFacture[]> {
+        return this.http.post<AchatFacture[]>(this.ENDPOINTS.search, achatFacture);
+    }
 
-  search(achatFacture: AchatFacture): Observable<AchatFacture[]> {
-    return this.http.post<AchatFacture[]>(this.ENDPOINTS.search, achatFacture);
-  }
+    getLastNumAchat(achatFacture: AchatFacture): Observable<number> {
+        return this.http.post<number>(this.ENDPOINTS.getLastNumAchatFacture, achatFacture);
+    }
 
-  getLastNumAchat(achatFacture: AchatFacture): Observable<number> {
-    return this.http.post<number>(this.ENDPOINTS.getLastNumAchatFacture, achatFacture);
-  }
-
-  exist(achatFacture: AchatFacture): Observable<boolean> {
-    return this.http.post<boolean>(this.ENDPOINTS.exist, achatFacture);
-  }
-  
+    exist(achatFacture: AchatFacture): Observable<boolean> {
+        return this.http.post<boolean>(this.ENDPOINTS.exist, achatFacture);
+    }
 }

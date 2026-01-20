@@ -82,7 +82,7 @@ export class AchatFactureComponent {
     mapOfStock: Map<number, string> = new Map<number, string>();
     mapOfFournisseur: Map<number, string> = new Map<number, string>();
     mapOfFournisseurICE: Map<number, string> = new Map<number, string>();
-    typeReglements: { label: string, value: number }[] = filteredTypeReglement;
+    typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     dialogSupprimer: boolean = false;
     dialogAjouterDetAchatFacture: boolean = false;
     dialogSupprimerDetAchatFacture: boolean = false;
@@ -119,14 +119,17 @@ export class AchatFactureComponent {
     }
 
     initFormGroupDetAchatFacture() {
-        this.formGroupDetAchatFacture = this.formBuilder.group({
-          designation: [{ value: this.stock.designation, disabled: true }],
-          pattc: [{ value: this.stock.pattc, disabled: true }],
-          qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
-          qteAcheter: [1, [Validators.required]],
-          uniteGratuit: [0],
-        }, { validators: DetAchatFactureValidator({ stock: this.stock }) });
-      }
+        this.formGroupDetAchatFacture = this.formBuilder.group(
+            {
+                designation: [{ value: this.stock.designation, disabled: true }],
+                pattc: [{ value: this.stock.pattc, disabled: true }],
+                qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
+                qteAcheter: [1, [Validators.required]],
+                uniteGratuit: [0]
+            },
+            { validators: DetAchatFactureValidator({ stock: this.stock }) }
+        );
+    }
 
     initFormGroup() {
         /*
@@ -335,7 +338,7 @@ export class AchatFactureComponent {
         let ice: string = '';
         if (fournisseurId > BigInt(0)) {
             let fournisseur: Fournisseur = this.listFournisseur.find((e) => e.id === fournisseurId) || initObjectFournisseur();
-            if(fournisseur && fournisseur.id !== BigInt(0)) {
+            if (fournisseur && fournisseur.id !== BigInt(0)) {
                 ice = fournisseur.ice;
             }
         }
@@ -442,7 +445,7 @@ export class AchatFactureComponent {
 
     calculerMntTtc() {
         this.achatFacture.mntTtc = 0;
-        if(this.listDetAchatFacture && this.listDetAchatFacture.length > 0) {
+        if (this.listDetAchatFacture && this.listDetAchatFacture.length > 0) {
             let total = this.listDetAchatFacture.reduce((acc, detAchatFacture) => acc + detAchatFacture.mantantTTC, 0);
             this.achatFacture.mntTtc = total;
         }
@@ -450,7 +453,7 @@ export class AchatFactureComponent {
         this.formGroup.patchValue({
             totalMntProduit: this.achatFacture.mntTtc
         });
-	}
+    }
 
     validerProduits() {
         let qteachet: number = 0;
@@ -526,7 +529,7 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA7 = this.formGroup.get('mntHtTVA7')?.value;
             this.achatFacture.montantTVA7 = this.achatFacture.mntHtTVA7 * 0.07;
             this.achatFacture.mntTtcTVA7 = this.achatFacture.mntHtTVA7 + this.achatFacture.montantTVA7;
-            
+
             this.formGroup.patchValue({
                 montantTVA7: this.achatFacture.montantTVA7,
                 mntTtcTVA7: this.achatFacture.mntTtcTVA7
@@ -535,7 +538,7 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA10 = this.formGroup.get('mntHtTVA10')?.value;
             this.achatFacture.montantTVA10 = this.achatFacture.mntHtTVA10 * 0.1;
             this.achatFacture.mntTtcTVA10 = this.achatFacture.mntHtTVA10 + this.achatFacture.montantTVA10;
-            
+
             this.formGroup.patchValue({
                 montantTVA10: this.achatFacture.montantTVA10,
                 mntTtcTVA10: this.achatFacture.mntTtcTVA10
@@ -544,7 +547,7 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA12 = this.formGroup.get('mntHtTVA12')?.value;
             this.achatFacture.montantTVA12 = this.achatFacture.mntHtTVA12 * 0.12;
             this.achatFacture.mntTtcTVA12 = this.achatFacture.mntHtTVA12 + this.achatFacture.montantTVA12;
-            
+
             this.formGroup.patchValue({
                 montantTVA12: this.achatFacture.montantTVA12,
                 mntTtcTVA12: this.achatFacture.mntTtcTVA12
@@ -553,7 +556,7 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA14 = this.formGroup.get('mntHtTVA14')?.value;
             this.achatFacture.montantTVA14 = this.achatFacture.mntHtTVA14 * 0.14;
             this.achatFacture.mntTtcTVA14 = this.achatFacture.mntHtTVA14 + this.achatFacture.montantTVA14;
-            
+
             this.formGroup.patchValue({
                 montantTVA14: this.achatFacture.montantTVA14,
                 mntTtcTVA14: this.achatFacture.mntTtcTVA14
@@ -562,7 +565,7 @@ export class AchatFactureComponent {
             this.achatFacture.mntHtTVA20 = this.formGroup.get('mntHtTVA20')?.value;
             this.achatFacture.montantTVA20 = this.achatFacture.mntHtTVA20 * 0.2;
             this.achatFacture.mntTtcTVA20 = this.achatFacture.mntHtTVA20 + this.achatFacture.montantTVA20;
-            
+
             this.formGroup.patchValue({
                 montantTVA20: this.achatFacture.montantTVA20,
                 mntTtcTVA20: this.achatFacture.mntTtcTVA20
@@ -614,7 +617,7 @@ export class AchatFactureComponent {
             this.achatFacture.disabledHT = true;
         }
 
-        console.log("disabledHT : ", this.achatFacture.disabledHT);
+        console.log('disabledHT : ', this.achatFacture.disabledHT);
         this.disableTVA(this.achatFacture.disabledHT);
         this.disableHTManuelle(false);
     }
@@ -626,16 +629,22 @@ export class AchatFactureComponent {
             this.achatFacture.disabledManuel = true;
         }
 
-        console.log("disabledManuel : ", this.achatFacture.disabledManuel);
+        console.log('disabledManuel : ', this.achatFacture.disabledManuel);
         this.disableTVA(false);
         this.disableHTManuelle(this.achatFacture.disabledManuel);
     }
 
     calculerTotHT() {
         this.formGroup.patchValue({
-            mantantTotHT: this.formGroup.get('mntHt')?.value + this.formGroup.get('mntHtTVA7')?.value + this.formGroup.get('mntHtTVA10')?.value + this.formGroup.get('mntHtTVA12')?.value + this.formGroup.get('mntHtTVA14')?.value + this.formGroup.get('mntHtTVA20')?.value
+            mantantTotHT:
+                this.formGroup.get('mntHt')?.value +
+                this.formGroup.get('mntHtTVA7')?.value +
+                this.formGroup.get('mntHtTVA10')?.value +
+                this.formGroup.get('mntHtTVA12')?.value +
+                this.formGroup.get('mntHtTVA14')?.value +
+                this.formGroup.get('mntHtTVA20')?.value
         });
-        console.log("mantantTotHT : ", this.formGroup.get('mantantTotHT')?.value);
+        console.log('mantantTotHT : ', this.formGroup.get('mantantTotHT')?.value);
     }
 
     calculerTotTVA() {
@@ -659,45 +668,45 @@ export class AchatFactureComponent {
 
         if (this.detAchatFacture.prixVenteTtc > 0.0) {
             prv = this.detAchatFacture.prixVenteTtc;
-            console.log("prixVenteTtc : ", prv);
+            console.log('prixVenteTtc : ', prv);
         }
         if (this.detAchatFacture.prixAchatTtc > 0.0) {
             prattc = this.detAchatFacture.prixAchatTtc;
-            console.log("prattc : ", prattc);
+            console.log('prattc : ', prattc);
         }
         if (this.formGroupDetAchatFacture.get('qteAcheter')?.value > 0) {
             qteLivr = this.formGroupDetAchatFacture.get('qteAcheter')?.value;
-            console.log("qteLivr : ", qteLivr);
+            console.log('qteLivr : ', qteLivr);
         }
         if (this.detAchatFacture.remiseAchat > 0) {
             rmiseLivr = this.detAchatFacture.remiseAchat;
-            console.log("rmiseLivr : ", rmiseLivr);
+            console.log('rmiseLivr : ', rmiseLivr);
         }
 
         if (this.detAchatFacture.remiseAchat == 0.0 && this.formGroupDetAchatFacture.get('uniteGratuit')?.value == 0) {
-            console.log("prattc : ", prattc, " qteLivr : ", qteLivr, " rmiseLivr : ", rmiseLivr, " mntPro : ", mntPro);
+            console.log('prattc : ', prattc, ' qteLivr : ', qteLivr, ' rmiseLivr : ', rmiseLivr, ' mntPro : ', mntPro);
             mntPro = prattc * qteLivr - (prattc * qteLivr * rmiseLivr) / 100;
-            console.log("mntPro : ", mntPro);
+            console.log('mntPro : ', mntPro);
         } else {
-            console.log("prv : ", prv, " qteLivr : ", qteLivr, " rmiseLivr : ", rmiseLivr, " mntPro : ", mntPro);
+            console.log('prv : ', prv, ' qteLivr : ', qteLivr, ' rmiseLivr : ', rmiseLivr, ' mntPro : ', mntPro);
             mntPro = prv * qteLivr - (prv * qteLivr * rmiseLivr) / 100;
-            console.log("mntPro : ", mntPro);
+            console.log('mntPro : ', mntPro);
         }
 
         this.detAchatFacture.mantantTTC = mntPro;
         if (this.detAchatFacture.stock?.tva === 7) {
-            console.log("tva7 : ", this.detAchatFacture.stock?.tva)
+            console.log('tva7 : ', this.detAchatFacture.stock?.tva);
             let tv7 = 1.07;
             let prhht = this.detAchatFacture.mantantTTC / tv7;
-            console.log("mantantHt : ", prhht, " mantantTTC : ", this.detAchatFacture.mantantTTC)
+            console.log('mantantHt : ', prhht, ' mantantTTC : ', this.detAchatFacture.mantantTTC);
             this.detAchatFacture.mantantHt = prhht;
             this.detAchatFacture.tva7 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
             this.detAchatFacture.tva20 = 0.0;
         } else {
-            console.log("tva20 : ", this.detAchatFacture.stock?.tva)
+            console.log('tva20 : ', this.detAchatFacture.stock?.tva);
             let tv20 = 1.2;
             let prhht = this.detAchatFacture.mantantTTC / tv20;
-            console.log("mantantHt : ", prhht, " mantantTTC : ", this.detAchatFacture.mantantTTC)
+            console.log('mantantHt : ', prhht, ' mantantTTC : ', this.detAchatFacture.mantantTTC);
             this.detAchatFacture.mantantHt = prhht;
             this.detAchatFacture.tva20 = this.detAchatFacture.mantantTTC - this.detAchatFacture.mantantHt;
             this.detAchatFacture.tva7 = 0.0;
@@ -846,7 +855,7 @@ export class AchatFactureComponent {
         });
     }
 
-    giveMeTotalMntHT(listDetachatfacture: DetAchatFacture[]) : number {
+    giveMeTotalMntHT(listDetachatfacture: DetAchatFacture[]): number {
         let mntp = 0.0;
         for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.mantantHt;
@@ -854,7 +863,7 @@ export class AchatFactureComponent {
         return mntp;
     }
 
-    giveMeTotalMntTTc(listDetachatfacture: DetAchatFacture[]) : number {
+    giveMeTotalMntTTc(listDetachatfacture: DetAchatFacture[]): number {
         let mntp = 0.0;
         for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.mantantTTC;
@@ -862,7 +871,7 @@ export class AchatFactureComponent {
         return mntp;
     }
 
-    giveMeTotalMntTVA7(listDetachatfacture: DetAchatFacture[]) : number {
+    giveMeTotalMntTVA7(listDetachatfacture: DetAchatFacture[]): number {
         let mntp = 0.0;
         for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.tva7;
@@ -870,7 +879,7 @@ export class AchatFactureComponent {
         return mntp;
     }
 
-    giveMeTotalMntTVA20(listDetachatfacture: DetAchatFacture[]) : number {
+    giveMeTotalMntTVA20(listDetachatfacture: DetAchatFacture[]): number {
         let mntp = 0.0;
         for (let detachatfactures of listDetachatfacture) {
             mntp += detachatfactures.tva20;
@@ -975,12 +984,19 @@ export class AchatFactureComponent {
         return filteredTypeReglement.length > 0 ? filteredTypeReglement[0].label : '';
     }
 
+    mapDateFromBackend(achatFacture: AchatFacture) {
+        achatFacture.dateAF = new Date(achatFacture.dateAF + 'T00:00:00');
+        achatFacture.dateReglement = new Date(achatFacture.dateReglement + 'T00:00:00');
+        achatFacture.dateAvances = new Date(achatFacture.dateAvances + 'T00:00:00');
+    }
+
     recupperer(operation: number, achatFactureEdit: AchatFacture) {
         if (achatFactureEdit && achatFactureEdit.id) {
             if (operation === 1) {
                 this.achatFactureService.getByIdRequest(achatFactureEdit.id).subscribe({
                     next: (data: AchatFactureRequest) => {
                         this.achatFacture = data.achatFacture;
+                        this.mapDateFromBackend(this.achatFacture);
                         this.listDetAchatFacture = data.detAchatFactures;
                         this.achatFactureAncien = structuredClone(data.achatFacture);
 
@@ -1028,9 +1044,8 @@ export class AchatFactureComponent {
                             mntTtc: this.achatFacture.mntTtc,
                             totalMntProduit: this.achatFacture.totalMntProduit
                         });
-
-                        this.formGroup.get('designation')?.disable();
-                        this.formGroup.get('qteStock')?.disable();
+                        this.disableHTManuelle(this.achatFacture.disabledManuel);
+                        this.disableTVA(this.achatFacture.disabledHT);
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
@@ -1109,7 +1124,7 @@ export class AchatFactureComponent {
     async checkIfExists(achatFacture: AchatFacture): Promise<boolean> {
         try {
             const existsObservable = this.achatFactureService.exist(achatFacture).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in achatFacture existence observable:', error);
                     return of(false); // Gracefully handle observable errors by returning false
                 })
@@ -1130,7 +1145,7 @@ export class AchatFactureComponent {
 
         if (!trvErreur) {
             this.achatFacture = this.mapFormGroupToObject(this.formGroup, this.achatFacture);
-            this.listDetAchatFacture.forEach(detAchatFacture => {
+            this.listDetAchatFacture.forEach((detAchatFacture) => {
                 detAchatFacture.stock = null;
             });
 
