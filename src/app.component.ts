@@ -1,4 +1,3 @@
-import { AuthSecurityService } from '@/state/auth-security-service';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,13 +12,11 @@ import { PrimeNG } from 'primeng/config';
 export class AppComponent implements OnInit {
     constructor(
         private config: PrimeNG,
-        private translateService: TranslateService,
-        private authService: AuthSecurityService
+        private translateService: TranslateService
     ) {}
 
     ngOnInit() {
         this.translateService.setDefaultLang('fr');
-        this.authService.initAuth();
     }
 
     translate(lang: string) {

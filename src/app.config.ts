@@ -1,12 +1,12 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, inject, provideAppInitializer } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { provideRouter, Router, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { MessageService } from 'primeng/api';
 import Nora from '@primeuix/themes/nora';
-import { provideTranslateService } from "@ngx-translate/core";
+import { provideTranslateService } from '@ngx-translate/core';
 import { StateService } from '@/state/state-service';
 import { AuthSecurityService } from '@/state/auth-security-service';
 import { SanitizationService } from '@/state/sanitization-service';
@@ -15,35 +15,49 @@ import { authInterceptorFn } from '@/state/auth.interceptor';
 import { bigIntInterceptor } from '@/shared/interceptors/big-int-interceptor';
 import { httpErrorInterceptor } from '@/shared/interceptors/http-error.interceptor';
 
+export function initializeAuthFactory(): Promise<void> {
+    const authService = inject(AuthSecurityService);
+    const router = inject(Router);
+    console.log('initializeAuthFactory');
+    return new Promise<void>((resolve) => {
+        authService.checkAndRestoreSession().subscribe({
+            next: () => {
+                console.log('✅ Auth initialized successfully');
+                resolve();
+                router.navigate(['/']);
+            },
+            error: (err) => {
+                console.error('❌ Auth initialization failed:', err);
+                resolve(); // Resolve anyway to not block app
+            }
+        });
+    });
+}
+
 export const appConfig: ApplicationConfig = {
     providers: [
         MessageService,
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withFetch(), withInterceptors([ authInterceptorFn, bigIntInterceptor, httpErrorInterceptor ])),
+        provideHttpClient(withFetch(), withInterceptors([authInterceptorFn, bigIntInterceptor, httpErrorInterceptor])),
+        provideAppInitializer(initializeAuthFactory),
         provideAnimationsAsync(),
         provideTranslateService({
             lang: 'fr',
             fallbackLang: 'en'
         }),
-        providePrimeNG({ 
-            theme: { 
-                preset: Nora, 
-                options: { 
-                    darkModeSelector: '.app-dark' 
+        providePrimeNG({
+            theme: {
+                preset: Nora,
+                options: {
+                    darkModeSelector: '.app-dark'
                 }
             },
             translation: {
                 dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
                 dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
                 dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
-                monthNames: [
-                  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-                  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-                ],
-                monthNamesShort: [
-                  'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun',
-                  'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'
-                ],
+                monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                monthNamesShort: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
                 today: "Aujourd'hui",
                 clear: 'Effacer',
                 weekHeader: 'Sem',

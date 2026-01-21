@@ -27,20 +27,48 @@ export class AuthSecurityService {
     constructor(
         private http: HttpClient,
         private stateService: StateService
-    ) {}
-
-    initAuth(): void {
-        this.initializeAuth();
+    ) {
+        // Do NOT call initializeAuth here - it will be called via APP_INITIALIZER
+        // Only setup activity listeners
         this.setupActivityListeners();
     }
 
-    // Initialize authentication state on app load
+    // Public method called by APP_INITIALIZER to restore session
+    checkAndRestoreSession(): Observable<any> {
+        const token = this.getToken();
+        console.log('checkAndRestoreSession', token);
+        if (token && !this.isTokenExpired()) {
+            // Token exists and is valid - restore session
+            console.log('checkAndRestoreSession 2');
+            return this.fetchCurrentUser().pipe(
+                tap((user) => {
+                    console.log('checkAndRestoreSession 3');
+                    this.stateService.setState({ user, connected: true });
+                    this.isAuthenticated$.next(true);
+                    this.setupTokenRefresh();
+                    this.resetInactivityTimer();
+                }),
+                catchError((err) => {
+                    console.error('Failed to restore session:', err);
+                    this.clearAuth();
+                    return of(null);
+                }),
+                finalize(() => {
+                    this.userFetchInProgress = false;
+                })
+            );
+        } else {
+            // No valid token - clear auth
+            this.clearAuth();
+            return of(null);
+        }
+    }
+
+    // Initialize authentication state on app load (deprecated - use checkAndRestoreSession instead)
     private initializeAuth(): void {
         const token = this.getToken();
-        console.log('token in initializeAuth()  ---> ', token);
         if (token && !this.isTokenExpired()) {
             // Token exists and is valid
-            console.log('Token is valid, fetching user...');
             this.fetchCurrentUser()
                 .pipe(
                     tap((user) => {
@@ -61,7 +89,6 @@ export class AuthSecurityService {
                 .subscribe();
         } else {
             // No valid token, clear auth
-            console.log('No valid token, clearing auth...');
             this.clearAuth();
         }
     }
@@ -125,16 +152,16 @@ export class AuthSecurityService {
     }
 
     private fetchCurrentUser(): Observable<UserState> {
-        console.log('Fetching current user...');
         if (this.userFetchInProgress) {
-            console.log('User fetch in progress, returning cached state...');
             return of(this.stateService.getInitialUserState());
         }
         this.userFetchInProgress = true;
-        console.log('Searching for user in the API ...');
+        console.log('fetchCurrentUser');
+
         const headers = { Authorization: `Bearer ${this.getToken()}` };
         const refreshToken = this.getRefreshToken();
-        console.log('Refresh token: ', refreshToken);
+        console.log('fetchCurrentUser 2', headers, refreshToken);
+
         return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.me, { refreshToken }, { headers }).pipe(
             map((response) => ({
                 id: response.user.id,

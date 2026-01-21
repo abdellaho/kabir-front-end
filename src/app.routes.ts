@@ -48,7 +48,7 @@ export const appRoutes: Routes = [
             { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
             { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
-            { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+            { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
     },
