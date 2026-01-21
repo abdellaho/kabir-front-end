@@ -16,11 +16,16 @@ export const APP_MESSAGES = {
         parametrage: 'Paramétrage',
         acceuil: 'Acceuil',
         livraison: 'Livraison',
+        facture: 'Facture',
         stockDepot: 'Stock Dépôt',
         achatFacture: 'Achat Facture',
+        bonSortie: 'Bon Sortie',
         deconnexion: 'Déconnexion'
     },
     components: {
+        detFacture: {
+            label: 'Détail Facture'
+        },
         ville: {
             label: 'Ville',
             nomVille: 'Nom Ville',
@@ -315,6 +320,8 @@ export const APP_MESSAGES = {
                 pattc: 'P.A.TTC',
                 pvttc: 'P.V.TTC',
                 prixVente: 'Prix Vente',
+                qteStockFacturer: 'Qte Stock Facturer',
+                qteFacturer: 'Qte Facturer',
                 qteLivrer: 'Qte Livrer',
                 remiseLivraison: 'Remise Livraison',
                 avecRemise: 'Avec Remise',
@@ -368,11 +375,21 @@ export const APP_MESSAGES = {
         },
         bonSortie: {
             label: 'Bon Sortie',
-            numBonSortie: 'N° Bon Sortie',
-            dateBonSortie: 'Date Bon Sortie',
+            codeSortie: 'Code Sortie',
+            dateOperation: 'Date Opération',
+            repertoireId: 'Repertoire',
+            stockId: 'Produit',
+            mnt: 'Montant',
+            qteSortie: 'Qte Sortie',
+            mntProduit: 'Montant Produit',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bon sortie ?',
             detailBonSortie: {
                 messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce détail de bon sortie ?'
+            },
+            stock: {
+                designation: 'Designation',
+                qteStock: 'Qte Stock',
+                pvttc: 'Prix Vente TTC'
             }
         },
         facture: {
@@ -425,6 +442,7 @@ export const APP_MESSAGES = {
                 label: 'Produit',
                 designation: 'Designation',
                 qteStock: 'Qte Stock',
+                qteStockFacturer: 'Qte Stock Facturer',
                 pattc: 'P.A.TTC',
                 pvttc: 'P.V.TTC',
                 prixVente: 'Prix Vente',
@@ -479,7 +497,8 @@ export const APP_MESSAGES = {
                 numCheque2Required: 'Num Cheque 2 est obligatoire',
                 numCheque3Required: 'Num Cheque 3 est obligatoire',
                 numCheque4Required: 'Num Cheque 4 est obligatoire',
-                remiseFactureMustBeAtMostEqualRemiseMax: 'Remise Facture doit être inférieur ou égal au Remise Max'
+                remiseFactureMustBeAtMostEqualRemiseMax: 'Remise Facture doit être inférieur ou égal au Remise Max',
+                qteFacturerMustBeDifferentFromZero: 'Qte Facturer doit être différent de 0'
             }
         },
         achatFacture: {
@@ -529,15 +548,15 @@ export const APP_MESSAGES = {
                 qteacheterMustBeDifferentThan0: 'Qte Acheté doit être différent de 0'
             },
             detAchatFacture: {
-                label: 'Produit', 
+                label: 'Produit',
                 qteacheter: 'Qte Acheté',
                 unitegratuit: 'Unite Gratuite',
                 mantantTTC: 'Montant TTC',
-                qteFacturer: 'Qte Facturé',
+                qteFacturer: 'Qte Facturé'
             },
             stock: {
                 designation: 'Designation',
-                qteFacturer: 'Qte Facturé',
+                qteFacturer: 'Qte Facturé'
             }
         },
         parametrage: 'Paramétrage',

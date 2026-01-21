@@ -28,381 +28,492 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { BonSortieRequest } from '@/shared/classes/bon-sortie-request';
 import { OperationType } from '@/shared/enums/operation-type';
 import { BonSortieValidator } from '@/validators/bon-sortie-validator';
+import { RepertoireService } from '@/services/repertoire/repertoire-service';
+import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
+import { StateService } from '@/state/state-service';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
-  selector: 'app-bon-sortie-component',
-  imports: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule,
-      ToastModule,
-      ToolbarModule,
-      TableModule,
-      IconFieldModule,
-      InputIconModule,
-      ButtonModule,
-      DialogModule,
-      FloatLabelModule,
-      InputNumberModule,
-      SelectModule,
-      DatePickerModule,
-      MessageModule,
-      InputTextModule
-  ],
-  templateUrl: './bon-sortie-component.html',
-  styleUrl: './bon-sortie-component.scss'
+    selector: 'app-bon-sortie-component',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
+        ButtonModule,
+        DialogModule,
+        FloatLabelModule,
+        InputNumberModule,
+        SelectModule,
+        DatePickerModule,
+        MessageModule,
+        InputTextModule
+    ],
+    templateUrl: './bon-sortie-component.html',
+    styleUrl: './bon-sortie-component.scss'
 })
 export class BonSortieComponent {
+    personnelCreationId: number | null = null;
+    isValid: boolean = false;
+    listStock: Stock[] = [];
+    listBonSortie: BonSortie[] = [];
+    listDetailBonSortie: DetailBonSortie[] = [];
+    bonSortie: BonSortie = initObjectBonSortie();
+    selectedBonSortie!: BonSortie;
+    detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
+    stock: Stock = initObjectStock();
+    mapOfStock: Map<number, string> = new Map<number, string>();
+    mapOfRepertoire: Map<number, string> = new Map<number, string>();
+    listRepertoire: Repertoire[] = [];
+    dialogSupprimer: boolean = false;
+    dialogSupprimerDetBonSortie: boolean = false;
+    dialogAjouter: boolean = false;
+    submitted: boolean = false;
+    formGroup!: FormGroup;
+    msg = APP_MESSAGES;
+    readonly BigInt = BigInt; // Expose BigInt to template
 
-  isValid: boolean = false;
-  listStock: Stock[] = [];
-  listBonSortie: BonSortie[] = [];
-  listDetailBonSortie: DetailBonSortie[] = [];
-  bonSortie: BonSortie = initObjectBonSortie();
-  selectedStockDepot!: BonSortie;
-  detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
-  stock: Stock = initObjectStock();
-  mapOfStock: Map<number, string> = new Map<number, string>();
-  dialogSupprimer: boolean = false;
-  dialogSupprimerDetBonSortie: boolean = false;
-  dialogAjouter: boolean = false;
-  submitted: boolean = false;
-  formGroup!: FormGroup;
-  msg = APP_MESSAGES;
-  readonly BigInt = BigInt; // Expose BigInt to template
+    constructor(
+        private stockService: StockService,
+        private bonSortieService: BonSortieService,
+        private repertoireService: RepertoireService,
+        private stateService: StateService,
+        private formBuilder: FormBuilder,
+        private messageService: MessageService,
+        private loadingService: LoadingService
+    ) {}
 
-  constructor(
-      private stockService: StockService,
-      private bonSortieService: BonSortieService,
-      private formBuilder: FormBuilder,
-      private messageService: MessageService,
-      private loadingService: LoadingService
-  ) {
-  }
+    ngOnInit(): void {
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
+        this.search();
+        this.getAllRepertoire();
+        this.getAllStock();
+        this.initFormGroup();
+    }
 
-  ngOnInit(): void {
-      this.search();
-      this.getAllStock();
-      this.initFormGroup();
-  }
+    clear(table: Table) {
+        table.clear();
+    }
 
-  clear(table: Table) {
-      table.clear();
-  }
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
 
-  onGlobalFilter(table: Table, event: Event) {
-      table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
+    initFormGroup() {
+        this.formGroup = this.formBuilder.group(
+            {
+                codeSortie: [{ value: '', disabled: true }],
+                dateOperation: [new Date(), [Validators.required]],
+                repertoireId: [BigInt(0), [Validators.required]],
+                stockId: [BigInt(0)],
+                designation: [{ value: '', disabled: true }],
+                qteStock: [{ value: 0, disabled: true }],
+                qteSortie: [1],
+                mntProduit: [{ value: 0, disabled: true }]
+            },
+            { validators: [BonSortieValidator({ getListDetailBonSortie: () => this.listDetailBonSortie })] }
+        );
+    }
 
-  initFormGroup() {
-      this.formGroup = this.formBuilder.group({
-          dateOperation: [new Date(), [Validators.required]],
-          stockId: [BigInt(0)],
-          qteSortie: [1],
-          designation: [{ value: '', disabled: true }],
-      }, { validators: [BonSortieValidator({ getListDetailBonSortie: () => this.listDetailBonSortie })] });
-  }
+    search() {
+        this.getAllBonSortie();
+    }
 
-  search() {
-      this.getAllBonSortie();
-  }
+    getAllBonSortie(): void {
+        this.listBonSortie = [];
+        this.bonSortieService.getAll().subscribe({
+            next: (data: BonSortie[]) => {
+                this.listBonSortie = data;
+            },
+            error: (error: any) => {
+                console.error(error);
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
 
-  getAllBonSortie(): void {
-      this.listBonSortie = [];
-      this.bonSortieService.getAll().subscribe({
-          next: (data: BonSortie[]) => {
-              this.listBonSortie = data;
-          }, error: (error: any) => {
-              console.error(error);
-          }, complete: () => {
-              this.loadingService.hide();
-          }
-      });
-  }
+    getAllRepertoire(): void {
+        this.listRepertoire = [];
+        let repertoireSearch: Repertoire = initObjectSearch(false, false, TypeSearch.Repertoire);
 
-  getAllStock(): void {
-      this.listStock = [];
-      let stockSearch: Stock = initObjectSearch(false, false, TypeSearch.Stock);
+        this.repertoireService.search(repertoireSearch).subscribe({
+            next: (data: Repertoire[]) => {
+                let initRepertoire: Repertoire = initObjectRepertoire();
+                initRepertoire.id = BigInt(0);
+                this.listRepertoire = [initRepertoire, ...data];
+                this.mapOfRepertoire = arrayToMap(this.listRepertoire, 'id', ['designation'], ['']);
+            },
+            error: (error: any) => {
+                console.error(error);
+            }
+        });
+    }
 
-      this.stockService.search(stockSearch).subscribe({
-          next: (data: Stock[]) => {
-              let initStock: Stock = initObjectStock();
-              initStock.id = BigInt(0);
-              this.listStock = [initStock, ...data];
-              this.mapOfStock = arrayToMap(this.listStock, 'id', ['designation'], ['']);
-          }, error: (error: any) => {
-              console.error(error);
-          }, complete: () => {
-              this.loadingService.hide();
-          }
-      });
-  }
+    getAllStock(): void {
+        this.listStock = [];
+        let stockSearch: Stock = initObjectSearch(false, false, TypeSearch.Stock);
 
-  onChangeIdStock() {
-      if(this.formGroup.get('stockId')?.value > BigInt(0)) {
-          this.isValid = false;
-          this.stock = initObjectStock();
-          let isExistStock: boolean = false;
+        this.stockService.search(stockSearch).subscribe({
+            next: (data: Stock[]) => {
+                let initStock: Stock = initObjectStock();
+                initStock.id = BigInt(0);
+                this.listStock = [initStock, ...data];
+                this.mapOfStock = arrayToMap(this.listStock, 'id', ['designation'], ['']);
+            },
+            error: (error: any) => {
+                console.error(error);
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
 
-          this.listDetailBonSortie.forEach((detailBonSortie: DetailBonSortie) => {
-              if(detailBonSortie.stockId === this.formGroup.get('stockId')?.value) {
-                  isExistStock = true;
+    onChangeIdStock() {
+        if (this.formGroup.get('stockId')?.value > BigInt(0)) {
+            this.isValid = false;
+            this.stock = initObjectStock();
+            let isExistStock: boolean = false;
 
-                  this.formGroup.patchValue({
-                      stockId: BigInt(0),
-                  });
+            this.listDetailBonSortie.forEach((detailBonSortie: DetailBonSortie) => {
+                if (detailBonSortie.stockId === this.formGroup.get('stockId')?.value) {
+                    isExistStock = true;
 
-                  return;
-              }
-          });
-      
-          if(!isExistStock) {
-              this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-              this.formGroup.patchValue({
-                  qte: 1,
-                  designation: this.stock.designation,
-              });
+                    this.formGroup.patchValue({
+                        stockId: BigInt(0)
+                    });
 
-              this.formGroup.get('designation')?.disable();
-              this.isValid = true;
-          }
-      }
-  }
+                    return;
+                }
+            });
 
-  initDetailBonSortieFormInformation() {
-      this.stock = initObjectStock();
-      this.formGroup.patchValue({
-          stockId: BigInt(0),
-          qte: 1,
-          designation: '',
-      });
-      this.formGroup.get('designation')?.disable();
-  }
+            if (!isExistStock) {
+                this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+                this.formGroup.patchValue({
+                    designation: this.stock.designation,
+                    qteStock: this.stock.qteStock,
+                    qteSortie: 1,
+                    mntProduit: this.stock.pvttc
+                });
 
-  recuppererDetailBonSortie(operation: number, detailBonSortieEdit: DetailBonSortie) {
-      if (detailBonSortieEdit && detailBonSortieEdit.stockId) {
-          this.detailBonSortie = structuredClone(detailBonSortieEdit);
-          if (operation === 1) {
-              this.openCloseDialogAjouter(true);
-          } else if (operation === 2) {
-              this.openCloseDialogSupprimerDetBonSortie(true);
-          }
-      }
-  }
+                this.formGroup.get('designation')?.disable();
+                this.formGroup.get('qteStock')?.disable();
+                this.formGroup.get('mntProduit')?.disable();
+                this.isValid = true;
+            }
+        }
+    }
 
-  validerDetailBonSortie() {
-      if(this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qteSortie')?.value > 0) {
-          let detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
-          detailBonSortie.stockId = this.formGroup.get('stockId')?.value;
-          detailBonSortie.qteSortie = this.formGroup.get('qteSortie')?.value;
-          let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-          detailBonSortie.stock = stock;
+    getDesignationRepertoire(id: number) {
+        return getElementFromMap(this.mapOfRepertoire, id);
+    }
 
-          this.listDetailBonSortie.push(detailBonSortie);
-          
-          this.initDetailBonSortieFormInformation();
-      }
-  }
+    initDetailBonSortieFormInformation() {
+        this.stock = initObjectStock();
+        this.formGroup.patchValue({
+            stockId: BigInt(0),
+            designation: '',
+            qteStock: 0,
+            qteSortie: 1,
+            mntProduit: 0
+        });
+        this.formGroup.get('designation')?.disable();
+        this.formGroup.get('qteStock')?.disable();
+        this.formGroup.get('mntProduit')?.disable();
+    }
 
-  supprimerDetailBonSortie() {
-      this.listDetailBonSortie = this.listDetailBonSortie.filter((detailBonSortie: DetailBonSortie) => detailBonSortie.stockId !== this.detailBonSortie.stockId);
-      this.formGroup.updateValueAndValidity();
-      this.openCloseDialogSupprimerDetBonSortie(false);
-  }
+    recuppererDetailBonSortie(operation: number, detailBonSortieEdit: DetailBonSortie) {
+        if (detailBonSortieEdit && detailBonSortieEdit.stockId) {
+            this.detailBonSortie = structuredClone(detailBonSortieEdit);
+            if (operation === 1) {
+                this.openCloseDialogAjouter(true);
+            } else if (operation === 2) {
+                this.openCloseDialogSupprimerDetBonSortie(true);
+            }
+        }
+    }
 
-  openCloseDialogAjouter(openClose: boolean): void {
-      this.dialogAjouter = openClose;
-  }
+    validerDetailBonSortie() {
+        if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qteSortie')?.value > 0) {
+            let detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
+            detailBonSortie.stockId = this.formGroup.get('stockId')?.value;
+            detailBonSortie.qteSortie = this.formGroup.get('qteSortie')?.value;
+            detailBonSortie.mntProduit = this.formGroup.get('mntProduit')?.value;
+            detailBonSortie.total = detailBonSortie.qteSortie * detailBonSortie.mntProduit;
 
-  openCloseDialogSupprimer(openClose: boolean): void {
-      this.dialogSupprimer = openClose;
-  }
+            let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+            detailBonSortie.stock = stock;
 
-  openCloseDialogSupprimerDetBonSortie(openClose: boolean): void {
-      this.dialogSupprimerDetBonSortie = openClose;
-  }
+            this.listDetailBonSortie.push(detailBonSortie);
 
-  viderAjouter() {
-      this.openCloseDialogAjouter(true);
-      this.submitted = false;
-      this.listDetailBonSortie = [];
-      this.bonSortie = initObjectBonSortie();
-      this.initFormGroup();
-  }
+            this.initDetailBonSortieFormInformation();
+        }
+    }
 
-  getDesignation(id: number): string {
-      return getElementFromMap(this.mapOfStock, id);
-  }
+    supprimerDetailBonSortie() {
+        this.listDetailBonSortie = this.listDetailBonSortie.filter((detailBonSortie: DetailBonSortie) => detailBonSortie.stockId !== this.detailBonSortie.stockId);
+        this.formGroup.updateValueAndValidity();
+        this.openCloseDialogSupprimerDetBonSortie(false);
+    }
 
-  recupperer(operation: number, bonSortieEdit: BonSortie) {
-      if (bonSortieEdit && bonSortieEdit.id) {
-          if (operation === 1) {
-              this.bonSortieService.getByIdRequest(bonSortieEdit.id).subscribe({
-                  next: (data: BonSortieRequest) => {
-                      this.bonSortie = data.bonSortie;
-                      this.listDetailBonSortie = data.detailBonSorties;
+    openCloseDialogAjouter(openClose: boolean): void {
+        this.dialogAjouter = openClose;
+    }
 
-                      this.listDetailBonSortie.forEach((detailBonSortie: DetailBonSortie) => {
-                          if(detailBonSortie.stockId && detailBonSortie.stockId !== BigInt(0)) {
-                              let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detailBonSortie.stockId) || initObjectStock();
-                              detailBonSortie.stock = stock;
-                          }
-                      });
-                      
-                      this.formGroup.patchValue({
-                          designation: '',
-                          stockId: BigInt(0),
-                          qte: 1,
-                          dateOperation: new Date(this.bonSortie.dateOperation),
-                      });
-                      this.formGroup.get('designation')?.disable();
-                      this.formGroup.updateValueAndValidity();
+    openCloseDialogSupprimer(openClose: boolean): void {
+        this.dialogSupprimer = openClose;
+    }
 
-                      this.openCloseDialogAjouter(true);
-                  }, error: (error: any) => {
-                      console.error(error);
-                  }, complete: () => {
-                      this.loadingService.hide();
-                  }
-              });
-          } else if (operation === 2) {
-              this.bonSortie = structuredClone(bonSortieEdit);
-              this.openCloseDialogSupprimer(true);
-          }
-      } else {
-          this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
-      }
-  }
+    openCloseDialogSupprimerDetBonSortie(openClose: boolean): void {
+        this.dialogSupprimerDetBonSortie = openClose;
+    }
 
-  updateList(bonSortie: BonSortie, list: BonSortie[], operationType: OperationType, id?: bigint): BonSortie[] {
-      if (operationType === OperationType.ADD) {
-          list = [...list, bonSortie];
-      } else if (operationType === OperationType.MODIFY) {
-          let index = list.findIndex(x => x.id === bonSortie.id);
-          if (index > -1) {
-              list[index] = bonSortie;
-          }
-      } else if (operationType === OperationType.DELETE) {
-          list = list.filter(x => x.id !== id);
-      }
-      return list;
-  }
+    async viderAjouter() {
+        this.openCloseDialogAjouter(true);
+        this.submitted = false;
+        this.listDetailBonSortie = [];
+        this.bonSortie = initObjectBonSortie();
+        await this.generateNumBonSortie(this.bonSortie);
+        this.initFormGroup();
+    }
 
-  checkIfListIsNull() {
-      if (null == this.listBonSortie) {
-          this.listBonSortie = [];
-      }
-  }
+    getDesignation(id: number): string {
+        return getElementFromMap(this.mapOfStock, id);
+    }
 
-  mapFormGroupToObject(formGroup: FormGroup, bonSortie: BonSortie): BonSortie {
-      bonSortie.dateOperation = mapToDateTimeBackEnd(formGroup.get('dateOperation')?.value);
+    recupperer(operation: number, bonSortieEdit: BonSortie) {
+        if (bonSortieEdit && bonSortieEdit.id) {
+            if (operation === 1) {
+                this.bonSortieService.getByIdRequest(bonSortieEdit.id).subscribe({
+                    next: (data: BonSortieRequest) => {
+                        this.bonSortie = data.bonSortie;
+                        this.listDetailBonSortie = data.detailBonSorties;
 
-      return bonSortie;
-  }
+                        this.listDetailBonSortie.forEach((detailBonSortie: DetailBonSortie) => {
+                            if (detailBonSortie.stockId && detailBonSortie.stockId !== BigInt(0)) {
+                                let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detailBonSortie.stockId) || initObjectStock();
+                                detailBonSortie.stock = stock;
+                            }
+                        });
 
-  async miseAjour(): Promise<void> {
-      this.submitted = true;
-      this.loadingService.show();
-      let bonSortieEdit: BonSortie = { ...this.bonSortie };
-      this.mapFormGroupToObject(this.formGroup, bonSortieEdit);
-      let trvErreur = false;// await this.checkIfExists(bonSortieEdit);
+                        this.formGroup.patchValue({
+                            codeSortie: '',
+                            dateOperation: new Date(),
+                            repertoireId: BigInt(0),
+                            designation: '',
+                            stockId: BigInt(0),
+                            qteStock: 0,
+                            qteSortie: 1,
+                            mntProduit: 0
+                        });
+                        this.formGroup.get('designation')?.disable();
+                        this.formGroup.get('qteStock')?.disable();
+                        this.formGroup.get('mntProduit')?.disable();
+                        this.formGroup.updateValueAndValidity();
 
-      if (!trvErreur) {
-          this.bonSortie = this.mapFormGroupToObject(this.formGroup, this.bonSortie);
+                        this.openCloseDialogAjouter(true);
+                    },
+                    error: (error: any) => {
+                        console.error(error);
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            } else if (operation === 2) {
+                this.bonSortie = structuredClone(bonSortieEdit);
+                this.openCloseDialogSupprimer(true);
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+        }
+    }
 
-          let stockDepotRequest: BonSortieRequest = { bonSortie: {...this.bonSortie }, detailBonSorties: this.listDetailBonSortie };
+    updateList(bonSortie: BonSortie, list: BonSortie[], operationType: OperationType, id?: bigint): BonSortie[] {
+        if (operationType === OperationType.ADD) {
+            list = [...list, bonSortie];
+        } else if (operationType === OperationType.MODIFY) {
+            let index = list.findIndex((x) => x.id === bonSortie.id);
+            if (index > -1) {
+                list[index] = bonSortie;
+            }
+        } else if (operationType === OperationType.DELETE) {
+            list = list.filter((x) => x.id !== id);
+        }
+        return list;
+    }
 
-          if (this.bonSortie.id) {
-              this.bonSortieService.update(this.bonSortie.id, stockDepotRequest).subscribe({
-                  next: (data) => {
-                      this.messageService.add({
-                          severity: 'success',
-                          summary: this.msg.summary.labelSuccess,
-                          closable: true,
-                          detail: this.msg.messages.messageUpdateSuccess
-                      });
+    checkIfListIsNull() {
+        if (null == this.listBonSortie) {
+            this.listBonSortie = [];
+        }
+    }
 
-                      this.listDetailBonSortie = [];
-                      this.checkIfListIsNull();
-                      this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.MODIFY);
-                      this.openCloseDialogAjouter(false);
-                  }, error: (err) => {
-                      console.log(err);
-                      this.loadingService.hide();
-                      this.messageService.add({
-                          severity: 'error',
-                          summary: this.msg.summary.labelError,
-                          detail: this.msg.messages.messageErrorProduite
-                      });
-                  }, complete: () => {
-                      this.loadingService.hide();
-                  }
-              });
-          } else {
-              this.bonSortieService.create(stockDepotRequest).subscribe({
-                  next: (data: BonSortie) => {
-                      this.messageService.add({
-                          severity: 'success',
-                          summary: this.msg.summary.labelSuccess,
-                          closable: true,
-                          detail: this.msg.messages.messageAddSuccess
-                      });
+    public calculerMontant(listDetailBonSortie: DetailBonSortie[]): number {
+        return listDetailBonSortie.reduce((total, detail) => total + detail.mntProduit, 0);
+    }
 
-                      this.listDetailBonSortie = [];
-                      this.checkIfListIsNull();
-                      this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.ADD);
-                      this.openCloseDialogAjouter(false);
-                  }, error: (err) => {
-                      console.log(err);
-                      this.loadingService.hide();
-                      this.messageService.add({
-                          severity: 'error',
-                          summary: this.msg.summary.labelError,
-                          detail: this.msg.messages.messageErrorProduite
-                      });
-                  }, complete: () => {
-                      this.loadingService.hide();
-                  }
-              });
-          }
-      } else {
-          this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.stock.label} ${this.msg.messages.messageExistDeja}` });
-          this.loadingService.hide();
-      }
-  }
+    async generateNumBonSortie(bonSortie: BonSortie) {
+        let num: number = 0;
+        num = await this.getLastNumBonSortie(bonSortie);
 
-  supprimer(): void {
-      if (this.bonSortie && this.bonSortie.id) {
-          this.loadingService.show();
-          let id = this.bonSortie.id;
-          this.bonSortieService.delete(this.bonSortie.id).subscribe({
-              next: (data) => {
-                  this.messageService.add({
-                      severity: 'success',
-                      summary: this.msg.summary.labelSuccess,
-                      closable: true,
-                      detail: this.msg.messages.messageDeleteSuccess
-                  });
+        let codbl = num + '';
+        let codeSortie = '';
+        if (codbl.length == 1) {
+            codeSortie = 'S000' + num;
+        } else if (codbl.length == 2) {
+            codeSortie = 'S00' + num;
+        }
+        if (codbl.length >= 3) {
+            codeSortie = 'S0' + num;
+        }
 
-                  this.checkIfListIsNull();
-                  this.listBonSortie = this.updateList(initObjectBonSortie(), this.listBonSortie, OperationType.DELETE, id);
-                  this.bonSortie = initObjectBonSortie();
-              }, error: (err) => {
-                  console.log(err);
-                  this.loadingService.hide();
-                  this.messageService.add({
-                      severity: 'error',
-                      summary: this.msg.summary.labelError,
-                      detail: this.msg.messages.messageErrorProduite
-                  });
-              }, complete: () => {
-                  this.loadingService.hide();
-              }
-          });
-      } else {
-          this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
-      }
+        bonSortie.numSortie = num;
+        bonSortie.codeSortie = codeSortie;
 
-      this.openCloseDialogSupprimer(false);
-  }
+        return codeSortie;
+    }
+
+    async getLastNumBonSortie(bonSortie: BonSortie): Promise<number> {
+        try {
+            const existsObservable = this.bonSortieService.getLastNumBonSortie(bonSortie).pipe(
+                catchError((error) => {
+                    console.error('Error in absence existence observable:', error);
+                    return of(1); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return 1;
+        }
+    }
+
+    mapFormGroupToObject(formGroup: FormGroup, bonSortie: BonSortie): BonSortie {
+        bonSortie.dateOperation = mapToDateTimeBackEnd(formGroup.get('dateOperation')?.value);
+        bonSortie.codeSortie = formGroup.get('codeSortie')?.value;
+        bonSortie.repertoireId = formGroup.get('repertoireId')?.value;
+        bonSortie.mnt = this.calculerMontant(this.listDetailBonSortie);
+
+        return bonSortie;
+    }
+
+    async miseAjour(): Promise<void> {
+        this.submitted = true;
+        this.loadingService.show();
+        let bonSortieEdit: BonSortie = { ...this.bonSortie };
+        this.mapFormGroupToObject(this.formGroup, bonSortieEdit);
+        let trvErreur = false; // await this.checkIfExists(bonSortieEdit);
+
+        if (!trvErreur) {
+            this.bonSortie = this.mapFormGroupToObject(this.formGroup, this.bonSortie);
+
+            let bonSortieRequest: BonSortieRequest = { bonSortie: { ...this.bonSortie }, detailBonSorties: this.listDetailBonSortie };
+
+            if (this.bonSortie.id) {
+                this.bonSortieService.update(this.bonSortie.id, bonSortieRequest).subscribe({
+                    next: (data) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: this.msg.summary.labelSuccess,
+                            closable: true,
+                            detail: this.msg.messages.messageUpdateSuccess
+                        });
+
+                        this.listDetailBonSortie = [];
+                        this.checkIfListIsNull();
+                        this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.MODIFY);
+                        this.openCloseDialogAjouter(false);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
+                        });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            } else {
+                bonSortieRequest.bonSortie.personnelId = BigInt(this.personnelCreationId || 0);
+                this.bonSortieService.create(bonSortieRequest).subscribe({
+                    next: (data: BonSortie) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: this.msg.summary.labelSuccess,
+                            closable: true,
+                            detail: this.msg.messages.messageAddSuccess
+                        });
+
+                        this.listDetailBonSortie = [];
+                        this.checkIfListIsNull();
+                        this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.ADD);
+                        this.openCloseDialogAjouter(false);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
+                        });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.stock.label} ${this.msg.messages.messageExistDeja}` });
+            this.loadingService.hide();
+        }
+    }
+
+    supprimer(): void {
+        if (this.bonSortie && this.bonSortie.id) {
+            this.loadingService.show();
+            let id = this.bonSortie.id;
+            this.bonSortieService.delete(this.bonSortie.id).subscribe({
+                next: (data) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: this.msg.summary.labelSuccess,
+                        closable: true,
+                        detail: this.msg.messages.messageDeleteSuccess
+                    });
+
+                    this.checkIfListIsNull();
+                    this.listBonSortie = this.updateList(initObjectBonSortie(), this.listBonSortie, OperationType.DELETE, id);
+                    this.bonSortie = initObjectBonSortie();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: this.msg.summary.labelError,
+                        detail: this.msg.messages.messageErrorProduite
+                    });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+        }
+
+        this.openCloseDialogSupprimer(false);
+    }
 }

@@ -1,5 +1,5 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, inject, provideAppInitializer } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, inject, provideAppInitializer } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, Router, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
@@ -18,17 +18,14 @@ import { httpErrorInterceptor } from '@/shared/interceptors/http-error.intercept
 export function initializeAuthFactory(): Promise<void> {
     const authService = inject(AuthSecurityService);
     const router = inject(Router);
-    console.log('initializeAuthFactory');
     return new Promise<void>((resolve) => {
         authService.checkAndRestoreSession().subscribe({
             next: () => {
-                console.log('✅ Auth initialized successfully');
                 resolve();
                 router.navigate(['/']);
             },
             error: (err) => {
-                console.error('❌ Auth initialization failed:', err);
-                resolve(); // Resolve anyway to not block app
+                resolve();
             }
         });
     });

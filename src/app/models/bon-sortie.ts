@@ -1,5 +1,3 @@
-import { Employe } from "./employe";
-
 export interface BonSortie {
     id: bigint | null;
     numSortie: number;
@@ -13,15 +11,15 @@ export interface BonSortie {
 }
 
 export function initObjectBonSortie(): BonSortie {
-  return {
-    id: null,
-    numSortie: 0,
-    codeSortie: "",
-    dateOperation: new Date(),
-    mnt: 0,
-    personnelId: null,
-    personnelDesignation: "",
-    repertoireId: null,
-    repertoireDesignation: "",
-  };
+    return {
+        id: null,
+        numSortie: 0,
+        codeSortie: '',
+        dateOperation: new Date(),
+        mnt: 0,
+        personnelId: null,
+        personnelDesignation: '',
+        repertoireId: null,
+        repertoireDesignation: ''
+    };
 }

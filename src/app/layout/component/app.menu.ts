@@ -52,11 +52,15 @@ export class AppMenu {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.stockDepot, icon: 'pi pi-fw pi-box', routerLink: ['/stock-depot'] }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.stockDepot, icon: 'pi pi-fw pi-box', routerLink: ['/stock-depot'] }]
+                items: [{ label: this.msg.menu.facture, icon: 'pi pi-fw pi-file', routerLink: ['/facture'] }]
             },
             {
                 label: '',
@@ -68,8 +72,12 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
+                items: [{ label: this.msg.menu.bonSortie, icon: 'pi pi-fw pi-truck', routerLink: ['/bon-sortie'] }]
             },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
+            }
             /* {
                 label: 'UI Components',
                 items: [
@@ -200,5 +208,4 @@ export class AppMenu {
             } */
         ];
     }
-    
 }

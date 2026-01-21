@@ -6,7 +6,7 @@ import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
-import { GlobalProgressBarComponent } from "@/shared/components/global-progressBar-component";
+import { GlobalProgressBarComponent } from '@/shared/components/global-progressBar-component';
 import { AppState, StateService } from '@/state/state-service';
 
 @Component({
@@ -14,29 +14,29 @@ import { AppState, StateService } from '@/state/state-service';
     standalone: true,
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, GlobalProgressBarComponent],
     template: `
-    <ng-container *ngIf="connected$ | async; else content">
-        <div class="layout-wrapper" [ngClass]="containerClass">
-            <app-topbar></app-topbar>
-            <app-sidebar></app-sidebar>
-            <div class="layout-main-container">
-                <app-global-progress-bar></app-global-progress-bar>
-                <div class="layout-main">
-                    <router-outlet></router-outlet>
+        <ng-container *ngIf="connected$ | async; else content">
+            <div class="layout-wrapper" [ngClass]="containerClass">
+                <app-topbar></app-topbar>
+                <app-sidebar></app-sidebar>
+                <div class="layout-main-container">
+                    <app-global-progress-bar></app-global-progress-bar>
+                    <div class="layout-main">
+                        <router-outlet></router-outlet>
+                    </div>
+                    <app-footer></app-footer>
                 </div>
-                <app-footer></app-footer>
+                <div class="layout-mask animate-fadein"></div>
             </div>
-            <div class="layout-mask animate-fadein"></div>
-        </div>
-    </ng-container>
-    
-    <ng-template #content>
-        <router-outlet></router-outlet>
-    </ng-template>
- `
+        </ng-container>
+
+        <ng-template #content>
+            <router-outlet></router-outlet>
+        </ng-template>
+    `
 })
 export class AppLayout {
     private readonly stateService = inject(StateService);
-    readonly connected$ = this.stateService.select('connected') as Observable<boolean> || of(false);
+    readonly connected$ = (this.stateService.select('connected') as Observable<boolean>) || of(false);
     currentState: AppState | null = null;
 
     overlayMenuOpenSubscription: Subscription;
@@ -52,12 +52,7 @@ export class AppLayout {
         public renderer: Renderer2,
         public router: Router
     ) {
-        console.log('connected$', this.connected$);
-        this.connected$.pipe(take(1)).subscribe(value => {
-            console.log('Current connected value:', value); // Will log true/false
-        });
         this.currentState = this.stateService.getState();
-        console.log('Current full state:', this.currentState);
 
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {

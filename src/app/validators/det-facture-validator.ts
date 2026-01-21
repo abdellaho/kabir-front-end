@@ -16,19 +16,23 @@ export function DetFactureValidator(config: { stock: Stock }): ValidatorFn {
 
         let prixVente = control.get('prixVente');
         let remiseFacture = control.get('remiseFacture');
-        
+        let qteFacturer = control.get('qteFacturer');
+
         let prixVenteMin: number = getPrixVenteMin(stock);
         let remiseMax: number = getRemiseMax(stock);
 
-        if(prixVente?.value < prixVenteMin) {
-            addError("prixVenteMustBeAtLeastEqualPrixVenteMin");
+        if (prixVente?.value < prixVenteMin) {
+            addError('prixVenteMustBeAtLeastEqualPrixVenteMin');
         }
 
-        if(remiseFacture?.value > remiseMax) {
-            addError("remiseFactureMustBeAtMostEqualRemiseMax");
+        if (remiseFacture?.value > remiseMax) {
+            addError('remiseFactureMustBeAtMostEqualRemiseMax');
+        }
+
+        if (qteFacturer?.value === 0) {
+            addError('qteFacturerMustBeDifferentFromZero');
         }
 
         return hasError ? errors : null;
-    }
+    };
 }
-

@@ -50,7 +50,7 @@
                         <label for="repertoireId">{{ msg.components.facture.repertoireId }}</label>
                     </p-floatlabel>
 
-                    @if (formGroup.errors?.['repertoireRequired']) {
+                    @if (formGroup.errors?.['repertoireIdRequired']) {
                         <p-message severity="error" variant="simple" size="small">{{
                             msg.components.facture.errors.repertoireRequired }}</p-message>
                     }
@@ -370,10 +370,10 @@
     </div>
 
     <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
-        <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetFacture" dataKey="id" style="width: 100% !important;"
+        <p-table #dtDetFacture size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetFacture" dataKey="id" style="width: 100% !important;"
             [rows]="10" 
             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteStock', 'prixVente', 'qteFacturer', 'remiseFacture', 'montantProduit']"
+            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteFacturer', 'prixVente', 'qteFacturer', 'remiseFacture', 'montantProduit']"
             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -393,10 +393,10 @@
                         </div>
                     </th>
 
-                    <th pSortableColumn="stock.qteStock" style="width: 8%">
+                    <th pSortableColumn="stock.qteFacturer" style="width: 8%">
                         <div class="flex items-center gap-2">
-                            {{ msg.components.facture.stock.qteStock }}
-                            <p-sortIcon field="stock.qteStock" />
+                            {{ msg.components.facture.stock.qteFacturer }}
+                            <p-sortIcon field="stock.qteFacturer" />
                         </div>
                     </th>
 
@@ -434,7 +434,7 @@
                 <tr [pSelectableRow]="p">
                     <td>{{ p.stock.designation }}</td>
                     <td>{{ p.stock.pvttc }}</td>
-                    <td>{{ p.stock.qteStock }}</td>
+                    <td>{{ p.stock.qteFacturer }}</td>
                     <td>{{ p.prixVente }}</td>
                     <td>{{ p.qteFacturer }}</td>
                     <td>{{ p.remiseFacture }}</td>
@@ -473,7 +473,7 @@
 
 <p-dialog [(visible)]="dialogStock" [style]="{ width: '300px', maxWidth: '100%' }"
     [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-    [header]="`${msg.messages.miseAJour} ${msg.components.livraison.label}`" [modal]="true" class="p-fluid"
+    [header]="`${msg.messages.miseAJour} ${msg.components.detFacture.label}`" [modal]="true" class="p-fluid"
     [closable]="false">
     <!-- Form content must go inside ng-template -->
     <ng-template pTemplate="content">
@@ -483,46 +483,46 @@
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <input pInputText formControlName="designation" id="designation" inputId="designation" />
-                            <label for="designation">{{ msg.components.livraison.stock.designation }}</label>
+                            <label for="designation">{{ msg.components.facture.stock.designation }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="qteStock" id="qteStock" inputId="qteStock" />
-                            <label for="qteStock">{{ msg.components.livraison.stock.qteStock }}</label>
+                            <label for="qteStock">{{ msg.components.facture.stock.qteStockFacturer }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="pattc" id="pattc" inputId="pattc" />
-                            <label for="pattc">{{ msg.components.livraison.stock.pattc }}</label>
+                            <label for="pattc">{{ msg.components.facture.stock.pattc }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" />
-                            <label for="pvttc">{{ msg.components.livraison.stock.pvttc }}</label>
+                            <label for="pvttc">{{ msg.components.facture.stock.pvttc }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" />
-                            <label for="prixVenteMin">{{ msg.components.livraison.stock.prixVenteMin }}</label>
+                            <label for="prixVenteMin">{{ msg.components.facture.stock.prixVenteMin }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" />
-                            <label for="prixVente">{{ msg.components.livraison.stock.prixVente }}</label>
+                            <label for="prixVente">{{ msg.components.facture.stock.prixVente }}</label>
                             
                             @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
                                 <p-message severity="error" variant="simple" size="small">{{
-                                msg.components.livraison.errors.prixVenteMustBeAtLeastEqualPrixVenteMin }}</p-message>
+                                msg.components.facture.errors.prixVenteMustBeAtLeastEqualPrixVenteMin }}</p-message>
                             }
                         </p-floatlabel>
                     </div>
@@ -531,6 +531,11 @@
                         <p-floatlabel variant="on">
                             <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" [min]="1" (onBlur)="onChangeMontantProduit()" />
                             <label for="qteFacturer">{{ msg.components.facture.stock.qteFacturer }}</label>
+
+                            @if (formGroupStock.errors?.['qteFacturerMustBeDifferentFromZero']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                msg.components.facture.errors.qteFacturerMustBeDifferentFromZero }}</p-message>
+                            }
                         </p-floatlabel>
                     </div>
 

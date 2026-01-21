@@ -23,6 +23,9 @@ import { LoginComponent } from '@/components/login-component/login-component';
 import { AuthGuard } from '@/state/auth-guard';
 import { AchatFactureComponent } from '@/components/achat-facture-component/achat-facture-component';
 import { LoginGuard } from '@/state/guards/login-guard';
+import { BonSortieComponent } from '@/components/bon-sortie-component/bon-sortie-component';
+import { FactureViewComponent } from '@/components/facture-component/facture-view-component/facture-view-component';
+import { FactureUpdateComponent } from '@/components/facture-component/facture-update-component/facture-update-component';
 
 export const appRoutes: Routes = [
     {
@@ -44,9 +47,12 @@ export const appRoutes: Routes = [
             { path: 'personnel', component: PersonnelComponent, canActivate: [AuthGuard] },
             { path: 'livraison', component: LivraisonViewComponent, canActivate: [AuthGuard] },
             { path: 'livraison-update', component: LivraisonUpdateComponent, canActivate: [AuthGuard] },
+            { path: 'facture', component: FactureViewComponent, canActivate: [AuthGuard] },
+            { path: 'facture-update', component: FactureUpdateComponent, canActivate: [AuthGuard] },
             { path: 'stock-depot', component: StockDepotComponent, canActivate: [AuthGuard] },
             { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
             { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
+            { path: 'bon-sortie', component: BonSortieComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

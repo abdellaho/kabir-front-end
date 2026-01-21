@@ -36,13 +36,10 @@ export class AuthSecurityService {
     // Public method called by APP_INITIALIZER to restore session
     checkAndRestoreSession(): Observable<any> {
         const token = this.getToken();
-        console.log('checkAndRestoreSession', token);
         if (token && !this.isTokenExpired()) {
             // Token exists and is valid - restore session
-            console.log('checkAndRestoreSession 2');
             return this.fetchCurrentUser().pipe(
                 tap((user) => {
-                    console.log('checkAndRestoreSession 3');
                     this.stateService.setState({ user, connected: true });
                     this.isAuthenticated$.next(true);
                     this.setupTokenRefresh();
@@ -156,11 +153,9 @@ export class AuthSecurityService {
             return of(this.stateService.getInitialUserState());
         }
         this.userFetchInProgress = true;
-        console.log('fetchCurrentUser');
 
         const headers = { Authorization: `Bearer ${this.getToken()}` };
         const refreshToken = this.getRefreshToken();
-        console.log('fetchCurrentUser 2', headers, refreshToken);
 
         return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.me, { refreshToken }, { headers }).pipe(
             map((response) => ({
