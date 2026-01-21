@@ -281,6 +281,11 @@ export class BonSortieComponent {
         this.bonSortie = initObjectBonSortie();
         await this.generateNumBonSortie(this.bonSortie);
         this.initFormGroup();
+
+        this.formGroup.patchValue({
+            codeSortie: this.bonSortie.codeSortie
+        });
+        this.formGroup.get('codeSortie')?.disable();
     }
 
     getDesignation(id: number): string {

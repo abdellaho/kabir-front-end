@@ -14,6 +14,7 @@ export interface Stock {
     qteStock: number;
     qteStockImport: number;
     qteFacturer: number;
+    qteSortie: number;
     qtePVMin1: number;
     qtePVMin2: number;
     qtePVMin3: number;
@@ -56,6 +57,7 @@ export function initObjectStock(): Stock {
         qteStock: 0,
         qteStockImport: 0,
         qteFacturer: 0,
+        qteSortie: 0,
         qtePVMin1: 0,
         qtePVMin2: 0,
         qtePVMin3: 0,
@@ -68,6 +70,7 @@ export function initObjectStock(): Stock {
         remiseMax2: 0,
         remiseMax3: 0,
         remiseMax4: 0,
+
         prime1: 0,
         prime2: 0,
         prime3: 0,

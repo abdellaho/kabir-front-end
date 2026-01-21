@@ -382,6 +382,7 @@ export const APP_MESSAGES = {
             mnt: 'Montant',
             qteSortie: 'Qte Sortie',
             mntProduit: 'Montant Produit',
+            mntTotal: 'Montant Total',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bon sortie ?',
             detailBonSortie: {
                 messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce détail de bon sortie ?'
