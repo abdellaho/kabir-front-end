@@ -70,6 +70,14 @@ import { StateService } from '@/state/state-service';
     styleUrl: './facture-update-component.scss'
 })
 export class FactureUpdateComponent implements OnInit, OnDestroy {
+    //Num Facture                   + Client     + Paiement 1       + Paiement 2      + Paiement 3    + Paiement 4
+    //Date Facture                  + Adresse    + Date Paiement 1  + Date Paiement 2 + Date Paiement 3 + Date Paiement 4
+    //Clients (phar + revendeur)    + tel1       + Cheque num 1     + Cheque num 2    + Cheque num 3    + Cheque num 4
+    //ICE client                    + tel2       + Montant Paye 1   + Montant Paye 2  + Montant Paye 3  + Montant Paye 4
+    // Combo Produits               +            + Remise num 1     + Remise num 2    + Remise num 3    + Remise num 4
+    //Tableau produit --> designation + qte facture(stock) + prix vente + qte + tva + remise + montant + buttons(modifier + supprimer)
+    // total tva 20 + mt total ht + mt total ttc en bas du tableau (footer)
+
     personnelCreationId: number | null = null;
     submitted: boolean = false;
     etablissement: Etablissement = initObjectEtablissement();
