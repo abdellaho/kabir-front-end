@@ -20,7 +20,7 @@ import { AchatFacture, initObjectAchatFacture } from '@/models/achat-facture';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { TypeSearch } from '@/shared/enums/type-search';
-import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, omit, toLocalDate } from '@/shared/classes/generic-methods';
+import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
 import { AchatFactureRequest } from '@/shared/classes/achat-facture-request';
 import { AchatFactureService } from '@/services/achat-facture/achat-facture-service';
 import { StockService } from '@/services/stock/stock-service';

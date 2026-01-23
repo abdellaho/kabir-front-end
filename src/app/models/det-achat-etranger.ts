@@ -1,3 +1,5 @@
+import { Stock } from './stock';
+
 export interface DetAchatEtranger {
     id: bigint | null;
     stockId: bigint | null;
@@ -11,6 +13,7 @@ export interface DetAchatEtranger {
     qteAchat: number;
     qteStock: number;
     prixAchat: number;
+    stock?: Stock | null;
 }
 
 export function initObjectDetAchatEtranger(): DetAchatEtranger {

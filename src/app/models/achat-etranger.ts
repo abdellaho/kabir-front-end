@@ -9,11 +9,11 @@ export interface AchatEtranger {
     operateurId: bigint | null;
     codeFacture: string | null;
     numFacture: number | null;
-    dateFacture: Date | null;
-    sysDate: Date | null;
-    dateAvances1: Date;
+    dateFacture: Date | string;
+    sysDate: Date | string;
+    dateAvances1: Date | string;
     mantantAvancs1: number;
-    dateAvances2: Date;
+    dateAvances2: Date | string;
     mantantAvancs2: number;
     totalPaye: number;
     mntFacture: number;
@@ -21,7 +21,7 @@ export interface AchatEtranger {
     mntTransport: number;
     mntTransportIntern: number;
     mntTransit: number;
-    mntMagazinage: number;
+    mntMagasinage: number;
     prixAchatDetaille: number;
     totalAllMnt: number;
 }
@@ -50,7 +50,7 @@ export function initObjectAchatEtranger(): AchatEtranger {
         mntTransport: 0,
         mntTransportIntern: 0,
         mntTransit: 0,
-        mntMagazinage: 0,
+        mntMagasinage: 0,
         prixAchatDetaille: 0,
         totalAllMnt: 0
     };
