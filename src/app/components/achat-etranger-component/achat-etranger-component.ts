@@ -359,51 +359,34 @@ export class AchatEtrangerComponent {
         return filteredTypeReglement.length > 0 ? filteredTypeReglement[0].label : '';
     }
 
-    calculerAllMnt() {
-        let totlPye = 0.0;
-        totlPye = this.formGroup.get('totalPaye')?.value;
-        if (this.formGroup.get('mantantAvancs1')?.value < 0) {
-            this.formGroup.patchValue({ mantantAvancs1: 0.0 });
-        }
-        if (this.formGroup.get('mantantAvancs2')?.value < 0) {
-            this.formGroup.patchValue({ mantantAvancs2: 0.0 });
-        }
-        if (this.formGroup.get('mantantAvancs1')?.value > 0) {
-            totlPye += this.formGroup.get('mantantAvancs1')?.value;
-        }
-        if (this.formGroup.get('mantantAvancs2')?.value > 0) {
-            totlPye += this.formGroup.get('mantantAvancs2')?.value;
-        }
-        this.formGroup.patchValue({ totalPaye: totlPye });
-    }
-
-    calculermntTotal() {
+    calculerMntTotal(type: string) {
         let totlPye = 0.0;
         let allMntTotal = 0.0;
 
-        if (this.formGroup.get('mntDouane')?.value < 0) {
-            this.formGroup.patchValue({ mntDouane: 0.0 });
+        if (type === 'mntDouane') {
+            if (this.formGroup.get('mntDouane')?.value < 0) {
+                this.formGroup.patchValue({ mntDouane: 0.0 });
+            }
         }
-        if (this.formGroup.get('mntTransport')?.value < 0) {
-            this.formGroup.patchValue({ mntTransport: 0.0 });
+        if (type === 'mntTransportIntern') {
+            if (this.formGroup.get('mntTransportIntern')?.value < 0) {
+                this.formGroup.patchValue({ mntTransportIntern: 0.0 });
+            }
         }
-        if (this.formGroup.get('mntTransportIntern')?.value < 0) {
-            this.formGroup.patchValue({ mntTransportIntern: 0.0 });
+        if (type === 'mntMagasinage') {
+            if (this.formGroup.get('mntMagasinage')?.value < 0) {
+                this.formGroup.patchValue({ mntMagasinage: 0.0 });
+            }
         }
-        if (this.formGroup.get('mntTransit')?.value < 0) {
-            this.formGroup.patchValue({ mntTransit: 0.0 });
+        if (type === 'mantantAvancs1') {
+            if (this.formGroup.get('mantantAvancs1')?.value < 0) {
+                this.formGroup.patchValue({ mantantAvancs1: 0.0 });
+            }
         }
-        if (this.formGroup.get('mntMagasinage')?.value < 0) {
-            this.formGroup.patchValue({ mntMagasinage: 0.0 });
-        }
-        if (this.formGroup.get('prixAchatDetaille')?.value < 0) {
-            this.formGroup.patchValue({ prixAchatDetaille: 0.0 });
-        }
-        if (this.formGroup.get('mantantAvancs1')?.value < 0) {
-            this.formGroup.patchValue({ mantantAvancs1: 0.0 });
-        }
-        if (this.formGroup.get('mantantAvancs2')?.value < 0) {
-            this.formGroup.patchValue({ mantantAvancs2: 0.0 });
+        if (type === 'mantantAvancs2') {
+            if (this.formGroup.get('mantantAvancs2')?.value < 0) {
+                this.formGroup.patchValue({ mantantAvancs2: 0.0 });
+            }
         }
 
         if (this.formGroup.get('mantantAvancs1')?.value > 0) {
@@ -412,29 +395,19 @@ export class AchatEtrangerComponent {
         if (this.formGroup.get('mantantAvancs2')?.value > 0) {
             totlPye += this.formGroup.get('mantantAvancs2')?.value;
         }
-
-        this.formGroup.patchValue({ totalPaye: totlPye });
-
         if (this.formGroup.get('mntDouane')?.value > 0) {
             allMntTotal += this.formGroup.get('mntDouane')?.value;
-        }
-        if (this.formGroup.get('mntTransport')?.value > 0) {
-            allMntTotal += this.formGroup.get('mntTransport')?.value;
         }
         if (this.formGroup.get('mntTransportIntern')?.value > 0) {
             allMntTotal += this.formGroup.get('mntTransportIntern')?.value;
         }
-        if (this.formGroup.get('mntTransit')?.value > 0) {
-            allMntTotal += this.formGroup.get('mntTransit')?.value;
-        }
         if (this.formGroup.get('mntMagasinage')?.value > 0) {
             allMntTotal += this.formGroup.get('mntMagasinage')?.value;
         }
-        if (this.formGroup.get('prixAchatDetaille')?.value > 0) {
-            allMntTotal += this.formGroup.get('prixAchatDetaille')?.value;
-        }
 
         allMntTotal += totlPye;
+
+        this.formGroup.patchValue({ totalPaye: totlPye });
         this.formGroup.patchValue({ totalAllMnt: allMntTotal });
     }
 
