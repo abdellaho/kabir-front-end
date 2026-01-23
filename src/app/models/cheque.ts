@@ -1,38 +1,39 @@
-import { Employe } from "./employe";
-import { Repertoire } from "./Repertoire";
-
 export interface Cheque {
-  id: bigint;
-  numero: string;
-  codeCheque: string;
-  dateCheque: Date;
-  typeRepertoire: number;
-  montant: number;
-  typePersoScte: number;
-  numCheque: number;
-  etatcheque: boolean;
-  typeReglment: number;
-  repertoireId: bigint;
-  repertoire?: Repertoire | null;
-  employeOperateurId: bigint;
-  employeOperateur?: Employe | null;
+    id: bigint | null;
+    numero: string;
+    codeCheque: string;
+    dateCheque: Date;
+    montant: number;
+    typePersoScte: number;
+    numCheque: number;
+    etatcheque: boolean;
+    typeReglment: number;
+    fournisseurId: bigint | null;
+    fournisseurDesignation: string;
+    fournisseurTel1: string;
+    fournisseurTel2: string;
+    fournisseurAdresse: string;
+    fournisseurIce: string;
+    operateurId: bigint | null;
 }
 
 export function initObjectCheque(): Cheque {
-  return {
-    id: BigInt(0),
-    numero: "",
-    codeCheque: "",
-    dateCheque: new Date(),
-    typeRepertoire: 0,
-    montant: 0,
-    typePersoScte: 0,
-    numCheque: 0,
-    etatcheque: false,
-    typeReglment: 0,
-    repertoireId: BigInt(0),
-    repertoire: null,
-    employeOperateurId: BigInt(0),
-    employeOperateur: null,
-  };
+    return {
+        id: null,
+        numero: '',
+        codeCheque: '',
+        dateCheque: new Date(),
+        montant: 0,
+        typePersoScte: 1,
+        numCheque: 0,
+        etatcheque: false,
+        typeReglment: 0,
+        fournisseurId: null,
+        fournisseurDesignation: '',
+        fournisseurTel1: '',
+        fournisseurTel2: '',
+        fournisseurAdresse: '',
+        fournisseurIce: '',
+        operateurId: null
+    };
 }

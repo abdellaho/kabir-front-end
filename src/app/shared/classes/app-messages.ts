@@ -26,6 +26,22 @@ export const APP_MESSAGES = {
         detFacture: {
             label: 'Détail Facture'
         },
+        cheque: {
+            label: 'Chèque',
+            fournisseurDesignation: 'Fournisseur',
+            numero: 'N° Chèque',
+            montant: 'Montant',
+            etatcheque: 'Etat Chèque',
+            dateCheque: 'Date Chèque',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce chèque ?'
+        },
+        caisse: {
+            label: 'Caisse',
+            dateOperation: 'Date Opération',
+            montant: 'Montant',
+            type: 'Type',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette opération ?'
+        },
         ville: {
             label: 'Ville',
             nomVille: 'Nom Ville',
