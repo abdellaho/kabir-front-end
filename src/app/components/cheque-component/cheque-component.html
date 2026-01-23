@@ -115,6 +115,25 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-inputNumber id="montant" formControlName="montant" class="full-width" required 
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montant')?.invalid }" />
+                                    <label for="montant">{{ msg.components.cheque.montant }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-input pInputText id="numero" formControlName="numero" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('numero')?.invalid }" />
+                                    <label for="numero">{{ msg.components.cheque.numero }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
                                 <span id="etatchequeSpan">{{ msg.components.cheque.etatcheque }}</span>
                                 <p-toggleswitch name="etatcheque" id="etatcheque" formControlName="etatcheque" />
                             </div>
