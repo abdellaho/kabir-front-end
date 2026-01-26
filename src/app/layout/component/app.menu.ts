@@ -76,6 +76,18 @@ export class AppMenu {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.achatEtranger, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-etranger'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/caisse'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.cheque, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/cheque'] }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
             }
             /* {

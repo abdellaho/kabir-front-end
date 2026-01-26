@@ -24,70 +24,76 @@
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="codeBF" style="width: 30%">
+                        <th style="width: 30%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.codeBF }}
-                                <p-sortIcon field="codeBF" />
+                                {{ msg.components.facture.repertoireId }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="sysDate" style="width: 45%">
+                        <th style="width: 15%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.sysDate }}
-                                <p-sortIcon field="sysDate" />
+                                {{ msg.components.facture.repertoireICE }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="dateBF" style="width: 10%">
+                        <th style="width: 5%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.facture.dateBF }}
-                                <p-sortIcon field="dateBF" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="mantantBF" style="width: 10%">
+                        <th style="width: 5%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.mantantBF }}
-                                <p-sortIcon field="mantantBF" />
+                                {{ msg.components.facture.codeBF }}
                             </div>
                         </th>
 
-                        <th style="width: 10%">
+                        <th style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.facture.dateReglement }}
                             </div>
                         </th>
-
-                        <th style="width: 10%">
+                        
+                        <th style="width: 7%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.mntReglement }}
+                                {{ msg.components.facture.paiement }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="repertoireId" style="width: 10%">
+                        <th style="width: 7%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.repertoireId }}
-                                <p-sortIcon field="repertoireId" />
+                                {{ msg.components.facture.numCheque }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="personnelId" style="width: 10%">
+                        <th style="width: 7%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.facture.personnelId }}
-                                <p-sortIcon field="personnelId" />
+                                {{ msg.components.facture.numRemise }}
                             </div>
                         </th>
 
-                        <th style="width: 5%"></th>
+                        <th style="width: 7%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.facture.mntPaye }}
+                            </div>
+                        </th>
+
+                        <th style="width: 6%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.facture.totalPaye }}
+                            </div>
+                        </th>
+
+                        <th style="width: 4%"></th>
                     </tr>
                 </ng-template>
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
-                        <td>{{ p.codeBF }}</td>
-                        <td>{{ p.sysDate | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
+                        <td>{{ getRepertoireICE(p.repertoireId) }}</td>
                         <td>{{ p.dateBF | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.mantantBF }}</td>
+                        <td>{{ p.codeBF }}</td>
                         <td>
                             {{ p.dateReglement | date:'dd/MM/yyyy' }}
                             @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
@@ -101,6 +107,54 @@
                             @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
                                 <br />
                                 {{ p.dateReglement4 | date:'dd/MM/yyyy' }}
+                            }
+                        </td>
+
+                        <td>
+                            {{ getTypeReglement(p.typeReglment) }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment2) }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment3) }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '') {
+                                <br />
+                                {{ getTypeReglement(p.typeReglment4) }}
+                            }
+                        </td>
+
+                        <td>
+                            {{ p.numCheque }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '' && p.typeReglment === 1) {
+                                <br />
+                                {{ p.numCheque2 }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '' && p.typeReglment3 === 1) {
+                                <br />
+                                {{ p.numCheque3 }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '' && p.typeReglment4 === 1) {
+                                <br />
+                                {{ p.numCheque4 }}
+                            }
+                        </td>
+
+                        <td>
+                            {{ p.numRemise }}
+                            @if (p.dateReglement2 !== null && p.dateReglement2 !== '' && p.typeReglment === 1) {
+                                <br />
+                                {{ p.numRemise2 }}
+                            }
+                            @if (p.dateReglement3 !== null && p.dateReglement3 !== '' && p.typeReglment3 === 1) {
+                                <br />
+                                {{ p.numRemise3 }}
+                            }
+                            @if (p.dateReglement4 !== null && p.dateReglement4 !== '' && p.typeReglment4 === 1) {
+                                <br />
+                                {{ p.numRemise4 }}
                             }
                         </td>
                         
@@ -119,8 +173,8 @@
                                 {{ p.mntReglement4 | number:'1.2-2' }}
                             }
                         </td>
-                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
-                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+                        
+                        <td>{{ p.mantantBF }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />

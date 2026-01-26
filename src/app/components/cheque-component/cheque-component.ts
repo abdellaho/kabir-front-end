@@ -99,10 +99,10 @@ export class ChequeComponent {
 
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
-            numero: [{ value: '', disabled: true }],
+            numero: [''],
             dateCheque: [new Date(), [Validators.required]],
             fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
-            montant: [0, [Validators.required]],
+            montant: [0],
             etatcheque: [false]
         });
     }
@@ -156,17 +156,16 @@ export class ChequeComponent {
     }
 
     async viderAjouter() {
+        this.initFormGroup();
         this.openCloseDialogAjouter(true);
         this.submitted = false;
         this.cheque = initObjectCheque();
         await this.generateNumCheque(this.cheque);
 
-        this.initFormGroup();
-
         this.formGroup.patchValue({
-            codeSortie: this.cheque.codeCheque
+            codeCheque: this.cheque.codeCheque
         });
-        this.formGroup.get('codeSortie')?.disable();
+        this.formGroup.get('codeCheque')?.disable();
     }
 
     recupperer(operation: number, chequeEdit: Cheque) {
@@ -178,12 +177,11 @@ export class ChequeComponent {
 
                         this.formGroup.patchValue({
                             numero: this.cheque.numero,
-                            dateCheque: this.cheque.dateCheque,
+                            dateCheque: new Date(this.cheque.dateCheque),
                             fournisseurId: this.cheque.fournisseurId,
                             montant: this.cheque.montant,
                             etatcheque: this.cheque.etatcheque
                         });
-                        this.formGroup.get('numero')?.disable();
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
@@ -265,6 +263,7 @@ export class ChequeComponent {
         cheque.fournisseurId = formGroup.get('fournisseurId')?.value;
         cheque.montant = formGroup.get('montant')?.value;
         cheque.etatcheque = formGroup.get('etatcheque')?.value;
+        cheque.numero = formGroup.get('numero')?.value;
 
         return cheque;
     }
@@ -307,6 +306,7 @@ export class ChequeComponent {
                     }
                 });
             } else {
+                this.cheque.operateurId = BigInt(this.personnelCreationId || 0);
                 this.chequeService.create(this.cheque).subscribe({
                     next: (data: Cheque) => {
                         this.messageService.add({

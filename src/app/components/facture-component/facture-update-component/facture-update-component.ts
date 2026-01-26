@@ -188,6 +188,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             numCheque2: facture.numCheque2,
             numCheque3: facture.numCheque3,
             numCheque4: facture.numCheque4,
+            numRemise: facture.numRemise,
+            numRemise2: facture.numRemise2,
+            numRemise3: facture.numRemise3,
+            numRemise4: facture.numRemise4,
             mntReglement: facture.mntReglement,
             mntReglement2: facture.mntReglement2,
             mntReglement3: facture.mntReglement3,
@@ -196,6 +200,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             personnelId: facture.personnelId,
             repertoireId: this.repertoireSelected?.id,
             repertoireDesignation: this.repertoireSelected?.designation || '',
+            repertoireAdresse: this.repertoireSelected?.adresse || '',
             repertoireTel1: this.repertoireSelected?.tel1 || '',
             repertoireTel2: this.repertoireSelected?.tel2 || '',
             repertoireICE: this.repertoireSelected?.ice || ''
@@ -238,6 +243,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 numCheque2: [''],
                 numCheque3: [''],
                 numCheque4: [''],
+                numRemise: [''],
+                numRemise2: [''],
+                numRemise3: [''],
+                numRemise4: [''],
                 mantantBL: [0],
                 //mantantBLReel: [0],
                 //mantantBLBenefice: [0],
@@ -260,6 +269,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
                 stockId: [0],
                 repertoireDesignation: [{ value: '', disabled: true }],
+                repertoireAdresse: [{ value: '', disabled: true }],
                 repertoireTel1: [{ value: '', disabled: true }],
                 repertoireTel2: [{ value: '', disabled: true }],
                 repertoireICE: [{ value: '', disabled: true }]
@@ -284,6 +294,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         this.facture.numCheque2 = this.formGroup.get('numCheque2')?.value;
         this.facture.numCheque3 = this.formGroup.get('numCheque3')?.value;
         this.facture.numCheque4 = this.formGroup.get('numCheque4')?.value;
+        this.facture.numRemise = this.formGroup.get('numRemise')?.value;
+        this.facture.numRemise2 = this.formGroup.get('numRemise2')?.value;
+        this.facture.numRemise3 = this.formGroup.get('numRemise3')?.value;
+        this.facture.numRemise4 = this.formGroup.get('numRemise4')?.value;
         this.facture.mantantBF = this.formGroup.get('mantantBF')?.value;
         //this.facture.mantantBLReel = this.formGroup.get('mantantBLReel')?.value;
         //this.facture.mantantBLBenefice = this.formGroup.get('mantantBLBenefice')?.value;
@@ -315,6 +329,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
 
     disableRepertoireData() {
         this.formGroup.get('repertoireDesignation')?.disable();
+        this.formGroup.get('repertoireAdresse')?.disable();
         this.formGroup.get('repertoireTel1')?.disable();
         this.formGroup.get('repertoireTel2')?.disable();
         this.formGroup.get('repertoireICE')?.disable();
@@ -326,6 +341,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         if (this.repertoireSelected && this.repertoireSelected.id !== null && this.repertoireSelected.id !== undefined) {
             this.formGroup.patchValue({
                 repertoireDesignation: this.repertoireSelected.designation,
+                repertoireAdresse: this.repertoireSelected.adresse,
                 repertoireTel1: this.repertoireSelected.tel1,
                 repertoireTel2: this.repertoireSelected.tel2,
                 repertoireICE: this.repertoireSelected.ice
@@ -335,6 +351,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         } else {
             this.formGroup.patchValue({
                 repertoireDesignation: '',
+                repertoireAdresse: '',
                 repertoireTel1: '',
                 repertoireTel2: '',
                 repertoireICE: ''

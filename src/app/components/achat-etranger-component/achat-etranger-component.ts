@@ -15,27 +15,22 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { MessageModule } from 'primeng/message';
 import { InputTextModule } from 'primeng/inputtext';
 import { initObjectStock, Stock } from '@/models/stock';
-import { DetAchatFacture, initObjectDetAchatFacture } from '@/models/det-achat-facture';
-import { AchatFacture, initObjectAchatFacture } from '@/models/achat-facture';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { TypeSearch } from '@/shared/enums/type-search';
 import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
-import { AchatFactureRequest } from '@/shared/classes/achat-facture-request';
-import { AchatFactureService } from '@/services/achat-facture/achat-facture-service';
 import { StockService } from '@/services/stock/stock-service';
 import { MessageService } from 'primeng/api';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { LoadingService } from '@/shared/services/loading-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { AchatFactureValidator } from '@/validators/achat-facture-validator';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
-import { DetAchatFactureValidator } from '@/validators/det-achat-facture-validator';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { AchatEtranger, initObjectAchatEtranger } from '@/models/achat-etranger';
 import { DetAchatEtranger, initObjectDetAchatEtranger } from '@/models/det-achat-etranger';
 import { AchatEtrangerService } from '@/services/achat-etranger/achat-etranger-service';
 import { AchatEtrangerRequest } from '@/shared/classes/achat-etranger-request';
+import { StateService } from '@/state/state-service';
 
 @Component({
     selector: 'app-achat-etranger-component',
@@ -72,6 +67,7 @@ export class AchatEtrangerComponent {
     // tableau produits ---> Designation + stock facture + stock depot + qte achat + prix Achat + button supprimer
     // fenetre Ajouter produit --> Designation + Qtock Depot + Qte Fact + Qte Achat + Prix Achat
 
+    personnelCreationId: number | null = null;
     isValid: boolean = false;
     listStock: Stock[] = [];
     listAchatEtranger: AchatEtranger[] = [];
@@ -99,6 +95,7 @@ export class AchatEtrangerComponent {
     constructor(
         private achatEtrangerService: AchatEtrangerService,
         private stockService: StockService,
+        private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private fournisseurService: FournisseurService,
@@ -106,6 +103,7 @@ export class AchatEtrangerComponent {
     ) {}
 
     ngOnInit(): void {
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
         this.search();
         this.getAllStock();
         this.getAllFournisseur();
@@ -122,41 +120,35 @@ export class AchatEtrangerComponent {
     }
 
     initFormGroupDetAchatEtranger() {
-        this.formGroupDetAchatEtranger = this.formBuilder.group(
-            {
-                designation: [{ value: this.stock.designation, disabled: true }],
-                pattc: [{ value: this.stock.pattc, disabled: true }],
-                qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
-                qteAcheter: [1, [Validators.required]],
-                uniteGratuit: [0]
-            },
-            { validators: DetAchatFactureValidator({ stock: this.stock }) }
-        );
+        this.formGroupDetAchatEtranger = this.formBuilder.group({
+            designation: [{ value: this.stock.designation, disabled: true }],
+            qteStockImport: [{ value: this.stock.qteStockImport, disabled: true }],
+            qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
+            qteAchat: [0, [Validators.required, Validators.min(1)]],
+            prixAchat: [0]
+        });
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group(
-            {
-                fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
-                codeFacture: [{ value: '', disabled: true }],
-                dateFacture: [new Date(), [Validators.required]],
-                mntFacture: [0, [Validators.required]],
+        this.formGroup = this.formBuilder.group({
+            fournisseurId: [BigInt(0), [Validators.required, Validators.min(1)]],
+            codeFacture: ['', [Validators.required]],
+            dateFacture: [new Date(), [Validators.required]],
+            mntFacture: ['', [Validators.required]],
 
-                dateAvances1: [new Date(), [Validators.required]],
-                mantantAvancs1: [0, [Validators.required]],
-                dateAvances2: [new Date(), [Validators.required]],
-                mantantAvancs2: [0, [Validators.required]],
+            dateAvances1: [new Date()],
+            mantantAvancs1: [0],
+            dateAvances2: [new Date()],
+            mantantAvancs2: [0],
 
-                totalPaye: [0, [Validators.required]],
-                mntTransportIntern: [0, [Validators.required]],
-                mntDouane: [0, [Validators.required]],
-                mntMagasinage: [0, [Validators.required]],
+            totalPaye: [{ value: 0, disabled: true }],
+            mntTransportIntern: [0],
+            mntDouane: [0],
+            mntMagasinage: [0],
 
-                totalAllMnt: [0, [Validators.required]],
-                stockId: [BigInt(0)]
-            },
-            { validators: [AchatFactureValidator()] }
-        );
+            totalAllMnt: [{ value: 0, disabled: true }],
+            stockId: [BigInt(0)]
+        });
     }
 
     search() {
@@ -295,11 +287,11 @@ export class AchatEtrangerComponent {
         this.formGroupDetAchatEtranger.get('qteStockImport')?.disable();
     }
 
-    recuppererDetAchatFacture(operation: number, detAchatEtrangerEdit: DetAchatEtranger) {
+    recuppererDetAchatEtranger(operation: number, detAchatEtrangerEdit: DetAchatEtranger) {
         if (detAchatEtrangerEdit && detAchatEtrangerEdit.stockId) {
             this.detAchatEtranger = structuredClone(detAchatEtrangerEdit);
             if (operation === 1) {
-                this.openCloseDialogAjouter(true);
+                this.openCloseDialogAjouterDetAchatEtranger(true);
             } else if (operation === 2) {
                 this.openCloseDialogSupprimerDetAchatEtranger(true);
             }
@@ -307,12 +299,15 @@ export class AchatEtrangerComponent {
     }
 
     validerProduits() {
+        this.detAchatEtranger.prixAchat = this.formGroupDetAchatEtranger.get('prixAchat')?.value;
+        this.detAchatEtranger.qteAchat = this.formGroupDetAchatEtranger.get('qteAchat')?.value;
+
         this.listDetAchatEtranger.push(this.detAchatEtranger);
         this.detAchatEtranger = initObjectDetAchatEtranger();
         this.openCloseDialogAjouterDetAchatEtranger(false);
     }
 
-    supprimerDetAchatFacture() {
+    supprimerDetAchatEtranger() {
         this.listDetAchatEtranger = this.listDetAchatEtranger.filter((detAchatEtranger: DetAchatEtranger) => detAchatEtranger.stockId !== this.detAchatEtranger.stockId);
         this.formGroup.updateValueAndValidity();
         this.openCloseDialogSupprimerDetAchatEtranger(false);
@@ -395,6 +390,7 @@ export class AchatEtrangerComponent {
         if (this.formGroup.get('mantantAvancs2')?.value > 0) {
             totlPye += this.formGroup.get('mantantAvancs2')?.value;
         }
+
         if (this.formGroup.get('mntDouane')?.value > 0) {
             allMntTotal += this.formGroup.get('mntDouane')?.value;
         }
@@ -409,6 +405,9 @@ export class AchatEtrangerComponent {
 
         this.formGroup.patchValue({ totalPaye: totlPye });
         this.formGroup.patchValue({ totalAllMnt: allMntTotal });
+
+        this.formGroup.get('totalPaye')?.disable();
+        this.formGroup.get('totalAllMnt')?.disable();
     }
 
     mapDateFromBackend(achatEtranger: AchatEtranger) {
@@ -452,6 +451,9 @@ export class AchatEtrangerComponent {
                             stockId: 0
                         });
                         this.formGroup.updateValueAndValidity();
+
+                        this.formGroup.get('totalPaye')?.disable();
+                        this.formGroup.get('totalAllMnt')?.disable();
 
                         this.openCloseDialogAjouter(true);
                     },
@@ -530,7 +532,7 @@ export class AchatEtrangerComponent {
         this.loadingService.show();
         let achatEtrangerEdit: AchatEtranger = { ...this.achatEtranger };
         this.mapFormGroupToObject(this.formGroup, achatEtrangerEdit);
-        let trvErreur = await this.checkIfExists(achatEtrangerEdit);
+        let trvErreur = false; // await this.checkIfExists(achatEtrangerEdit);
 
         if (!trvErreur) {
             this.achatEtranger = this.mapFormGroupToObject(this.formGroup, this.achatEtranger);
@@ -569,6 +571,7 @@ export class AchatEtrangerComponent {
                     }
                 });
             } else {
+                achatEtrangerRequest.achatEtranger.operateurId = BigInt(this.personnelCreationId || 0);
                 this.achatEtrangerService.create(achatEtrangerRequest).subscribe({
                     next: (data: AchatEtranger) => {
                         this.messageService.add({

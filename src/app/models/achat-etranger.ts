@@ -16,7 +16,7 @@ export interface AchatEtranger {
     dateAvances2: Date | string;
     mantantAvancs2: number;
     totalPaye: number;
-    mntFacture: number;
+    mntFacture: string;
     mntDouane: number;
     mntTransport: number;
     mntTransportIntern: number;
@@ -37,7 +37,7 @@ export function initObjectAchatEtranger(): AchatEtranger {
         fournisseurAdresse: '',
         operateurId: null,
         codeFacture: '',
-        numFacture: null,
+        numFacture: 0,
         dateFacture: new Date(),
         sysDate: new Date(),
         dateAvances1: new Date(),
@@ -45,7 +45,7 @@ export function initObjectAchatEtranger(): AchatEtranger {
         dateAvances2: new Date(),
         mantantAvancs2: 0,
         totalPaye: 0,
-        mntFacture: 0,
+        mntFacture: '',
         mntDouane: 0,
         mntTransport: 0,
         mntTransportIntern: 0,

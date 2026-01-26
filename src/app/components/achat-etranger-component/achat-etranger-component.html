@@ -1,1 +1,461 @@
-<p>achat-etranger-component works!</p>
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatEtranger" [rows]="10" 
+                selectionMode="single" [(selection)]="selectedAchatEtranger" dataKey="id"
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['fournisseurId', 'codeFacture', 'dateFacture', 'mntFacture', 'totalPaye', 'mntTransportIntern', 'mntDouane', 'mntMagasinage', 'totalAllMnt']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="fournisseurId" style="width: 30%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.fournisseurId }}
+                                <p-sortIcon field="fournisseurId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="codeFacture" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.codeFacture }}
+                                <p-sortIcon field="codeFacture" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="dateFacture" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.dateFacture }}
+                                <p-sortIcon field="dateFacture" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mntFacture" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.mntFacture }}
+                                <p-sortIcon field="mntFacture" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="totalPaye" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.totalPaye }}
+                                <p-sortIcon field="totalPaye" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.taux }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mntTransportIntern" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.mntTransportIntern }}
+                                <p-sortIcon field="mntTransportIntern" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mntDouane" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.mntDouane }}
+                                <p-sortIcon field="mntDouane" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mntMagasinage" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.mntMagasinage }}
+                                <p-sortIcon field="mntMagasinage" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="totalAllMnt" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.achatEtranger.totalAllMnt }}
+                                <p-sortIcon field="totalAllMnt" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                    <tr>
+                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.codeFacture }}</td>
+                        <td>{{ p.dateFacture | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.mntFacture }}</td>
+                        <td>{{ p.totalPaye }}</td>
+                        <td>{{ (p.totalPaye/p.totalAllMnt) }}</td>
+                        <td>{{ p.mntTransportIntern }}</td>
+                        <td>{{ p.mntDouane }}</td>
+                        <td>{{ p.mntMagasinage }}</td>
+                        <td>{{ p.totalAllMnt }}</td>
+                        <td style="min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="12">No Achat Etranger found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="12">Loading Achat Etranger data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '80%', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.achatEtranger.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="flex flex-wrap -mx-4" style="margin-top: 5px; margin-bottom: -25px;">
+                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="fournisseurId" inputId="fournisseurId"
+                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="fournisseurId">{{ msg.components.achatEtranger.fournisseurId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker id="dateAvances1" formControlName="dateAvances1" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances1')?.invalid }" />
+                                    <label for="dateAvances1">{{ msg.components.achatEtranger.dateAvances1 }}</label>
+                                </p-floatlabel>
+
+                                @if (formGroup.errors?.['dateAvances1Required']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatEtranger.errors.dateAvances1Required }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="totalPaye" inputId="totalPaye" />
+                                    <label for="totalPaye">{{ msg.components.achatEtranger.totalPaye }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <input pInputText formControlName="codeFacture" inputId="codeFacture" />
+                                    <label for="codeFacture">{{ msg.components.achatEtranger.codeFacture }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" (onBlur)="calculerMntTotal('mantantAvancs1')" />
+                                    <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="mntTransportIntern" inputId="mntTransportIntern" (onBlur)="calculerMntTotal('mntTransportIntern')" />
+                                    <label for="mntTransportIntern">{{ msg.components.achatEtranger.mntTransportIntern }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker id="dateFacture" formControlName="dateFacture" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateFacture')?.invalid }" />
+                                    <label for="dateFacture">{{ msg.components.achatEtranger.dateFacture }}</label>
+                                </p-floatlabel>
+
+                                @if (formGroup.errors?.['dateFactureRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatEtranger.errors.dateFactureRequired }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker id="dateAvances2" formControlName="dateAvances2" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances2')?.invalid }" />
+                                    <label for="dateAvances2">{{ msg.components.achatEtranger.dateAvances2 }}</label>
+                                </p-floatlabel>
+
+                                @if (formGroup.errors?.['dateAvances2Required']) {
+                                    <p-message severity="error" variant="simple" size="small">{{
+                                        msg.components.achatEtranger.errors.dateAvances2Required }}</p-message>
+                                }
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="mntDouane" inputId="mntDouane" (onBlur)="calculerMntTotal('mntDouane')" />
+                                    <label for="mntDouane">{{ msg.components.achatEtranger.mntDouane }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <input pInputText formControlName="mntFacture" inputId="mntFacture" />
+                                    <label for="mntFacture">{{ msg.components.achatEtranger.mntFacture }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" (onBlur)="calculerMntTotal('mantantAvancs2')" />
+                                    <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row full-width">
+                                <p-floatlabel variant="on">
+                                    <p-input-number formControlName="mntMagasinage" inputId="mntMagasinage" (onBlur)="calculerMntTotal('mntMagasinage')" />
+                                    <label for="mntMagasinage">{{ msg.components.achatEtranger.mntMagasinage }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card flex flex-col -mx-4 gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId"
+                                        [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="stockId">{{ msg.components.achatSimple.stockId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-input-number id="totalAllMnt" formControlName="totalAllMnt" 
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('totalAllMnt')?.invalid }" />
+                                    <label for="totalAllMnt">{{ msg.components.achatEtranger.totalAllMnt }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (submitted && formGroup.errors?.['listDetAchatEtrangerRequired']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.achatEtranger.errors.listDetAchatEtrangerRequired }}</p-message>
+                    }
+
+                    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+                        <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatEtranger" 
+                            dataKey="stockId" style="width: 100% !important;" [rows]="10" 
+                            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                            [globalFilterFields]="['stock.designation', 'stock.qteFacturer', 'stock.qteStockImport', 'qteAchat', 'prixAchat']"
+                            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                            <ng-template #header>
+                                <tr>
+                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatEtranger.stock.designation }}
+                                            <p-sortIcon field="stock.designation" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="stock.qteFacturer" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatEtranger.stock.qteFacturer }}
+                                            <p-sortIcon field="stock.qteFacturer" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="stock.qteStockImport" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatEtranger.stock.qteStockImport }}
+                                            <p-sortIcon field="stock.qteStockImport" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="qteAchat" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatEtranger.detAchatEtranger.qteAchat }}
+                                            <p-sortIcon field="qteAchat" />
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="prixAchat" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatEtranger.detAchatEtranger.prixAchat }}
+                                            <p-sortIcon field="prixAchat" />
+                                        </div>
+                                    </th>
+
+                                    <th style="width: 5%"></th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                                <tr [pSelectableRow]="p">
+                                    <td>{{ p.stock.designation }}</td>
+                                    <td>{{ p.stock.qteFacturer }}</td>
+                                    <td>{{ p.stock.qteStockImport }}</td>
+                                    <td>{{ p.qteAchat }}</td>
+                                    <td>{{ p.prixAchat }}</td>
+                                    <td style="width: 5%; min-width: 7rem">
+                                        <div class="flex gap-2">
+                                            <p-button (click)="recuppererDetAchatEtranger(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template #emptymessage>
+                                <tr>
+                                    <td colspan="8">No Produits found.</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template #loadingbody>
+                                <tr>
+                                    <td colspan="8">Loading Produits data. Please wait.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (achatEtranger) {
+                <span>{{ msg.components.achatEtranger.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogAjouterDetAchatEtranger" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.achatEtranger.detAchatEtranger.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroupDetAchatEtranger" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <input pInputText formControlName="designation" id="designation" inputId="designation" />
+                                    <label for="designation">{{ msg.components.achatEtranger.stock.designation }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-inputNumber formControlName="qteStockImport" id="qteStockImport" inputId="qteStockImport" />
+                                    <label for="qteStockImport">{{ msg.components.achatEtranger.stock.qteStockImport }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" />
+                                    <label for="qteFacturer">{{ msg.components.achatEtranger.stock.qteFacturer }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-inputNumber formControlName="qteAchat" id="qteAchat" inputId="qteAchat" />
+                                    <label for="qteAchat">{{ msg.components.achatEtranger.detAchatEtranger.qteAchat }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-inputNumber formControlName="prixAchat" id="prixAchat" inputId="prixAchat" />
+                                    <label for="prixAchat">{{ msg.components.achatEtranger.detAchatEtranger.prixAchat }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouterDetAchatEtranger(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="validerProduits()" [disabled]="formGroupDetAchatEtranger.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimerDetAchatEtranger" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (detAchatEtranger) {
+                <span>{{ msg.components.achatEtranger.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimerDetAchatEtranger = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimerDetAchatEtranger()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

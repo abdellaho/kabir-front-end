@@ -65,7 +65,7 @@
                         <td>
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
-                                <p-button (click)="recupperer(2, p)" icon="pi pi-times-circle" severity="warn" rounded [title]="msg.buttons.supprimer" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                             </div>
                         </td>
                     </tr>
@@ -86,7 +86,7 @@
 
         <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '400px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-            [header]="`${msg.messages.miseAJour} ${msg.components.fournisseur.label}`" [modal]="true" class="p-fluid"
+            [header]="`${msg.messages.miseAJour} ${msg.components.cheque.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
@@ -106,7 +106,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="full-width">
-                                    <p-date-picker id="dateCheque" formControlName="dateCheque" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                                    <p-date-picker id="dateCheque" appendTo="body" formControlName="dateCheque" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateCheque')?.invalid }" />
                                     <label for="dateCheque">{{ msg.components.cheque.dateCheque }}</label>
                                 </p-floatlabel>
@@ -116,7 +116,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="full-width">
-                                    <p-inputNumber id="montant" formControlName="montant" class="full-width" required 
+                                    <p-input-number id="montant" formControlName="montant" class="full-width" required 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montant')?.invalid }" />
                                     <label for="montant">{{ msg.components.cheque.montant }}</label>
                                 </p-floatlabel>
@@ -126,7 +126,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="full-width">
-                                    <p-input pInputText id="numero" formControlName="numero" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('numero')?.invalid }" />
+                                    <input pInputText id="numero" formControlName="numero" class="full-width" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('numero')?.invalid }" />
                                     <label for="numero">{{ msg.components.cheque.numero }}</label>
                                 </p-floatlabel>
                             </div>

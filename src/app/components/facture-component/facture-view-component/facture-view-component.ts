@@ -33,6 +33,7 @@ import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { TypeSearch } from '@/shared/enums/type-search';
 import { OperationType } from '@/shared/enums/operation-type';
 import { DetFacture } from '@/models/det-facture';
+import { filteredTypeReglement } from '@/shared/enums/type-reglement';
 
 @Component({
     selector: 'app-facture-view-component',
@@ -52,6 +53,8 @@ export class FactureViewComponent implements OnInit {
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
     mapOfStocks: Map<number, string> = new Map<number, string>();
     mapOfRepertoire: Map<number, string> = new Map<number, string>();
+    mapOfRepertoireICE: Map<number, string> = new Map<number, string>();
+    typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     dialogSupprimer: boolean = false;
     msg = APP_MESSAGES;
 
@@ -124,6 +127,7 @@ export class FactureViewComponent implements OnInit {
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
                 this.mapOfRepertoire = arrayToMap(this.listRepertoire, 'id', ['designation'], ['']);
+                this.mapOfRepertoireICE = arrayToMap(this.listRepertoire, 'id', ['ice'], ['']);
             },
             error: (error: any) => {
                 console.error(error);
@@ -171,6 +175,15 @@ export class FactureViewComponent implements OnInit {
 
     getDesignationRepertoire(repertoireId: number): string {
         return this.mapOfRepertoire.get(repertoireId) || '';
+    }
+
+    getRepertoireICE(repertoireId: number): string {
+        return this.mapOfRepertoireICE.get(repertoireId) || '';
+    }
+
+    getTypeReglement(typeReglement: number): string {
+        let filteredTypeReglement = this.typeReglements.filter((type) => type.value === typeReglement);
+        return filteredTypeReglement.length > 0 ? filteredTypeReglement[0].label : '';
     }
 
     openCloseDialogSupprimer(openClose: boolean): void {
