@@ -29,7 +29,6 @@ export class RepertoireService {
     update(id: bigint, repertoire: Repertoire): Observable<Repertoire> {
         const serializedObj = this.serialization(repertoire);
         const obj = omit(serializedObj, 'ville', 'personnel');
-        console.log('obj', obj);
         return this.http.patch<Repertoire>(ENDPOINTS.REPERTOIRE.update(id), obj);
     }
 
@@ -45,7 +44,6 @@ export class RepertoireService {
 
     exist(repertoire: Repertoire): Observable<boolean> {
         const serializedObj = this.serialization(repertoire);
-        console.log('serializedObj', serializedObj);
         return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
     }
 
