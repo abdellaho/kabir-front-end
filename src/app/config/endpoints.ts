@@ -8,6 +8,7 @@ const ACHAT_SIMPLE = `achat-simple`;
 const ACHAT_ETRANGER = `achat-etranger`;
 const CAISSE = `caisse`;
 const CHEQUE = `cheque`;
+const REPERTOIRE = `repertoire`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -43,15 +44,16 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`
     },
     REPERTOIRE: {
-        getAll: `${BASE_URL}/repertoire`,
-        getById: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
-        create: `${BASE_URL}/repertoire`,
-        update: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/repertoire/${id}`,
-        exist: `${BASE_URL}/repertoire/exist`,
-        search: `${BASE_URL}/repertoire/search`,
-        searchPersonnel: `${BASE_URL}/repertoire/search-personnel`,
-        updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/repertoire/${id}/update-nbr-operation/${nbrOperation}`
+        getAll: `${BASE_URL}/${REPERTOIRE}`,
+        getById: (id: bigint) => `${BASE_URL}/${REPERTOIRE}/${id}`,
+        create: `${BASE_URL}/${REPERTOIRE}`,
+        update: (id: bigint) => `${BASE_URL}/${REPERTOIRE}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${REPERTOIRE}/${id}`,
+        exist: `${BASE_URL}/${REPERTOIRE}/exist`,
+        search: `${BASE_URL}/${REPERTOIRE}/search`,
+        searchClientsOnly: `${BASE_URL}/${REPERTOIRE}/search/clients`,
+        searchPersonnel: `${BASE_URL}/${REPERTOIRE}/search-personnel`,
+        updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/${REPERTOIRE}/${id}/update-nbr-operation/${nbrOperation}`
     },
     ABSENCE: {
         getAll: `${BASE_URL}/absence`,
