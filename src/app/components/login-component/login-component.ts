@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: this.stateService.getState().error ? this.stateService.getState().error + '' : error.message
+                        detail: this.stateService.getState().error ? this.stateService.getState().error?.toString() : error.message
                     });
                 },
                 complete: () => {
@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error.message
+                        detail: this.stateService.getState().error ? this.stateService.getState().error?.toString() : error.message
                     });
                 },
                 complete: () => {
