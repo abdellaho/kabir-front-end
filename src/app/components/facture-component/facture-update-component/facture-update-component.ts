@@ -248,24 +248,11 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 numRemise3: [''],
                 numRemise4: [''],
                 mantantBL: [0],
-                //mantantBLReel: [0],
-                //mantantBLBenefice: [0],
-                //typePaiement: [''],
-                //mantantBLPourcent: [0],
-                //reglerNonRegler: [0],
-                //sysDate: [new Date()],
-                //infinity: [0],
-                //etatBultinPaie: [0],
-                //livrernonlivrer: [0],
-                //avecRemise: [false],
                 mntReglement: [0],
                 mntReglement2: [0],
                 mntReglement3: [0],
                 mntReglement4: [0],
-                //facturer100: [false],
-                //codeTransport: [''],
                 personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-                //personnelAncienId: [null],
                 repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
                 stockId: [0],
                 repertoireDesignation: [{ value: '', disabled: true }],
@@ -299,23 +286,11 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         this.facture.numRemise3 = this.formGroup.get('numRemise3')?.value;
         this.facture.numRemise4 = this.formGroup.get('numRemise4')?.value;
         this.facture.mantantBF = this.formGroup.get('mantantBF')?.value;
-        //this.facture.mantantBLReel = this.formGroup.get('mantantBLReel')?.value;
-        //this.facture.mantantBLBenefice = this.formGroup.get('mantantBLBenefice')?.value;
-        // this.facture.mantantBLPourcent = this.formGroup.get('mantantBLPourcent')?.value;
-        //this.facture.typePaiement = this.formGroup.get('typePaiement')?.value;
-        //this.facture.reglerNonRegler = this.formGroup.get('reglerNonRegler')?.value;
-        //this.facture.infinity = this.formGroup.get('infinity')?.value;
-        //this.facture.etatBultinPaie = this.formGroup.get('etatBultinPaie')?.value;
-        //this.facture.livrernonlivrer = this.formGroup.get('livrernonlivrer')?.value;
-        //this.facture.avecRemise = this.formGroup.get('avecRemise')?.value;
         this.facture.mntReglement = this.formGroup.get('mntReglement')?.value;
         this.facture.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
         this.facture.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
         this.facture.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
-        //this.facture.facturer100 = this.formGroup.get('facturer100')?.value;
-        //this.facture.codeTransport = this.formGroup.get('codeTransport')?.value;
         this.facture.personnelId = this.formGroup.get('personnelId')?.value;
-        //this.facture.personnelAncienId = this.formGroup.get('personnelAncienId')?.value;
         this.facture.repertoireId = this.formGroup.get('repertoireId')?.value;
     }
 

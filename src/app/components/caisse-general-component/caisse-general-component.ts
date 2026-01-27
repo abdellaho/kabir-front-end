@@ -1,33 +1,33 @@
-import { Caisse, initObjectCaisse } from '@/models/caisse';
-import { CaisseService } from '@/services/caisse/caisse-service';
-import { APP_MESSAGES } from '@/shared/classes/app-messages';
-import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
-import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypeOperationCaisse } from '@/shared/enums/type-operation-caisse';
-import { LoadingService } from '@/shared/services/loading-service';
-import { StateService } from '@/state/state-service';
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
-import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
-import { Table, TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
+import { DatePickerModule } from 'primeng/datepicker';
+import { MessageModule } from 'primeng/message';
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { ToolbarModule } from 'primeng/toolbar';
+import { CompteCaisse, initObjectCaisseGenerale } from '@/models/compte-caisse';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { CompteCaisseService } from '@/services/compte-caisse/compte-caisse-service';
+import { StateService } from '@/state/state-service';
+import { MessageService } from 'primeng/api';
+import { LoadingService } from '@/shared/services/loading-service';
+import { CompteCaisseSearch, initObjectCaisseGeneraleSearch } from '@/shared/classes/search/compte-caisse-search';
+import { OperationType } from '@/shared/enums/operation-type';
+import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 
 @Component({
-    selector: 'app-caisse-component',
+    selector: 'app-caisse-general-component',
     imports: [
         CommonModule,
         FormsModule,
@@ -48,29 +48,24 @@ import { ToolbarModule } from 'primeng/toolbar';
         CheckboxModule,
         ToggleSwitchModule
     ],
-    templateUrl: './caisse-component.html',
-    styleUrl: './caisse-component.scss'
+    templateUrl: './caisse-general-component.html',
+    styleUrl: './caisse-general-component.scss'
 })
-export class CaisseComponent {
-    //Comme l'ancienne application
-    //Tableau --> dateOperation + montant + type(Versement + retrait) + Actions
-    //Ajouter --> type(Versement + retrait) + dateOperation + montant
-
+export class CaisseGeneralComponent {
     personnelCreationId: number | null = null;
     isValid: boolean = false;
-    listCaisse: Caisse[] = [];
-    caisse: Caisse = initObjectCaisse();
-    selectedCaisse!: Caisse;
+    listCaisse: CompteCaisse[] = [];
+    caisse: CompteCaisse = initObjectCaisseGenerale();
+    selectedCaisse!: CompteCaisse;
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
-    typeOperationCaisse: { label: string; value: number }[] = filteredTypeOperationCaisse;
     readonly BigInt = BigInt; // Expose BigInt to template
 
     constructor(
-        private caisseService: CaisseService,
+        private compteCaisseService: CompteCaisseService,
         private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -93,9 +88,10 @@ export class CaisseComponent {
 
     initFormGroup() {
         this.formGroup = this.formBuilder.group({
-            dateOperation: [new Date(), [Validators.required]],
-            montant: [0, [Validators.required]],
-            type: [0]
+            designation: [''],
+            numFacture: [''],
+            date: [new Date(), [Validators.required]],
+            montant: [0, [Validators.required]]
         });
     }
 
@@ -105,8 +101,9 @@ export class CaisseComponent {
 
     getAllCaisse(): void {
         this.listCaisse = [];
-        this.caisseService.getAll().subscribe({
-            next: (data: Caisse[]) => {
+        let compteCaisseSearch: CompteCaisseSearch = initObjectCaisseGeneraleSearch();
+        this.compteCaisseService.search(compteCaisseSearch).subscribe({
+            next: (data: CompteCaisse[]) => {
                 this.listCaisse = data;
             },
             error: (error: any) => {
@@ -129,27 +126,24 @@ export class CaisseComponent {
     viderAjouter() {
         this.openCloseDialogAjouter(true);
         this.submitted = false;
-        this.caisse = initObjectCaisse();
+        this.caisse = initObjectCaisseGenerale();
         this.initFormGroup();
     }
 
-    getType(type: number): string {
-        let filteredType = this.typeOperationCaisse.filter((t) => t.value === type);
-        return filteredType.length > 0 ? filteredType[0].label : '';
-    }
-
-    recupperer(operation: number, caisseEdit: Caisse) {
+    recupperer(operation: number, caisseEdit: CompteCaisse) {
         if (caisseEdit && caisseEdit.id) {
             if (operation === 1) {
-                this.caisseService.getById(caisseEdit.id).subscribe({
-                    next: (data: Caisse) => {
+                this.compteCaisseService.getById(caisseEdit.id).subscribe({
+                    next: (data: CompteCaisse) => {
                         this.caisse = data;
 
                         this.formGroup.patchValue({
-                            dateOperation: this.caisse.dateOperation,
-                            montant: this.caisse.montant,
-                            type: this.caisse.type
+                            designation: this.caisse.designation,
+                            numFacture: this.caisse.numFacture,
+                            date: new Date(this.caisse.date),
+                            montant: this.caisse.montant
                         });
+
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
@@ -170,7 +164,7 @@ export class CaisseComponent {
         }
     }
 
-    updateList(caisse: Caisse, list: Caisse[], operationType: OperationType, id?: bigint): Caisse[] {
+    updateList(caisse: CompteCaisse, list: CompteCaisse[], operationType: OperationType, id?: bigint): CompteCaisse[] {
         if (operationType === OperationType.ADD) {
             list = [...list, caisse];
         } else if (operationType === OperationType.MODIFY) {
@@ -190,10 +184,11 @@ export class CaisseComponent {
         }
     }
 
-    mapFormGroupToObject(formGroup: FormGroup, caisse: Caisse): Caisse {
-        caisse.dateOperation = mapToDateTimeBackEnd(formGroup.get('dateOperation')?.value);
+    mapFormGroupToObject(formGroup: FormGroup, caisse: CompteCaisse): CompteCaisse {
+        caisse.date = mapToDateTimeBackEnd(formGroup.get('date')?.value);
         caisse.montant = formGroup.get('montant')?.value;
-        caisse.type = formGroup.get('type')?.value;
+        caisse.designation = formGroup.get('designation')?.value;
+        caisse.numFacture = formGroup.get('numFacture')?.value;
 
         return caisse;
     }
@@ -201,7 +196,7 @@ export class CaisseComponent {
     async miseAjour(): Promise<void> {
         this.submitted = true;
         this.loadingService.show();
-        let bonSortieEdit: Caisse = { ...this.caisse };
+        let bonSortieEdit: CompteCaisse = { ...this.caisse };
         this.mapFormGroupToObject(this.formGroup, bonSortieEdit);
         let trvErreur = false; // await this.checkIfExists(bonSortieEdit);
 
@@ -209,7 +204,7 @@ export class CaisseComponent {
             this.caisse = this.mapFormGroupToObject(this.formGroup, this.caisse);
 
             if (this.caisse.id) {
-                this.caisseService.update(this.caisse.id, this.caisse).subscribe({
+                this.compteCaisseService.update(this.caisse.id, this.caisse).subscribe({
                     next: (data) => {
                         this.messageService.add({
                             severity: 'success',
@@ -236,8 +231,8 @@ export class CaisseComponent {
                     }
                 });
             } else {
-                this.caisseService.create(this.caisse).subscribe({
-                    next: (data: Caisse) => {
+                this.compteCaisseService.create(this.caisse).subscribe({
+                    next: (data: CompteCaisse) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: this.msg.summary.labelSuccess,
@@ -273,7 +268,7 @@ export class CaisseComponent {
         if (this.caisse && this.caisse.id) {
             this.loadingService.show();
             let id = this.caisse.id;
-            this.caisseService.delete(this.caisse.id).subscribe({
+            this.compteCaisseService.delete(this.caisse.id).subscribe({
                 next: (data) => {
                     this.messageService.add({
                         severity: 'success',
@@ -283,8 +278,8 @@ export class CaisseComponent {
                     });
 
                     this.checkIfListIsNull();
-                    this.listCaisse = this.updateList(initObjectCaisse(), this.listCaisse, OperationType.DELETE, id);
-                    this.caisse = initObjectCaisse();
+                    this.listCaisse = this.updateList(initObjectCaisseGenerale(), this.listCaisse, OperationType.DELETE, id);
+                    this.caisse = initObjectCaisseGenerale();
                 },
                 error: (err) => {
                     console.log(err);

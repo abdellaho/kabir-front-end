@@ -22,6 +22,8 @@ export const APP_MESSAGES = {
         bonSortie: 'Bon Sortie',
         achatEtranger: 'Achat Etranger',
         caisse: 'Caisse',
+        caisseGeneral: 'Caisse General',
+        compteCourant: 'Compte Courant',
         cheque: 'Chèque',
         deconnexion: 'Déconnexion'
     },
@@ -82,6 +84,22 @@ export const APP_MESSAGES = {
             montant: 'Montant',
             type: 'Type',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette opération ?'
+        },
+        caisseGeneral: {
+            label: 'Caisse',
+            date: 'Date',
+            designation: 'Designation',
+            numFacture: 'N° Facture',
+            montant: 'Montant',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette opération ?'
+        },
+        compteCourant: {
+            label: 'Compte Courant',
+            designation: 'Designation',
+            numFacture: 'N° Facture',
+            date: 'Date',
+            montant: 'Montant',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce compte courant ?'
         },
         ville: {
             label: 'Ville',

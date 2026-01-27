@@ -64,11 +64,11 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-simple'] }]
+                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-cart-plus', routerLink: ['/achat-simple'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatFacture, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-facture'] }]
+                items: [{ label: this.msg.menu.achatFacture, icon: 'pi pi-fw pi-bookmark', routerLink: ['/achat-facture'] }]
             },
             {
                 label: '',
@@ -76,11 +76,15 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatEtranger, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/achat-etranger'] }]
+                items: [{ label: this.msg.menu.achatEtranger, icon: 'pi pi-fw pi-briefcase', routerLink: ['/achat-etranger'] }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/caisse'] }]
+                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-globe', routerLink: ['/caisse'] }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.compteCourant, icon: 'pi pi-fw pi-calendar', routerLink: ['/compte-courant'] }]
             },
             {
                 label: '',

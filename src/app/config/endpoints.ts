@@ -9,6 +9,7 @@ const ACHAT_ETRANGER = `achat-etranger`;
 const CAISSE = `caisse`;
 const CHEQUE = `cheque`;
 const REPERTOIRE = `repertoire`;
+const COMPTE_CAISSE = `compte-caisse`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -213,6 +214,15 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/${CAISSE}/${id}`,
         exist: `${BASE_URL}/${CAISSE}/exist`,
         search: `${BASE_URL}/${CAISSE}/search`
+    },
+    COMPTE_CAISSE: {
+        getAll: `${BASE_URL}/${COMPTE_CAISSE}`,
+        getById: (id: bigint) => `${BASE_URL}/${COMPTE_CAISSE}/${id}`,
+        create: `${BASE_URL}/${COMPTE_CAISSE}`,
+        update: (id: bigint) => `${BASE_URL}/${COMPTE_CAISSE}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${COMPTE_CAISSE}/${id}`,
+        exist: `${BASE_URL}/${COMPTE_CAISSE}/exist`,
+        search: `${BASE_URL}/${COMPTE_CAISSE}/search`
     },
     CHEQUE: {
         getAll: `${BASE_URL}/${CHEQUE}`,

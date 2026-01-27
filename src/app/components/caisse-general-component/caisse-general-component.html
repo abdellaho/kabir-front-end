@@ -24,28 +24,28 @@
                     <tr>
                         <th pSortableColumn="designation" style="width: 45%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.compteCourant.designation }}
+                                {{ msg.components.caisseGeneral.designation }}
                                 <p-sortIcon field="designation" />
                             </div>
                         </th>
 
                         <th pSortableColumn="numFacture" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.compteCourant.numFacture }}
+                                {{ msg.components.caisseGeneral.numFacture }}
                                 <p-sortIcon field="numFacture" />
                             </div>
                         </th>
 
                         <th pSortableColumn="date" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.compteCourant.date }}
+                                {{ msg.components.caisseGeneral.date }}
                                 <p-sortIcon field="date" />
                             </div>
                         </th>
 
                         <th pSortableColumn="montant" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.compteCourant.montant }}
+                                {{ msg.components.caisseGeneral.montant }}
                                 <p-sortIcon field="montant" />
                             </div>
                         </th>
@@ -84,7 +84,7 @@
 
         <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '400px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-            [header]="`${msg.messages.miseAJour} ${msg.components.compteCourant.label}`" [modal]="true" class="p-fluid"
+            [header]="`${msg.messages.miseAJour} ${msg.components.caisseGeneral.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
@@ -95,7 +95,7 @@
                                 <p-floatlabel variant="on" class="full-width">
                                     <input pInputText id="designation" formControlName="designation" class="full-width" 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('designation')?.invalid }" />
-                                    <label for="designation">{{ msg.components.compteCourant.designation }}</label>
+                                    <label for="designation">{{ msg.components.caisseGeneral.designation }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                                 <p-floatlabel variant="on" class="full-width">
                                     <input pInputText id="numFacture" formControlName="numFacture" class="full-width" 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('numFacture')?.invalid }" />
-                                    <label for="numFacture">{{ msg.components.compteCourant.numFacture }}</label>
+                                    <label for="numFacture">{{ msg.components.caisseGeneral.numFacture }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                                 <p-floatlabel variant="on" class="full-width">
                                     <p-date-picker id="date" appendTo="body" formControlName="date" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('date')?.invalid }" />
-                                    <label for="date">{{ msg.components.compteCourant.date }}</label>
+                                    <label for="date">{{ msg.components.caisseGeneral.date }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                                 <p-floatlabel variant="on" class="full-width">
                                     <p-inputNumber id="montant" formControlName="montant" class="full-width" required 
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montant')?.invalid }" />
-                                    <label for="montant">{{ msg.components.compteCourant.montant }}</label>
+                                    <label for="montant">{{ msg.components.caisseGeneral.montant }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
@@ -147,7 +147,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (caisse) {
-                <span>{{ msg.components.compteCourant.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.caisseGeneral.messageDeleteAreYouSure }}</span>
                 }
             </div>
 

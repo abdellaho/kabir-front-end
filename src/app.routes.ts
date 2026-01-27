@@ -28,6 +28,8 @@ import { FactureUpdateComponent } from '@/components/facture-component/facture-u
 import { CaisseComponent } from '@/components/caisse-component/caisse-component';
 import { ChequeComponent } from '@/components/cheque-component/cheque-component';
 import { AchatEtrangerComponent } from '@/components/achat-etranger-component/achat-etranger-component';
+import { CaisseGeneralComponent } from '@/components/caisse-general-component/caisse-general-component';
+import { CompteCourantComponent } from '@/components/compte-courant-component/compte-courant-component';
 
 export const appRoutes: Routes = [
     {
@@ -56,7 +58,8 @@ export const appRoutes: Routes = [
             { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
             { path: 'bon-sortie', component: BonSortieComponent, canActivate: [AuthGuard] },
             { path: 'achat-etranger', component: AchatEtrangerComponent, canActivate: [AuthGuard] },
-            { path: 'caisse', component: CaisseComponent, canActivate: [AuthGuard] },
+            { path: 'caisse', component: CaisseGeneralComponent, canActivate: [AuthGuard] },
+            { path: 'compte-courant', component: CompteCourantComponent, canActivate: [AuthGuard] },
             { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
