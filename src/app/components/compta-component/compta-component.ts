@@ -173,16 +173,13 @@ export class ComptaComponent {
             this.disbledtvaPrc = true;
             this.disblaedDate = true;
 
-            let dateFin = comptaLast.dateFin;
-            let dateDebut = new Date(dateFin);
+            let dateDebutLast = comptaLast.dateDebut;
+            let dateDebut = new Date(dateDebutLast);
             dateDebut.setMonth(dateDebut.getMonth() + 1);
             dateDebut.setDate(1);
 
-            this.formGroup.patchValue({
-                dateDebut: dateDebut,
-                montantTVAPrecedent: comptaLast.resutMnt
-            });
-            await this.rechercheMntTVA();
+            this.compta.dateDebut = dateDebut;
+            this.compta.montantTVAPrecedent = comptaLast.resutMnt;
         } else {
             let dateDebut = this.compta.dateDebut;
             if (dateDebut.getDate() > 1) {
@@ -190,18 +187,21 @@ export class ComptaComponent {
             }
             let dateFin = getLastDayOfMonth(dateDebut);
 
-            this.formGroup.patchValue({
-                dateDebut: dateDebut,
-                dateFin: dateFin
-            });
+            this.compta.dateDebut = dateDebut;
+            this.compta.dateFin = dateFin;
         }
 
         this.mapObjectToFormGroup(this.formGroup, this.compta, this.disbledtvaPrc, this.disblaedDate);
+
+        if (comptaLast) {
+            await this.rechercheMntTVA();
+        }
     }
 
     async rechercheMntTVA() {
         if (this.formGroup.get('dateDebut')?.value) {
             let dateDebut = this.formGroup.get('dateDebut')?.value;
+
             if (dateDebut.getDate() > 1) {
                 dateDebut.setDate(1);
             }
@@ -227,10 +227,6 @@ export class ComptaComponent {
     }
 
     calcultResultTVA() {
-        console.log(this.formGroup.get('montantTVAAchat')?.value);
-        console.log(this.formGroup.get('montantTVAPrecedent')?.value);
-        console.log(this.formGroup.get('montantTVAVente')?.value);
-
         let tvaAcht = this.formGroup.get('montantTVAAchat')?.value;
         let tvaPrc = this.formGroup.get('montantTVAPrecedent')?.value;
         let tvaVente = this.formGroup.get('montantTVAVente')?.value;
@@ -244,8 +240,8 @@ export class ComptaComponent {
 
     mapObjectToFormGroup(formGroup: FormGroup, compta: Compta, disbledtvaPrc: boolean, disblaedDate: boolean) {
         formGroup.patchValue({
-            dateDebut: compta.dateDebut,
-            dateFin: compta.dateFin,
+            dateDebut: new Date(compta.dateDebut),
+            dateFin: new Date(compta.dateFin),
             montantTVAPrecedent: compta.montantTVAPrecedent,
             montantTVAAchat: compta.montantTVAAchat,
             montantTVAVente: compta.montantTVAVente,
