@@ -24,6 +24,7 @@ export const APP_MESSAGES = {
         caisse: 'Caisse',
         caisseGeneral: 'Caisse General',
         compteCourant: 'Compte Courant',
+        compta: 'TVA',
         cheque: 'Chèque',
         deconnexion: 'Déconnexion'
     },
@@ -100,6 +101,16 @@ export const APP_MESSAGES = {
             date: 'Date',
             montant: 'Montant',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce compte courant ?'
+        },
+        compta: {
+            label: 'Compta',
+            dateDebut: 'Date Début',
+            dateFin: 'Date Fin',
+            montantTVAPrecedent: 'Montant TVA Precedent',
+            montantTVAAchat: 'Montant TVA Achat',
+            montantTVAVente: 'Montant TVA Vente',
+            resutMnt: 'Resultat Mnt',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce compta ?'
         },
         ville: {
             label: 'Ville',

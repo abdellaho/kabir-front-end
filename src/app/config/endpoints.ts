@@ -10,6 +10,7 @@ const CAISSE = `caisse`;
 const CHEQUE = `cheque`;
 const REPERTOIRE = `repertoire`;
 const COMPTE_CAISSE = `compte-caisse`;
+const COMPTA = `compta`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -82,6 +83,17 @@ export const ENDPOINTS = {
         update: (id: bigint) => `${BASE_URL}/compte/${id}`,
         delete: (id: bigint) => `${BASE_URL}/compte/${id}`,
         search: `${BASE_URL}/compte/search`
+    },
+    COMPTA: {
+        getAll: `${BASE_URL}/${COMPTA}`,
+        getById: (id: bigint) => `${BASE_URL}/${COMPTA}/${id}`,
+        create: `${BASE_URL}/${COMPTA}`,
+        update: (id: bigint) => `${BASE_URL}/${COMPTA}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${COMPTA}/${id}`,
+        search: `${BASE_URL}/${COMPTA}/search`,
+        exist: `${BASE_URL}/${COMPTA}/exist`,
+        last: `${BASE_URL}/${COMPTA}/last`,
+        globalSums: `${BASE_URL}/${COMPTA}/global-sums`
     },
     PERSONNEL: {
         getAll: `${BASE_URL}/personnel`,

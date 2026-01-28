@@ -1,0 +1,202 @@
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+                
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listCompta" dataKey="id" [rows]="10"
+                selectionMode="single" [(selection)]="selectedCompta"
+                [showGridlines]="true" [paginator]="true" [globalFilterFields]="['dateDebut', 'dateFin', 'montantTVAPrecedent', 'montantTVAAchat', 'montantTVAVente', 'resutMnt']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="dateDebut" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.dateDebut }}
+                                <p-sortIcon field="dateDebut" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="dateFin" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.dateFin }}
+                                <p-sortIcon field="dateFin" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="montantTVAPrecedent" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.montantTVAPrecedent }}
+                                <p-sortIcon field="montantTVAPrecedent" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="montantTVAAchat" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.montantTVAAchat }}
+                                <p-sortIcon field="montantTVAAchat" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="montantTVAVente" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.montantTVAVente }}
+                                <p-sortIcon field="montantTVAVente" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="resutMnt" style="width: 16%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.compta.resutMnt }}
+                                <p-sortIcon field="resutMnt" />
+                            </div>
+                        </th>
+
+                        <th style="width: 4%;"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p>
+                    <tr [pSelectableRow]="p">
+                        <td>{{ p.dateDebut }}</td>
+                        <td>{{ p.dateFin }}</td>
+                        <td>{{ p.montantTVAPrecedent }}</td>
+                        <td>{{ p.montantTVAAchat }}</td>
+                        <td>{{ p.montantTVAVente }}</td>
+                        <td>{{ p.resutMnt }}</td>
+                        <td>
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="7">No Compta found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="7">Loading Compta data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '400px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.compta.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="card flex flex-col gap-4">                        
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-date-picker id="dateDebut" appendTo="body" formControlName="dateDebut" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                                        (onSelect)="rechercheMntTVA()" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateDebut')?.invalid }" />
+                                    <label for="dateDebut">{{ msg.components.compta.dateDebut }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-date-picker id="dateFin" appendTo="body" formControlName="dateFin" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                                        (onSelect)="rechercheMntTVA()" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateFin')?.invalid }" />
+                                    <label for="dateFin">{{ msg.components.compta.dateFin }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-inputNumber id="montantTVAPrecedent" formControlName="montantTVAPrecedent" class="full-width" required 
+                                        (onBlur)="calcultResultTVA()" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montantTVAPrecedent')?.invalid }" 
+                                        [minFractionDigits]="2" [maxFractionDigits]="2"/>
+                                    <label for="montantTVAPrecedent">{{ msg.components.compta.montantTVAPrecedent }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-inputNumber id="montantTVAAchat" formControlName="montantTVAAchat" class="full-width" required 
+                                        (onBlur)="calcultResultTVA()" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montantTVAAchat')?.invalid }" 
+                                        [minFractionDigits]="2" [maxFractionDigits]="2"/>
+                                    <label for="montantTVAAchat">{{ msg.components.compta.montantTVAAchat }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-inputNumber id="montantTVAVente" formControlName="montantTVAVente" class="full-width" required 
+                                        (onBlur)="calcultResultTVA()" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montantTVAVente')?.invalid }" 
+                                        [minFractionDigits]="2" [maxFractionDigits]="2"/>
+                                    <label for="montantTVAVente">{{ msg.components.compta.montantTVAVente }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="full-width">
+                                    <p-inputNumber id="resutMnt" formControlName="resutMnt" class="full-width" required 
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('resutMnt')?.invalid }" 
+                                        [minFractionDigits]="2" [maxFractionDigits]="2"/>
+                                    <label for="resutMnt">{{ msg.components.compta.resutMnt }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true" [style]="{ width: '450px' }"
+            [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (compta) {
+                <span>{{ msg.components.compta.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple label="Valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

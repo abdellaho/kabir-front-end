@@ -30,6 +30,7 @@ import { ChequeComponent } from '@/components/cheque-component/cheque-component'
 import { AchatEtrangerComponent } from '@/components/achat-etranger-component/achat-etranger-component';
 import { CaisseGeneralComponent } from '@/components/caisse-general-component/caisse-general-component';
 import { CompteCourantComponent } from '@/components/compte-courant-component/compte-courant-component';
+import { ComptaComponent } from '@/components/compta-component/compta-component';
 
 export const appRoutes: Routes = [
     {
@@ -61,6 +62,7 @@ export const appRoutes: Routes = [
             { path: 'caisse', component: CaisseGeneralComponent, canActivate: [AuthGuard] },
             { path: 'compte-courant', component: CompteCourantComponent, canActivate: [AuthGuard] },
             { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard] },
+            { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard] },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

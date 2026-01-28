@@ -92,6 +92,10 @@ export class AppMenu {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.compta, icon: 'pi pi-fw pi-mobile', routerLink: ['/compta'] }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
             }
             /* {
