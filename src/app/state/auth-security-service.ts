@@ -7,6 +7,7 @@ import { StateService, UserState } from './state-service';
 import { AuthRequest } from './auth-request';
 import { ENDPOINTS } from '@/config/endpoints';
 import { Erreur } from '@/shared/classes/erreur';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +32,39 @@ export class AuthSecurityService {
         // Do NOT call initializeAuth here - it will be called via APP_INITIALIZER
         // Only setup activity listeners
         this.setupActivityListeners();
+    }
+
+    getPermissionsOfUser(user: any): string[] {
+        let permissions: string[] = [];
+        if (user.typePersonnel === 1) {
+            permissions = [Permission.ALL];
+        } else {
+            if (user.consulterStock) {
+                permissions.push(Permission.CONSULTER_STOCK);
+            }
+            if (user.ajouterStock) {
+                permissions.push(Permission.AJOUTER_STOCK);
+            }
+            if (user.modifierStock) {
+                permissions.push(Permission.MODIFIER_STOCK);
+            }
+            if (user.supprimerStock) {
+                permissions.push(Permission.SUPPRIMER_STOCK);
+            }
+            if (user.consulterRepertoire) {
+                permissions.push(Permission.CONSULTER_REPERTOIRE);
+            }
+            if (user.ajouterRepertoire) {
+                permissions.push(Permission.AJOUTER_REPERTOIRE);
+            }
+            if (user.modifierRepertoire) {
+                permissions.push(Permission.MODIFIER_REPERTOIRE);
+            }
+            if (user.supprimerRepertoire) {
+                permissions.push(Permission.SUPPRIMER_REPERTOIRE);
+            }
+        }
+        return permissions;
     }
 
     // Public method called by APP_INITIALIZER to restore session
@@ -162,7 +196,7 @@ export class AuthSecurityService {
                 id: response.user.id,
                 email: response.user.email,
                 role: response.user.role,
-                permissions: response.user.permissions || [],
+                permissions: this.getPermissionsOfUser(response.user),
                 token: this.getToken()
             }))
         );
@@ -269,7 +303,7 @@ export class AuthSecurityService {
             id: response.user.id,
             email: response.user.email,
             role: response.user.role,
-            permissions: response.user.permissions || [],
+            permissions: this.getPermissionsOfUser(response.user) || [],
             token: response.token
         };
     }

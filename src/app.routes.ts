@@ -31,6 +31,8 @@ import { AchatEtrangerComponent } from '@/components/achat-etranger-component/ac
 import { CaisseGeneralComponent } from '@/components/caisse-general-component/caisse-general-component';
 import { CompteCourantComponent } from '@/components/compte-courant-component/compte-courant-component';
 import { ComptaComponent } from '@/components/compta-component/compta-component';
+import { Permission } from '@/shared/classes/other/permissions';
+import { Access } from '@/pages/auth/access';
 
 export const appRoutes: Routes = [
     {
@@ -39,36 +41,41 @@ export const appRoutes: Routes = [
         children: [
             { path: '', component: AcceuilComponent, canActivate: [AuthGuard] },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'parametrage', component: ParametrageComponent, canActivate: [AuthGuard] },
-            { path: 'pays', component: PaysComponent, canActivate: [AuthGuard] },
+            { path: 'parametrage', component: ParametrageComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'ville', component: VilleComponent, canActivate: [AuthGuard] },
-            { path: 'absence', component: AbsenceComponent, canActivate: [AuthGuard] },
-            { path: 'fournisseur', component: FournisseurComponent, canActivate: [AuthGuard] },
-            { path: 'repertoire', component: RepertoireComponent, canActivate: [AuthGuard] },
-            { path: 'stock', component: StockComponent, canActivate: [AuthGuard] },
+            { path: 'absence', component: AbsenceComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'fournisseur', component: FournisseurComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            {
+                path: 'repertoire',
+                component: RepertoireComponent,
+                canActivate: [AuthGuard],
+                data: { permission: [Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE] }
+            },
+            { path: 'stock', component: StockComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL, Permission.CONSULTER_STOCK, Permission.AJOUTER_STOCK, Permission.MODIFIER_STOCK, Permission.SUPPRIMER_STOCK] } },
             { path: 'voiture', component: VoitureComponent, canActivate: [AuthGuard] },
-            { path: 'etablissement', component: EtablissementComponent, canActivate: [AuthGuard] },
-            { path: 'prime', component: PrimeComponent, canActivate: [AuthGuard] },
-            { path: 'personnel', component: PersonnelComponent, canActivate: [AuthGuard] },
-            { path: 'livraison', component: LivraisonViewComponent, canActivate: [AuthGuard] },
-            { path: 'livraison-update', component: LivraisonUpdateComponent, canActivate: [AuthGuard] },
-            { path: 'facture', component: FactureViewComponent, canActivate: [AuthGuard] },
-            { path: 'facture-update', component: FactureUpdateComponent, canActivate: [AuthGuard] },
-            { path: 'stock-depot', component: StockDepotComponent, canActivate: [AuthGuard] },
-            { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard] },
-            { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard] },
-            { path: 'bon-sortie', component: BonSortieComponent, canActivate: [AuthGuard] },
-            { path: 'achat-etranger', component: AchatEtrangerComponent, canActivate: [AuthGuard] },
-            { path: 'caisse', component: CaisseGeneralComponent, canActivate: [AuthGuard] },
-            { path: 'compte-courant', component: CompteCourantComponent, canActivate: [AuthGuard] },
-            { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard] },
-            { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard] },
+            { path: 'etablissement', component: EtablissementComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'prime', component: PrimeComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'personnel', component: PersonnelComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'livraison', component: LivraisonViewComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'livraison-update', component: LivraisonUpdateComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'facture', component: FactureViewComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'facture-update', component: FactureUpdateComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'stock-depot', component: StockDepotComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'achat-simple', component: AchatSimpleComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'achat-facture', component: AchatFactureComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'bon-sortie', component: BonSortieComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'achat-etranger', component: AchatEtrangerComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'caisse', component: CaisseGeneralComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'compte-courant', component: CompteCourantComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
     },
     { path: 'landing', component: Landing },
+    { path: 'unauthorized', component: Access },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }

@@ -178,7 +178,7 @@
                 <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
                     class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
-                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+                    (click)="miseAjour()" [disabled]="!isFormValid()"></button>
             </ng-template>
         </p-dialog>
 

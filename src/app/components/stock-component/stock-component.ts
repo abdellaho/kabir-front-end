@@ -27,31 +27,16 @@ import { NegativeValidator } from '@/validators/negative-validator';
 import { arrayToMap, getElementFromMap, initObjectSearch, returnValueOfNumberProperty } from '@/shared/classes/generic-methods';
 import { TypeSearch } from '@/shared/enums/type-search';
 import { filteredTypeProduit, TypeProduit } from '@/shared/enums/type-produit';
+import { StateService } from '@/state/state-service';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-stock-component',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ToastModule,
-        ToolbarModule,
-        TableModule,
-        IconFieldModule,
-        InputIconModule,
-        ButtonModule,
-        DialogModule,
-        FloatLabelModule,
-        InputNumberModule,
-        SelectModule,
-        MessageModule,
-        InputTextModule
-    ],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule, InputTextModule],
     templateUrl: './stock-component.html',
     styleUrl: './stock-component.scss'
 })
 export class StockComponent {
-
     //Buttons ---> Ajouter + Rechercher + Actualiser + Archiver + Corbeille
     //Tableau ---> Designation + St Depot + st Facture + st mag + PA + PV.I + Prix comm + PV min + Remise max + Benif + Fourniss
     //Ajouter ---> Fourniss* + Designation* + PA* + PComm + PV* + TVA* + Benif + st mag + st fact + st depot
@@ -90,21 +75,34 @@ export class StockComponent {
     typeProduits: { label: string; value: TypeProduit }[] = filteredTypeProduit;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
+    canAdd: boolean = false;
+    canEdit: boolean = false;
+    canDelete: boolean = false;
 
     constructor(
         private fournisseurService: FournisseurService,
         private stockService: StockService,
+        private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
+        this.checkPermissions();
         this.typeOfList = 0;
         this.search();
         this.getAllFournisseur();
         this.initFormGroup();
+    }
+
+    private checkPermissions(): void {
+        const user = this.stateService.getState().user;
+        const permissions = user?.permissions || [];
+
+        this.canAdd = permissions.includes(Permission.AJOUTER_STOCK) || permissions.includes(Permission.ALL);
+        this.canEdit = permissions.includes(Permission.MODIFIER_STOCK) || permissions.includes(Permission.ALL);
+        this.canDelete = permissions.includes(Permission.SUPPRIMER_STOCK) || permissions.includes(Permission.ALL);
     }
 
     clear(table: Table) {
@@ -116,36 +114,39 @@ export class StockComponent {
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group({
-            designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-            fournisseurId: [0, [Validators.required, Validators.min(1)]],
-            pvttc: [null, [Validators.required, Validators.min(0)]],
-            pattc: [null, [Validators.required, Validators.min(0)]],
-            tva: [20, [Validators.required, NegativeValidator]],
-            benifice: [{ value: null, disabled: true }, [Validators.required, NegativeValidator]],
-            qteStock: [null],
-            qteFacturer: [null],
-            qteStockImport: [null],
-            prixVentMin1: [null, [NegativeValidator]],
-            prixVentMin2: [null, [NegativeValidator]],
-            prixVentMin3: [null, [NegativeValidator]],
-            prixVentMin4: [null, [NegativeValidator]],
-            qtePVMin1: [null, [NegativeValidator]],
-            qtePVMin2: [null, [NegativeValidator]],
-            qtePVMin3: [null, [NegativeValidator]],
-            qtePVMin4: [null, [NegativeValidator]],
-            remiseMax1: [{ value: null, disabled: true }, [NegativeValidator]],
-            remiseMax2: [{ value: null, disabled: true }, [NegativeValidator]],
-            remiseMax3: [{ value: null, disabled: true }, [NegativeValidator]],
-            remiseMax4: [{ value: null, disabled: true }, [NegativeValidator]],
-            montant1: [null, [NegativeValidator]],
-            montant2: [null, [NegativeValidator]],
-            montant3: [null, [NegativeValidator]],
-            prime1: [null, [NegativeValidator]],
-            prime2: [null, [NegativeValidator]],
-            prime3: [null, [NegativeValidator]],
-            typeProduit: [0, [Validators.required, Validators.min(1)]]
-        }, { validators: [StockValidator] });
+        this.formGroup = this.formBuilder.group(
+            {
+                designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+                fournisseurId: [0, [Validators.required, Validators.min(1)]],
+                pvttc: [null, [Validators.required, Validators.min(0)]],
+                pattc: [null, [Validators.required, Validators.min(0)]],
+                tva: [20, [Validators.required, NegativeValidator]],
+                benifice: [{ value: null, disabled: true }, [Validators.required, NegativeValidator]],
+                qteStock: [null],
+                qteFacturer: [null],
+                qteStockImport: [null],
+                prixVentMin1: [null, [NegativeValidator]],
+                prixVentMin2: [null, [NegativeValidator]],
+                prixVentMin3: [null, [NegativeValidator]],
+                prixVentMin4: [null, [NegativeValidator]],
+                qtePVMin1: [null, [NegativeValidator]],
+                qtePVMin2: [null, [NegativeValidator]],
+                qtePVMin3: [null, [NegativeValidator]],
+                qtePVMin4: [null, [NegativeValidator]],
+                remiseMax1: [{ value: null, disabled: true }, [NegativeValidator]],
+                remiseMax2: [{ value: null, disabled: true }, [NegativeValidator]],
+                remiseMax3: [{ value: null, disabled: true }, [NegativeValidator]],
+                remiseMax4: [{ value: null, disabled: true }, [NegativeValidator]],
+                montant1: [null, [NegativeValidator]],
+                montant2: [null, [NegativeValidator]],
+                montant3: [null, [NegativeValidator]],
+                prime1: [null, [NegativeValidator]],
+                prime2: [null, [NegativeValidator]],
+                prime3: [null, [NegativeValidator]],
+                typeProduit: [0, [Validators.required, Validators.min(1)]]
+            },
+            { validators: [StockValidator] }
+        );
     }
 
     archiveListe(): void {
@@ -187,9 +188,11 @@ export class StockComponent {
         this.stockService.search(stockSearch).subscribe({
             next: (data: Stock[]) => {
                 this.listStock = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -201,9 +204,11 @@ export class StockComponent {
         this.stockService.search(stockSearch).subscribe({
             next: (data: Stock[]) => {
                 this.listStock = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -215,9 +220,11 @@ export class StockComponent {
         this.stockService.search(stockSearch).subscribe({
             next: (data: Stock[]) => {
                 this.listStock = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -331,14 +338,21 @@ export class StockComponent {
 
         this.onChangePrixVenteMin(null);
 
-        pvMin = (this.formGroup.get('prixVentMin4')?.value !== null && this.formGroup.get('prixVentMin4')?.value > 0) ? this.formGroup.get('prixVentMin4')?.value
-            : (this.formGroup.get('prixVentMin3')?.value !== null && this.formGroup.get('prixVentMin3')?.value > 0) ? this.formGroup.get('prixVentMin3')?.value
-                : (this.formGroup.get('prixVentMin2')?.value !== null && this.formGroup.get('prixVentMin2')?.value > 0) ? this.formGroup.get('prixVentMin2')?.value
-                    : (this.formGroup.get('prixVentMin1')?.value !== null && this.formGroup.get('prixVentMin1')?.value > 0) ? this.formGroup.get('prixVentMin1')?.value 
-                    : (this.formGroup.get('pvttc')?.value !== null && this.formGroup.get('pvttc')?.value > 0) ? this.formGroup.get('pvttc')?.value : 0;
+        pvMin =
+            this.formGroup.get('prixVentMin4')?.value !== null && this.formGroup.get('prixVentMin4')?.value > 0
+                ? this.formGroup.get('prixVentMin4')?.value
+                : this.formGroup.get('prixVentMin3')?.value !== null && this.formGroup.get('prixVentMin3')?.value > 0
+                  ? this.formGroup.get('prixVentMin3')?.value
+                  : this.formGroup.get('prixVentMin2')?.value !== null && this.formGroup.get('prixVentMin2')?.value > 0
+                    ? this.formGroup.get('prixVentMin2')?.value
+                    : this.formGroup.get('prixVentMin1')?.value !== null && this.formGroup.get('prixVentMin1')?.value > 0
+                      ? this.formGroup.get('prixVentMin1')?.value
+                      : this.formGroup.get('pvttc')?.value !== null && this.formGroup.get('pvttc')?.value > 0
+                        ? this.formGroup.get('pvttc')?.value
+                        : 0;
 
-        if (pvMin == 0.00) benifice = 100.00;
-        else benifice = (((pvMin - pattc) / pvMin) * 100);
+        if (pvMin == 0.0) benifice = 100.0;
+        else benifice = ((pvMin - pattc) / pvMin) * 100;
 
         console.log('PrixVenteMin : ', pvMin, ' - PATTC : ', pattc, ' - PVTTC : ', this.formGroup.get('pvttc')?.value, ' - BENEFICE : ', benifice);
 
@@ -348,12 +362,14 @@ export class StockComponent {
     onChangePrixVenteMin(i: number | null) {
         if (null == i || i == 1) {
             let remiseMax1 = 0;
-            if (this.formGroup.get('prixVentMin1') 
-                && this.formGroup.get('prixVentMin1')?.value !== 0
-                && this.formGroup.get('prixVentMin1')?.value !== null  
-                && this.formGroup.get('pvttc')?.value 
-                && this.formGroup.get('pvttc')?.value !== 0
-                && this.formGroup.get('pvttc')?.value !== null) {
+            if (
+                this.formGroup.get('prixVentMin1') &&
+                this.formGroup.get('prixVentMin1')?.value !== 0 &&
+                this.formGroup.get('prixVentMin1')?.value !== null &&
+                this.formGroup.get('pvttc')?.value &&
+                this.formGroup.get('pvttc')?.value !== 0 &&
+                this.formGroup.get('pvttc')?.value !== null
+            ) {
                 remiseMax1 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin1')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
@@ -362,12 +378,14 @@ export class StockComponent {
 
         if (null == i || i == 2) {
             let remiseMax2 = 0;
-            if (this.formGroup.get('prixVentMin2') 
-                && this.formGroup.get('prixVentMin2')?.value !== 0 
-                && this.formGroup.get('prixVentMin2')?.value !== null
-                && this.formGroup.get('pvttc')?.value 
-                && this.formGroup.get('pvttc')?.value !== 0
-                && this.formGroup.get('pvttc')?.value !== null) {
+            if (
+                this.formGroup.get('prixVentMin2') &&
+                this.formGroup.get('prixVentMin2')?.value !== 0 &&
+                this.formGroup.get('prixVentMin2')?.value !== null &&
+                this.formGroup.get('pvttc')?.value &&
+                this.formGroup.get('pvttc')?.value !== 0 &&
+                this.formGroup.get('pvttc')?.value !== null
+            ) {
                 remiseMax2 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin2')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
@@ -376,12 +394,14 @@ export class StockComponent {
 
         if (null == i || i == 3) {
             let remiseMax3 = 0;
-            if (this.formGroup.get('prixVentMin3') 
-                    && this.formGroup.get('prixVentMin3')?.value !== 0 
-                    && this.formGroup.get('prixVentMin3')?.value !== null 
-                    && this.formGroup.get('pvttc')?.value 
-                    && this.formGroup.get('pvttc')?.value !== 0
-                    && this.formGroup.get('pvttc')?.value !== null) {
+            if (
+                this.formGroup.get('prixVentMin3') &&
+                this.formGroup.get('prixVentMin3')?.value !== 0 &&
+                this.formGroup.get('prixVentMin3')?.value !== null &&
+                this.formGroup.get('pvttc')?.value &&
+                this.formGroup.get('pvttc')?.value !== 0 &&
+                this.formGroup.get('pvttc')?.value !== null
+            ) {
                 remiseMax3 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin3')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
@@ -390,12 +410,14 @@ export class StockComponent {
 
         if (null == i || i == 4) {
             let remiseMax4 = 0;
-            if (this.formGroup.get('prixVentMin4') 
-                && this.formGroup.get('prixVentMin4')?.value !== 0 
-                && this.formGroup.get('prixVentMin4')?.value !== null 
-                && this.formGroup.get('pvttc')?.value 
-                && this.formGroup.get('pvttc')?.value !== 0
-                && this.formGroup.get('pvttc')?.value !== null) {
+            if (
+                this.formGroup.get('prixVentMin4') &&
+                this.formGroup.get('prixVentMin4')?.value !== 0 &&
+                this.formGroup.get('prixVentMin4')?.value !== null &&
+                this.formGroup.get('pvttc')?.value &&
+                this.formGroup.get('pvttc')?.value !== 0 &&
+                this.formGroup.get('pvttc')?.value !== null
+            ) {
                 remiseMax4 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin4')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
@@ -411,12 +433,12 @@ export class StockComponent {
         if (operationType === OperationType.ADD) {
             list = [...list, stock];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === stock.id);
+            let index = list.findIndex((x) => x.id === stock.id);
             if (index > -1) {
                 list[index] = stock;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -463,7 +485,7 @@ export class StockComponent {
     async checkIfExists(stock: Stock): Promise<boolean> {
         try {
             const existsObservable = this.stockService.exist(stock).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in stock existence observable:', error);
                     return of(false); // Gracefully handle observable errors by returning false
                 })
@@ -497,7 +519,8 @@ export class StockComponent {
                         this.checkIfListIsNull();
                         this.listStock = this.updateList(data, this.listStock, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -505,7 +528,8 @@ export class StockComponent {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -521,7 +545,8 @@ export class StockComponent {
                         this.checkIfListIsNull();
                         this.listStock = this.updateList(data, this.listStock, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -529,7 +554,8 @@ export class StockComponent {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -555,7 +581,8 @@ export class StockComponent {
                     this.checkIfListIsNull();
                     this.listStock = this.updateList(initObjectStock(), this.listStock, OperationType.DELETE, id);
                     this.stock = initObjectStock();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -563,7 +590,8 @@ export class StockComponent {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -591,7 +619,8 @@ export class StockComponent {
                     this.checkIfListIsNull();
                     this.listStock = this.updateList(initObjectStock(), this.listStock, OperationType.DELETE, id);
                     this.stock = initObjectStock();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -599,7 +628,8 @@ export class StockComponent {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -620,7 +650,7 @@ export class StockComponent {
             let id = this.stock.id;
             this.stock.supprimer = corbeille;
 
-            if(corbeille) {
+            if (corbeille) {
                 this.stock.dateSuppression = new Date();
             } else {
                 this.stock.dateSuppression = null;
@@ -637,7 +667,8 @@ export class StockComponent {
                     this.checkIfListIsNull();
                     this.listStock = this.updateList(initObjectStock(), this.listStock, OperationType.DELETE, id);
                     this.stock = initObjectStock();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -645,7 +676,8 @@ export class StockComponent {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -659,5 +691,4 @@ export class StockComponent {
             this.openCloseDialogAnnulerCorbeille(false);
         }
     }
-
 }

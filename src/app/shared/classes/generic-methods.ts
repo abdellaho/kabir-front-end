@@ -1,6 +1,5 @@
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 import { TypeEmploye } from '../enums/type-employe';
-import { TypePersonnel } from '../enums/type-personnel';
 import { Livraison } from '@/models/livraison';
 import { initObjectStock, Stock } from '@/models/stock';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
@@ -9,6 +8,62 @@ import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { TypeSearch } from '../enums/type-search';
 import { OperationType } from '../enums/operation-type';
 import { Facture } from '@/models/facture';
+
+export interface AllValidationErrors {
+    control_name: string;
+    error_name: string;
+    error_value: any;
+    control_modified: string;
+}
+
+export interface FormGroupControls {
+    [key: string]: AbstractControl;
+}
+
+export function getFormValidationErrors(controls: FormGroupControls): AllValidationErrors[] {
+    let errors: AllValidationErrors[] = [];
+
+    Object.keys(controls).forEach((key) => {
+        const control = controls[key];
+
+        if (control instanceof FormGroup) {
+            errors = errors.concat(getFormValidationErrors(control.controls));
+            control.markAsTouched({
+                onlySelf: true
+            });
+        } else if (control instanceof FormArray) {
+            control.controls.forEach((arrayControl, i) => {
+                if (arrayControl instanceof FormGroup) {
+                    errors = errors.concat(getFormValidationErrors(arrayControl.controls));
+                } else {
+                    const obj: FormGroupControls = {
+                        [`${key}-${i}`]: arrayControl
+                    };
+                    errors = errors.concat(getFormValidationErrors(obj));
+                }
+            });
+        }
+
+        const controlErrors: ValidationErrors | null = control.errors;
+        if (controlErrors !== null) {
+            Object.keys(controlErrors).forEach((keyError) => {
+                errors.push({
+                    control_name: key,
+                    error_name: keyError,
+                    control_modified: beautifyControl(key),
+                    error_value: controlErrors[keyError]
+                });
+            });
+        }
+    });
+
+    return errors;
+}
+
+// Add the beautifyControl function if you don't have it
+function beautifyControl(controlName: string): string {
+    return controlName.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 // Define Message interface locally if not exported by primeng/api
 export interface Message {

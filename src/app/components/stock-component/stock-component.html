@@ -5,8 +5,9 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left" class="gap-2">
                     <div class="my-2">
-                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
-                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                        @if(canAdd) {
+                            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                        }
                     </div>
 
                     <div class="my-2">
@@ -135,21 +136,22 @@
                         <td>{{ getDesignation(p.fournisseurId) }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
-                                @if (typeOfList === 0) {
-                                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded
-                                        [title]="msg.buttons.modifier" />
-                                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
-                                        [title]="msg.buttons.archiver" />
-                                    <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
-                                        [title]="msg.buttons.corbeille" />
+                                @if(canEdit && typeOfList === 0) {
+                                    <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                    <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver" />
                                 }
-                                @if (typeOfList === 1) {
-                                    <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded
-                                        [title]="msg.buttons.desarchiver" />
+
+                                @if(canDelete && typeOfList === 0) {
+                                    <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.corbeille" />
                                 }
-                                @if (typeOfList === 2) {
-                                    <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded
-                                        [title]="msg.buttons.restaurer" />
+
+                                @if(canEdit) {
+                                    @if (typeOfList === 1) {
+                                        <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.desarchiver" />
+                                    }
+                                    @if (typeOfList === 2) {
+                                        <p-button (click)="recupperer(6, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.restaurer" />
+                                    }
                                 }
                             </div>
                         </td>

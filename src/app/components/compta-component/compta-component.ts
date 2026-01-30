@@ -1,7 +1,7 @@
 import { Compta, initObjectCompta } from '@/models/compta';
 import { ComptaService } from '@/services/compta/compta-service';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
-import { getLastDayOfMonth, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { AllValidationErrors, getFormValidationErrors, getLastDayOfMonth, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { ComptaRequest } from '@/shared/classes/requests/compta-request';
 import { ComptaResponse, initObjectComptaResponse } from '@/shared/classes/responses/compta-response';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -67,8 +67,8 @@ export class ComptaComponent {
     dialogAjouter: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
-    disbledtvaPrc: boolean = false;
-    disblaedDate: boolean = false;
+    disabledMontants: boolean = false;
+    disabledDate: boolean = false;
     msg = APP_MESSAGES;
     readonly BigInt = BigInt; // Expose BigInt to template
 
@@ -101,8 +101,10 @@ export class ComptaComponent {
             montantTVAPrecedent: [0],
             montantTVAAchat: [0],
             montantTVAVente: [0],
-            resutMnt: [{ value: 0, disabled: true }]
+            resutMnt: [0]
         });
+
+        this.formGroup.get('resutMnt')?.disable();
     }
 
     search() {
@@ -162,6 +164,15 @@ export class ComptaComponent {
         }
     }
 
+    isFormValid(): boolean {
+        const controls = this.formGroup.controls;
+
+        const dateDebutValid = controls['dateDebut'].errors === null;
+        const dateFinValid = controls['dateFin'].errors === null;
+
+        return dateDebutValid && dateFinValid;
+    }
+
     async viderAjouter() {
         this.initFormGroup();
         this.openCloseDialogAjouter(true);
@@ -170,8 +181,8 @@ export class ComptaComponent {
         let comptaLast = await this.getComptaLast();
 
         if (comptaLast) {
-            this.disbledtvaPrc = true;
-            this.disblaedDate = true;
+            this.disabledMontants = true;
+            this.disabledDate = true;
 
             let dateDebutLast = comptaLast.dateDebut;
             let dateDebut = new Date(dateDebutLast);
@@ -191,11 +202,10 @@ export class ComptaComponent {
             this.compta.dateFin = dateFin;
         }
 
-        this.mapObjectToFormGroup(this.formGroup, this.compta, this.disbledtvaPrc, this.disblaedDate);
+        this.mapObjectToFormGroup(this.formGroup, this.compta, this.disabledMontants, this.disabledDate);
+        await this.rechercheMntTVA();
 
-        if (comptaLast) {
-            await this.rechercheMntTVA();
-        }
+        this.formGroup.updateValueAndValidity();
     }
 
     async rechercheMntTVA() {
@@ -224,6 +234,8 @@ export class ComptaComponent {
             });
             this.calcultResultTVA();
         }
+
+        this.formGroup.updateValueAndValidity();
     }
 
     calcultResultTVA() {
@@ -236,9 +248,11 @@ export class ComptaComponent {
         } else {
             this.formGroup.get('resutMnt')?.setValue(tvaVente - tvaAcht);
         }
+
+        this.formGroup.get('resutMnt')?.disable();
     }
 
-    mapObjectToFormGroup(formGroup: FormGroup, compta: Compta, disbledtvaPrc: boolean, disblaedDate: boolean) {
+    mapObjectToFormGroup(formGroup: FormGroup, compta: Compta, disabledMontants: boolean, disabledDate: boolean) {
         formGroup.patchValue({
             dateDebut: new Date(compta.dateDebut),
             dateFin: new Date(compta.dateFin),
@@ -250,22 +264,31 @@ export class ComptaComponent {
 
         formGroup.get('resutMnt')?.disable();
 
-        if (disblaedDate) {
-            formGroup.get('dateDebut')?.disable();
-            formGroup.get('dateFin')?.disable();
-        } else {
-            formGroup.get('dateDebut')?.enable();
-            formGroup.get('dateFin')?.enable();
-        }
+        this.enableDisableDate(disabledDate);
+        this.enableDisableMontants(disabledMontants);
 
-        if (disbledtvaPrc) {
-            formGroup.get('montantTVAPrecedent')?.disable();
-            formGroup.get('montantTVAAchat')?.disable();
-            formGroup.get('montantTVAVente')?.disable();
+        formGroup.updateValueAndValidity();
+    }
+
+    enableDisableDate(disabledDate: boolean) {
+        if (disabledDate) {
+            this.formGroup.get('dateDebut')?.disable();
+            this.formGroup.get('dateFin')?.disable();
         } else {
-            formGroup.get('montantTVAPrecedent')?.enable();
-            formGroup.get('montantTVAAchat')?.enable();
-            formGroup.get('montantTVAVente')?.enable();
+            this.formGroup.get('dateDebut')?.enable();
+            this.formGroup.get('dateFin')?.enable();
+        }
+    }
+
+    enableDisableMontants(disabledMontants: boolean) {
+        if (disabledMontants) {
+            this.formGroup.get('montantTVAPrecedent')?.disable();
+            this.formGroup.get('montantTVAAchat')?.disable();
+            this.formGroup.get('montantTVAVente')?.disable();
+        } else {
+            this.formGroup.get('montantTVAPrecedent')?.enable();
+            this.formGroup.get('montantTVAAchat')?.enable();
+            this.formGroup.get('montantTVAVente')?.enable();
         }
     }
 
@@ -284,10 +307,13 @@ export class ComptaComponent {
                             montantTVAVente: this.compta.montantTVAVente,
                             resutMnt: this.compta.resutMnt
                         });
-                        this.formGroup.updateValueAndValidity();
 
-                        this.disbledtvaPrc = true;
-                        this.disblaedDate = true;
+                        this.disabledMontants = true;
+                        this.disabledDate = true;
+
+                        this.enableDisableMontants(this.disabledMontants);
+                        this.enableDisableDate(this.disabledDate);
+                        this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
                     },
