@@ -4,6 +4,8 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { AllValidationErrors, getFormValidationErrors, getLastDayOfMonth, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { ComptaRequest } from '@/shared/classes/requests/compta-request';
 import { ComptaResponse, initObjectComptaResponse } from '@/shared/classes/responses/compta-response';
+import { ComptaSearch, initComptaSearch } from '@/shared/classes/search/compta-search';
+import { initObjectCompteCourantSearch } from '@/shared/classes/search/compte-caisse-search';
 import { OperationType } from '@/shared/enums/operation-type';
 import { LoadingService } from '@/shared/services/loading-service';
 import { StateService } from '@/state/state-service';
@@ -161,6 +163,21 @@ export class ComptaComponent {
         } catch (error) {
             console.error('Unexpected error checking if absence exists:', error);
             return initObjectComptaResponse();
+        }
+    }
+
+    async checkIsLast(comptaSearch: ComptaSearch): Promise<boolean> {
+        try {
+            const existsObservable = this.comptaService.checkIsLast(comptaSearch).pipe(
+                catchError((error) => {
+                    console.error('Error in absence existence observable:', error);
+                    return of(false); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return false;
         }
     }
 
@@ -435,10 +452,25 @@ export class ComptaComponent {
         }
     }
 
-    supprimer(): void {
+    async supprimer(): Promise<void> {
         if (this.compta && this.compta.id) {
             this.loadingService.show();
             let id = this.compta.id;
+            let comptaSearch: ComptaSearch = initComptaSearch();
+            comptaSearch.dateFin = this.compta.dateFin;
+
+            let isLast = await this.checkIsLast(comptaSearch);
+
+            if (!isLast) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.msg.summary.labelError,
+                    detail: this.msg.components.compta.messageDeleteError
+                });
+                this.loadingService.hide();
+                return;
+            }
+
             this.comptaService.delete(this.compta.id).subscribe({
                 next: (data) => {
                     this.messageService.add({

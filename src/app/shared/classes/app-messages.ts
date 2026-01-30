@@ -110,7 +110,8 @@ export const APP_MESSAGES = {
             montantTVAAchat: 'Montant TVA Achat',
             montantTVAVente: 'Montant TVA Vente',
             resutMnt: 'Resultat Mnt',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce compta ?'
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce compta ?',
+            messageDeleteError: 'La suppression doit être effectuée par le dernier enregistrement (Date Fin)'
         },
         ville: {
             label: 'Ville',

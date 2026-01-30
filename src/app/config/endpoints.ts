@@ -93,7 +93,8 @@ export const ENDPOINTS = {
         search: `${BASE_URL}/${COMPTA}/search`,
         exist: `${BASE_URL}/${COMPTA}/exist`,
         last: `${BASE_URL}/${COMPTA}/last`,
-        globalSums: `${BASE_URL}/${COMPTA}/global-sums`
+        globalSums: `${BASE_URL}/${COMPTA}/global-sums`,
+        checkIsLast: `${BASE_URL}/${COMPTA}/check-is-last`
     },
     PERSONNEL: {
         getAll: `${BASE_URL}/personnel`,

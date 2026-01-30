@@ -48,4 +48,8 @@ export class ComptaService {
     getGlobalSums(comptaRequest: ComptaRequest): Observable<ComptaResponse> {
         return this.http.post<ComptaResponse>(ENDPOINTS.COMPTA.globalSums, comptaRequest);
     }
+
+    checkIsLast(comptaSearch: ComptaSearch): Observable<boolean> {
+        return this.http.post<boolean>(ENDPOINTS.COMPTA.checkIsLast, comptaSearch);
+    }
 }
