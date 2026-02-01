@@ -1,8 +1,7 @@
-import { BulttinPai } from "./bulttin-pai";
 import { Stock } from "./stock";
 
-export interface DetBulttinPai {
-  id: bigint;
+export interface DetBulletinPai {
+  id: bigint | null;
   prixlivraison: number;
   qtevendu: number;
   prixvente: number;
@@ -17,15 +16,18 @@ export interface DetBulttinPai {
   primeCommercial: number;
   primeProduit: number;
   avecZero: boolean;
-  bulttinPaiId: bigint;
-  bulttinPai?: BulttinPai | null;
-  produitId: bigint;
-  produit?: Stock | null;
+  bulletinPaiId: bigint | null;
+  produitId: bigint | null;
+  produitDesignation: string;
+  produitPattc: number;
+  produitPvttc: number;
+  produitQteStock: number;
+  stock?: Stock;
 }
 
-export function initObjectDetBulttinPai(): DetBulttinPai {
+export function initObjectDetBulletinPai(): DetBulletinPai {
   return {
-    id: BigInt(0),
+    id: null,
     prixlivraison: 0,
     qtevendu: 0,
     prixvente: 0,
@@ -40,9 +42,11 @@ export function initObjectDetBulttinPai(): DetBulttinPai {
     primeCommercial: 0,
     primeProduit: 0,
     avecZero: false,
-    bulttinPaiId: BigInt(0),
-    bulttinPai: null,
-    produitId: BigInt(0),
-    produit: null,
+    bulletinPaiId: null,
+    produitId: null,
+    produitDesignation: "",
+    produitPattc: 0,
+    produitPvttc: 0,
+    produitQteStock: 0,
   };
 }

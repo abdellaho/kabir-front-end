@@ -11,6 +11,7 @@ const CHEQUE = `cheque`;
 const REPERTOIRE = `repertoire`;
 const COMPTE_CAISSE = `compte-caisse`;
 const COMPTA = `compta`;
+const BULLETIN_PAI = `bulletin-pai`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -65,6 +66,18 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/absence/${id}`,
         exist: `${BASE_URL}/absence/exist`,
         search: `${BASE_URL}/absence/search`
+    },
+    BULLETIN_PAI: {
+        getAll: `${BASE_URL}/${BULLETIN_PAI}`,
+        getById: (id: bigint) => `${BASE_URL}/${BULLETIN_PAI}/${id}`,
+        getByIdResponse: (id: bigint) => `${BASE_URL}/${BULLETIN_PAI}/response/${id}`,
+        create: `${BASE_URL}/${BULLETIN_PAI}`,
+        update: (id: bigint) => `${BASE_URL}/${BULLETIN_PAI}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${BULLETIN_PAI}/${id}`,
+        exist: `${BASE_URL}/${BULLETIN_PAI}/exist`,
+        search: `${BASE_URL}/${BULLETIN_PAI}/search`,
+        getLastNum: `${BASE_URL}/${BULLETIN_PAI}/last-num`,
+        details: `${BASE_URL}/${BULLETIN_PAI}/details`
     },
     FOURNISSEUR: {
         getAll: `${BASE_URL}/fournisseur`,
