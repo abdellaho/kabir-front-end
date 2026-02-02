@@ -181,6 +181,7 @@ export class BulletinPaiViewComponent implements OnInit {
     emitToPageUpdate(selectedBulletinPai: BulletinPai) {
         if (selectedBulletinPai) {
             let listDetail: DetBulletinPai[] = [];
+            let listDetBulletinPaiSansMontant: DetBulletinPai[] = [];
             let listDetBulletinLivraison: DetBulletinLivraison[] = [];
 
             if (selectedBulletinPai.id) {
@@ -188,6 +189,7 @@ export class BulletinPaiViewComponent implements OnInit {
                     next: (bulletinPaiResponse) => {
                         selectedBulletinPai = bulletinPaiResponse.bulletinPai;
                         listDetail = bulletinPaiResponse.detBulletinPais;
+                        listDetBulletinPaiSansMontant = bulletinPaiResponse.detBulletinPaisSansMontant;
                         listDetBulletinLivraison = bulletinPaiResponse.detBulletinLivraisons;
                     },
                     error: (error) => {
@@ -197,6 +199,7 @@ export class BulletinPaiViewComponent implements OnInit {
                         this.dataService.setBulletinPaiData({
                             bulletinPai: selectedBulletinPai,
                             detBulletinPais: listDetail,
+                            detBulletinPaisSansMontant: listDetBulletinPaiSansMontant,
                             detBulletinLivraisons: listDetBulletinLivraison,
                             listPersonnel: this.listPersonnel,
                             listStock: this.listStock
@@ -208,6 +211,7 @@ export class BulletinPaiViewComponent implements OnInit {
                 this.dataService.setBulletinPaiData({
                     bulletinPai: selectedBulletinPai,
                     detBulletinPais: [],
+                    detBulletinPaisSansMontant: [],
                     detBulletinLivraisons: [],
                     listPersonnel: this.listPersonnel,
                     listStock: this.listStock
