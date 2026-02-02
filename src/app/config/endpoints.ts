@@ -12,6 +12,7 @@ const REPERTOIRE = `repertoire`;
 const COMPTE_CAISSE = `compte-caisse`;
 const COMPTA = `compta`;
 const BULLETIN_PAI = `bulletin-pai`;
+const PRIME = `prime`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -77,7 +78,8 @@ export const ENDPOINTS = {
         exist: `${BASE_URL}/${BULLETIN_PAI}/exist`,
         search: `${BASE_URL}/${BULLETIN_PAI}/search`,
         getLastNum: `${BASE_URL}/${BULLETIN_PAI}/last-num`,
-        details: `${BASE_URL}/${BULLETIN_PAI}/details`
+        details: `${BASE_URL}/${BULLETIN_PAI}/details`,
+        detailsOfLivraison: `${BASE_URL}/${BULLETIN_PAI}/details-of-livraison`
     },
     FOURNISSEUR: {
         getAll: `${BASE_URL}/fournisseur`,
@@ -129,12 +131,13 @@ export const ENDPOINTS = {
         }
     },
     PRIME: {
-        getAll: `${BASE_URL}/prime`,
-        getById: (id: bigint) => `${BASE_URL}/prime/${id}`,
-        create: `${BASE_URL}/prime`,
-        update: (id: bigint) => `${BASE_URL}/prime/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/prime/${id}`,
-        search: `${BASE_URL}/prime/search`
+        getAll: `${BASE_URL}/${PRIME}`,
+        getById: (id: bigint) => `${BASE_URL}/${PRIME}/${id}`,
+        create: `${BASE_URL}/${PRIME}`,
+        update: (id: bigint) => `${BASE_URL}/${PRIME}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${PRIME}/${id}`,
+        search: `${BASE_URL}/${PRIME}/search`,
+        searchMontant: `${BASE_URL}/${PRIME}/search/montant`
     },
     STOCK: {
         getAll: `${BASE_URL}/stock`,

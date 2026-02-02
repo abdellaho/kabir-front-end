@@ -1,4 +1,3 @@
-import { arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { Component, OnInit } from '@angular/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -34,23 +33,7 @@ import { DetBulletinLivraison } from '@/models/det-bulletin-livraison';
 
 @Component({
     selector: 'app-bulletin-pai-view-component',
-    imports: [
-      CommonModule, 
-      FormsModule, 
-      ReactiveFormsModule, 
-      ToastModule, 
-      ToolbarModule, 
-      TableModule, 
-      IconFieldModule, 
-      InputIconModule, 
-      InputTextModule, 
-      ButtonModule, 
-      DialogModule, 
-      FloatLabelModule, 
-      InputNumberModule, 
-      SelectModule, 
-      MessageModule
-    ],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule],
     templateUrl: './bulletin-pai-view-component.html',
     styleUrl: './bulletin-pai-view-component.scss'
 })
@@ -171,22 +154,22 @@ export class BulletinPaiViewComponent implements OnInit {
     }
 
     async generateNum(bulletinPai: BulletinPai) {
-      let num: number = 0;
-      num = await this.getLastNum();
+        let num: number = 0;
+        num = await this.getLastNum();
 
-      let codbl = num + "";
-      let codeBLe = "";
-      if (codbl.length == 1) {
-        codeBLe = "P000" + num;
-      } else if (codbl.length == 2) {
-        codeBLe = "P00" + num;
-      }
-      if (codbl.length >= 3) {
-        codeBLe = "P0" + num;
-      }
+        let codbl = num + '';
+        let codeBLe = '';
+        if (codbl.length == 1) {
+            codeBLe = 'P000' + num;
+        } else if (codbl.length == 2) {
+            codeBLe = 'P00' + num;
+        }
+        if (codbl.length >= 3) {
+            codeBLe = 'P0' + num;
+        }
 
-      bulletinPai.numBulletin = num;
-      bulletinPai.codeBulletin = codeBLe;
+        bulletinPai.numBulletin = num;
+        bulletinPai.codeBulletin = codeBLe;
     }
 
     async viderAjouter() {

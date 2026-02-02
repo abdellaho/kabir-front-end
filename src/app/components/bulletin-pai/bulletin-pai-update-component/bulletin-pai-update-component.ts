@@ -1,17 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from '@/shared/services/data-service';
 import { Router } from '@angular/router';
-import { Facture, initObjectFacture } from '@/models/bulletinPai';
-import { DetFacture, initObjectDetFacture } from '@/models/det-bulletinPai';
-import { Subscription, concatMap, delay, from } from 'rxjs';
+import { Subscription, catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
-import { FactureService } from '@/services/bulletinPai/bulletinPai-service';
 import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
-import { ajusterMontantsFacture, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { compareYearAndMonth, getLastDayOfMonth, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { OperationType } from '@/shared/enums/operation-type';
 import { ToastModule } from 'primeng/toast';
@@ -39,7 +36,13 @@ import { EtablissementService } from '@/services/etablissement/etablissement-ser
 import { BulletinPai, initObjectBulletinPai } from '@/models/bulletin-pai';
 import { DetBulletinPai } from '@/models/det-bulletin-pai';
 import { BulletinPaiService } from '@/services/bulletin-pai/bulletin-pai-service';
-import { DetBulletinLivraison } from '@/models/det-bulletin-livraison';
+import { DetBulletinLivraison, initObjectDetBulletinLivraison } from '@/models/det-bulletin-livraison';
+import { StateService } from '@/state/state-service';
+import { BulletinPaiResponse } from '@/shared/classes/responses/bulletin-pai-response';
+import { PrimeService } from '@/services/prime/prime-service';
+import { initObjectPrime, Prime } from '@/models/prime';
+import { BulletinPaiValidator } from '@/validators/bulletin-pai-validator';
+import { BulletinPaiRequest, initBulletinPaiRequest } from '@/shared/searchModels/bulletin-pai-request';
 
 @Component({
     selector: 'app-bulletin-pai-update-component',
@@ -70,23 +73,24 @@ import { DetBulletinLivraison } from '@/models/det-bulletin-livraison';
 })
 export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     //listDetbultinpai  --> designation + qtevendu, commission(prixCommercial disabled if > 0), mantantVendu, mntReel(typ.qtevendu * typ.prixvente)
-    //style="#{typ.mantantvendu==0 ? 'background-color:yellow;' : '', 
+    //style="#{typ.mantantvendu==0 ? 'background-color:yellow;' : '',
     // Taux(disabled="#{typ.prixCommercial > 0}" value="#{typ.commission}" style="#{typ.commission==0 ? 'background-color:yellow; width : 90%;':'width : 90%;'}") listener="#{bulttinPaiActionBeans.calculerCommissionNew()}"
     // commsiondh, primeProduit, primeCommercial
 
     //listDetbultinpaiZero --> produitGratuit(Designation) + qtevendu
-    //listDetbultinlivraison --> #{msg.date}livraison.dateBl, #{msg.numBL}livraison.codeBl, #{msg.Client}livraison.repertoireByClient.designation, 
+    //listDetbultinlivraison --> #{msg.date}livraison.dateBl, #{msg.numBL}livraison.codeBl, #{msg.Client}livraison.repertoireByClient.designation,
     // #{msg.mtVenddue}livraison.mantantBL, #{typ.livraison.reglerNonRegler}
     //<p:column style="width: 30px;" rendered="#{bulttinPaiActionBeans.utilisateurConnecte.typeUser eq 1}">
-									//<p:commandLink action="#{bulttinPaiActionBeans.remove(typ)}" update=":form:idListRepStock :form:idListRepStockZero :form:idListRep :form:primeCommercial :form:tot :form:ttMntVend :form:msg" title="#{msg.bntSupprimer}" style="color: red; font-size: 1.5em;">
-										//<i class="fa fa-trash"></i>
-									//</p:commandLink>
-								//</p:column>
+    //<p:commandLink action="#{bulttinPaiActionBeans.remove(typ)}" update=":form:idListRepStock :form:idListRepStockZero :form:idListRep :form:primeCommercial :form:tot :form:ttMntVend :form:msg" title="#{msg.bntSupprimer}" style="color: red; font-size: 1.5em;">
+    //<i class="fa fa-trash"></i>
+    //</p:commandLink>
+    //</p:column>
     personnelCreationId: number | null = null;
     submitted: boolean = false;
     etablissement: Etablissement = initObjectEtablissement();
     bulletinPai: BulletinPai = initObjectBulletinPai();
     listDetBulletinPai: DetBulletinPai[] = [];
+    listDetBulletinPaiSansMontant: DetBulletinPai[] = [];
     listDetBulletinLivraison: DetBulletinLivraison[] = [];
     listPersonnel: Personnel[] = [];
     listStock: Stock[] = [];
@@ -97,7 +101,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     dialogFacturer: boolean = false;
     dialogRegler: boolean = false;
     dialogDeleteStock: boolean = false;
-    detFactureSelected: DetFacture = initObjectDetFacture();
+    detBulletinLivraisonSelected: DetBulletinLivraison = initObjectDetBulletinLivraison();
     stockSelected: Stock = initObjectStock();
     msg = APP_MESSAGES;
     formGroup!: FormGroup;
@@ -106,6 +110,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
 
     constructor(
         private bulletinPaiService: BulletinPaiService,
+        private primeService: PrimeService,
         private stockService: StockService,
         private stateService: StateService,
         private formBuilder: FormBuilder,
@@ -119,17 +124,17 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.submitted = false;
         this.personnelCreationId = this.stateService.getState().user?.id || null;
-        this.initFormGroupStock();
         this.initFormGroup();
 
         this.subscription = this.dataService.currentBulletinPai$.subscribe((data) => {
             if (!data) {
-                this.router.navigate(['/bulletinPai']);
+                this.router.navigate(['/bulletin-pai']);
                 return;
             }
             this.getEtablissement();
             this.bulletinPai = this.adjustBulletinPai(data.bulletinPai);
             this.listDetBulletinPai = data.detBulletinPais;
+            this.listDetBulletinPaiSansMontant = data.detBulletinPaisSansMontant;
             this.listDetBulletinLivraison = data.detBulletinLivraisons;
             this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
             this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
@@ -169,122 +174,417 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
 
     mapObjectToFormGroup(bulletinPai: BulletinPai) {
         this.formGroup.patchValue({
-            numBulletin: bulletinPai.numBulletin,
-            codeBulletin: bulletinPai.codeBulletin,
             dateDebut: bulletinPai.dateDebut,
             dateFin: bulletinPai.dateFin,
             personnelId: bulletinPai.commercialId,
-            totalMntVendue
-            totalMntVenduePrixCommercial
-            totalMntVendueSansPrixCommercial
-            frais
-            salairefx
-            primeSpecial
-            primeProduit
-            primeCommercial
-            mntCNSS
-            total
-            fraisSupp
-
+            totalMntVendue: bulletinPai.totalMntVendue,
+            totalMntVenduePrixCommercial: bulletinPai.totalMntVenduePrixCommercial,
+            totalMntVendueSansPrixCommercial: bulletinPai.totalMntVendueSansPrixCommercial,
+            frais: bulletinPai.frais,
+            salairefx: bulletinPai.salairefx,
+            primeSpecial: bulletinPai.primeSpecial,
+            primeProduit: bulletinPai.primeProduit,
+            primeCommercial: bulletinPai.primeCommercial,
+            mntCNSS: bulletinPai.mntCNSS,
+            total: bulletinPai.total,
+            fraisSupp: bulletinPai.fraisSupp
         });
         this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetBulletinPai is set
-    }
-
-    initFormGroupStock() {
-        this.formGroupStock = this.formBuilder.group(
-            {
-                designation: [{ value: this.stockSelected.designation, disabled: true }],
-                pattc: [{ value: this.stockSelected.pattc, disabled: true }],
-                pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
-                qteStock: [{ value: this.stockSelected.qteFacturer, disabled: true }],
-                prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
-                qteFacturer: [1, [Validators.required, Validators.min(1)]],
-                prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
-                remiseFacture: [0, [Validators.min(0), Validators.max(100)]],
-                montantProduit: [0, [Validators.min(0)]]
-            },
-            { validators: DetFactureValidator({ stock: this.stockSelected }) }
-        );
     }
 
     initFormGroup() {
         this.formGroup = this.formBuilder.group(
             {
-                numFacture: [0],
-                codeBF: [{ value: '', disabled: true }, [Validators.required]],
-                dateBF: [new Date(), [Validators.required]],
-                dateReglement: [new Date(), [Validators.required]],
-                dateReglement2: [null],
-                dateReglement3: [null],
-                dateReglement4: [null],
-                typeReglment: [0],
-                typeReglment2: [0],
-                typeReglment3: [0],
-                typeReglment4: [0],
-                numCheque: [''],
-                numCheque2: [''],
-                numCheque3: [''],
-                numCheque4: [''],
-                numRemise: [''],
-                numRemise2: [''],
-                numRemise3: [''],
-                numRemise4: [''],
-                mantantBL: [0],
-                mntReglement: [0],
-                mntReglement2: [0],
-                mntReglement3: [0],
-                mntReglement4: [0],
-                personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-                repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-                stockId: [0],
-                repertoireDesignation: [{ value: '', disabled: true }],
-                repertoireAdresse: [{ value: '', disabled: true }],
-                repertoireTel1: [{ value: '', disabled: true }],
-                repertoireTel2: [{ value: '', disabled: true }],
-                repertoireICE: [{ value: '', disabled: true }]
+                dateDebut: [new Date(), [Validators.required]],
+                dateFin: [new Date(), [Validators.required]],
+                personnelId: [0, [Validators.required, Validators.min(1)]],
+                totalMntVendue: [0],
+                totalMntVenduePrixCommercial: [0],
+                totalMntVendueSansPrixCommercial: [0],
+                frais: [0],
+                salairefx: [0],
+                primeSpecial: [0],
+                primeProduit: [0],
+                primeCommercial: [0],
+                mntCNSS: [0],
+                total: [0],
+                fraisSupp: [0]
             },
-            { validators: FactureValidator({ getListDetFacture: () => this.listDetBulletinPai }) }
+            { validators: BulletinPaiValidator({ getListDetBulletinPai: () => this.listDetBulletinPai, getListDetBulletinLivraison: () => this.listDetBulletinLivraison }) }
         );
+
+        this.formGroup.get('totalMntVendue')?.disable();
+        this.formGroup.get('totalMntVenduePrixCommercial')?.disable();
+        this.formGroup.get('totalMntVendueSansPrixCommercial')?.disable();
+    }
+
+    onChangeIdCommercial() {
+        let salaire: number = 0;
+
+        if (this.formGroup.get('personnelId')?.value > 0) {
+            let personnel = this.listPersonnel.find((personnel) => personnel.id === this.formGroup.get('personnelId')?.value);
+            if (personnel && personnel.id) {
+                salaire = personnel.salaire;
+                this.rechercheLivraison();
+            }
+        }
+
+        this.formGroup.patchValue({
+            frais: salaire
+        });
     }
 
     calculTotal() {
+        let slFx = 0.0;
+        let fris = 0.0;
+        let mntCnss = 0.0;
+        let mntPenalite = 0.0;
+        let tot = 0.0;
+        let primeSpeciale = 0.0;
+        let mntPrimeCommercial = 0.0;
+        let primeProduit = 0;
+
+        if (this.bulletinPai.salairefx != 0.0) {
+            slFx = this.bulletinPai.salairefx;
+        }
+        if (this.bulletinPai.mntPenalite != 0.0) {
+            mntPenalite = this.bulletinPai.mntPenalite;
+        }
+        if (this.bulletinPai.frais != 0.0) {
+            fris = this.bulletinPai.frais;
+        }
+        if (this.bulletinPai.primeSpecial != 0.0) {
+            primeSpeciale = this.bulletinPai.primeSpecial;
+        }
+        if (this.bulletinPai.mntCNSS != 0.0) {
+            mntCnss = this.bulletinPai.mntCNSS;
+        } else {
+            this.bulletinPai.mntCNSS = mntCnss;
+        }
+        if (this.bulletinPai.primeProduit != 0.0) {
+            primeProduit = this.bulletinPai.primeProduit;
+        }
+        if (this.bulletinPai.primeCommercial != 0.0) {
+            mntPrimeCommercial = this.bulletinPai.primeCommercial;
+        }
+
+        tot = primeSpeciale + fris + slFx + primeProduit + mntPrimeCommercial - mntCnss - mntPenalite;
+        this.bulletinPai.total = tot;
     }
 
-    calculerPrimeCommercial() {
-
+    async getPrimes(montant: number): Promise<Prime[]> {
+        try {
+            let prime: Prime = initObjectPrime();
+            prime.montant = montant;
+            const existsObservable = this.primeService.searchMontant(prime).pipe(
+                catchError((error) => {
+                    console.error('Error in absence existence observable:', error);
+                    return of([]); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return [];
+        }
     }
 
-    calculerCommissionNew() {
-
+    async getDetails(bulletinPaiRequest: BulletinPaiRequest): Promise<BulletinPaiResponse | null> {
+        try {
+            if (bulletinPaiRequest.livraisonId == null) {
+                const existsObservable = this.bulletinPaiService.getDetails(bulletinPaiRequest).pipe(
+                    catchError((error) => {
+                        console.error('Error in absence existence observable:', error);
+                        return of(null); // Gracefully handle observable errors by returning false
+                    })
+                );
+                return await firstValueFrom(existsObservable);
+            } else {
+                const existsObservable = this.bulletinPaiService.getDetailsOfLivraison(bulletinPaiRequest).pipe(
+                    catchError((error) => {
+                        console.error('Error in absence existence observable:', error);
+                        return of(null); // Gracefully handle observable errors by returning false
+                    })
+                );
+                return await firstValueFrom(existsObservable);
+            }
+        } catch (error) {
+            console.error('Unexpected error checking if absence exists:', error);
+            return null;
+        }
     }
 
-    mapFormToFacture() {
-        this.bulletinPai.numFacture = this.formGroup.get('numFacture')?.value;
-        this.bulletinPai.codeBF = this.formGroup.get('codeBF')?.value;
-        this.bulletinPai.dateBF = this.formGroup.get('dateBF')?.value;
-        this.bulletinPai.dateReglement = this.formGroup.get('dateReglement')?.value;
-        this.bulletinPai.dateReglement2 = this.formGroup.get('dateReglement2')?.value;
-        this.bulletinPai.dateReglement3 = this.formGroup.get('dateReglement3')?.value;
-        this.bulletinPai.dateReglement4 = this.formGroup.get('dateReglement4')?.value;
-        this.bulletinPai.typeReglment = this.formGroup.get('typeReglment')?.value;
-        this.bulletinPai.typeReglment2 = this.formGroup.get('typeReglment2')?.value;
-        this.bulletinPai.typeReglment3 = this.formGroup.get('typeReglment3')?.value;
-        this.bulletinPai.typeReglment4 = this.formGroup.get('typeReglment4')?.value;
-        this.bulletinPai.numCheque = this.formGroup.get('numCheque')?.value;
-        this.bulletinPai.numCheque2 = this.formGroup.get('numCheque2')?.value;
-        this.bulletinPai.numCheque3 = this.formGroup.get('numCheque3')?.value;
-        this.bulletinPai.numCheque4 = this.formGroup.get('numCheque4')?.value;
-        this.bulletinPai.numRemise = this.formGroup.get('numRemise')?.value;
-        this.bulletinPai.numRemise2 = this.formGroup.get('numRemise2')?.value;
-        this.bulletinPai.numRemise3 = this.formGroup.get('numRemise3')?.value;
-        this.bulletinPai.numRemise4 = this.formGroup.get('numRemise4')?.value;
-        this.bulletinPai.mantantBF = this.formGroup.get('mantantBF')?.value;
-        this.bulletinPai.mntReglement = this.formGroup.get('mntReglement')?.value;
-        this.bulletinPai.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
-        this.bulletinPai.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
-        this.bulletinPai.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
-        this.bulletinPai.personnelId = this.formGroup.get('personnelId')?.value;
-        this.bulletinPai.repertoireId = this.formGroup.get('repertoireId')?.value;
+    async calculerPrime() {
+        this.bulletinPai.primeSpecial = 0;
+
+        if (this.bulletinPai.totalMntVendueSansPrixCommercial > 0) {
+            let primes: Prime[] = await this.getPrimes(this.bulletinPai.totalMntVendueSansPrixCommercial);
+
+            if (primes.length > 0) {
+                this.bulletinPai.primeSpecial = primes[0].prime;
+            }
+        }
+    }
+
+    calculerSalaireFix() {
+        this.bulletinPai.salairefx = this.bulletinPai.commissionParProduit;
+    }
+
+    calculComm() {
+        let comSum = 0.0;
+        let totalMntVendue = 0.0;
+        let mntNega = 0.0;
+
+        for (let detbultinlivraisonss of this.listDetBulletinLivraison) {
+            let comm = detbultinlivraisonss.commission;
+            detbultinlivraisonss.rougenormal = true;
+            if (comm <= 0) {
+                detbultinlivraisonss.rougenormal = false;
+            }
+
+            totalMntVendue += detbultinlivraisonss.livraisonMantantBL;
+            let clcComm = 0;
+
+            if (detbultinlivraisonss.livraisonMantantBL == 0.0) {
+                clcComm = ((comm * detbultinlivraisonss.livraisonMantantBLReel) / 100) * -1;
+                clcComm -= detbultinlivraisonss.livraisonMantantBLReel;
+                detbultinlivraisonss.commsiondh = clcComm;
+            } else {
+                clcComm = (comm * detbultinlivraisonss.livraisonMantantBLReel) / 100;
+                detbultinlivraisonss.commsiondh = clcComm;
+            }
+
+            if (comm < 0) {
+                mntNega += detbultinlivraisonss.commsiondh;
+            }
+
+            detbultinlivraisonss.commissionFixe = detbultinlivraisonss.commission;
+            comSum += clcComm;
+        }
+
+        let mnttotalMntVenduePrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, true);
+        let mnttotalMntVendueSansPrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, false);
+
+        this.bulletinPai.commission = comSum;
+        this.bulletinPai.mntNegativeLivraison = mntNega;
+        this.bulletinPai.totalMntVendueLivraison = totalMntVendue;
+        this.bulletinPai.totalMntVendue = this.bulletinPai.totalMntVendueLivraison;
+        this.bulletinPai.totalMntVenduePrixCommercial = mnttotalMntVenduePrixCommercial;
+        this.bulletinPai.totalMntVendueSansPrixCommercial = mnttotalMntVendueSansPrixCommercial;
+
+        this.calculTotal();
+    }
+
+    calculerCommission() {
+        let comSum: number = 0;
+
+        let totalMntVendue: number = 0;
+        let primeProduit: number = 0;
+        let mntNega: number = 0;
+
+        for (let detbultinpaiAdd of this.listDetBulletinPai) {
+            totalMntVendue += detbultinpaiAdd.mantantvendu;
+            let comm = detbultinpaiAdd.commission;
+
+            let clcComm = (detbultinpaiAdd.mantantvendu * comm) / 100;
+            if (detbultinpaiAdd.mantantvendu == 0) {
+                clcComm = ((comm * detbultinpaiAdd.qtevendu * detbultinpaiAdd.produitPvttc) / 100) * -1;
+                clcComm -= detbultinpaiAdd.qtevendu * detbultinpaiAdd.produitPvttc;
+            }
+
+            detbultinpaiAdd.commsiondh = clcComm;
+            detbultinpaiAdd.commissionFixe = detbultinpaiAdd.commission;
+            comSum += clcComm;
+
+            if (comm < 0) {
+                mntNega += detbultinpaiAdd.commsiondh;
+            }
+        }
+
+        let mntPrimeCommercial = 0;
+        let mnttotalMntVenduePrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, true);
+        let mnttotalMntVendueSansPrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, false);
+
+        if (this.listDetBulletinPai.length > 0) {
+            mntPrimeCommercial = this.listDetBulletinPai.reduce((sum, detbultinpai) => sum + detbultinpai.primeCommercial, 0);
+            primeProduit = this.listDetBulletinPai.reduce((sum, detbultinpai) => sum + detbultinpai.primeProduit, 0);
+        }
+
+        this.bulletinPai.commissionParProduit = comSum;
+        this.bulletinPai.mntNegativeProduit = mntNega;
+        this.bulletinPai.totalMntVendueProduit = totalMntVendue;
+        this.bulletinPai.totalMntVendue = this.bulletinPai.totalMntVendueLivraison;
+        this.bulletinPai.totalMntVenduePrixCommercial = mnttotalMntVenduePrixCommercial;
+        this.bulletinPai.totalMntVendueSansPrixCommercial = mnttotalMntVendueSansPrixCommercial;
+        this.bulletinPai.primeCommercial = mntPrimeCommercial;
+        this.bulletinPai.primeProduit = primeProduit;
+
+        this.calculerPrime();
+        this.calculTotal();
+    }
+
+    getTotalMntVenduProduit(listDetbultinpai: DetBulletinPai[], avecPrixCommercial: boolean): number {
+        let mnt = 0;
+        if (listDetbultinpai.length > 0) {
+            mnt = avecPrixCommercial
+                ? listDetbultinpai.filter((x) => x.prixCommercial > 0).reduce((sum, detbultinpai) => sum + detbultinpai.mantantvendu, 0)
+                : listDetbultinpai.filter((x) => x.prixCommercial == 0).reduce((sum, detbultinpai) => sum + detbultinpai.mantantvendu, 0);
+        }
+
+        return mnt;
+    }
+
+    mapToBulletinPaiRequest(bulletinPai: BulletinPai, livraisonId: bigint | null): BulletinPaiRequest {
+        let bulletinPaiRequest: BulletinPaiRequest = initBulletinPaiRequest();
+
+        bulletinPaiRequest.dateDebut = bulletinPai.dateDebut;
+        bulletinPaiRequest.dateFin = bulletinPai.dateFin;
+        bulletinPaiRequest.commercialId = bulletinPai.commercialId;
+        bulletinPaiRequest.livraisonId = livraisonId;
+
+        return bulletinPaiRequest;
+    }
+
+    async rechercheLivraison() {
+        if (this.formGroup.get('dateDebut')?.value && this.formGroup.get('dateFin')?.value && this.formGroup.get('personnelId')?.value > 0) {
+            this.bulletinPai.dateDebut = mapToDateTimeBackEnd(this.formGroup.get('dateDebut')?.value);
+            this.bulletinPai.dateFin = mapToDateTimeBackEnd(this.formGroup.get('dateFin')?.value);
+            this.bulletinPai.commercialId = this.formGroup.get('personnelId')?.value;
+            let bulletinPaiRequest: BulletinPaiRequest = this.mapToBulletinPaiRequest(this.bulletinPai, null);
+
+            let bulletinPaiResponse: BulletinPaiResponse | null = await this.getDetails(bulletinPaiRequest);
+
+            if (bulletinPaiResponse != null) {
+                this.listDetBulletinPai = bulletinPaiResponse.detBulletinPais;
+                this.listDetBulletinLivraison = bulletinPaiResponse.detBulletinLivraisons;
+            }
+        } else {
+            this.listDetBulletinPai = [];
+            this.listDetBulletinLivraison = [];
+        }
+    }
+
+    removeDetBulletinPai(listDetBulletinPaiLivraisonId: DetBulletinPai[], avecZero: boolean) {
+        if (avecZero) {
+            for (let index = 0; index < listDetBulletinPaiLivraisonId.length; index++) {
+                const detBulletinPaiLivraisonId = listDetBulletinPaiLivraisonId[index];
+
+                for (let indexDet = 0; indexDet < this.listDetBulletinPai.length; indexDet++) {
+                    const detBulletinPai = this.listDetBulletinPai[indexDet];
+                    if (detBulletinPai.produitId == detBulletinPaiLivraisonId.produitId && detBulletinPai.avecZero) {
+                        if (detBulletinPai.qtevendu === detBulletinPaiLivraisonId.qtevendu) {
+                            this.listDetBulletinPai.splice(indexDet, 1);
+                        } else {
+                            detBulletinPai.qtevendu -= detBulletinPaiLivraisonId.qtevendu;
+                            detBulletinPai.prixlivraison -= detBulletinPaiLivraisonId.prixlivraison;
+                            detBulletinPai.remise -= detBulletinPaiLivraisonId.remise;
+                            detBulletinPai.mantantvendu -= detBulletinPaiLivraisonId.mantantvendu;
+                            detBulletinPai.benDH -= detBulletinPaiLivraisonId.benDH;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (let index = 0; index < listDetBulletinPaiLivraisonId.length; index++) {
+                const detBulletinPaiLivraisonId = listDetBulletinPaiLivraisonId[index];
+
+                for (let indexDet = 0; indexDet < this.listDetBulletinPaiSansMontant.length; indexDet++) {
+                    const detBulletinPai = this.listDetBulletinPaiSansMontant[indexDet];
+                    if (detBulletinPai.produitId == detBulletinPaiLivraisonId.produitId && !detBulletinPai.avecZero) {
+                        if (detBulletinPai.qtevendu === detBulletinPaiLivraisonId.qtevendu) {
+                            this.listDetBulletinPaiSansMontant.splice(indexDet, 1);
+                        } else {
+                            detBulletinPai.qtevendu -= detBulletinPaiLivraisonId.qtevendu;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    async supprimerDetailBulletinLivraison(livraisonId: bigint) {
+        let bulletinPaiRequest: BulletinPaiRequest = this.mapToBulletinPaiRequest(this.bulletinPai, livraisonId);
+        let bulletinPaiResponse: BulletinPaiResponse | null = await this.getDetails(bulletinPaiRequest);
+
+        if (bulletinPaiResponse != null) {
+            let listDetBulletinPaiLivraisonId: DetBulletinPai[] = bulletinPaiResponse.detBulletinPais;
+            let listDetBulletinPaiSansMontant: DetBulletinPai[] = bulletinPaiResponse.detBulletinPaisSansMontant;
+
+            this.removeDetBulletinPai(listDetBulletinPaiLivraisonId, true);
+            this.removeDetBulletinPai(listDetBulletinPaiSansMontant, false);
+
+            this.calculComm();
+            this.calculerCommission();
+        }
+    }
+
+    calculerTotalMntVendueProduit() {
+        let totalMntVendueProduit: number = 0;
+        this.listDetBulletinPai.forEach((detBulletinPai: DetBulletinPai) => {
+            totalMntVendueProduit += detBulletinPai.mantantvendu;
+        });
+
+        this.formGroup.patchValue({
+            totalMntVendueProduit: totalMntVendueProduit
+        });
+    }
+
+    calculerTotalMntVendueLivraison() {
+        let totalMntVendueLivraison: number = 0;
+        this.listDetBulletinLivraison.forEach((detBulletinLivraison: DetBulletinLivraison) => {
+            totalMntVendueLivraison += detBulletinLivraison.livraisonMantantBL;
+        });
+
+        this.formGroup.patchValue({
+            totalMntVendueLivraison: totalMntVendueLivraison
+        });
+    }
+
+    onChangeDates() {
+        this.ajusterDates();
+        this.rechercheLivraison();
+    }
+
+    ajusterDates() {
+        if (this.formGroup.get('dateDebut')?.value) {
+            let dateDebut = this.formGroup.get('dateDebut')?.value;
+            let changed: boolean = compareYearAndMonth(dateDebut, this.bulletinPai.dateDebut);
+
+            if (dateDebut.getDate() > 1) {
+                dateDebut.setDate(1);
+            }
+
+            if (!this.formGroup.get('dateFin')?.value || changed) {
+                let dateFin = getLastDayOfMonth(dateDebut);
+
+                this.formGroup.patchValue({
+                    dateDebut: dateDebut,
+                    dateFin: dateFin
+                });
+
+                this.bulletinPai.dateDebut = mapToDateTimeBackEnd(dateDebut);
+                this.bulletinPai.dateFin = mapToDateTimeBackEnd(dateFin);
+            }
+        }
+    }
+
+    mapFormGroupToObject(formGroup: FormGroup, bulletinPai: BulletinPai): BulletinPai {
+        bulletinPai.dateDebut = mapToDateTimeBackEnd(formGroup.get('dateDebut')?.value);
+        bulletinPai.dateFin = mapToDateTimeBackEnd(formGroup.get('dateFin')?.value);
+        bulletinPai.commercialId = formGroup.get('personnelId')?.value;
+        bulletinPai.totalMntVendue = formGroup.get('totalMntVendue')?.value;
+        bulletinPai.totalMntVenduePrixCommercial = formGroup.get('totalMntVenduePrixCommercial')?.value;
+        bulletinPai.totalMntVendueSansPrixCommercial = formGroup.get('totalMntVendueSansPrixCommercial')?.value;
+        bulletinPai.frais = formGroup.get('frais')?.value;
+        bulletinPai.salairefx = formGroup.get('salairefx')?.value;
+        bulletinPai.primeSpecial = formGroup.get('primeSpecial')?.value;
+        bulletinPai.primeProduit = formGroup.get('primeProduit')?.value;
+        bulletinPai.primeCommercial = formGroup.get('primeCommercial')?.value;
+        bulletinPai.mntCNSS = formGroup.get('mntCNSS')?.value;
+        bulletinPai.total = formGroup.get('total')?.value;
+        bulletinPai.fraisSupp = formGroup.get('fraisSupp')?.value;
+
+        return bulletinPai;
     }
 
     openCloseDialogStock(openClose: boolean): void {
@@ -295,106 +595,24 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         this.dialogDeleteStock = openClose;
     }
 
-    disableRepertoireData() {
-        this.formGroup.get('repertoireDesignation')?.disable();
-        this.formGroup.get('repertoireAdresse')?.disable();
-        this.formGroup.get('repertoireTel1')?.disable();
-        this.formGroup.get('repertoireTel2')?.disable();
-        this.formGroup.get('repertoireICE')?.disable();
-    }
-
-    onChangeIdRepertoire() {
-        this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.formGroup.get('repertoireId')?.value) || initObjectRepertoire();
-
-        if (this.repertoireSelected && this.repertoireSelected.id !== null && this.repertoireSelected.id !== undefined) {
-            this.formGroup.patchValue({
-                repertoireDesignation: this.repertoireSelected.designation,
-                repertoireAdresse: this.repertoireSelected.adresse,
-                repertoireTel1: this.repertoireSelected.tel1,
-                repertoireTel2: this.repertoireSelected.tel2,
-                repertoireICE: this.repertoireSelected.ice
-            });
-
-            this.disableRepertoireData();
-        } else {
-            this.formGroup.patchValue({
-                repertoireDesignation: '',
-                repertoireAdresse: '',
-                repertoireTel1: '',
-                repertoireTel2: '',
-                repertoireICE: ''
-            });
-
-            this.disableRepertoireData();
-        }
-    }
-
-    onChangeIdStock() {
-        this.detFactureSelected = this.listDetBulletinPai.find((detFacture) => detFacture.stockId === this.formGroup.get('stockId')?.value) || initObjectDetFacture();
-        this.stockSelected = this.listStock.find((stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-
-        if (this.stockSelected.id !== null && this.stockSelected.id !== undefined) {
-            if (this.detFactureSelected.stockId === null) {
-                this.detFactureSelected.stockId = this.stockSelected.id;
-            }
-
-            this.initFormGroupStock();
-            this.onChangeMontantProduit();
-            this.openCloseDialogStock(true);
-        }
-    }
-
-    mapFormGroupStockToObject(formGroup: FormGroup, detailFacture: DetFacture): DetFacture {
-        detailFacture.stock = structuredClone(this.stockSelected);
-        detailFacture.prixVente = formGroup.get('prixVente')?.value;
-        detailFacture.qteFacturer = formGroup.get('qteFacturer')?.value;
-        detailFacture.remiseFacture = formGroup.get('remiseFacture')?.value;
-        detailFacture.montantProduit = formGroup.get('montantProduit')?.value;
-
-        return detailFacture;
-    }
-
-    updateList(detailFacture: DetFacture, list: DetFacture[], operationType: OperationType, stockId?: bigint): DetFacture[] {
+    updateList(detailFacture: DetBulletinLivraison, list: DetBulletinLivraison[], operationType: OperationType, livraisonId?: bigint): DetBulletinLivraison[] {
         if (operationType === OperationType.ADD) {
             list = [...list, detailFacture];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex((x) => x.stockId === detailFacture.stockId);
+            let index = list.findIndex((x) => x.livraisonId === detailFacture.livraisonId);
             if (index > -1) {
                 list[index] = structuredClone(detailFacture);
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter((x) => x.stockId !== stockId);
+            list = list.filter((x) => x.livraisonId !== livraisonId);
         }
         return list;
     }
 
-    recuppererDetFacture(operation: number, detFactureEdit: DetFacture) {
-        if (detFactureEdit && detFactureEdit.stockId) {
-            this.detFactureSelected = structuredClone(detFactureEdit);
+    recuppererDetBulletinLivraison(operation: number, detBulletinLivraisonEdit: DetBulletinLivraison) {
+        if (detBulletinLivraisonEdit && detBulletinLivraisonEdit.livraisonId) {
+            this.detBulletinLivraisonSelected = structuredClone(detBulletinLivraisonEdit);
             if (operation === 1) {
-                this.initFormGroupStock();
-                this.stockSelected = this.listStock.find((x) => x.id === this.detFactureSelected.stockId) || initObjectStock();
-                this.detFactureSelected.stock = structuredClone(this.stockSelected);
-
-                this.formGroupStock.patchValue({
-                    designation: this.stockSelected.designation,
-                    pattc: this.stockSelected.pattc,
-                    pvttc: this.stockSelected.pvttc,
-                    qteStock: this.stockSelected.qteStock,
-                    prixVenteMin: getPrixVenteMin(this.stockSelected),
-                    prixVente: this.detFactureSelected.prixVente,
-                    qteFacturer: this.detFactureSelected.qteFacturer,
-                    remiseFacture: this.detFactureSelected.remiseFacture,
-                    montantProduit: this.detFactureSelected.montantProduit
-                });
-
-                this.formGroupStock.get('designation')?.disable();
-                this.formGroupStock.get('pattc')?.disable();
-                this.formGroupStock.get('pvttc')?.disable();
-                this.formGroupStock.get('qteStock')?.disable();
-                this.formGroupStock.get('prixVenteMin')?.disable();
-                this.formGroupStock.get('montantProduit')?.disable();
-
                 this.openCloseDialogStock(true);
             } else {
                 this.openCloseDialogDeleteStock(true);
@@ -404,165 +622,11 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         }
     }
 
-    onChangeMontantProduit() {
-        this.formGroupStock.patchValue({
-            montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteFacturer')?.value
-        });
-    }
-
-    validerStock() {
-        console.log(this.detFactureSelected);
-        let updatedDetFacture = structuredClone(this.detFactureSelected);
-
-        updatedDetFacture = this.mapFormGroupStockToObject(this.formGroupStock, updatedDetFacture);
-
-        if (updatedDetFacture.stockId) {
-            let exist: boolean = this.listDetBulletinPai.some((detFacture: DetFacture) => detFacture.stockId === updatedDetFacture.stockId);
-
-            if (exist) {
-                this.listDetBulletinPai = this.updateList(updatedDetFacture, this.listDetBulletinPai, OperationType.MODIFY, updatedDetFacture.stockId);
-            } else {
-                this.listDetBulletinPai = this.updateList(updatedDetFacture, this.listDetBulletinPai, OperationType.ADD);
-            }
-        }
-
-        this.calculerMontantTotal();
-        this.stockSelected = initObjectStock();
-        this.formGroup.patchValue({ stockId: null });
-        this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetBulletinPai changes
-        this.openCloseDialogStock(false);
-    }
-
-    recupperer(operation: number, detFactureEdit: DetFacture) {
-        if (detFactureEdit && detFactureEdit.stockId) {
-            this.detFactureSelected = structuredClone(detFactureEdit);
-            if (operation === 1) {
-                this.formGroupStock.patchValue({
-                    designation: this.detFactureSelected.stock?.designation,
-                    pattc: this.detFactureSelected.stock?.pattc,
-                    qteStock: this.detFactureSelected.stock?.qteStock,
-                    qteFacturer: this.detFactureSelected.qteFacturer,
-                    prixVente: this.detFactureSelected.prixVente,
-                    remiseFacture: this.detFactureSelected.remiseFacture
-                });
-                this.openCloseDialogStock(true);
-            } else if (operation === 2) {
-                this.openCloseDialogDeleteStock(true);
-            }
-        } else {
-            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
-        }
-    }
-
-    getReglementDataFromFormGroup(bulletinPai: Facture, formGroup: FormGroup) {
-        bulletinPai.dateReglement = formGroup.get('dateReglement')?.value;
-        bulletinPai.dateReglement2 = formGroup.get('dateReglement2')?.value;
-        bulletinPai.dateReglement3 = formGroup.get('dateReglement3')?.value;
-        bulletinPai.dateReglement4 = formGroup.get('dateReglement4')?.value;
-        bulletinPai.mntReglement = formGroup.get('mntReglement')?.value;
-        bulletinPai.mntReglement2 = formGroup.get('mntReglement2')?.value;
-        bulletinPai.mntReglement3 = formGroup.get('mntReglement3')?.value;
-        bulletinPai.mntReglement4 = formGroup.get('mntReglement4')?.value;
-    }
-
-    patchMontantReglement(bulletinPai: Facture, formGroup: FormGroup) {
-        formGroup.patchValue({
-            mntReglement: bulletinPai.mntReglement,
-            mntReglement2: bulletinPai.mntReglement2,
-            mntReglement3: bulletinPai.mntReglement3,
-            mntReglement4: bulletinPai.mntReglement4
-        });
-    }
-
-    calculerMontantTotal() {
-        this.bulletinPai.mantantBF = this.listDetBulletinPai.reduce((total: number, detFacture: DetFacture) => total + Number(detFacture.montantProduit), 0);
-        this.formGroup.get('mantantBF')?.setValue(this.bulletinPai.mantantBF);
-        this.getReglementDataFromFormGroup(this.bulletinPai, this.formGroup);
-        this.bulletinPai = ajusterMontantsFacture(this.bulletinPai, this.bulletinPai.mantantBF);
-        this.patchMontantReglement(this.bulletinPai, this.formGroup);
-    }
-
-    deleteDetFacture() {
-        let stockId: bigint = this.detFactureSelected?.stockId || 0n;
-        this.listDetBulletinPai = this.updateList(this.detFactureSelected, this.listDetBulletinPai, OperationType.DELETE, stockId);
-        this.calculerMontantTotal();
-        this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetBulletinPai changes
+    deleteDetBulletinLivraison() {
+        let livraisonId: bigint = this.detBulletinLivraisonSelected?.livraisonId || 0n;
+        this.listDetBulletinLivraison = this.updateList(this.detBulletinLivraisonSelected, this.listDetBulletinLivraison, OperationType.DELETE, livraisonId);
+        this.formGroup.updateValueAndValidity();
         this.openCloseDialogDeleteStock(false);
-    }
-
-    mapFormGroupToObject(formGroup: FormGroup, bulletinPai: Facture): Facture {
-        bulletinPai.dateBF = mapToDateTimeBackEnd(formGroup.get('dateBF')?.value);
-        bulletinPai.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
-        bulletinPai.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
-        bulletinPai.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
-        bulletinPai.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
-        bulletinPai.personnelId = formGroup.get('personnelId')?.value;
-        bulletinPai.repertoireId = formGroup.get('repertoireId')?.value;
-        bulletinPai.typeReglment = formGroup.get('typeReglment')?.value;
-        bulletinPai.typeReglment2 = formGroup.get('typeReglment2')?.value;
-        bulletinPai.typeReglment3 = formGroup.get('typeReglment3')?.value;
-        bulletinPai.typeReglment4 = formGroup.get('typeReglment4')?.value;
-        bulletinPai.mantantBF = formGroup.get('mantantBF')?.value;
-        bulletinPai.mntReglement = formGroup.get('mntReglement')?.value;
-        bulletinPai.mntReglement2 = formGroup.get('mntReglement2')?.value;
-        bulletinPai.mntReglement3 = formGroup.get('mntReglement3')?.value;
-        bulletinPai.mntReglement4 = formGroup.get('mntReglement4')?.value;
-
-        return bulletinPai;
-    }
-
-    updateQteStock(listDetBulletinPai: DetFacture[], operationType: OperationType) {
-        if (listDetBulletinPai && listDetBulletinPai.length > 0) {
-            // Filter items that have a stockId
-            const itemsToUpdate = listDetBulletinPai.filter((detFacture) => detFacture.stockId);
-
-            // Process each item sequentially with 1 second delay between requests
-            from(itemsToUpdate)
-                .pipe(
-                    concatMap((detFacture: DetFacture, index: number) =>
-                        this.stockService.updateQteStock(detFacture.stockId!, detFacture.qteFacturer, operationType).pipe(
-                            delay(index === itemsToUpdate.length - 1 ? 0 : 1000) // No delay after the last item
-                        )
-                    )
-                )
-                .subscribe({
-                    next: () => {},
-                    error: (err) => {
-                        console.log(err);
-                    }
-                });
-        }
-    }
-
-    updateStock(detFactureToAdd: DetFacture[], detFactureToModify: DetFacture[], detFactureToDelete: DetFacture[], detFactureChanged: DetFacture[]) {
-        if (detFactureToDelete && detFactureToDelete.length > 0) {
-            this.updateQteStock(detFactureToDelete, OperationType.DELETE);
-        }
-
-        if (detFactureChanged && detFactureChanged.length > 0) {
-            this.updateQteStock(detFactureChanged, OperationType.DELETE);
-        }
-
-        if (detFactureToModify && detFactureToModify.length > 0) {
-            this.updateQteStock(detFactureToModify, OperationType.ADD);
-        }
-
-        if (detFactureToAdd && detFactureToAdd.length > 0) {
-            this.updateQteStock(detFactureToAdd, OperationType.ADD);
-        }
-    }
-
-    giveMeMntBlBenefice(bulletinPai: Facture, detFactures: DetFacture[], etablissement: Etablissement) {
-        let mntp: number = 0;
-        for (let detFacture of detFactures) {
-            let charge = (detFacture.stock?.pattc || 0 * (etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)) / 100;
-            mntp += detFacture.montantProduit - detFacture.qteFacturer * (detFacture.stock?.pattc || 0 + charge);
-        }
-        bulletinPai.mantantBFBenefice = mntp;
-    }
-
-    prepareFacture() {
-        this.giveMeMntBlBenefice(this.bulletinPai, this.listDetBulletinPai, this.etablissement);
     }
 
     miseAjour() {
@@ -570,23 +634,24 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         let trvErreur: boolean = false;
         if (!trvErreur) {
             this.bulletinPai = this.mapFormGroupToObject(this.formGroup, this.bulletinPai);
-            this.prepareFacture();
 
-            let factureRequest: FactureRequest = {
+            let bulletinPaiRequest: BulletinPaiResponse = {
                 bulletinPai: this.bulletinPai,
-                detFactures: this.listDetBulletinPai
+                detBulletinPais: this.listDetBulletinPai,
+                detBulletinPaisSansMontant: [],
+                detBulletinLivraisons: this.listDetBulletinLivraison
             };
 
             if (this.bulletinPai.id) {
-                this.bulletinPaiService.update(this.bulletinPai.id, factureRequest).subscribe({
-                    next: (data: Facture) => {
+                this.bulletinPaiService.update(this.bulletinPai.id, bulletinPaiRequest).subscribe({
+                    next: (data: BulletinPai) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: this.msg.summary.labelSuccess,
                             detail: this.msg.messages.messageUpdateSuccess
                         });
 
-                        this.router.navigate(['/bulletinPai']);
+                        this.router.navigate(['/bulletin-pai']);
                     },
                     error: (err) => {
                         console.log(err);
@@ -602,16 +667,16 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
                     }
                 });
             } else {
-                factureRequest.bulletinPai.employeOperateurId = BigInt(this.personnelCreationId || 0);
-                this.bulletinPaiService.create(factureRequest).subscribe({
-                    next: (data: Facture) => {
+                bulletinPaiRequest.bulletinPai.operateurId = BigInt(this.personnelCreationId || 0);
+                this.bulletinPaiService.create(bulletinPaiRequest).subscribe({
+                    next: (data: BulletinPai) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: this.msg.summary.labelSuccess,
                             detail: this.msg.messages.messageAddSuccess
                         });
 
-                        this.router.navigate(['/bulletinPai']);
+                        this.router.navigate(['/bulletin-pai']);
                     },
                     error: (err) => {
                         console.log(err);
@@ -631,7 +696,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     }
 
     fermer() {
-        this.router.navigate(['/bulletinPai']);
+        this.router.navigate(['/bulletin-pai']);
     }
 
     ngOnDestroy(): void {

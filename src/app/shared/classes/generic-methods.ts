@@ -86,6 +86,15 @@ export function getLastDayOfMonth(dateDebut: Date): Date {
     return new Date(dateDebut.getFullYear(), dateDebut.getMonth() + 1, 0);
 }
 
+export function compareYearAndMonth(formDate: Date, backendDate: Date): boolean {
+    if (!formDate || !backendDate) return false;
+
+    const d1 = new Date(formDate);
+    const d2 = new Date(backendDate);
+
+    return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth(); // 0-based (0 = January)
+}
+
 export function mapTypePersonnel(value: number): string {
     const mapping: { [key: number]: string } = {
         0: 'NONE',
