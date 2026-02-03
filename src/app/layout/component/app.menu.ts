@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { AuthSecurityService } from '@/state/auth-security-service';
+import { StateService } from '@/state/state-service';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-menu',
@@ -17,10 +19,12 @@ import { AuthSecurityService } from '@/state/auth-security-service';
         </ng-container>
     </ul> `
 })
-export class AppMenu {
+export class AppMenu implements OnInit {
     model: MenuItem[] = [];
     private readonly authService = inject(AuthSecurityService);
+    private readonly stateService = inject(StateService);
     private readonly router = inject(Router);
+    private permissions: string[] = [];
     msg = APP_MESSAGES;
 
     logout(): void {
@@ -28,7 +32,12 @@ export class AppMenu {
         this.router.navigate(['/login']);
     }
 
+    hasPermission(permissions: string[]): boolean {
+        return permissions.some((permission) => this.permissions.includes(permission)) || this.permissions.includes(Permission.ALL);
+    }
+
     ngOnInit() {
+        this.permissions = this.stateService.getState().user?.permissions ?? [];
         this.model = [
             {
                 label: '',
@@ -36,63 +45,77 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.parametrage, icon: 'pi pi-fw pi-cog', routerLink: ['/parametrage'] }]
+                items: [{ label: this.msg.menu.parametrage, icon: 'pi pi-fw pi-cog', routerLink: ['/parametrage'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-clock', routerLink: ['/absence'] }]
+                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-clock', routerLink: ['/absence'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.repertoire, icon: 'pi pi-fw pi-user', routerLink: ['/repertoire'] }]
+                items: [
+                    {
+                        label: this.msg.menu.repertoire,
+                        icon: 'pi pi-fw pi-user',
+                        routerLink: ['/repertoire'],
+                        visible: this.hasPermission([Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE])
+                    }
+                ]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.stock, icon: 'pi pi-fw pi-box', routerLink: ['/stock'] }]
+                items: [
+                    {
+                        label: this.msg.menu.stock,
+                        icon: 'pi pi-fw pi-box',
+                        routerLink: ['/stock'],
+                        visible: this.hasPermission([Permission.ALL, Permission.CONSULTER_STOCK, Permission.AJOUTER_STOCK, Permission.MODIFIER_STOCK, Permission.SUPPRIMER_STOCK])
+                    }
+                ]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.stockDepot, icon: 'pi pi-fw pi-box', routerLink: ['/stock-depot'] }]
+                items: [{ label: this.msg.menu.stockDepot, icon: 'pi pi-fw pi-box', routerLink: ['/stock-depot'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'] }]
+                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.facture, icon: 'pi pi-fw pi-file', routerLink: ['/facture'] }]
+                items: [{ label: this.msg.menu.facture, icon: 'pi pi-fw pi-file', routerLink: ['/facture'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-cart-plus', routerLink: ['/achat-simple'] }]
+                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-cart-plus', routerLink: ['/achat-simple'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatFacture, icon: 'pi pi-fw pi-bookmark', routerLink: ['/achat-facture'] }]
+                items: [{ label: this.msg.menu.achatFacture, icon: 'pi pi-fw pi-bookmark', routerLink: ['/achat-facture'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.bonSortie, icon: 'pi pi-fw pi-truck', routerLink: ['/bon-sortie'] }]
+                items: [{ label: this.msg.menu.bonSortie, icon: 'pi pi-fw pi-truck', routerLink: ['/bon-sortie'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.achatEtranger, icon: 'pi pi-fw pi-briefcase', routerLink: ['/achat-etranger'] }]
+                items: [{ label: this.msg.menu.achatEtranger, icon: 'pi pi-fw pi-briefcase', routerLink: ['/achat-etranger'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-globe', routerLink: ['/caisse'] }]
+                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-globe', routerLink: ['/caisse'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.compteCourant, icon: 'pi pi-fw pi-calendar', routerLink: ['/compte-courant'] }]
+                items: [{ label: this.msg.menu.compteCourant, icon: 'pi pi-fw pi-calendar', routerLink: ['/compte-courant'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.cheque, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/cheque'] }]
+                items: [{ label: this.msg.menu.cheque, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/cheque'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.compta, icon: 'pi pi-fw pi-mobile', routerLink: ['/compta'] }]
+                items: [{ label: this.msg.menu.compta, icon: 'pi pi-fw pi-mobile', routerLink: ['/compta'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
