@@ -2,7 +2,7 @@ import { DetBulletinPai } from '@/models/det-bulletin-pai';
 import { DetBulletinLivraison } from '@/models/det-bulletin-livraison';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function BulletinPaiValidator(conf: { getListDetBulletinPai: () => DetBulletinPai[]; getListDetBulletinLivraison: () => DetBulletinLivraison[] }): ValidatorFn {
+export function BulletinPaiValidator(conf: { getListDetBulletinPai: () => DetBulletinPai[]; getListDetBulletinPaiSansMontant: () => DetBulletinPai[]; getListDetBulletinLivraison: () => DetBulletinLivraison[] }): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         const errors: ValidationErrors = {};
         const get = (name: string) => control.get(name);
@@ -12,7 +12,7 @@ export function BulletinPaiValidator(conf: { getListDetBulletinPai: () => DetBul
 
         const dateDebut = get('dateDebut')?.value;
         const dateFin = get('dateFin')?.value;
-        const personnelId = get('personnelId')?.value;
+        const commercialId = get('commercialId')?.value;
 
         if (dateDebut === null || dateDebut === undefined || dateDebut === '') {
             addError('dateDebutRequired');
@@ -22,8 +22,8 @@ export function BulletinPaiValidator(conf: { getListDetBulletinPai: () => DetBul
             addError('dateFinRequired');
         }
 
-        if (personnelId === null || personnelId === undefined || personnelId === '') {
-            addError('personnelIdRequired');
+        if (commercialId === null || commercialId === undefined || commercialId === '') {
+            addError('commercialIdRequired');
         }
 
         if (dateDebut && dateFin) {
@@ -38,6 +38,11 @@ export function BulletinPaiValidator(conf: { getListDetBulletinPai: () => DetBul
         const listDetailBulletinPai = conf.getListDetBulletinPai();
         if (null === listDetailBulletinPai || undefined === listDetailBulletinPai || listDetailBulletinPai.length === 0) {
             addError('listDetailBulletinPaiRequired');
+        }
+
+        const listDetailBulletinPaiSansMontant = conf.getListDetBulletinPaiSansMontant();
+        if (null === listDetailBulletinPaiSansMontant || undefined === listDetailBulletinPaiSansMontant || listDetailBulletinPaiSansMontant.length === 0) {
+            addError('listDetailBulletinPaiSansMontantRequired');
         }
 
         const listDetailBulletinLivraison = conf.getListDetBulletinLivraison();

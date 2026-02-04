@@ -1,1 +1,158 @@
-<p>bulletin-pai-view-component works!</p>
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
+                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+                
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listBulletinPai" dataKey="id"
+                selectionMode="single" [(selection)]="selectedBulletinPai" [metaKeySelection]="false"
+                [rows]="10" 
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['dateDebut', 'dateFin', 'commercialDesignation', 'totalMntVendue', 'frais', 'salairefx', 'primeSpecial', 'total', 'fraisSupp', 'Taux', 'taux2']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="codeBl" style="width: 30%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.dateDebut }}
+                                <p-sortIcon field="codeBl" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="dateBl" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.dateFin }}
+                                <p-sortIcon field="dateBl" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="repertoireId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.commercialDesignation }}
+                                <p-sortIcon field="repertoireId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="personnelId" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.totalMntVendue }}
+                                <p-sortIcon field="personnelId" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="typeReglment" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.frais }}
+                                <p-sortIcon field="typeReglment" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.salairefx }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="numCheque" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.primeSpecial }}
+                                <p-sortIcon field="numCheque" />
+                            </div>
+                        </th>
+
+                        <th style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.total }}
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mantantBL" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.fraisSupp }}
+                                <p-sortIcon field="mantantBL" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="transport" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.taux }}
+                                <p-sortIcon field="transport" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="mantantBL" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.bulletinPai.taux2 }}
+                                <p-sortIcon field="mantantBL" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                    <tr [pSelectableRow]="p">
+                        <td>{{ p.dateDebut | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.dateFin | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.commercialDesignation }}</td>
+                        <td>{{ p.totalMntVendue }}</td>
+                        <td>{{ p.frais }}</td>
+                        <td>{{ p.salairefx }}</td>
+                        <td>{{ p.primeSpecial }}</td>
+                        <td>{{ p.total }}</td>
+                        <td>{{ p.fraisSupp }}</td>
+                        <td>{{ ((p.total + p.fraisSupp) / p.totalMntVendue) * 100 }}</td>
+                        <td>{{ ((p.total + p.fraisSupp) / p.mntBenefice) * 100 }}</td>
+                        <td style="width: 10%; min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                    </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="13">No Bulletin Pai found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="13">Loading Bulletin Pai data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (bulletinPai) {
+                    <span>{{ msg.components.bulletinPai.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

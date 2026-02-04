@@ -97,10 +97,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
     mapOfStocks: Map<number, string> = new Map<number, string>();
     subscription!: Subscription;
-    dialogStock: boolean = false;
-    dialogFacturer: boolean = false;
-    dialogRegler: boolean = false;
-    dialogDeleteStock: boolean = false;
+    dialogDeleteDetBulletinLivraison: boolean = false;
     detBulletinLivraisonSelected: DetBulletinLivraison = initObjectDetBulletinLivraison();
     stockSelected: Stock = initObjectStock();
     msg = APP_MESSAGES;
@@ -176,7 +173,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         this.formGroup.patchValue({
             dateDebut: bulletinPai.dateDebut,
             dateFin: bulletinPai.dateFin,
-            personnelId: bulletinPai.commercialId,
+            commercialId: bulletinPai.commercialId,
             totalMntVendue: bulletinPai.totalMntVendue,
             totalMntVenduePrixCommercial: bulletinPai.totalMntVenduePrixCommercial,
             totalMntVendueSansPrixCommercial: bulletinPai.totalMntVendueSansPrixCommercial,
@@ -197,7 +194,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
             {
                 dateDebut: [new Date(), [Validators.required]],
                 dateFin: [new Date(), [Validators.required]],
-                personnelId: [0, [Validators.required, Validators.min(1)]],
+                commercialId: [0, [Validators.required, Validators.min(1)]],
                 totalMntVendue: [0],
                 totalMntVenduePrixCommercial: [0],
                 totalMntVendueSansPrixCommercial: [0],
@@ -210,7 +207,13 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
                 total: [0],
                 fraisSupp: [0]
             },
-            { validators: BulletinPaiValidator({ getListDetBulletinPai: () => this.listDetBulletinPai, getListDetBulletinLivraison: () => this.listDetBulletinLivraison }) }
+            {
+                validators: BulletinPaiValidator({
+                    getListDetBulletinPai: () => this.listDetBulletinPai,
+                    getListDetBulletinPaiSansMontant: () => this.listDetBulletinPaiSansMontant,
+                    getListDetBulletinLivraison: () => this.listDetBulletinLivraison
+                })
+            }
         );
 
         this.formGroup.get('totalMntVendue')?.disable();
@@ -221,8 +224,8 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     onChangeIdCommercial() {
         let salaire: number = 0;
 
-        if (this.formGroup.get('personnelId')?.value > 0) {
-            let personnel = this.listPersonnel.find((personnel) => personnel.id === this.formGroup.get('personnelId')?.value);
+        if (this.formGroup.get('commercialId')?.value > 0) {
+            let personnel = this.listPersonnel.find((personnel) => personnel.id === this.formGroup.get('commercialId')?.value);
             if (personnel && personnel.id) {
                 salaire = personnel.salaire;
                 this.rechercheLivraison();
@@ -423,6 +426,29 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         this.calculTotal();
     }
 
+    calculerPrimeCommercial(detBulletinPaiModif: DetBulletinPai) {
+        if (this.listDetBulletinPai.length > 0) {
+            this.listDetBulletinPai.forEach((detBulletinPai) => {
+                if (detBulletinPaiModif.produitId === detBulletinPai.produitId) {
+                    detBulletinPai.primeCommercial = 0;
+                    if (detBulletinPaiModif.prixCommercial > 0) {
+                        detBulletinPai.primeCommercial = detBulletinPai.mantantvendu - detBulletinPaiModif.prixCommercial * detBulletinPai.qtevendu;
+                    }
+                }
+            });
+
+            let mntPrimeCommercial = this.listDetBulletinPai.reduce((sum, detbultinpai) => sum + detbultinpai.primeCommercial, 0);
+            let mnttotalMntVenduePrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, true);
+            let mnttotalMntVendueSansPrixCommercial = this.getTotalMntVenduProduit(this.listDetBulletinPai, false);
+
+            this.bulletinPai.primeCommercial = mntPrimeCommercial;
+            this.bulletinPai.totalMntVenduePrixCommercial = mnttotalMntVenduePrixCommercial;
+            this.bulletinPai.totalMntVendueSansPrixCommercial = mnttotalMntVendueSansPrixCommercial;
+
+            this.calculTotal();
+        }
+    }
+
     getTotalMntVenduProduit(listDetbultinpai: DetBulletinPai[], avecPrixCommercial: boolean): number {
         let mnt = 0;
         if (listDetbultinpai.length > 0) {
@@ -446,10 +472,10 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     }
 
     async rechercheLivraison() {
-        if (this.formGroup.get('dateDebut')?.value && this.formGroup.get('dateFin')?.value && this.formGroup.get('personnelId')?.value > 0) {
+        if (this.formGroup.get('dateDebut')?.value && this.formGroup.get('dateFin')?.value && this.formGroup.get('commercialId')?.value > 0) {
             this.bulletinPai.dateDebut = mapToDateTimeBackEnd(this.formGroup.get('dateDebut')?.value);
             this.bulletinPai.dateFin = mapToDateTimeBackEnd(this.formGroup.get('dateFin')?.value);
-            this.bulletinPai.commercialId = this.formGroup.get('personnelId')?.value;
+            this.bulletinPai.commercialId = this.formGroup.get('commercialId')?.value;
             let bulletinPaiRequest: BulletinPaiRequest = this.mapToBulletinPaiRequest(this.bulletinPai, null);
 
             let bulletinPaiResponse: BulletinPaiResponse | null = await this.getDetails(bulletinPaiRequest);
@@ -571,7 +597,7 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     mapFormGroupToObject(formGroup: FormGroup, bulletinPai: BulletinPai): BulletinPai {
         bulletinPai.dateDebut = mapToDateTimeBackEnd(formGroup.get('dateDebut')?.value);
         bulletinPai.dateFin = mapToDateTimeBackEnd(formGroup.get('dateFin')?.value);
-        bulletinPai.commercialId = formGroup.get('personnelId')?.value;
+        bulletinPai.commercialId = formGroup.get('commercialId')?.value;
         bulletinPai.totalMntVendue = formGroup.get('totalMntVendue')?.value;
         bulletinPai.totalMntVenduePrixCommercial = formGroup.get('totalMntVenduePrixCommercial')?.value;
         bulletinPai.totalMntVendueSansPrixCommercial = formGroup.get('totalMntVendueSansPrixCommercial')?.value;
@@ -587,12 +613,8 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         return bulletinPai;
     }
 
-    openCloseDialogStock(openClose: boolean): void {
-        this.dialogStock = openClose;
-    }
-
-    openCloseDialogDeleteStock(openClose: boolean): void {
-        this.dialogDeleteStock = openClose;
+    openCloseDialogDeleteDetBulletinLivraison(openClose: boolean): void {
+        this.dialogDeleteDetBulletinLivraison = openClose;
     }
 
     updateList(detailFacture: DetBulletinLivraison, list: DetBulletinLivraison[], operationType: OperationType, livraisonId?: bigint): DetBulletinLivraison[] {
@@ -613,9 +635,9 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
         if (detBulletinLivraisonEdit && detBulletinLivraisonEdit.livraisonId) {
             this.detBulletinLivraisonSelected = structuredClone(detBulletinLivraisonEdit);
             if (operation === 1) {
-                this.openCloseDialogStock(true);
+                this.openCloseDialogDeleteDetBulletinLivraison(true);
             } else {
-                this.openCloseDialogDeleteStock(true);
+                this.openCloseDialogDeleteDetBulletinLivraison(true);
             }
         } else {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
@@ -623,10 +645,13 @@ export class BulletinPaiUpdateComponent implements OnInit, OnDestroy {
     }
 
     deleteDetBulletinLivraison() {
-        let livraisonId: bigint = this.detBulletinLivraisonSelected?.livraisonId || 0n;
-        this.listDetBulletinLivraison = this.updateList(this.detBulletinLivraisonSelected, this.listDetBulletinLivraison, OperationType.DELETE, livraisonId);
-        this.formGroup.updateValueAndValidity();
-        this.openCloseDialogDeleteStock(false);
+        if (this.detBulletinLivraisonSelected?.livraisonId) {
+            let livraisonId: bigint = this.detBulletinLivraisonSelected?.livraisonId || 0n;
+            this.supprimerDetailBulletinLivraison(livraisonId);
+            this.listDetBulletinLivraison = this.updateList(this.detBulletinLivraisonSelected, this.listDetBulletinLivraison, OperationType.DELETE, livraisonId);
+            this.formGroup.updateValueAndValidity();
+            this.openCloseDialogDeleteDetBulletinLivraison(false);
+        }
     }
 
     miseAjour() {

@@ -9,8 +9,11 @@ export interface DetBulletinLivraison {
     bulletinPaiId: bigint | null;
     livraisonId: bigint | null;
     livraisonCodeBl: string;
+    livraisonDateBl: Date | null;
     livraisonMantantBL: number;
     livraisonMantantBLReel: number;
+    livraisonReglerNonRegler: number;
+    livraisonRepertoireDesignation: string;
 }
 
 export function initObjectDetBulletinLivraison(): DetBulletinLivraison {
@@ -24,8 +27,11 @@ export function initObjectDetBulletinLivraison(): DetBulletinLivraison {
         rougenormal: false,
         bulletinPaiId: null,
         livraisonId: null,
+        livraisonDateBl: null,
         livraisonCodeBl: '',
         livraisonMantantBL: 0,
-        livraisonMantantBLReel: 0
+        livraisonMantantBLReel: 0,
+        livraisonReglerNonRegler: 0,
+        livraisonRepertoireDesignation: ''
     };
 }

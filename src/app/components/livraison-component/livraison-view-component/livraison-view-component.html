@@ -186,17 +186,11 @@
                         <td>{{ p.mantantBL | number:'1.2-2' }}</td>
 
                         <td>
-                            @if (p.reglerNonRegler === 1) {
-                                <div style="background-color: darkgreen; color: darkgreen" class="p-tag p-tag-success">
-                                    {{ p.reglerNonRegler }}
-                                </div>
-                            }
-                            @if (p.reglerNonRegler === 0) {
-                                <div style="background-color: red; color: red" class="p-tag p-tag-success">
-                                    {{ p.reglerNonRegler }}
-                                </div>
-                            }
+                            <div [style]="p.reglerNonRegler === 1 ? 'background-color: darkgreen; color: darkgreen' : 'background-color: red; color: red'" class="p-tag p-tag-success">
+                                {{ p.reglerNonRegler }}
+                            </div>
                         </td>
+                        
                         <td style="width: 10%; min-width: 7rem">
                         <div class="flex gap-2">
                             <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />

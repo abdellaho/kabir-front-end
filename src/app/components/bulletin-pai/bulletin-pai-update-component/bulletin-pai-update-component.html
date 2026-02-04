@@ -1,1 +1,388 @@
-<p>bulletin-pai-update-component works!</p>
+<p-toast></p-toast>
+<p-fluid [formGroup]="formGroup">
+    @if (submitted && (formGroup.errors?.['listDetailBulletinPaiRequired'] || formGroup.errors?.['listDetailBulletinPaiSansMontantRequired'] || formGroup.errors?.['listDetailBulletinLivraisonRequired'])) {
+        <p-message severity="warn" variant="simple" size="small">{{ msg.components.bulletinPai.errors.listDetailBulletinPaiRequired }}</p-message>
+        <p-message severity="warn" variant="simple" size="small">{{ msg.components.bulletinPai.errors.listDetailBulletinPaiSansMontantRequired }}</p-message>
+        <p-message severity="warn" variant="simple" size="small">{{ msg.components.bulletinPai.errors.listDetailBulletinLivraisonRequired }}</p-message>
+        <br>
+    }
+    <div class="flex flex-wrap -mx-4">
+        <!-- Info Livraison -->
+        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/6 flex flex-col gap-2 px-4 mb-8">
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-date-picker id="dateDebut" formControlName="dateDebut" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateDebut')?.invalid }" (onSelect)="onChangeDates()" />
+                    <label for="dateDebut">{{ msg.components.bulletinPai.dateDebut }}</label>
+                </p-floatlabel>
+                @if (submitted && formGroup.errors?.['dateDebutMustBeLessThanDateFin']) {
+                    <p-message severity="warn" variant="simple" size="small">{{ msg.components.bulletinPai.errors.dateDebutMustBeLessThanDateFin }}</p-message>
+                }
+            </div>
+            
+            <div class="flex flex-col md:flex-row full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-date-picker id="dateFin" formControlName="dateFin" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateFin')?.invalid }" (onSelect)="onChangeDates()" />
+                    <label for="dateFin">{{ msg.components.bulletinPai.dateFin }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <div class="flex flex-col gap-4 full-width">
+                    <p-floatlabel variant="on" class="full-width">
+                        <p-select formControlName="commercialId" inputId="commercialId" [options]="listPersonnel"
+                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('commercialId')?.invalid }"
+                            appendTo="body" optionLabel="designation" optionValue="id"
+                            (onChange)="onChangeIdCommercial()"
+                            style="width: 100% !important; height: 33px;" class="full-width"
+                            placeholder="{{ msg.components.bulletinPai.selectCommercial }}" />
+                        <label for="commercialId">{{ msg.components.bulletinPai.commercialId }}</label>
+                    </p-floatlabel>
+
+                    @if (formGroup.errors?.['commercialIdRequired']) {
+                        <p-message severity="error" variant="simple" size="small">{{
+                            msg.components.bulletinPai.errors.commercialIdRequired }}</p-message>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="totalMntVendue" id="totalMntVendue" [maxFractionDigits]="2" inputId="totalMntVendue" class="full-width" />
+                    <label for="totalMntVendue">{{ msg.components.bulletinPai.totalMntVendue }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="totalMntVenduePrixCommercial" id="totalMntVenduePrixCommercial" [maxFractionDigits]="2" inputId="totalMntVenduePrixCommercial" class="full-width" />
+                    <label for="totalMntVenduePrixCommercial">{{ msg.components.bulletinPai.totalMntVenduePrixCommercial }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="totalMntVendueSansPrixCommercial" id="totalMntVendueSansPrixCommercial" [maxFractionDigits]="2" inputId="totalMntVendueSansPrixCommercial" class="full-width" />
+                    <label for="totalMntVendueSansPrixCommercial">{{ msg.components.bulletinPai.totalMntVendueSansPrixCommercial }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="frais" id="frais" [maxFractionDigits]="2" inputId="frais" class="full-width" (onBlur)="calculTotal()" />
+                    <label for="frais">{{ msg.components.bulletinPai.frais }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="primeSpecial" id="primeSpecial" [maxFractionDigits]="2" inputId="primeSpecial" class="full-width" (onBlur)="calculTotal()" />
+                    <label for="primeSpecial">{{ msg.components.bulletinPai.primeSpecial }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="primeProduit" id="primeProduit" [maxFractionDigits]="2" inputId="primeProduit" class="full-width" />
+                    <label for="primeProduit">{{ msg.components.bulletinPai.primeProduit }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="primeCommercial" id="primeCommercial" [maxFractionDigits]="2" inputId="primeCommercial" class="full-width" />
+                    <label for="primeCommercial">{{ msg.components.bulletinPai.primeCommercial }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="mntCNSS" id="mntCNSS" [maxFractionDigits]="2" inputId="mntCNSS" class="full-width" (onBlur)="calculTotal()" />
+                    <label for="mntCNSS">{{ msg.components.bulletinPai.mntCNSS }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="total" id="total" [maxFractionDigits]="2" inputId="total" class="full-width" />
+                    <label for="total">{{ msg.components.bulletinPai.total }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-2 full-width">
+                <p-floatlabel variant="on" class="full-width">
+                    <p-input-number formControlName="fraisSupp" id="fraisSupp" [maxFractionDigits]="2" inputId="fraisSupp" class="full-width" />
+                    <label for="fraisSupp">{{ msg.components.bulletinPai.fraisSupp }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+        <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetBulletinPai" dataKey="id" style="width: 100% !important;"
+            [rows]="10" 
+            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+            [globalFilterFields]="['produitDesignation', 'qtevendu', 'prixCommercial', 'mantantvendu', 'mntReel', 'mantantvendu', 'commission', 'commsiondh', 'primeProduit', 'primeCommercial']"
+            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="produitDesignation" style="width: 45%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.produitDesignation }}
+                            <p-sortIcon field="produitDesignation" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="qtevendu" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.qtevendu }}
+                            <p-sortIcon field="qtevendu" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="prixCommercial" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.prixCommercial }}
+                            <p-sortIcon field="prixCommercial" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="mantantVendu" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.mantantVendu }}
+                            <p-sortIcon field="mantantVendu" />
+                        </div>
+                    </th>
+
+                    <th style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.mntReel }}
+                        </div>
+                    </th>
+
+                    <th style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.taux }}
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="commsiondh" style="width: 10%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.commsiondh }}
+                            <p-sortIcon field="commsiondh" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="primeProduit" style="width: 10%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.primeProduit }}
+                            <p-sortIcon field="primeProduit" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="primeCommercial" style="width: 10%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.primeCommercial }}
+                            <p-sortIcon field="primeCommercial" />
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                <tr [pSelectableRow]="p">
+                    <td>{{ p.produitDesignation }}</td>
+                    <td>{{ p.qtevendu }}</td>
+                    <td>
+                        <input type="number" pInputText [(ngModel)]="p.prixCommercial" [disabled]="p.commission > 0" (onblur)="calculerPrimeCommercial(p)" />
+                    </td>
+
+                    <td>
+                        <div [style]="p.mantantVendu === 0 ? 'background-color: yellow;' : ''">
+                            {{ p.mantantVendu | number:'1.2-2' }}
+                        </div>
+                    </td>
+                    
+                    <td>
+                        @if(p.mantantvendu === 0) {
+                            {{ p.qtevendu * p.prixvente | number:'1.2-2' }}
+                        } @else {
+                            {{ p.mantantvendu | number:'1.2-2' }}
+                        }
+                    </td>
+                    <td>
+                        <input type="number" pInputText [(ngModel)]="p.commission" [disabled]="p.prixCommercial > 0" (onblur)="calculerCommission()" />
+                    </td>
+                    <td>{{ p.commsiondh | number:'1.2-2' }}</td>
+                    <td>{{ p.primeProduit | number:'1.2-2' }}</td>
+                    <td>{{ p.primeCommercial | number:'1.2-2' }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template #emptymessage>
+                <tr>
+                    <td colspan="9">No Detail Bulletin found.</td>
+                </tr>
+            </ng-template>
+            <ng-template #loadingbody>
+                <tr>
+                    <td colspan="9">Loading Detail Bulletin data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+        <p-table #dtSansMontant size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetBulletinPaiSansMontant" dataKey="id" style="width: 100% !important;"
+            [rows]="10" 
+            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+            [globalFilterFields]="['produitDesignation', 'qtevendu']"
+            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+            <ng-template #headerSansMontant>
+                <tr>
+                    <th pSortableColumn="produitDesignation" style="width: 45%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.produitDesignation }}
+                            <p-sortIcon field="produitDesignation" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="qtevendu" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinPai.qtevendu }}
+                            <p-sortIcon field="qtevendu" />
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template #bodySansMontant let-p let-rowIndex="rowIndex" let-rowspan="rowspan">
+                <tr [pSelectableRow]="p">
+                    <td>{{ p.produitDesignation }}</td>
+                    <td>{{ p.qtevendu }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template #emptymessageSansMontant>
+                <tr>
+                    <td colspan="9">No Detail Bulletin Sans Montant found.</td>
+                </tr>
+            </ng-template>
+            <ng-template #loadingbodySansMontant>
+                <tr>
+                    <td colspan="9">Loading Detail Bulletin Sans Montant data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+        <p-table #dtLivraison size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetBulletinLivraison" dataKey="id" style="width: 100% !important;"
+            [rows]="10" 
+            sortMode="multiple" [showGridlines]="true" [paginator]="true"
+            [globalFilterFields]="['livraisonDateBl', 'livraisonCodeBl', 'livraisonClientDesignation', 'livraisonMantantBL', 'livraisonReglerNonRegler']"
+            [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+            <ng-template #headerLivraison>
+                <tr>
+                    <th pSortableColumn="livraisonDateBl" style="width: 10%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinLivraison.livraisonDateBl }}
+                            <p-sortIcon field="livraisonDateBl" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="livraisonCodeBl" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinLivraison.livraisonCodeBl }}
+                            <p-sortIcon field="livraisonCodeBl" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="livraisonClientDesignation" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinLivraison.livraisonClientDesignation }}
+                            <p-sortIcon field="livraisonClientDesignation" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="livraisonMantantBL" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinLivraison.livraisonMantantBL }}
+                            <p-sortIcon field="livraisonMantantBL" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="livraisonReglerNonRegler" style="width: 8%">
+                        <div class="flex items-center gap-2">
+                            {{ msg.components.bulletinPai.detBulletinLivraison.livraisonReglerNonRegler }}
+                        </div>
+                    </th>
+
+                    <th style="width: 5%"></th>
+                </tr>
+            </ng-template>
+
+            <ng-template #bodyLivraison let-p let-rowIndex="rowIndex" let-rowspan="rowspan">
+                <tr [pSelectableRow]="p">
+                    <td>{{ p.livraisonDateBl | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ p.livraisonCodeBl }}</td>
+                    <td>{{ p.livraisonRepertoireDesignation }}</td>
+                    <td>{{ p.livraisonMantantBL | number:'1.2-2' }}</td>
+                    <td>
+                        <div [style]="p.livraisonReglerNonRegler === 1 ? 'background-color: darkgreen; color: darkgreen' : 'background-color: red; color: red'" class="p-tag p-tag-success">
+                            {{ p.livraisonReglerNonRegler }}
+                        </div>
+                    </td>
+                    <td>
+                        <p-button icon="pi pi-trash" severity="danger" (click)="recuppererDetBulletinLivraison(2, p)" />
+                    </td>
+
+                </tr>
+            </ng-template>
+
+            <ng-template #emptymessageLivraison>
+                <tr>
+                    <td colspan="9">No Detail Bulletin found.</td>
+                </tr>
+            </ng-template>
+            <ng-template #loadingbodyLivraison>
+                <tr>
+                    <td colspan="9">Loading Detail Bulletin data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center" style="justify-content: center; margin-top: 1rem;">
+        <div class="flex gap-2">
+            <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                class="p-button-outlined p-button-danger" (click)="fermer()"></button>
+            <p-button pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
+                (click)="miseAjour()" [disabled]="!formGroup.valid"></p-button>
+        </div>
+    </div>
+</p-fluid>
+
+<p-dialog [(visible)]="dialogDeleteDetBulletinLivraison" [header]="msg.messages.confirm" [modal]="true"
+    [style]="{ width: '450px' }" [closable]="false">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        @if (detBulletinLivraisonSelected && detBulletinLivraisonSelected.livraisonId) {
+            <span>{{ msg.components.bulletinPai.detBulletinLivraison.messageDeleteAreYouSure }}</span>
+        }
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="dialogDeleteDetBulletinLivraison = false"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+            (click)="deleteDetBulletinLivraison()" [disabled]="!detBulletinLivraisonSelected || !detBulletinLivraisonSelected.livraisonId"></button>
+    </ng-template>
+</p-dialog>

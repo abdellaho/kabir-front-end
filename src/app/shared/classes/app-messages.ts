@@ -67,6 +67,68 @@ export const APP_MESSAGES = {
                 prixAchat: 'Prix Achat'
             }
         },
+        bulletinPai: {
+            label: 'Bulletin Paie',
+            dateDebut: 'Date Début',
+            dateFin: 'Date Fin',
+            commercialId: 'Commercial',
+            commercialDesignation: 'Commercial',
+            selectCommercial: 'Sélectionner commercial',
+            totalMntVendue: 'Total Mnt Vendue',
+            frais: 'Frais',
+            salairefx: 'Salaire Fixe',
+            primeSpecial: 'Prime Special',
+            total: 'Total',
+            fraisSupp: 'Frais Supp',
+            taux: 'Taux',
+            taux2: 'Taux 2',
+            mntCNSS: 'Mnt CNSS',
+            primeCommercial: 'Prime Commercial',
+            primeProduit: 'Prime Produit',
+            totalMntVenduePrixCommercial: 'T.M.Vendu Prix Commercial',
+            totalMntVendueSansPrixCommercial: 'T.M.Vendu Sans Prix Commercial',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bulletin de paie ?',
+            detBulletinPai: {
+                produitDesignation: 'Produit',
+                qtevendu: 'Qte Vendue',
+                prixCommercial: 'Prix Commercial',
+                mantantVendu: 'Mantant Vendu',
+                mntReel: 'Mnt Reel',
+                mantantvendu: 'Mantant Vendu',
+                taux: 'Taux',
+                commsiondh: 'Commsiondh',
+                primeProduit: 'Prime Produit',
+                primeCommercial: 'Prime Commercial'
+            },
+            detBulletinLivraison: {
+                produitDesignation: 'Produit',
+                qtevendu: 'Qte Vendue',
+                prixCommercial: 'Prix Commercial',
+                mantantVendu: 'Mantant Vendu',
+                mntReel: 'Mnt Reel',
+                mantantvendu: 'Mantant Vendu',
+                taux: 'Taux',
+                commsiondh: 'Commsiondh',
+                primeProduit: 'Prime Produit',
+                primeCommercial: 'Prime Commercial',
+                livraisonDateBl: 'Date BL',
+                livraisonCodeBl: 'Code BL',
+                livraisonClientDesignation: 'Client',
+                livraisonMantantBL: 'Mantant BL',
+                livraisonReglerNonRegler: 'Regler Non Regler',
+                livraisonId: 'Livraison',
+                messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bulletin de livraison ?'
+            },
+            errors: {
+                commercialIdRequired: 'Commercial obligatoire',
+                dateDebutRequired: 'Date Début obligatoire',
+                dateFinRequired: 'Date Fin obligatoire',
+                listDetailBulletinPaiRequired: 'Liste des détails de bulletin de paie obligatoire',
+                listDetailBulletinPaiSansMontantRequired: 'Liste des détails de bulletin de paie sans montant obligatoire',
+                listDetailBulletinLivraisonRequired: 'Liste des détails de bulletin de livraison obligatoire',
+                dateDebutMustBeLessThanDateFin: 'Date Début doit être inférieure à Date Fin'
+            }
+        },
         detFacture: {
             label: 'Détail Facture'
         },
