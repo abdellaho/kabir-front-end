@@ -27,6 +27,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { AbsencelValidator } from '@/validators/absence-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { CheckboxModule } from 'primeng/checkbox';
+import { StateService } from '@/state/state-service';
 
 @Component({
     selector: 'app-absence-component',
@@ -58,6 +59,7 @@ export class AbsenceComponent implements OnInit {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
     //Tableau ---> Date + Personnel + Matin + Soir
     //Ajouter ---> Date + Personnel + Matin + Soir
+    personnelCreationId: number | null = null;
     listPersonnelFixe: Personnel[] = [];
     listPersonnel: Personnel[] = [];
     listAbsence: Absence[] = [];
@@ -73,19 +75,20 @@ export class AbsenceComponent implements OnInit {
     constructor(
         private personnelService: PersonnelService,
         private absenceService: AbsenceService,
+        private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
         this.getAllAbsence();
         this.getAllPersonnelFixe();
         this.initFormGroup();
     }
 
-    sortList(listAbsence: Absence[]) : Absence[] {
+    sortList(listAbsence: Absence[]): Absence[] {
         return listAbsence.sort((a, b) => b.dateAbsence.getTime() - a.dateAbsence.getTime());
     }
 
@@ -98,18 +101,21 @@ export class AbsenceComponent implements OnInit {
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group({
-            personnelId: [0, [Validators.required, Validators.min(1)]],
-            dateAbsence: [new Date(), Validators.required],
-            matin: [false],
-            apresMidi: [false]
-        }, { validators: AbsencelValidator });
+        this.formGroup = this.formBuilder.group(
+            {
+                personnelId: [0, [Validators.required, Validators.min(1)]],
+                dateAbsence: [new Date(), Validators.required],
+                matin: [false],
+                apresMidi: [false]
+            },
+            { validators: AbsencelValidator }
+        );
     }
 
     getAllAbsence(): void {
         this.absenceService.getAll().subscribe({
             next: (data: Absence[]) => {
-                this.listAbsence = (data || []).map(a => {
+                this.listAbsence = (data || []).map((a) => {
                     const dateAbsence = a && (a as any).dateAbsence ? new Date((a as any).dateAbsence) : new Date();
                     return {
                         ...a,
@@ -118,7 +124,8 @@ export class AbsenceComponent implements OnInit {
                     };
                 });
                 this.listAbsence = this.sortList(this.listAbsence);
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
             }
         });
@@ -160,7 +167,7 @@ export class AbsenceComponent implements OnInit {
         try {
             let dateAbsence = mapToDateTimeBackEnd(date);
             const existsObservable = this.personnelService.present(dateAbsence).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in absence existence observable:', error);
                     return of([]); // Gracefully handle observable errors by returning false
                 })
@@ -214,12 +221,12 @@ export class AbsenceComponent implements OnInit {
         if (operationType === OperationType.ADD) {
             list = [...list, absence];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === absence.id);
+            let index = list.findIndex((x) => x.id === absence.id);
             if (index > -1) {
                 list[index] = absence;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         list = this.sortList(list);
         return list;
@@ -244,7 +251,7 @@ export class AbsenceComponent implements OnInit {
     async checkIfExists(absence: Absence): Promise<boolean> {
         try {
             const existsObservable = this.absenceService.exist(absence).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in absence existence observable:', error);
                     return of(false); // Gracefully handle observable errors by returning false
                 })
@@ -278,7 +285,8 @@ export class AbsenceComponent implements OnInit {
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -286,11 +294,13 @@ export class AbsenceComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
             } else {
+                this.absence.personnelOperationId = BigInt(this.personnelCreationId || 0);
                 this.absenceService.create(this.absence).subscribe({
                     next: (data: Absence) => {
                         this.messageService.add({
@@ -302,7 +312,8 @@ export class AbsenceComponent implements OnInit {
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -310,7 +321,8 @@ export class AbsenceComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -336,7 +348,8 @@ export class AbsenceComponent implements OnInit {
                     this.checkIfListIsNull();
                     this.listAbsence = this.updateList(initObjectAbsence(), this.listAbsence, OperationType.DELETE, id);
                     this.absence = initObjectAbsence();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -344,7 +357,8 @@ export class AbsenceComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -366,5 +380,4 @@ export class AbsenceComponent implements OnInit {
 
         return [year, month, day].join('-');
     }
-
 }

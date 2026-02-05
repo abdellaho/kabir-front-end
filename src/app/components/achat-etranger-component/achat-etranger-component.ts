@@ -262,6 +262,7 @@ export class AchatEtrangerComponent {
                 this.formGroupDetAchatEtranger.get('designation')?.disable();
                 this.formGroupDetAchatEtranger.get('qteFacturer')?.disable();
                 this.formGroupDetAchatEtranger.get('qteStockImport')?.disable();
+
                 this.isValid = true;
 
                 this.formGroup.patchValue({
@@ -301,6 +302,12 @@ export class AchatEtrangerComponent {
     validerProduits() {
         this.detAchatEtranger.prixAchat = this.formGroupDetAchatEtranger.get('prixAchat')?.value;
         this.detAchatEtranger.qteAchat = this.formGroupDetAchatEtranger.get('qteAchat')?.value;
+
+        if (this.detAchatEtranger.stock && this.detAchatEtranger.stock.id) {
+            this.detAchatEtranger.stockDesignation = this.stock.designation;
+            this.detAchatEtranger.stockQteFacturer = this.stock.qteFacturer;
+            this.detAchatEtranger.stockQteStockImport = this.stock.qteStockImport;
+        }
 
         this.listDetAchatEtranger.push(this.detAchatEtranger);
         this.detAchatEtranger = initObjectDetAchatEtranger();

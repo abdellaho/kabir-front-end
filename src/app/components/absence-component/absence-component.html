@@ -18,7 +18,7 @@
                 selectionMode="single" [(selection)]="selectedAbsence" [metaKeySelection]="false"
                 [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['dateAbsence', 'personnelId', 'matin', 'apresMidi']"
+                [globalFilterFields]="['dateAbsence', 'personnelDesignation', 'matin', 'apresMidi']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -31,10 +31,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="personnelId" style="width: 45%">
+                        <th pSortableColumn="personnelDesignation" style="width: 45%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.absence.personnel }}
-                                <p-sortIcon field="personnelId" />
+                                <p-sortIcon field="personnelDesignation" />
                             </div>
                         </th>
 
@@ -59,7 +59,7 @@
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+                        <td>{{ p.personnelDesignation }}</td>
                         <td>
                             <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
                         </td>

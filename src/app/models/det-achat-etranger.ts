@@ -9,6 +9,7 @@ export interface DetAchatEtranger {
     stockPvttc: number;
     stockQteStock: number;
     stockQteFacturer: number;
+    stockQteStockImport: number;
     achatEtrangerId: bigint | null;
     qteAchat: number;
     qteStock: number;
@@ -27,6 +28,7 @@ export function initObjectDetAchatEtranger(): DetAchatEtranger {
         stockPvttc: 0,
         stockQteStock: 0,
         stockQteFacturer: 0,
+        stockQteStockImport: 0,
         qteAchat: 0,
         qteStock: 0,
         prixAchat: 0

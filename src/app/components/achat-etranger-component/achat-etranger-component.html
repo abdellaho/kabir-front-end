@@ -16,16 +16,16 @@
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatEtranger" [rows]="10" 
                 selectionMode="single" [(selection)]="selectedAchatEtranger" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['fournisseurId', 'codeFacture', 'dateFacture', 'mntFacture', 'totalPaye', 'mntTransportIntern', 'mntDouane', 'mntMagasinage', 'totalAllMnt']"
+                [globalFilterFields]="['fournisseurDesignation', 'codeFacture', 'dateFacture', 'mntFacture', 'totalPaye', 'mntTransportIntern', 'mntDouane', 'mntMagasinage', 'totalAllMnt']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="fournisseurId" style="width: 30%">
+                        <th pSortableColumn="fournisseurDesignation" style="width: 30%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.achatEtranger.fournisseurId }}
-                                <p-sortIcon field="fournisseurId" />
+                                <p-sortIcon field="fournisseurDesignation" />
                             </div>
                         </th>
 
@@ -97,7 +97,7 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
-                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.fournisseurDesignation }}</td>
                         <td>{{ p.codeFacture }}</td>
                         <td>{{ p.dateFacture | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.mntFacture }}</td>
@@ -283,30 +283,30 @@
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatEtranger" 
                             dataKey="stockId" style="width: 100% !important;" [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                            [globalFilterFields]="['stock.designation', 'stock.qteFacturer', 'stock.qteStockImport', 'qteAchat', 'prixAchat']"
+                            [globalFilterFields]="['stockDesignation', 'stockQteFacturer', 'stockQteStockImport', 'qteAchat', 'prixAchat']"
                             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                             <ng-template #header>
                                 <tr>
-                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                    <th pSortableColumn="stockDesignation" style="width: 45%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatEtranger.stock.designation }}
-                                            <p-sortIcon field="stock.designation" />
+                                            <p-sortIcon field="stockDesignation" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.qteFacturer" style="width: 8%">
+                                    <th pSortableColumn="stockQteFacturer" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatEtranger.stock.qteFacturer }}
-                                            <p-sortIcon field="stock.qteFacturer" />
+                                            <p-sortIcon field="stockQteFacturer" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.qteStockImport" style="width: 8%">
+                                    <th pSortableColumn="stockQteStockImport" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatEtranger.stock.qteStockImport }}
-                                            <p-sortIcon field="stock.qteStockImport" />
+                                            <p-sortIcon field="stockQteStockImport" />
                                         </div>
                                     </th>
 
@@ -330,9 +330,9 @@
 
                             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                                 <tr [pSelectableRow]="p">
-                                    <td>{{ p.stock.designation }}</td>
-                                    <td>{{ p.stock.qteFacturer }}</td>
-                                    <td>{{ p.stock.qteStockImport }}</td>
+                                    <td>{{ p.stockDesignation }}</td>
+                                    <td>{{ p.stockQteFacturer }}</td>
+                                    <td>{{ p.stockQteStockImport }}</td>
                                     <td>{{ p.qteAchat }}</td>
                                     <td>{{ p.prixAchat }}</td>
                                     <td style="width: 5%; min-width: 7rem">
