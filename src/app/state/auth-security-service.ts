@@ -8,6 +8,7 @@ import { AuthRequest } from './auth-request';
 import { ENDPOINTS } from '@/config/endpoints';
 import { Erreur } from '@/shared/classes/erreur';
 import { Permission } from '@/shared/classes/other/permissions';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +28,8 @@ export class AuthSecurityService {
 
     constructor(
         private http: HttpClient,
-        private stateService: StateService
+        private stateService: StateService,
+        private router: Router
     ) {
         // Do NOT call initializeAuth here - it will be called via APP_INITIALIZER
         // Only setup activity listeners
@@ -91,6 +93,7 @@ export class AuthSecurityService {
         } else {
             // No valid token - clear auth
             this.clearAuth();
+            this.router.navigate(['/login']);
             return of(null);
         }
     }
@@ -121,6 +124,7 @@ export class AuthSecurityService {
         } else {
             // No valid token, clear auth
             this.clearAuth();
+            this.router.navigate(['/login']);
         }
     }
 
@@ -139,9 +143,20 @@ export class AuthSecurityService {
             .pipe(debounceTime(1000)) // Only trigger once per second max
             .subscribe(() => {
                 if (this.isAuthenticated$.value) {
+                    this.checkInactivityOnReturn();
                     this.onUserActivity();
                 }
             });
+    }
+
+    private checkInactivityOnReturn() {
+        const last = this.lastActivityTime;
+        const now = Date.now();
+
+        if (now - last > this.INACTIVITY_TIMEOUT) {
+            this.logout();
+            this.router.navigate(['/login']);
+        }
     }
 
     // Handle user activity
@@ -160,6 +175,7 @@ export class AuthSecurityService {
         this.inactivityTimer = setTimeout(() => {
             console.log('Session expired due to inactivity');
             this.logout();
+            this.router.navigate(['/login']);
         }, this.INACTIVITY_TIMEOUT);
     }
 
@@ -234,9 +250,11 @@ export class AuthSecurityService {
     }
 
     refreshToken(): Observable<any> {
+        console.log('Refreshing token...');
         const refreshToken = this.getRefreshToken();
 
         if (!refreshToken) {
+            console.log('No refresh token available');
             return throwError(
                 () =>
                     ({
@@ -264,7 +282,9 @@ export class AuthSecurityService {
                 }
             }),
             catchError((error) => {
+                console.log('Refresh token failed', error);
                 this.logout();
+                this.router.navigate(['/login']);
                 return throwError(() => error);
             })
         );
@@ -277,6 +297,7 @@ export class AuthSecurityService {
         const expiryTime = new Date(expiry).getTime();
         const now = Date.now();
         const refreshTime = expiryTime - now - 5 * 60 * 1000; // 5 mins before expiry
+        console.log('Refresh time', refreshTime, 'expiryTime', expiryTime, 'now', now.toString(), 'expiry', expiry.toString());
 
         if (refreshTime > 0) {
             this.tokenRefreshTimer$ = timer(refreshTime).pipe(
