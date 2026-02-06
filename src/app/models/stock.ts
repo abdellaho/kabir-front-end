@@ -38,7 +38,8 @@ export interface Stock {
     prime2: number;
     prime3: number;
     typeProduit: number;
-    fournisseurId: bigint;
+    fournisseurId: bigint | null;
+    fournisseurDesignation: string;
     fournisseur?: Fournisseur | null;
 }
 
@@ -70,7 +71,6 @@ export function initObjectStock(): Stock {
         remiseMax2: 0,
         remiseMax3: 0,
         remiseMax4: 0,
-
         prime1: 0,
         prime2: 0,
         prime3: 0,
@@ -82,7 +82,8 @@ export function initObjectStock(): Stock {
         archiver: false,
         supprimer: false,
         typeProduit: 0,
-        fournisseurId: BigInt(0),
+        fournisseurId: null,
+        fournisseurDesignation: '',
         fournisseur: null
     };
 }

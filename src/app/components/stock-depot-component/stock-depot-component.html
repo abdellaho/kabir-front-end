@@ -132,30 +132,30 @@
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetStockDepot" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteStock', 'qte']"
+                            [globalFilterFields]="['stockDesignation', 'stockPvttc', 'stockQteStock', 'qte']"
                             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                             <ng-template #header>
                                 <tr>
-                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                    <th pSortableColumn="stockDesignation" style="width: 45%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.designation }}
-                                            <p-sortIcon field="stock.designation" />
+                                            <p-sortIcon field="stockDesignation" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.pvttc" style="width: 8%">
+                                    <th pSortableColumn="stockPvttc" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.pvttc }}
-                                            <p-sortIcon field="stock.pvttc" />
+                                            <p-sortIcon field="stockPvttc" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.qteStock" style="width: 8%">
+                                    <th pSortableColumn="stockQteStock" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.qteStock }}
-                                            <p-sortIcon field="stock.qteStock" />
+                                            <p-sortIcon field="stockQteStock" />
                                         </div>
                                     </th>
 
@@ -172,9 +172,9 @@
 
                             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                                 <tr [pSelectableRow]="p">
-                                    <td>{{ p.stock.designation }}</td>
-                                    <td>{{ p.stock.pvttc }}</td>
-                                    <td>{{ p.stock.qteStock }}</td>
+                                    <td>{{ p.stockDesignation }}</td>
+                                    <td>{{ p.stockPvttc | number:'1.2-2' }}</td>
+                                    <td>{{ p.stockQteStock }}</td>
                                     <td>{{ p.qte }}</td>
                                     <td style="width: 5%; min-width: 7rem">
                                         <div class="flex gap-2">

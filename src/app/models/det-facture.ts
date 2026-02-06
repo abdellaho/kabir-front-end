@@ -17,6 +17,9 @@ export interface DetFacture {
     factureId: bigint | null;
     facture?: Facture | null;
     stockId: bigint | null;
+    stockDesignation: string;
+    stockPvttc: number;
+    stockQteFacturer: number;
     stock?: Stock | null;
 }
 
@@ -37,6 +40,9 @@ export function initObjectDetFacture(): DetFacture {
         factureId: null,
         facture: null,
         stockId: null,
+        stockDesignation: '',
+        stockPvttc: 0,
+        stockQteFacturer: 0,
         stock: null
     };
 }

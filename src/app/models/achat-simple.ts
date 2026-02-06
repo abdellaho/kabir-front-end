@@ -5,6 +5,7 @@ export interface AchatSimple {
     dateOperation: Date;
     dateSys: Date;
     fournisseurId: bigint | null;
+    fournisseurDesignation: string;
 }
 
 export function initObjectAchatSimple(): AchatSimple {
@@ -14,6 +15,7 @@ export function initObjectAchatSimple(): AchatSimple {
         montant: 0,
         dateOperation: new Date(),
         dateSys: new Date(),
-        fournisseurId: null
+        fournisseurId: null,
+        fournisseurDesignation: ''
     };
 }

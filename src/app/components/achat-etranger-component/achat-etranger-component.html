@@ -101,12 +101,12 @@
                         <td>{{ p.codeFacture }}</td>
                         <td>{{ p.dateFacture | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.mntFacture }}</td>
-                        <td>{{ p.totalPaye }}</td>
-                        <td>{{ (p.totalPaye/p.totalAllMnt) }}</td>
-                        <td>{{ p.mntTransportIntern }}</td>
-                        <td>{{ p.mntDouane }}</td>
-                        <td>{{ p.mntMagasinage }}</td>
-                        <td>{{ p.totalAllMnt }}</td>
+                        <td>{{ p.totalPaye | number:'1.2-2' }}</td>
+                        <td>{{ (p.totalPaye/p.totalAllMnt) | number:'1.2-2' }}</td>
+                        <td>{{ p.mntTransportIntern | number:'1.2-2' }}</td>
+                        <td>{{ p.mntDouane | number:'1.2-2' }}</td>
+                        <td>{{ p.mntMagasinage | number:'1.2-2' }}</td>
+                        <td>{{ p.totalAllMnt | number:'1.2-2' }}</td>
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
@@ -163,7 +163,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="totalPaye" inputId="totalPaye" />
+                                    <p-input-number formControlName="totalPaye" inputId="totalPaye" [maxFractionDigits]="2" />
                                     <label for="totalPaye">{{ msg.components.achatEtranger.totalPaye }}</label>
                                 </p-floatlabel>
                             </div>
@@ -179,14 +179,14 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" (onBlur)="calculerMntTotal('mantantAvancs1')" />
+                                    <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs1')" />
                                     <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntTransportIntern" inputId="mntTransportIntern" (onBlur)="calculerMntTotal('mntTransportIntern')" />
+                                    <p-input-number formControlName="mntTransportIntern" inputId="mntTransportIntern" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntTransportIntern')" />
                                     <label for="mntTransportIntern">{{ msg.components.achatEtranger.mntTransportIntern }}</label>
                                 </p-floatlabel>
                             </div>
@@ -223,7 +223,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntDouane" inputId="mntDouane" (onBlur)="calculerMntTotal('mntDouane')" />
+                                    <p-input-number formControlName="mntDouane" inputId="mntDouane" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntDouane')" />
                                     <label for="mntDouane">{{ msg.components.achatEtranger.mntDouane }}</label>
                                 </p-floatlabel>
                             </div>
@@ -239,14 +239,14 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" (onBlur)="calculerMntTotal('mantantAvancs2')" />
+                                    <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs2')" />
                                     <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntMagasinage" inputId="mntMagasinage" (onBlur)="calculerMntTotal('mntMagasinage')" />
+                                    <p-input-number formControlName="mntMagasinage" inputId="mntMagasinage" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntMagasinage')" />
                                     <label for="mntMagasinage">{{ msg.components.achatEtranger.mntMagasinage }}</label>
                                 </p-floatlabel>
                             </div>

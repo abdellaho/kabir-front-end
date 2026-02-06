@@ -14,10 +14,10 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatSimple" dataKey="id"
-                [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation" [sortOrder]="-1"
+                [rows]="10"
                 selectionMode="single" [(selection)]="selectedAchatSimple" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['dateOperation','fournisseurId', 'numBlExterne', 'montant']"
+                [globalFilterFields]="['dateOperation','fournisseurDesignation', 'numBlExterne', 'montant']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -30,10 +30,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurId" style="width: 10%">
+                        <th pSortableColumn="fournisseurDesignation" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.achatSimple.fournisseurId }}
-                                <p-sortIcon field="fournisseurId" />
+                                <p-sortIcon field="fournisseurDesignation" />
                             </div>
                         </th>
 
@@ -55,12 +55,12 @@
                     </tr>
                 </ng-template>
 
-                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                <ng-template #body let-p let-rowIndex="rowIndex">
                     <tr>
                         <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.fournisseurDesignation }}</td>
                         <td>{{ p.numBlExterne }}</td>
-                        <td>{{ p.montant }}</td>
+                        <td>{{ p.montant | number:'1.2-2' }}</td>
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
@@ -131,7 +131,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montant" formControlName="montant" appendTo="body"
+                                    <p-input-number id="montant" formControlName="montant" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montant')?.invalid }" />
                                     <label for="montant">{{ msg.components.achatSimple.montant }}</label>
                                 </p-floatlabel>
@@ -176,7 +176,7 @@
 
                                 <div class="flex flex-col grow basis-0">
                                     <span id="prixVenteStockAchatSimpleSpan">{{ msg.components.achatSimple.prixVente }}</span>
-                                    <p-inputNumber name="prixVente" id="prixVente" formControlName="prixVente" />
+                                    <p-inputNumber name="prixVente" id="prixVente" formControlName="prixVente" [minFractionDigits]="2" />
                                 </div>
 
                                 <div class="flex flex-col grow basis-0">
@@ -186,7 +186,7 @@
 
                                 <div class="flex flex-col grow basis-0">
                                     <span id="prixVenteStockAchatSimpleSpan">{{ msg.components.achatSimple.remise }}</span>
-                                    <p-inputNumber name="remise" id="remise" formControlName="remise" />
+                                    <p-inputNumber name="remise" id="remise" formControlName="remise" [minFractionDigits]="2" />
                                 </div>
                             </div>
 
@@ -206,30 +206,30 @@
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatSimple" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteStock', 'qte', 'prixVente', 'uniteGratuite', 'remise', 'montant']"
+                            [globalFilterFields]="['stockDesignation', 'stockPvttc', 'stockQteStock', 'qte', 'prixVente', 'uniteGratuite', 'remise', 'montant']"
                             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                             <ng-template #header>
                                 <tr>
-                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                    <th pSortableColumn="stockDesignation" style="width: 45%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.designation }}
-                                            <p-sortIcon field="stock.designation" />
+                                            <p-sortIcon field="stockDesignation" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.pvttc" style="width: 8%">
+                                    <th pSortableColumn="stockPvttc" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.pvttc }}
-                                            <p-sortIcon field="stock.pvttc" />
+                                            <p-sortIcon field="stockPvttc" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.qteStock" style="width: 8%">
+                                    <th pSortableColumn="stockQteStock" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.livraison.stock.qteStock }}
-                                            <p-sortIcon field="stock.qteStock" />
+                                            <p-sortIcon field="stockQteStock" />
                                         </div>
                                     </th>
 
@@ -274,14 +274,14 @@
 
                             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                                 <tr [pSelectableRow]="p">
-                                    <td>{{ p.stock.designation }}</td>
-                                    <td>{{ p.stock.pvttc }}</td>
-                                    <td>{{ p.stock.qteStock }}</td>
+                                    <td>{{ p.stockDesignation }}</td>
+                                    <td>{{ p.stockPvttc }}</td>
+                                    <td>{{ p.stockQteStock }}</td>
                                     <td>{{ p.qte }}</td>
-                                    <td>{{ p.prixVente }}</td>
+                                    <td>{{ p.prixVente | number:'1.2-2' }}</td>
                                     <td>{{ p.uniteGratuite }}</td>
-                                    <td>{{ p.remise }}</td>
-                                    <td>{{ p.montant }}</td>
+                                    <td>{{ p.remise | number:'1.2-2' }}</td>
+                                    <td>{{ p.montant | number:'1.2-2' }}</td>
                                     <td style="width: 5%; min-width: 7rem">
                                         <div class="flex gap-2">
                                             <p-button (click)="recuppererDetAchatSimple(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />

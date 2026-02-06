@@ -35,7 +35,7 @@
             <p-table #dt size="small" class="p-datatable-sm" [value]="listStock" dataKey="id" [rows]="10"
                 selectionMode="single" [(selection)]="selectedStock"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurId']"
+                [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurDesignation']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})">
 
@@ -111,10 +111,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurId" style="width: 10%">
+                        <th pSortableColumn="fournisseurDesignation" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.fournisseurId }}
-                                <p-sortIcon field="fournisseurId" />
+                                <p-sortIcon field="fournisseurDesignation" />
                             </div>
                         </th>
 
@@ -133,7 +133,7 @@
                         <td>{{ p.prixVentMin1 }}</td>
                         <td>{{ p.remiseMax1 }}</td>
                         <td>{{ p.benifice | number: '1.2-3' }}</td>
-                        <td>{{ getDesignation(p.fournisseurId) }}</td>
+                        <td>{{ p.fournisseurDesignation }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
                                 @if(canEdit && typeOfList === 0) {

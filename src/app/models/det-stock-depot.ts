@@ -1,10 +1,13 @@
-import { Stock } from "./stock";
+import { Stock } from './stock';
 
 export interface DetStockDepot {
     id?: bigint | null;
     qte: number;
     stockId: bigint | null;
     stockDesignation: string;
+    stockQteStock: number;
+    stockPvttc: number;
+    stockPattc: number;
     stock?: Stock | null;
 }
 
@@ -13,7 +16,10 @@ export function initObjectDetStockDepot(): DetStockDepot {
         id: null,
         qte: 1,
         stockId: null,
-        stockDesignation: "",
+        stockDesignation: '',
+        stockQteStock: 0,
+        stockPvttc: 0,
+        stockPattc: 0,
         stock: null
     };
 }

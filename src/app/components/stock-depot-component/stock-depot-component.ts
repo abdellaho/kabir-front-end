@@ -29,35 +29,33 @@ import { StockDepotRequest } from '@/shared/classes/stock-depot-request';
 import { StockDepotValidator } from '@/validators/stock-depot-validator';
 
 @Component({
-  selector: 'app-stock-depot-component',
-  imports: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule,
-      ToastModule,
-      ToolbarModule,
-      TableModule,
-      IconFieldModule,
-      InputIconModule,
-      ButtonModule,
-      DialogModule,
-      FloatLabelModule,
-      InputNumberModule,
-      SelectModule,
-      DatePickerModule,
-      MessageModule,
-      InputTextModule
-  ],
-  templateUrl: './stock-depot-component.html',
-  styleUrl: './stock-depot-component.scss'
+    selector: 'app-stock-depot-component',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
+        ButtonModule,
+        DialogModule,
+        FloatLabelModule,
+        InputNumberModule,
+        SelectModule,
+        DatePickerModule,
+        MessageModule,
+        InputTextModule
+    ],
+    templateUrl: './stock-depot-component.html',
+    styleUrl: './stock-depot-component.scss'
 })
 export class StockDepotComponent {
-
     //Affichage --> Buttons --> Ajouter Rechercher Actualiser Consulter
     //          ---> Achat Etranger (Ancien App)
     // Tableau  ---> date designation qte Actions(Supprimer seulement)
     // Ajouter --> date ListProduit --> designation + qte
-
 
     //Achat Simple
     //Affichage --> Buttons --> Ajouter Rechercher Actualiser Consulter
@@ -88,8 +86,7 @@ export class StockDepotComponent {
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.search();
@@ -106,12 +103,15 @@ export class StockDepotComponent {
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group({
-            dateOperation: [new Date(), [Validators.required]],
-            stockId: [BigInt(0)],
-            qte: [1],
-            designation: [{ value: '', disabled: true }],
-        }, { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] });
+        this.formGroup = this.formBuilder.group(
+            {
+                dateOperation: [new Date(), [Validators.required]],
+                stockId: [BigInt(0)],
+                qte: [1],
+                designation: [{ value: '', disabled: true }]
+            },
+            { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] }
+        );
     }
 
     search() {
@@ -123,9 +123,11 @@ export class StockDepotComponent {
         this.stockDepotService.getAll().subscribe({
             next: (data: StockDepot[]) => {
                 this.listStockDepot = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -141,37 +143,39 @@ export class StockDepotComponent {
                 initStock.id = BigInt(0);
                 this.listStock = [initStock, ...data];
                 this.mapOfStock = arrayToMap(this.listStock, 'id', ['designation'], ['']);
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
     }
 
     onChangeIdStock() {
-        if(this.formGroup.get('stockId')?.value > BigInt(0)) {
+        if (this.formGroup.get('stockId')?.value > BigInt(0)) {
             this.isValid = false;
             this.stock = initObjectStock();
             let isExistStock: boolean = false;
 
             this.listDetStockDepot.forEach((detStockDepot: DetStockDepot) => {
-                if(detStockDepot.stockId === this.formGroup.get('stockId')?.value) {
+                if (detStockDepot.stockId === this.formGroup.get('stockId')?.value) {
                     isExistStock = true;
 
                     this.formGroup.patchValue({
-                        stockId: BigInt(0),
+                        stockId: BigInt(0)
                     });
 
                     return;
                 }
             });
-        
-            if(!isExistStock) {
+
+            if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
                     qte: 1,
-                    designation: this.stock.designation,
+                    designation: this.stock.designation
                 });
 
                 this.formGroup.get('designation')?.disable();
@@ -185,7 +189,7 @@ export class StockDepotComponent {
         this.formGroup.patchValue({
             stockId: BigInt(0),
             qte: 1,
-            designation: '',
+            designation: ''
         });
         this.formGroup.get('designation')?.disable();
     }
@@ -202,15 +206,18 @@ export class StockDepotComponent {
     }
 
     validerDetStockDepot() {
-        if(this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qte')?.value > 0) {
+        if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qte')?.value > 0) {
             let detStockDepot: DetStockDepot = initObjectDetStockDepot();
             detStockDepot.stockId = this.formGroup.get('stockId')?.value;
             detStockDepot.qte = this.formGroup.get('qte')?.value;
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-            detStockDepot.stock = stock;
+            detStockDepot.stockDesignation = stock.designation;
+            detStockDepot.stockQteStock = stock.qteStock;
+            detStockDepot.stockPvttc = stock.pvttc;
+            detStockDepot.stockPattc = stock.pattc;
 
             this.listDetStockDepot.push(detStockDepot);
-            
+
             this.initDetStockDepotFormInformation();
         }
     }
@@ -253,26 +260,21 @@ export class StockDepotComponent {
                         this.stockDepot = data.stockDepot;
                         this.listDetStockDepot = data.detStockDepots;
 
-                        this.listDetStockDepot.forEach((detStockDepot: DetStockDepot) => {
-                            if(detStockDepot.stockId && detStockDepot.stockId !== BigInt(0)) {
-                                let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detStockDepot.stockId) || initObjectStock();
-                                detStockDepot.stock = stock;
-                            }
-                        });
-                        
                         this.formGroup.patchValue({
                             designation: '',
                             stockId: BigInt(0),
                             qte: 1,
-                            dateOperation: new Date(this.stockDepot.dateOperation),
+                            dateOperation: new Date(this.stockDepot.dateOperation)
                         });
                         this.formGroup.get('designation')?.disable();
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
-                    }, error: (error: any) => {
+                    },
+                    error: (error: any) => {
                         console.error(error);
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -289,12 +291,12 @@ export class StockDepotComponent {
         if (operationType === OperationType.ADD) {
             list = [...list, stockDepot];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === stockDepot.id);
+            let index = list.findIndex((x) => x.id === stockDepot.id);
             if (index > -1) {
                 list[index] = stockDepot;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -316,12 +318,12 @@ export class StockDepotComponent {
         this.loadingService.show();
         let stockDepotEdit: StockDepot = { ...this.stockDepot };
         this.mapFormGroupToObject(this.formGroup, stockDepotEdit);
-        let trvErreur = false;// await this.checkIfExists(stockDepotEdit);
+        let trvErreur = false; // await this.checkIfExists(stockDepotEdit);
 
         if (!trvErreur) {
             this.stockDepot = this.mapFormGroupToObject(this.formGroup, this.stockDepot);
 
-            let stockDepotRequest: StockDepotRequest = { stockDepot: {...this.stockDepot }, detStockDepots: this.listDetStockDepot };
+            let stockDepotRequest: StockDepotRequest = { stockDepot: { ...this.stockDepot }, detStockDepots: this.listDetStockDepot };
 
             if (this.stockDepot.id) {
                 this.stockDepotService.update(this.stockDepot.id, stockDepotRequest).subscribe({
@@ -337,7 +339,8 @@ export class StockDepotComponent {
                         this.checkIfListIsNull();
                         this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -345,7 +348,8 @@ export class StockDepotComponent {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -363,7 +367,8 @@ export class StockDepotComponent {
                         this.checkIfListIsNull();
                         this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -371,7 +376,8 @@ export class StockDepotComponent {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -398,7 +404,8 @@ export class StockDepotComponent {
                     this.checkIfListIsNull();
                     this.listStockDepot = this.updateList(initObjectStockDepot(), this.listStockDepot, OperationType.DELETE, id);
                     this.stockDepot = initObjectStockDepot();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -406,7 +413,8 @@ export class StockDepotComponent {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });

@@ -143,7 +143,7 @@
             <div class="flex flex-col md:flex-row full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement" formControlName="mntReglement" class="full-width" />
+                        <p-input-number id="mntReglement" formControlName="mntReglement" class="full-width" [minFractionDigits]="2" />
                         <label for="mntReglement">{{ msg.components.facture.mntReglement }}</label>
                     </p-floatlabel>
 
@@ -223,7 +223,7 @@
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement2" formControlName="mntReglement2" class="full-width" />
+                        <p-input-number id="mntReglement2" formControlName="mntReglement2" class="full-width" [minFractionDigits]="2" />
                         <label for="mntReglement2">{{ msg.components.facture.mntReglement2 }}</label>
                     </p-floatlabel>
 
@@ -295,7 +295,7 @@
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement3" formControlName="mntReglement3" class="full-width" />
+                        <p-input-number id="mntReglement3" formControlName="mntReglement3" class="full-width" [minFractionDigits]="2" />
                         <label for="mntReglement3">{{ msg.components.facture.mntReglement3 }}</label>
                     </p-floatlabel>
 
@@ -367,7 +367,7 @@
             <div class="flex flex-col md:flex-row gap-2 full-width">
                 <div class="flex flex-col gap-4 full-width">
                     <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement4" formControlName="mntReglement4" class="full-width" />
+                        <p-input-number id="mntReglement4" formControlName="mntReglement4" class="full-width" [minFractionDigits]="2" />
                         <label for="mntReglement4">{{ msg.components.facture.mntReglement4 }}</label>
                     </p-floatlabel>
 
@@ -409,30 +409,30 @@
         <p-table #dtDetFacture size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetFacture" dataKey="id" style="width: 100% !important;"
             [rows]="10" 
             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-            [globalFilterFields]="['stock.designation', 'stock.pvttc', 'stock.qteFacturer', 'prixVente', 'qteFacturer', 'remiseFacture', 'montantProduit']"
+            [globalFilterFields]="['stockDesignation', 'stockPvttc', 'stockQteFacturer', 'prixVente', 'qteFacturer', 'remiseFacture', 'montantProduit']"
             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
             <ng-template #header>
                 <tr>
-                    <th pSortableColumn="stock.designation" style="width: 45%">
+                    <th pSortableColumn="stockDesignation" style="width: 45%">
                         <div class="flex items-center gap-2">
                             {{ msg.components.facture.stock.designation }}
-                            <p-sortIcon field="stock.designation" />
+                            <p-sortIcon field="stockDesignation" />
                         </div>
                     </th>
 
-                    <th pSortableColumn="stock.pvttc" style="width: 8%">
+                    <th pSortableColumn="stockPvttc" style="width: 8%">
                         <div class="flex items-center gap-2">
                             {{ msg.components.facture.stock.pvttc }}
-                            <p-sortIcon field="stock.pvttc" />
+                            <p-sortIcon field="stockPvttc" />
                         </div>
                     </th>
 
-                    <th pSortableColumn="stock.qteFacturer" style="width: 8%">
+                    <th pSortableColumn="stockQteFacturer" style="width: 8%">
                         <div class="flex items-center gap-2">
                             {{ msg.components.facture.stock.qteFacturer }}
-                            <p-sortIcon field="stock.qteFacturer" />
+                            <p-sortIcon field="stockQteFacturer" />
                         </div>
                     </th>
 
@@ -469,12 +469,12 @@
             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                 <tr [pSelectableRow]="p">
                     <td>{{ p.stock.designation }}</td>
-                    <td>{{ p.stock.pvttc }}</td>
+                    <td>{{ p.stock.pvttc | number:'1.2-2' }}</td>
                     <td>{{ p.stock.qteFacturer }}</td>
-                    <td>{{ p.prixVente }}</td>
+                    <td>{{ p.prixVente | number:'1.2-2' }}</td>
                     <td>{{ p.qteFacturer }}</td>
-                    <td>{{ p.remiseFacture }}</td>
-                    <td>{{ p.montantProduit }}</td>
+                    <td>{{ p.remiseFacture | number:'1.2-2' }}</td>
+                    <td>{{ p.montantProduit | number:'1.2-2' }}</td>
                     <td style="width: 5%; min-width: 7rem">
                         <div class="flex gap-2">
                             <p-button (click)="recuppererDetFacture(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
@@ -539,21 +539,21 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" />
+                            <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" [minFractionDigits]="2" />
                             <label for="pvttc">{{ msg.components.facture.stock.pvttc }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" />
+                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" [minFractionDigits]="2" />
                             <label for="prixVenteMin">{{ msg.components.facture.stock.prixVenteMin }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" />
+                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" [minFractionDigits]="2" />
                             <label for="prixVente">{{ msg.components.facture.stock.prixVente }}</label>
                             
                             @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
@@ -577,7 +577,7 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="remiseFacture" id="remiseFacture" inputId="remiseFacture" />
+                            <p-inputNumber formControlName="remiseFacture" id="remiseFacture" inputId="remiseFacture" [minFractionDigits]="2" />
                             <label for="remiseFacture">{{ msg.components.facture.stock.remiseFacture }}</label>
                         </p-floatlabel>
 
@@ -589,7 +589,7 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" />
+                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" [minFractionDigits]="2" />
                             <label for="montantProduit">{{ msg.components.facture.stock.montantProduit }}</label>
                         </p-floatlabel>
                     </div>

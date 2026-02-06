@@ -35,7 +35,7 @@
             <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="10"
                 selectionMode="single" [(selection)]="selectedRepertoire"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['typeRepertoire', 'designation', 'villeId', 'ice', 'tel1', 'tel2', 'tel3', 'personnelId', 'observation', 'nbrOperationClient']"
+                [globalFilterFields]="['typeRepertoire', 'designation', 'villeNomVille', 'ice', 'tel1', 'tel2', 'tel3', 'personnelDesignation', 'observation', 'nbrOperationClient']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})">
 
@@ -55,10 +55,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="villeId" style="width: 10%">
+                        <th pSortableColumn="villeNomVille" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.villeId }}
-                                <p-sortIcon field="villeId" />
+                                <p-sortIcon field="villeNomVille" />
                             </div>
                         </th>
 
@@ -90,10 +90,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="personnelId" style="width: 15%">
+                        <th pSortableColumn="personnelDesignation" style="width: 15%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.repertoire.personnelId }}
-                                <p-sortIcon field="personnelId" />
+                                <p-sortIcon field="personnelDesignation" />
                             </div>
                         </th>
 
@@ -119,12 +119,12 @@
                     <tr [pSelectableRow]="p">
                         <td>{{ p.typeRepertoire | typeRepertoirePipe }}</td>
                         <td>{{ p.designation }}</td>
-                        <td>{{ getNomVille(p.villeId) }}</td>
+                        <td>{{ p.villeNomVille }}</td>
                         <td>{{ p.ice }}</td>
                         <td>{{ p.tel1 }}</td>
                         <td>{{ p.tel2 }}</td>
                         <td>{{ p.tel3 }}</td>
-                        <td>{{ getPersonnelName(p.personnelId) }}</td>
+                        <td>{{ p.personnelDesignation }}</td>
                         <td>{{ p.observation }}</td>
                         <td>{{ p.nbrOperationClient }}</td>
                         <td>

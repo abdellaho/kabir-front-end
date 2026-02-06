@@ -1,4 +1,4 @@
-import { Stock } from "./stock";
+import { Stock } from './stock';
 
 export interface DetAchatSimple {
     id: bigint | null;
@@ -7,8 +7,10 @@ export interface DetAchatSimple {
     remise: number;
     uniteGratuite: number;
     montant: number;
-    stockDesignation: string;
     stockId: bigint | null;
+    stockDesignation: string;
+    stockPvttc: number;
+    stockQteStock: number;
     achatSimpleId: bigint | null;
     stock?: Stock | null;
 }
@@ -21,8 +23,10 @@ export function initObjectDetAchatSimple(): DetAchatSimple {
         remise: 0,
         uniteGratuite: 0,
         montant: 0,
-        stockDesignation: '',
         stockId: null,
+        stockDesignation: '',
+        stockPvttc: 0,
+        stockQteStock: 0,
         achatSimpleId: null,
         stock: null
     };

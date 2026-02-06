@@ -17,16 +17,16 @@
                 [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation" [sortOrder]="-1"
                 selectionMode="single" [(selection)]="selectedAchatFacture" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['fournisseurId', 'dateAF', 'fournisseurICE', 'dateReglement', 'typeReglment', 'numCheque', 'numeroFacExterne', 'mantantTotTTC']"
+                [globalFilterFields]="['fournisseurDesignation', 'dateAF', 'fournisseurIce', 'dateReglement', 'typeReglment', 'numCheque', 'numeroFacExterne', 'mantantTotTTC']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="fournisseurId" style="width: 30%">
+                        <th pSortableColumn="fournisseurDesignation" style="width: 30%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.achatFacture.fournisseurId }}
-                                <p-sortIcon field="fournisseurId" />
+                                <p-sortIcon field="fournisseurDesignation" />
                             </div>
                         </th>
 
@@ -37,10 +37,10 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurICE" style="width: 10%">
+                        <th pSortableColumn="fournisseurIce" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.achatFacture.fournisseurICE }}
-                                <p-sortIcon field="fournisseurICE" />
+                                <p-sortIcon field="fournisseurIce" />
                             </div>
                         </th>
 
@@ -85,14 +85,14 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
-                        <td>{{ getDesignationFournisseur(p.fournisseurId) }}</td>
+                        <td>{{ p.fournisseurDesignation }}</td>
                         <td>{{ p.dateAF | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ getICE(p.fournisseurId) }}</td>
+                        <td>{{ p.fournisseurIce }}</td>
                         <td>{{ p.dateReglement | date:'dd/MM/yyyy' }}</td>
                         <td>{{ getTypeReglement(p.typeReglment) }}</td>
                         <td>{{ p.numCheque }}</td>
                         <td>{{ p.numeroFacExterne }}</td>
-                        <td>{{ p.mantantTotTTC }}</td>
+                        <td>{{ p.mantantTotTTC | number:'1.2-2' }}</td>
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
@@ -198,7 +198,7 @@
                         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/5 flex flex-col gap-2 px-4 mb-8">
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntManuelTva7" formControlName="mntManuelTva7" appendTo="body" (onBlur)="onChangeTVAManuel(7)"
+                                    <p-input-number id="mntManuelTva7" formControlName="mntManuelTva7" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(7)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntManuelTva7')?.invalid }" />
                                     <label for="mntManuelTva7">{{ msg.components.achatFacture.mntManuelTva7 }}</label>
                                 </p-floatlabel>
@@ -206,7 +206,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntManuelTva10" formControlName="mntManuelTva10" appendTo="body" (onBlur)="onChangeTVAManuel(10)"
+                                    <p-input-number id="mntManuelTva10" formControlName="mntManuelTva10" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(10)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntManuelTva10')?.invalid }" />
                                     <label for="mntManuelTva10">{{ msg.components.achatFacture.mntManuelTva10 }}</label>
                                 </p-floatlabel>
@@ -214,7 +214,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntManuelTva12" formControlName="mntManuelTva12" appendTo="body" (onBlur)="onChangeTVAManuel(12)"
+                                    <p-input-number id="mntManuelTva12" formControlName="mntManuelTva12" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(12)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntManuelTva12')?.invalid }" />
                                     <label for="mntManuelTva12">{{ msg.components.achatFacture.mntManuelTva12 }}</label>
                                 </p-floatlabel>
@@ -222,7 +222,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntManuelTva14" formControlName="mntManuelTva14" appendTo="body" (onBlur)="onChangeTVAManuel(14)"
+                                    <p-input-number id="mntManuelTva14" formControlName="mntManuelTva14" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(14)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntManuelTva14')?.invalid }" />
                                     <label for="mntManuelTva14">{{ msg.components.achatFacture.mntManuelTva14 }}</label>
                                 </p-floatlabel>
@@ -230,7 +230,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntManuelTva20" formControlName="mntManuelTva20" appendTo="body" (onBlur)="onChangeTVAManuel(20)"
+                                    <p-input-number id="mntManuelTva20" formControlName="mntManuelTva20" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(20)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntManuelTva20')?.invalid }" />
                                     <label for="mntManuelTva20">{{ msg.components.achatFacture.mntManuelTva20 }}</label>
                                 </p-floatlabel>
@@ -238,7 +238,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHt" formControlName="mntHt" appendTo="body" (onBlur)="onChangeTVAManuel(0)"
+                                    <p-input-number id="mntHt" formControlName="mntHt" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVAManuel(0)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHt')?.invalid }" />
                                     <label for="mntHt">{{ msg.components.achatFacture.mntHt }}</label>
                                 </p-floatlabel>
@@ -248,7 +248,7 @@
                         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/5 flex flex-col gap-2 px-4 mb-8">
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHtTVA7" formControlName="mntHtTVA7" appendTo="body" (onBlur)="onChangeTVA(7)"
+                                    <p-input-number id="mntHtTVA7" formControlName="mntHtTVA7" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(7)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHtTVA7')?.invalid }" />
                                     <label for="mntHtTVA7">{{ msg.components.achatFacture.mntHtTVA7 }}</label>
                                 </p-floatlabel>
@@ -256,7 +256,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHtTVA10" formControlName="mntHtTVA10" appendTo="body" (onBlur)="onChangeTVA(10)"
+                                    <p-input-number id="mntHtTVA10" formControlName="mntHtTVA10" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(10)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHtTVA10')?.invalid }" />
                                     <label for="mntHtTVA10">{{ msg.components.achatFacture.mntHtTVA10 }}</label>
                                 </p-floatlabel>
@@ -264,7 +264,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHtTVA12" formControlName="mntHtTVA12" appendTo="body" (onBlur)="onChangeTVA(12)"
+                                    <p-input-number id="mntHtTVA12" formControlName="mntHtTVA12" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(12)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHtTVA12')?.invalid }" />
                                     <label for="mntHtTVA12">{{ msg.components.achatFacture.mntHtTVA12 }}</label>
                                 </p-floatlabel>
@@ -272,7 +272,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHtTVA14" formControlName="mntHtTVA14" appendTo="body" (onBlur)="onChangeTVA(14)"
+                                    <p-input-number id="mntHtTVA14" formControlName="mntHtTVA14" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(14)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHtTVA14')?.invalid }" />
                                     <label for="mntHtTVA14">{{ msg.components.achatFacture.mntHtTVA14 }}</label>
                                 </p-floatlabel>
@@ -280,7 +280,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntHtTVA20" formControlName="mntHtTVA20" appendTo="body" (onBlur)="onChangeTVA(20)"
+                                    <p-input-number id="mntHtTVA20" formControlName="mntHtTVA20" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(20)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntHtTVA20')?.invalid }" />
                                     <label for="mntHtTVA20">{{ msg.components.achatFacture.mntHtTVA20 }}</label>
                                 </p-floatlabel>
@@ -288,7 +288,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mantantTotHT" formControlName="mantantTotHT" appendTo="body"
+                                    <p-input-number id="mantantTotHT" formControlName="mantantTotHT" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mantantTotHT')?.invalid }" />
                                     <label for="mantantTotHT">{{ msg.components.achatFacture.mantantTotHT }}</label>
                                 </p-floatlabel>
@@ -298,7 +298,7 @@
                         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/5 flex flex-col gap-2 px-4 mb-8">
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA7" formControlName="montantTVA7" appendTo="body" (onBlur)="onChangeTVA(7)"
+                                    <p-input-number id="montantTVA7" formControlName="montantTVA7" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(7)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA7')?.invalid }" />
                                     <label for="montantTVA7">{{ msg.components.achatFacture.montantTVA7 }}</label>
                                 </p-floatlabel>
@@ -306,7 +306,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA10" formControlName="montantTVA10" appendTo="body" (onBlur)="onChangeTVA(10)"
+                                    <p-input-number id="montantTVA10" formControlName="montantTVA10" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(10)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA10')?.invalid }" />
                                     <label for="montantTVA10">{{ msg.components.achatFacture.montantTVA10 }}</label>
                                 </p-floatlabel>
@@ -314,7 +314,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA12" formControlName="montantTVA12" appendTo="body" (onBlur)="onChangeTVA(12)"
+                                    <p-input-number id="montantTVA12" formControlName="montantTVA12" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(12)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA12')?.invalid }" />
                                     <label for="montantTVA12">{{ msg.components.achatFacture.montantTVA12 }}</label>
                                 </p-floatlabel>
@@ -322,7 +322,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA14" formControlName="montantTVA14" appendTo="body" (onBlur)="onChangeTVA(14)"
+                                    <p-input-number id="montantTVA14" formControlName="montantTVA14" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(14)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA14')?.invalid }" />
                                     <label for="montantTVA14">{{ msg.components.achatFacture.montantTVA14 }}</label>
                                 </p-floatlabel>
@@ -330,7 +330,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="montantTVA20" formControlName="montantTVA20" appendTo="body" (onBlur)="onChangeTVA(20)"
+                                    <p-input-number id="montantTVA20" formControlName="montantTVA20" appendTo="body" [minFractionDigits]="2" (onBlur)="onChangeTVA(20)"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montantTVA20')?.invalid }" />
                                     <label for="montantTVA20">{{ msg.components.achatFacture.montantTVA20 }}</label>
                                 </p-floatlabel>
@@ -338,7 +338,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mantantTotHTVA" formControlName="mantantTotHTVA" appendTo="body"
+                                    <p-input-number id="mantantTotHTVA" formControlName="mantantTotHTVA" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mantantTotHTVA')?.invalid }" />
                                     <label for="mantantTotHTVA">{{ msg.components.achatFacture.mantantTotHTVA }}</label>
                                 </p-floatlabel>
@@ -348,7 +348,7 @@
                         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/5 flex flex-col gap-2 px-4 mb-8">
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtcTVA7" formControlName="mntTtcTVA7" appendTo="body"
+                                    <p-input-number id="mntTtcTVA7" formControlName="mntTtcTVA7" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtcTVA7')?.invalid }" />
                                     <label for="mntTtcTVA7">{{ msg.components.achatFacture.mntTtcTVA7 }}</label>
                                 </p-floatlabel>
@@ -356,7 +356,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtcTVA10" formControlName="mntTtcTVA10" appendTo="body"
+                                    <p-input-number id="mntTtcTVA10" formControlName="mntTtcTVA10" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtcTVA10')?.invalid }" />
                                     <label for="mntTtcTVA10">{{ msg.components.achatFacture.mntTtcTVA10 }}</label>
                                 </p-floatlabel>
@@ -364,7 +364,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtcTVA12" formControlName="mntTtcTVA12" appendTo="body"
+                                    <p-input-number id="mntTtcTVA12" formControlName="mntTtcTVA12" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtcTVA12')?.invalid }" />
                                     <label for="mntTtcTVA12">{{ msg.components.achatFacture.mntTtcTVA12 }}</label>
                                 </p-floatlabel>
@@ -372,7 +372,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtcTVA14" formControlName="mntTtcTVA14" appendTo="body"
+                                    <p-input-number id="mntTtcTVA14" formControlName="mntTtcTVA14" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtcTVA14')?.invalid }" />
                                     <label for="mntTtcTVA14">{{ msg.components.achatFacture.mntTtcTVA14 }}</label>
                                 </p-floatlabel>
@@ -380,7 +380,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mntTtcTVA20" formControlName="mntTtcTVA20" appendTo="body"
+                                    <p-input-number id="mntTtcTVA20" formControlName="mntTtcTVA20" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mntTtcTVA20')?.invalid }" />
                                     <label for="mntTtcTVA20">{{ msg.components.achatFacture.mntTtcTVA20 }}</label>
                                 </p-floatlabel>
@@ -388,7 +388,7 @@
 
                             <div class="flex flex-col md:flex-row full-width">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="mantantTotTTC" formControlName="mantantTotTTC" appendTo="body"
+                                    <p-input-number id="mantantTotTTC" formControlName="mantantTotTTC" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('mantantTotTTC')?.invalid }" />
                                     <label for="mantantTotTTC">{{ msg.components.achatFacture.mantantTotTTC }}</label>
                                 </p-floatlabel>
@@ -409,7 +409,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="totalMntProduit" formControlName="totalMntProduit" appendTo="body"
+                                    <p-input-number id="totalMntProduit" formControlName="totalMntProduit" appendTo="body" [minFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('totalMntProduit')?.invalid }" />
                                     <label for="totalMntProduit">{{ msg.components.achatFacture.totalMntProduit }}</label>
                                 </p-floatlabel>
@@ -426,23 +426,23 @@
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatFacture" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                            [globalFilterFields]="['stock.designation', 'stock.qteFacturer', 'qteacheter', 'unitegratuit', 'mantantTTC']"
+                            [globalFilterFields]="['stockDesignation', 'stockQteFacturer', 'qteacheter', 'unitegratuit', 'mantantTTC']"
                             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                             <ng-template #header>
                                 <tr>
-                                    <th pSortableColumn="stock.designation" style="width: 45%">
+                                    <th pSortableColumn="stockDesignation" style="width: 45%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatFacture.stock.designation }}
-                                            <p-sortIcon field="stock.designation" />
+                                            <p-sortIcon field="stockDesignation" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stock.qteFacturer" style="width: 8%">
+                                    <th pSortableColumn="stockQteFacturer" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatFacture.stock.qteFacturer }}
-                                            <p-sortIcon field="stock.qteFacturer" />
+                                            <p-sortIcon field="stockQteFacturer" />
                                         </div>
                                     </th>
 
@@ -473,11 +473,11 @@
 
                             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                                 <tr [pSelectableRow]="p">
-                                    <td>{{ p.stock.designation }}</td>
-                                    <td>{{ p.stock.qteFacturer }}</td>
+                                    <td>{{ p.stockDesignation }}</td>
+                                    <td>{{ p.stockQteFacturer }}</td>
                                     <td>{{ p.qteAcheter }}</td>
                                     <td>{{ p.uniteGratuit }}</td>
-                                    <td>{{ p.mantantTTC }}</td>
+                                    <td>{{ p.mantantTTC | number:'1.2-2' }}</td>
                                     <td style="width: 5%; min-width: 7rem">
                                         <div class="flex gap-2">
                                             <p-button (click)="recuppererDetAchatFacture(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
@@ -552,7 +552,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="pattc" id="pattc" inputId="pattc" />
+                                    <p-inputNumber formControlName="pattc" id="pattc" inputId="pattc" [minFractionDigits]="2" />
                                     <label for="pattc">{{ msg.components.livraison.stock.pattc }}</label>
                                 </p-floatlabel>
                             </div>

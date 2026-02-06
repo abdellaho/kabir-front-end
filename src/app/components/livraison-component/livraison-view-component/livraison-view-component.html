@@ -18,7 +18,7 @@
                 selectionMode="single" [(selection)]="selectedLivraison" [metaKeySelection]="false"
                 [rows]="10" 
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['codeBl', 'sysDate', 'dateBl', 'mantantBL','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurId', 'personnelId', 'reglerNonRegler']"
+                [globalFilterFields]="['codeBl', 'sysDate', 'dateBl', 'mantantBL','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurDesignation', 'personnelDesignation', 'reglerNonRegler']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -38,17 +38,17 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="repertoireId" style="width: 10%">
+                        <th pSortableColumn="repertoireDesignation" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.repertoireId }}
-                                <p-sortIcon field="repertoireId" />
+                                <p-sortIcon field="repertoireDesignation" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="personnelId" style="width: 10%">
+                        <th pSortableColumn="personnelDesignation" style="width: 10%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.personnelId }}
-                                <p-sortIcon field="personnelId" />
+                                <p-sortIcon field="personnelDesignation" />
                             </div>
                         </th>
 
@@ -114,8 +114,8 @@
                     <tr [pSelectableRow]="p">
                         <td>{{ p.codeBl }}</td>
                         <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
-                        <td>{{ getDesignationPersonnel(p.personnelId) }}</td>
+                        <td>{{ p.repertoireDesignation }}</td>
+                        <td>{{ p.personnelDesignation }}</td>
 
                         <td>
                             {{ getTypeReglement(p.typeReglment) }}

@@ -50,9 +50,16 @@ export interface Facture {
     tva20Reglement4: number;
     mntHT20Reglement1: number;
     mntHT20Reglement2: number;
-    repertoireId: bigint | null;
-    personnelId: bigint | null;
     employeOperateurId: bigint | null;
+    employeOperateurDesignation: string;
+    personnelId: bigint | null;
+    personnelDesignation: string;
+    repertoireId: bigint | null;
+    repertoireDesignation: string;
+    repertoireTel1: string;
+    repertoireTel2: string;
+    repertoireTel3: string;
+    repertoireIce: string;
 }
 
 export function initObjectFacture(): Facture {
@@ -108,8 +115,15 @@ export function initObjectFacture(): Facture {
         tva20Reglement4: 0,
         mntHT20Reglement1: 0,
         mntHT20Reglement2: 0,
-        repertoireId: null,
+        employeOperateurId: null,
+        employeOperateurDesignation: '',
         personnelId: null,
-        employeOperateurId: null
+        personnelDesignation: '',
+        repertoireId: null,
+        repertoireDesignation: '',
+        repertoireTel1: '',
+        repertoireTel2: '',
+        repertoireTel3: '',
+        repertoireIce: ''
     };
 }

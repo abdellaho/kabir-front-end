@@ -249,6 +249,10 @@ export class BonSortieComponent {
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
             detailBonSortie.stock = stock;
+            detailBonSortie.stockQteFacturer = stock.qteStock;
+            detailBonSortie.stockQteStock = stock.qteStock;
+            detailBonSortie.stockPvttc = stock.pvttc;
+            detailBonSortie.stockDesignation = stock.designation;
 
             this.listDetailBonSortie.push(detailBonSortie);
 
@@ -300,17 +304,10 @@ export class BonSortieComponent {
                         this.bonSortie = data.bonSortie;
                         this.listDetailBonSortie = data.detailBonSorties;
 
-                        this.listDetailBonSortie.forEach((detailBonSortie: DetailBonSortie) => {
-                            if (detailBonSortie.stockId && detailBonSortie.stockId !== BigInt(0)) {
-                                let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detailBonSortie.stockId) || initObjectStock();
-                                detailBonSortie.stock = stock;
-                            }
-                        });
-
                         this.formGroup.patchValue({
-                            codeSortie: '',
-                            dateOperation: new Date(),
-                            repertoireId: BigInt(0),
+                            codeSortie: this.bonSortie.codeSortie,
+                            dateOperation: new Date(this.bonSortie.dateOperation),
+                            repertoireId: this.bonSortie.repertoireId,
                             designation: '',
                             stockId: BigInt(0),
                             qteStock: 0,

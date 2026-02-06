@@ -369,11 +369,16 @@ export class AchatFactureComponent {
 
             if (!isExistStock) {
                 this.detAchatFacture.stockId = this.formGroup.get('stockId')?.value;
+
                 this.detAchatFacture.remiseAchat = 0.0;
                 this.detAchatFacture.qteAcheter = 0;
                 this.detAchatFacture.uniteGratuit = 0;
                 this.detAchatFacture.prixAchatHt = stock.pahtGrossiste;
                 this.detAchatFacture.prixVenteAchatHT = stock.pvaht;
+
+                this.detAchatFacture.stockDesignation = stock.designation;
+                this.detAchatFacture.stockQteFacturer = stock.qteFacturer;
+                this.detAchatFacture.stockQteStock = stock.qteStock;
 
                 this.detAchatFacture.prixAchatTtc = stock.pattc;
                 this.detAchatFacture.prixVenteTtc = stock.pvttc;

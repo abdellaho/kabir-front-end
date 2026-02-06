@@ -42,574 +42,588 @@ import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { StateService } from '@/state/state-service';
 
 @Component({
-  selector: 'app-livraison-update-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    IconFieldModule,
-    InputIconModule,
-    ButtonModule,
-    DialogModule,
-    FloatLabelModule,
-    InputNumberModule,
-    InputTextModule,
-    DatePickerModule,
-    SelectModule,
-    IconFieldModule,
-    ToggleSwitchModule,
-    CheckboxModule,
-    MessageModule,
-    MultiSelectModule
-  ],
-  templateUrl: './livraison-update-component.html',
-  styleUrl: './livraison-update-component.scss'
+    selector: 'app-livraison-update-component',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
+        ButtonModule,
+        DialogModule,
+        FloatLabelModule,
+        InputNumberModule,
+        InputTextModule,
+        DatePickerModule,
+        SelectModule,
+        IconFieldModule,
+        ToggleSwitchModule,
+        CheckboxModule,
+        MessageModule,
+        MultiSelectModule
+    ],
+    templateUrl: './livraison-update-component.html',
+    styleUrl: './livraison-update-component.scss'
 })
 export class LivraisonUpdateComponent implements OnInit, OnDestroy {
+    personnelCreationId: number | null = null;
+    submitted: boolean = false;
+    etablissement: Etablissement = initObjectEtablissement();
+    oldLivraison: Livraison | null = null;
+    livraison: Livraison = initObjectLivraison();
+    listRepertoire: Repertoire[] = [];
+    listDetLivraison: DetLivraison[] = [];
+    originalListDetLivraison: DetLivraison[] = [];
+    listPersonnel: Personnel[] = [];
+    listStock: Stock[] = [];
+    mapOfPersonnels: Map<number, string> = new Map<number, string>();
+    mapOfStocks: Map<number, string> = new Map<number, string>();
+    mapOfRepertoire: Map<number, string> = new Map<number, string>();
+    subscription!: Subscription;
+    dialogStock: boolean = false;
+    dialogFacturer: boolean = false;
+    dialogRegler: boolean = false;
+    dialogDeleteStock: boolean = false;
+    detLivraisonSelected: DetLivraison = initObjectDetLivraison();
+    stockSelected: Stock = initObjectStock();
+    repertoireSelected: Repertoire = initObjectRepertoire();
+    msg = APP_MESSAGES;
+    formGroup!: FormGroup;
+    formGroupStock!: FormGroup;
+    typeReglements: { label: string; value: number }[] = filteredTypeReglement;
 
-  personnelCreationId: number | null = null;
-  submitted: boolean = false;
-  etablissement: Etablissement = initObjectEtablissement();
-  oldLivraison: Livraison | null = null;
-  livraison: Livraison = initObjectLivraison();
-  listRepertoire: Repertoire[] = [];
-  listDetLivraison: DetLivraison[] = [];
-  originalListDetLivraison: DetLivraison[] = [];
-  listPersonnel: Personnel[] = [];
-  listStock: Stock[] = [];
-  mapOfPersonnels: Map<number, string> = new Map<number, string>();
-  mapOfStocks: Map<number, string> = new Map<number, string>();
-  mapOfRepertoire: Map<number, string> = new Map<number, string>();
-  subscription!: Subscription;
-  dialogStock: boolean = false;
-  dialogFacturer: boolean = false;
-  dialogRegler: boolean = false;
-  dialogDeleteStock: boolean = false;
-  detLivraisonSelected: DetLivraison = initObjectDetLivraison();
-  stockSelected: Stock = initObjectStock();
-  repertoireSelected: Repertoire = initObjectRepertoire();
-  msg = APP_MESSAGES;
-  formGroup!: FormGroup;
-  formGroupStock!: FormGroup;
-  typeReglements: { label: string, value: number }[] = filteredTypeReglement;
+    constructor(
+        private livraisonService: LivraisonService,
+        private stateService: StateService,
+        private formBuilder: FormBuilder,
+        private dataService: DataService,
+        private router: Router,
+        private messageService: MessageService,
+        private etablissementService: EtablissementService,
+        private loadingService: LoadingService
+    ) {}
 
-  constructor(
-    private livraisonService: LivraisonService,
-    private stateService: StateService,
-    private formBuilder: FormBuilder,
-    private dataService: DataService,
-    private router: Router,
-    private messageService: MessageService,
-    private etablissementService: EtablissementService,
-    private loadingService: LoadingService
-  ) {}
+    ngOnInit(): void {
+        this.submitted = false;
+        this.initFormGroupStock();
+        this.initFormGroup();
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
 
-  ngOnInit(): void {
-    this.submitted = false;
-    this.initFormGroupStock();
-    this.initFormGroup();
-    this.personnelCreationId = this.stateService.getState().user?.id || null;
-    
-    this.subscription = this.dataService.currentData$.subscribe((data) => {
-      if (!data) {
-        this.router.navigate(['/livraison']);
-        return;
-      }
-      this.getEtablissement();
-      this.livraison = this.adjustLivraison(data.livraison);
-      this.oldLivraison = this.livraison.id ? structuredClone(this.livraison) : null;
-      this.listDetLivraison = data.detLivraisons;
-      this.originalListDetLivraison = structuredClone(data.detLivraisons);
-      this.listRepertoire = [initObjectRepertoire(), ...data.listRepertoire];
-      this.mapOfRepertoire = this.listRepertoire.reduce((map, repertoire) => map.set(Number(repertoire.id), repertoire.designation), new Map<number, string>());
-      this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
-      this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
-      this.listStock = [initObjectStock(), ...data.listStock];
-      this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
-      this.mapObjectToFormGroup(this.livraison);
-      this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.livraison.repertoireId) || initObjectRepertoire();
-      this.adjustDetLivraison();
-    });
-  }
-
-  getEtablissement() {
-    this.etablissementService.getAll().subscribe({
-      next: (data: Etablissement[]) => {
-        this.etablissement = data[0];
-      }, error: (err) => {
-        console.log(err);
-      }
-    });
-  }
-
-  adjustLivraison(livraison: Livraison): Livraison {
-    livraison.dateBl = new Date(livraison.dateBl);
-    livraison.sysDate = new Date(livraison.sysDate);
-    livraison.dateReglement = new Date(livraison.dateReglement);
-    livraison.dateReglement2 = livraison.dateReglement2 ? new Date(livraison.dateReglement2) : null;
-    livraison.dateReglement3 = livraison.dateReglement3 ? new Date(livraison.dateReglement3) : null;
-    livraison.dateReglement4 = livraison.dateReglement4 ? new Date(livraison.dateReglement4) : null;
-    
-    return livraison;
-  }
-
-  adjustDetLivraison() {
-    this.listDetLivraison.forEach((detLivraison: DetLivraison) => {
-      detLivraison.stock = this.listStock.find((stock) => stock.id === detLivraison.stockId) || initObjectStock();
-    });
-    this.formGroup.patchValue({
-      detLivraisons: this.listDetLivraison,
-    });
-  }
-
-  mapObjectToFormGroup(livraison: Livraison) {
-    this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === livraison.repertoireId) || initObjectRepertoire();
-    this.formGroup.patchValue({
-      numLivraison: livraison.numLivraison,
-      codeBl: livraison.codeBl,
-      dateBl: livraison.dateBl,
-      sysDate: livraison.sysDate,
-      dateReglement: livraison.dateReglement,
-      dateReglement2: livraison.dateReglement2,
-      dateReglement3: livraison.dateReglement3,
-      dateReglement4: livraison.dateReglement4,
-      typeReglment: livraison.typeReglment,
-      typeReglment2: livraison.typeReglment2,
-      typeReglment3: livraison.typeReglment3,
-      typeReglment4: livraison.typeReglment4,
-      numCheque: livraison.numCheque,
-      numCheque2: livraison.numCheque2,
-      numCheque3: livraison.numCheque3,
-      numCheque4: livraison.numCheque4,
-      mntReglement: livraison.mntReglement,
-      mntReglement2: livraison.mntReglement2,
-      mntReglement3: livraison.mntReglement3,
-      mntReglement4: livraison.mntReglement4,
-      codeTransport: livraison.codeTransport,
-      mantantBL: livraison.mantantBL,
-      personnelId: livraison.personnelId,
-      repertoireId: this.repertoireSelected?.id,
-      repertoireDesignation: this.repertoireSelected?.designation || '',
-      repertoireTel1: this.repertoireSelected?.tel1 || '',
-      repertoireTel2: this.repertoireSelected?.tel2 || '',
-      repertoireAdresse: this.repertoireSelected?.adresse || '',
-      remarqueClient: this.repertoireSelected?.observation || '',
-    });
-    this.formGroup.get('sysDate')?.disable();
-    this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison is set
-  }
-
-  initFormGroupStock() {
-    this.formGroupStock = this.formBuilder.group({
-      designation: [{ value: this.stockSelected.designation, disabled: true }],
-      pattc: [{ value: this.stockSelected.pattc, disabled: true }],
-      pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
-      qteStock: [{ value: this.stockSelected.qteStock, disabled: true }],
-      prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
-      qteLivrer: [1, [Validators.required, Validators.min(1)]],
-      prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
-      remiseLivraison: [0, [Validators.min(0), Validators.max(100)]],
-      montantProduit: [0, [Validators.min(0)]],
-    }, { validators: DetLivraisonValidator({ stock: this.stockSelected }) });
-  }
-
-  initFormGroup() {
-    this.formGroup = this.formBuilder.group({
-      numLivraison: [0],
-      codeBl: [{value: '', disabled: true}, [Validators.required]],
-      dateBl: [new Date(), [Validators.required]],
-      sysDate: [{value: new Date(), disabled: true}, [Validators.required]],
-      dateReglement: [new Date(), [Validators.required]],
-      dateReglement2: [null],
-      dateReglement3: [null],
-      dateReglement4: [null],
-      typeReglment: [0],
-      typeReglment2: [0],
-      typeReglment3: [0],
-      typeReglment4: [0],
-      numCheque: [''],
-      numCheque2: [''],
-      numCheque3: [''],
-      numCheque4: [''],
-      mantantBL: [0],
-      mntReglement: [0],
-      mntReglement2: [0],
-      mntReglement3: [0],
-      mntReglement4: [0],
-      personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-      repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-      stockId: [0],
-      codeTransport: [''],
-      remarqueClient: [''],
-      repertoireDesignation: [{ value: '', disabled: true }],
-      repertoireTel1: [{ value: '', disabled: true }],
-      repertoireTel2: [{ value: '', disabled: true }],
-      repertoireAdresse: [{ value: '', disabled: true }],
-    }, { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) });
-  }
-
-  mapFormToLivraison() {
-    this.livraison.numLivraison = this.formGroup.get('numLivraison')?.value;
-    this.livraison.codeBl = this.formGroup.get('codeBl')?.value;
-    this.livraison.dateBl = this.formGroup.get('dateBl')?.value;
-    this.livraison.sysDate = this.formGroup.get('sysDate')?.value;
-    this.livraison.dateReglement = this.formGroup.get('dateReglement')?.value;
-    this.livraison.dateReglement2 = this.formGroup.get('dateReglement2')?.value;
-    this.livraison.dateReglement3 = this.formGroup.get('dateReglement3')?.value;
-    this.livraison.dateReglement4 = this.formGroup.get('dateReglement4')?.value;
-    this.livraison.typeReglment = this.formGroup.get('typeReglment')?.value;
-    this.livraison.typeReglment2 = this.formGroup.get('typeReglment2')?.value;
-    this.livraison.typeReglment3 = this.formGroup.get('typeReglment3')?.value;
-    this.livraison.typeReglment4 = this.formGroup.get('typeReglment4')?.value;
-    this.livraison.numCheque = this.formGroup.get('numCheque')?.value;
-    this.livraison.numCheque2 = this.formGroup.get('numCheque2')?.value;
-    this.livraison.numCheque3 = this.formGroup.get('numCheque3')?.value;
-    this.livraison.numCheque4 = this.formGroup.get('numCheque4')?.value;
-    this.livraison.mantantBL = this.formGroup.get('mantantBL')?.value;
-    this.livraison.mntReglement = this.formGroup.get('mntReglement')?.value;
-    this.livraison.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
-    this.livraison.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
-    this.livraison.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
-    this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
-    this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
-    this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
-    this.livraison.repertoireObservation = this.formGroup.get('remarqueClient')?.value;
-  }
-
-  openCloseDialogStock(openClose: boolean): void {
-      this.dialogStock = openClose;
-  }
-
-  openCloseDialogDeleteStock(openClose: boolean): void {
-    this.dialogDeleteStock = openClose;
-  }
-
-  disableRepertoireData() {
-    this.formGroup.get('repertoireDesignation')?.disable();
-    this.formGroup.get('repertoireTel1')?.disable();
-    this.formGroup.get('repertoireTel2')?.disable();
-    this.formGroup.get('repertoireAdresse')?.disable();
-  }
-
-  onChangeIdRepertoire() {
-    this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.formGroup.get('repertoireId')?.value) || initObjectRepertoire();
-    
-    if(this.repertoireSelected && this.repertoireSelected.id !== null && this.repertoireSelected.id !== undefined) {
-      this.formGroup.patchValue({
-        repertoireDesignation: this.repertoireSelected.designation,
-        repertoireTel1: this.repertoireSelected.tel1,
-        repertoireTel2: this.repertoireSelected.tel2,
-        repertoireAdresse: this.repertoireSelected.adresse,
-        remarqueClient: this.repertoireSelected.observation,
-      });
-
-      this.disableRepertoireData();
-    } else {
-      this.formGroup.patchValue({
-        repertoireDesignation: '',
-        repertoireTel1: '',
-        repertoireTel2: '',
-        repertoireAdresse: '',
-        remarqueClient: '',
-      });
-
-      this.disableRepertoireData();
+        this.subscription = this.dataService.currentData$.subscribe((data) => {
+            if (!data) {
+                this.router.navigate(['/livraison']);
+                return;
+            }
+            this.getEtablissement();
+            this.livraison = this.adjustLivraison(data.livraison);
+            this.oldLivraison = this.livraison.id ? structuredClone(this.livraison) : null;
+            this.listDetLivraison = data.detLivraisons;
+            this.originalListDetLivraison = structuredClone(data.detLivraisons);
+            this.listRepertoire = [initObjectRepertoire(), ...data.listRepertoire];
+            this.mapOfRepertoire = this.listRepertoire.reduce((map, repertoire) => map.set(Number(repertoire.id), repertoire.designation), new Map<number, string>());
+            this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
+            this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
+            this.listStock = [initObjectStock(), ...data.listStock];
+            this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
+            this.mapObjectToFormGroup(this.livraison);
+            this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.livraison.repertoireId) || initObjectRepertoire();
+            this.adjustDetLivraison();
+        });
     }
-  }
 
-  onChangeIdStock() {
-    this.detLivraisonSelected = this.listDetLivraison.find((detLivraison) => detLivraison.stockId === this.formGroup.get('stockId')?.value) || initObjectDetLivraison();
-    this.stockSelected = this.listStock.find((stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-    
-    if(this.stockSelected.id !== null && this.stockSelected.id !== undefined) {
-      if(this.detLivraisonSelected.stockId === null) {
-        this.detLivraisonSelected.stockId = this.stockSelected.id;
-      }
-      
-      this.initFormGroupStock();
-      this.onChangeMontantProduit();
-      this.openCloseDialogStock(true);
+    getEtablissement() {
+        this.etablissementService.getAll().subscribe({
+            next: (data: Etablissement[]) => {
+                this.etablissement = data[0];
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        });
     }
-  }
 
-  mapFormGroupStockToObject(formGroup: FormGroup, detailLivraison: DetLivraison): DetLivraison {
-    detailLivraison.stock = structuredClone(this.stockSelected);
-    detailLivraison.prixVente = formGroup.get('prixVente')?.value;
-    detailLivraison.qteLivrer = formGroup.get('qteLivrer')?.value;
-    detailLivraison.remiseLivraison = formGroup.get('remiseLivraison')?.value;
-    detailLivraison.avecRemise = formGroup.get('remiseLivraison')?.value > 0;
-    detailLivraison.montantProduit = formGroup.get('montantProduit')?.value;
-    
-    return detailLivraison;
-  }
+    adjustLivraison(livraison: Livraison): Livraison {
+        livraison.dateBl = new Date(livraison.dateBl);
+        livraison.sysDate = new Date(livraison.sysDate);
+        livraison.dateReglement = new Date(livraison.dateReglement);
+        livraison.dateReglement2 = livraison.dateReglement2 ? new Date(livraison.dateReglement2) : null;
+        livraison.dateReglement3 = livraison.dateReglement3 ? new Date(livraison.dateReglement3) : null;
+        livraison.dateReglement4 = livraison.dateReglement4 ? new Date(livraison.dateReglement4) : null;
 
-  updateList(detailLivraison: DetLivraison, list: DetLivraison[], operationType: OperationType, stockId?: bigint): DetLivraison[] {
-      if (operationType === OperationType.ADD) {
-          list = [...list, detailLivraison];
-      } else if (operationType === OperationType.MODIFY) {
-          let index = list.findIndex(x => x.stockId === detailLivraison.stockId);
-          if (index > -1) {
-              list[index] = structuredClone(detailLivraison);
-          }
-      } else if (operationType === OperationType.DELETE) {
-          list = list.filter(x => x.stockId !== stockId);
-      }
-      return list;
-  }
+        return livraison;
+    }
 
-  recuppererDetLivraison(operation: number, detLivraisonEdit: DetLivraison) {
-    if (detLivraisonEdit && detLivraisonEdit.stockId) {
-        this.detLivraisonSelected = structuredClone(detLivraisonEdit);
-        if (operation === 1) {
-          this.initFormGroupStock();
-          this.stockSelected = this.listStock.find(x => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
-          this.detLivraisonSelected.stock = structuredClone(this.stockSelected);
+    adjustDetLivraison() {
+        this.listDetLivraison.forEach((detLivraison: DetLivraison) => {
+            detLivraison.stock = this.listStock.find((stock) => stock.id === detLivraison.stockId) || initObjectStock();
+        });
+        this.formGroup.patchValue({
+            detLivraisons: this.listDetLivraison
+        });
+    }
 
-          this.formGroupStock.patchValue({
-            designation: this.stockSelected.designation,
-            pattc: this.stockSelected.pattc,
-            pvttc: this.stockSelected.pvttc,
-            qteStock: this.stockSelected.qteStock,
-            prixVenteMin: getPrixVenteMin(this.stockSelected),
-            prixVente: this.detLivraisonSelected.prixVente,
-            qteLivrer: this.detLivraisonSelected.qteLivrer,
-            remiseLivraison: this.detLivraisonSelected.remiseLivraison,
-            montantProduit: this.detLivraisonSelected.montantProduit
-          });
+    mapObjectToFormGroup(livraison: Livraison) {
+        this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === livraison.repertoireId) || initObjectRepertoire();
+        this.formGroup.patchValue({
+            numLivraison: livraison.numLivraison,
+            codeBl: livraison.codeBl,
+            dateBl: livraison.dateBl,
+            sysDate: livraison.sysDate,
+            dateReglement: livraison.dateReglement,
+            dateReglement2: livraison.dateReglement2,
+            dateReglement3: livraison.dateReglement3,
+            dateReglement4: livraison.dateReglement4,
+            typeReglment: livraison.typeReglment,
+            typeReglment2: livraison.typeReglment2,
+            typeReglment3: livraison.typeReglment3,
+            typeReglment4: livraison.typeReglment4,
+            numCheque: livraison.numCheque,
+            numCheque2: livraison.numCheque2,
+            numCheque3: livraison.numCheque3,
+            numCheque4: livraison.numCheque4,
+            mntReglement: livraison.mntReglement,
+            mntReglement2: livraison.mntReglement2,
+            mntReglement3: livraison.mntReglement3,
+            mntReglement4: livraison.mntReglement4,
+            codeTransport: livraison.codeTransport,
+            mantantBL: livraison.mantantBL,
+            personnelId: livraison.personnelId,
+            repertoireId: this.repertoireSelected?.id,
+            repertoireDesignation: this.repertoireSelected?.designation || '',
+            repertoireTel1: this.repertoireSelected?.tel1 || '',
+            repertoireTel2: this.repertoireSelected?.tel2 || '',
+            repertoireAdresse: this.repertoireSelected?.adresse || '',
+            remarqueClient: this.repertoireSelected?.observation || ''
+        });
+        this.formGroup.get('sysDate')?.disable();
+        this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison is set
+    }
 
-          this.formGroupStock.get('designation')?.disable();
-          this.formGroupStock.get('pattc')?.disable();
-          this.formGroupStock.get('pvttc')?.disable();
-          this.formGroupStock.get('qteStock')?.disable();
-          this.formGroupStock.get('prixVenteMin')?.disable();
-          this.formGroupStock.get('montantProduit')?.disable();
+    initFormGroupStock() {
+        this.formGroupStock = this.formBuilder.group(
+            {
+                designation: [{ value: this.stockSelected.designation, disabled: true }],
+                pattc: [{ value: this.stockSelected.pattc, disabled: true }],
+                pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
+                qteStock: [{ value: this.stockSelected.qteStock, disabled: true }],
+                prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
+                qteLivrer: [1, [Validators.required, Validators.min(1)]],
+                prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
+                remiseLivraison: [0, [Validators.min(0), Validators.max(100)]],
+                montantProduit: [0, [Validators.min(0)]]
+            },
+            { validators: DetLivraisonValidator({ stock: this.stockSelected }) }
+        );
+    }
 
-          this.openCloseDialogStock(true);
+    initFormGroup() {
+        this.formGroup = this.formBuilder.group(
+            {
+                numLivraison: [0],
+                codeBl: [{ value: '', disabled: true }, [Validators.required]],
+                dateBl: [new Date(), [Validators.required]],
+                sysDate: [{ value: new Date(), disabled: true }, [Validators.required]],
+                dateReglement: [new Date(), [Validators.required]],
+                dateReglement2: [null],
+                dateReglement3: [null],
+                dateReglement4: [null],
+                typeReglment: [0],
+                typeReglment2: [0],
+                typeReglment3: [0],
+                typeReglment4: [0],
+                numCheque: [''],
+                numCheque2: [''],
+                numCheque3: [''],
+                numCheque4: [''],
+                mantantBL: [0],
+                mntReglement: [0],
+                mntReglement2: [0],
+                mntReglement3: [0],
+                mntReglement4: [0],
+                personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
+                repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
+                stockId: [0],
+                codeTransport: [''],
+                remarqueClient: [''],
+                repertoireDesignation: [{ value: '', disabled: true }],
+                repertoireTel1: [{ value: '', disabled: true }],
+                repertoireTel2: [{ value: '', disabled: true }],
+                repertoireAdresse: [{ value: '', disabled: true }]
+            },
+            { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) }
+        );
+    }
+
+    mapFormToLivraison() {
+        this.livraison.numLivraison = this.formGroup.get('numLivraison')?.value;
+        this.livraison.codeBl = this.formGroup.get('codeBl')?.value;
+        this.livraison.dateBl = this.formGroup.get('dateBl')?.value;
+        this.livraison.sysDate = this.formGroup.get('sysDate')?.value;
+        this.livraison.dateReglement = this.formGroup.get('dateReglement')?.value;
+        this.livraison.dateReglement2 = this.formGroup.get('dateReglement2')?.value;
+        this.livraison.dateReglement3 = this.formGroup.get('dateReglement3')?.value;
+        this.livraison.dateReglement4 = this.formGroup.get('dateReglement4')?.value;
+        this.livraison.typeReglment = this.formGroup.get('typeReglment')?.value;
+        this.livraison.typeReglment2 = this.formGroup.get('typeReglment2')?.value;
+        this.livraison.typeReglment3 = this.formGroup.get('typeReglment3')?.value;
+        this.livraison.typeReglment4 = this.formGroup.get('typeReglment4')?.value;
+        this.livraison.numCheque = this.formGroup.get('numCheque')?.value;
+        this.livraison.numCheque2 = this.formGroup.get('numCheque2')?.value;
+        this.livraison.numCheque3 = this.formGroup.get('numCheque3')?.value;
+        this.livraison.numCheque4 = this.formGroup.get('numCheque4')?.value;
+        this.livraison.mantantBL = this.formGroup.get('mantantBL')?.value;
+        this.livraison.mntReglement = this.formGroup.get('mntReglement')?.value;
+        this.livraison.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
+        this.livraison.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
+        this.livraison.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
+        this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
+        this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
+        this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
+        this.livraison.repertoireObservation = this.formGroup.get('remarqueClient')?.value;
+    }
+
+    openCloseDialogStock(openClose: boolean): void {
+        this.dialogStock = openClose;
+    }
+
+    openCloseDialogDeleteStock(openClose: boolean): void {
+        this.dialogDeleteStock = openClose;
+    }
+
+    disableRepertoireData() {
+        this.formGroup.get('repertoireDesignation')?.disable();
+        this.formGroup.get('repertoireTel1')?.disable();
+        this.formGroup.get('repertoireTel2')?.disable();
+        this.formGroup.get('repertoireAdresse')?.disable();
+    }
+
+    onChangeIdRepertoire() {
+        this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.formGroup.get('repertoireId')?.value) || initObjectRepertoire();
+
+        if (this.repertoireSelected && this.repertoireSelected.id !== null && this.repertoireSelected.id !== undefined) {
+            this.formGroup.patchValue({
+                repertoireDesignation: this.repertoireSelected.designation,
+                repertoireTel1: this.repertoireSelected.tel1,
+                repertoireTel2: this.repertoireSelected.tel2,
+                repertoireAdresse: this.repertoireSelected.adresse,
+                remarqueClient: this.repertoireSelected.observation
+            });
+
+            this.disableRepertoireData();
         } else {
-            this.openCloseDialogDeleteStock(true);
+            this.formGroup.patchValue({
+                repertoireDesignation: '',
+                repertoireTel1: '',
+                repertoireTel2: '',
+                repertoireAdresse: '',
+                remarqueClient: ''
+            });
+
+            this.disableRepertoireData();
         }
-    } else {
-        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
     }
-  }
 
-  onChangeMontantProduit() {
-    this.formGroupStock.patchValue({
-        montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteLivrer')?.value
-    });
-  }
+    onChangeIdStock() {
+        this.detLivraisonSelected = this.listDetLivraison.find((detLivraison) => detLivraison.stockId === this.formGroup.get('stockId')?.value) || initObjectDetLivraison();
+        this.stockSelected = this.listStock.find((stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
 
-  validerStock() {
-    let updatedDetLivraison = structuredClone(this.detLivraisonSelected);
-    
-    updatedDetLivraison = this.mapFormGroupStockToObject(this.formGroupStock, updatedDetLivraison);
+        if (this.stockSelected.id !== null && this.stockSelected.id !== undefined) {
+            if (this.detLivraisonSelected.stockId === null) {
+                this.detLivraisonSelected.stockId = this.stockSelected.id;
+                this.detLivraisonSelected.stockDesignation = this.stockSelected.designation;
+                this.detLivraisonSelected.stockQteStock = this.stockSelected.qteStock;
+                this.detLivraisonSelected.stockPvttc = this.stockSelected.pvttc;
+                this.detLivraisonSelected.stockPattc = this.stockSelected.pattc;
+            }
 
-    if(updatedDetLivraison.stockId) {
-      let exist: boolean = this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.stockId === updatedDetLivraison.stockId);
-      
-      if(exist) {
-        this.listDetLivraison = this.updateList(updatedDetLivraison, this.listDetLivraison, OperationType.MODIFY, updatedDetLivraison.stockId);
-      } else {
-        this.listDetLivraison = this.updateList(updatedDetLivraison, this.listDetLivraison, OperationType.ADD);
-      }
+            this.initFormGroupStock();
+            this.onChangeMontantProduit();
+            this.openCloseDialogStock(true);
+        }
     }
-    
-    this.calculerMontantTotal();
-    this.stockSelected = initObjectStock();
-    this.formGroup.patchValue({ stockId: null });
-    this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
-    this.openCloseDialogStock(false);
-  }
 
-  recupperer(operation: number, detLivraisonEdit: DetLivraison) {
-    if (detLivraisonEdit && detLivraisonEdit.stockId) {
-      this.detLivraisonSelected = structuredClone(detLivraisonEdit);
-      if (operation === 1) {
-          this.formGroupStock.patchValue({
-              designation: this.detLivraisonSelected.stock?.designation,
-              pattc: this.detLivraisonSelected.stock?.pattc,
-              qteStock: this.detLivraisonSelected.stock?.qteStock,
-              qteLivrer: this.detLivraisonSelected.qteLivrer,
-              prixVente: this.detLivraisonSelected.prixVente,
-              remiseLivraison: this.detLivraisonSelected.remiseLivraison,
-          });
-          this.openCloseDialogStock(true);
-      } else if(operation === 2) {
-          this.openCloseDialogDeleteStock(true);
-      }
-    } else {
-      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+    mapFormGroupStockToObject(formGroup: FormGroup, detailLivraison: DetLivraison): DetLivraison {
+        detailLivraison.stock = structuredClone(this.stockSelected);
+        detailLivraison.prixVente = formGroup.get('prixVente')?.value;
+        detailLivraison.qteLivrer = formGroup.get('qteLivrer')?.value;
+        detailLivraison.remiseLivraison = formGroup.get('remiseLivraison')?.value;
+        detailLivraison.avecRemise = formGroup.get('remiseLivraison')?.value > 0;
+        detailLivraison.montantProduit = formGroup.get('montantProduit')?.value;
+
+        return detailLivraison;
     }
-  }
 
-  getReglementDataFromFormGroup(livraison: Livraison, formGroup: FormGroup) {
-    livraison.dateReglement = formGroup.get('dateReglement')?.value;
-    livraison.dateReglement2 = formGroup.get('dateReglement2')?.value;
-    livraison.dateReglement3 = formGroup.get('dateReglement3')?.value;
-    livraison.dateReglement4 = formGroup.get('dateReglement4')?.value;
-    livraison.mntReglement = formGroup.get('mntReglement')?.value;
-    livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
-    livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
-    livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
-  }
-
-  patchMontantReglement(livraison: Livraison, formGroup: FormGroup) {
-    formGroup.patchValue({
-      mntReglement: livraison.mntReglement,
-      mntReglement2: livraison.mntReglement2,
-      mntReglement3: livraison.mntReglement3,
-      mntReglement4: livraison.mntReglement4
-    });
-  }
-
-  calculerMontantTotal() {
-    this.livraison.mantantBL = this.listDetLivraison.reduce((total: number, detLivraison: DetLivraison) => total + Number(detLivraison.montantProduit), 0);
-    this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
-    this.getReglementDataFromFormGroup(this.livraison, this.formGroup);
-    this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
-    this.patchMontantReglement(this.livraison, this.formGroup);
-  }
-
-  deleteDetLivraison() {
-    let stockId: bigint = this.detLivraisonSelected?.stockId || 0n;
-    this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, stockId);
-    this.calculerMontantTotal();
-    this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
-    this.openCloseDialogDeleteStock(false);
-  }
-
-  mapFormGroupToObject(formGroup: FormGroup, livraison: Livraison): Livraison {
-      livraison.dateBl = mapToDateTimeBackEnd(formGroup.get('dateBl')?.value);
-      livraison.sysDate = mapToDateTimeBackEnd(formGroup.get('sysDate')?.value);
-      livraison.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
-      livraison.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
-      livraison.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
-      livraison.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
-      livraison.personnelId = formGroup.get('personnelId')?.value;
-      livraison.repertoireId = formGroup.get('repertoireId')?.value;
-      livraison.typeReglment = formGroup.get('typeReglment')?.value;
-      livraison.typeReglment2 = formGroup.get('typeReglment2')?.value;
-      livraison.typeReglment3 = formGroup.get('typeReglment3')?.value;
-      livraison.typeReglment4 = formGroup.get('typeReglment4')?.value;
-      livraison.mantantBL = formGroup.get('mantantBL')?.value;
-      livraison.mntReglement = formGroup.get('mntReglement')?.value;
-      livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
-      livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
-      livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
-      livraison.codeTransport = formGroup.get('codeTransport')?.value;
-      livraison.repertoireObservation = formGroup.get('remarqueClient')?.value;
-
-      return livraison;
-  }
-
-  giveMeMntBlBenefice(livraison: Livraison, detLivraisons: DetLivraison[], etablissement: Etablissement) {
-    let mntp: number = 0;
-    for (let detlivraison of detLivraisons) {
-			let charge = (detlivraison.stock?.pattc || 0 * ((etablissement && etablissement.pourcentageLiv) ? etablissement.pourcentageLiv : 0)) / 100;
-			mntp += detlivraison.montantProduit - (detlivraison.qteLivrer * (detlivraison.stock?.pattc || 0 + charge));
-		}
-    livraison.mantantBLBenefice = mntp;
-  }
-
-  giveMeMntReel(livraison: Livraison, detLivraisons: DetLivraison[]) {
-    let mntReel: number = detLivraisons.reduce((total: number, detLivraison: DetLivraison) => Number(total) + Number(detLivraison.montantProduit), 0);
-    livraison.mantantBLReel = mntReel;
-  }
-
-  giveMeMntBLPourcent(livraison: Livraison) {
-    let infinity: number = 1;
-		if(livraison.mantantBLBenefice == 0 && livraison.mantantBL == 0) infinity = 0;
-		if(livraison.mantantBL == 0) infinity = 0;
-		let mntBenPourcent: number = livraison.mantantBL > 0 ? ((livraison.mantantBLBenefice * 100) / livraison.mantantBL) : 5555.0;
-    
-    livraison.mantantBLPourcent = mntBenPourcent;
-    
-    livraison.infinity = infinity;
-	}
-
-  reglerNonRegler() {
-    this.livraison.reglerNonRegler = this.livraison.reglerNonRegler === 0 ? 1 : 0;
-  }
-
-  prepareLivraison() {
-    this.giveMeMntBlBenefice(this.livraison, this.listDetLivraison, this.etablissement);
-    this.giveMeMntReel(this.livraison, this.listDetLivraison);
-    this.giveMeMntBLPourcent(this.livraison);
-
-    if (this.livraison.mantantBL == 0) {
-      this.livraison.reglerNonRegler = 1;
+    updateList(detailLivraison: DetLivraison, list: DetLivraison[], operationType: OperationType, stockId?: bigint): DetLivraison[] {
+        if (operationType === OperationType.ADD) {
+            list = [...list, detailLivraison];
+        } else if (operationType === OperationType.MODIFY) {
+            let index = list.findIndex((x) => x.stockId === detailLivraison.stockId);
+            if (index > -1) {
+                list[index] = structuredClone(detailLivraison);
+            }
+        } else if (operationType === OperationType.DELETE) {
+            list = list.filter((x) => x.stockId !== stockId);
+        }
+        return list;
     }
-  }
 
-  miseAjour() {
-    this.submitted = true;
-    let trvErreur: boolean = false;
-    if(!trvErreur) {
-      this.livraison = this.mapFormGroupToObject(this.formGroup, this.livraison);
-      this.prepareLivraison();
+    recuppererDetLivraison(operation: number, detLivraisonEdit: DetLivraison) {
+        if (detLivraisonEdit && detLivraisonEdit.stockId) {
+            this.detLivraisonSelected = structuredClone(detLivraisonEdit);
+            if (operation === 1) {
+                this.initFormGroupStock();
+                this.stockSelected = this.listStock.find((x) => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
+                this.detLivraisonSelected.stock = structuredClone(this.stockSelected);
 
-      let livraisonRequest: LivraisonRequest = {
-        livraison: this.livraison,
-        detLivraisons: this.listDetLivraison
-      };
-      
-      if(this.livraison.id) {
-        this.livraisonService.update(this.livraison.id, livraisonRequest).subscribe({
-          next: (data: Livraison) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.msg.summary.labelSuccess,
-              detail: this.msg.messages.messageUpdateSuccess,
-            });
+                this.formGroupStock.patchValue({
+                    designation: this.stockSelected.designation,
+                    pattc: this.stockSelected.pattc,
+                    pvttc: this.stockSelected.pvttc,
+                    qteStock: this.stockSelected.qteStock,
+                    prixVenteMin: getPrixVenteMin(this.stockSelected),
+                    prixVente: this.detLivraisonSelected.prixVente,
+                    qteLivrer: this.detLivraisonSelected.qteLivrer,
+                    remiseLivraison: this.detLivraisonSelected.remiseLivraison,
+                    montantProduit: this.detLivraisonSelected.montantProduit
+                });
 
-            this.router.navigate(['/livraison']);
-          }, error: (err) => {
-            console.log(err);
-            this.loadingService.hide();
-            this.messageService.add({
-                severity: 'error',
-                summary: this.msg.summary.labelError,
-                detail: this.msg.messages.messageErrorProduite
-            });
-          }, complete: () => {
-              this.loadingService.hide();
-          }
+                this.formGroupStock.get('designation')?.disable();
+                this.formGroupStock.get('pattc')?.disable();
+                this.formGroupStock.get('pvttc')?.disable();
+                this.formGroupStock.get('qteStock')?.disable();
+                this.formGroupStock.get('prixVenteMin')?.disable();
+                this.formGroupStock.get('montantProduit')?.disable();
+
+                this.openCloseDialogStock(true);
+            } else {
+                this.openCloseDialogDeleteStock(true);
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+        }
+    }
+
+    onChangeMontantProduit() {
+        this.formGroupStock.patchValue({
+            montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteLivrer')?.value
         });
-      } else {
-        livraisonRequest.livraison.employeOperateurId = BigInt(this.personnelCreationId || 0);
-        this.livraisonService.create(livraisonRequest).subscribe({
-          next: (data: Livraison) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.msg.summary.labelSuccess,
-              detail: this.msg.messages.messageAddSuccess,
-            });
-
-            this.router.navigate(['/livraison']);
-          }, error: (err) => {
-              console.log(err);
-              this.loadingService.hide();
-              this.messageService.add({
-                  severity: 'error',
-                  summary: this.msg.summary.labelError,
-                  detail: this.msg.messages.messageErrorProduite
-              });
-          }, complete: () => {
-              this.loadingService.hide();
-          }
-        });
-      }
     }
-  }
 
-  fermer() {
-    this.router.navigate(['/livraison']);
-  }
-  
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+    validerStock() {
+        let updatedDetLivraison = structuredClone(this.detLivraisonSelected);
+
+        updatedDetLivraison = this.mapFormGroupStockToObject(this.formGroupStock, updatedDetLivraison);
+
+        if (updatedDetLivraison.stockId) {
+            let exist: boolean = this.listDetLivraison.some((detLivraison: DetLivraison) => detLivraison.stockId === updatedDetLivraison.stockId);
+
+            if (exist) {
+                this.listDetLivraison = this.updateList(updatedDetLivraison, this.listDetLivraison, OperationType.MODIFY, updatedDetLivraison.stockId);
+            } else {
+                this.listDetLivraison = this.updateList(updatedDetLivraison, this.listDetLivraison, OperationType.ADD);
+            }
+        }
+
+        this.calculerMontantTotal();
+        this.stockSelected = initObjectStock();
+        this.formGroup.patchValue({ stockId: null });
+        this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
+        this.openCloseDialogStock(false);
+    }
+
+    recupperer(operation: number, detLivraisonEdit: DetLivraison) {
+        if (detLivraisonEdit && detLivraisonEdit.stockId) {
+            this.detLivraisonSelected = structuredClone(detLivraisonEdit);
+            if (operation === 1) {
+                this.formGroupStock.patchValue({
+                    designation: this.detLivraisonSelected.stock?.designation,
+                    pattc: this.detLivraisonSelected.stock?.pattc,
+                    qteStock: this.detLivraisonSelected.stock?.qteStock,
+                    qteLivrer: this.detLivraisonSelected.qteLivrer,
+                    prixVente: this.detLivraisonSelected.prixVente,
+                    remiseLivraison: this.detLivraisonSelected.remiseLivraison
+                });
+                this.openCloseDialogStock(true);
+            } else if (operation === 2) {
+                this.openCloseDialogDeleteStock(true);
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+        }
+    }
+
+    getReglementDataFromFormGroup(livraison: Livraison, formGroup: FormGroup) {
+        livraison.dateReglement = formGroup.get('dateReglement')?.value;
+        livraison.dateReglement2 = formGroup.get('dateReglement2')?.value;
+        livraison.dateReglement3 = formGroup.get('dateReglement3')?.value;
+        livraison.dateReglement4 = formGroup.get('dateReglement4')?.value;
+        livraison.mntReglement = formGroup.get('mntReglement')?.value;
+        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
+        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
+        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+    }
+
+    patchMontantReglement(livraison: Livraison, formGroup: FormGroup) {
+        formGroup.patchValue({
+            mntReglement: livraison.mntReglement,
+            mntReglement2: livraison.mntReglement2,
+            mntReglement3: livraison.mntReglement3,
+            mntReglement4: livraison.mntReglement4
+        });
+    }
+
+    calculerMontantTotal() {
+        this.livraison.mantantBL = this.listDetLivraison.reduce((total: number, detLivraison: DetLivraison) => total + Number(detLivraison.montantProduit), 0);
+        this.formGroup.get('mantantBL')?.setValue(this.livraison.mantantBL);
+        this.getReglementDataFromFormGroup(this.livraison, this.formGroup);
+        this.livraison = ajusterMontants(this.livraison, this.livraison.mantantBL);
+        this.patchMontantReglement(this.livraison, this.formGroup);
+    }
+
+    deleteDetLivraison() {
+        let stockId: bigint = this.detLivraisonSelected?.stockId || 0n;
+        this.listDetLivraison = this.updateList(this.detLivraisonSelected, this.listDetLivraison, OperationType.DELETE, stockId);
+        this.calculerMontantTotal();
+        this.formGroup.updateValueAndValidity(); // Trigger re-validation after listDetLivraison changes
+        this.openCloseDialogDeleteStock(false);
+    }
+
+    mapFormGroupToObject(formGroup: FormGroup, livraison: Livraison): Livraison {
+        livraison.dateBl = mapToDateTimeBackEnd(formGroup.get('dateBl')?.value);
+        livraison.sysDate = mapToDateTimeBackEnd(formGroup.get('sysDate')?.value);
+        livraison.dateReglement = mapToDateTimeBackEnd(formGroup.get('dateReglement')?.value);
+        livraison.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
+        livraison.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
+        livraison.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
+        livraison.personnelId = formGroup.get('personnelId')?.value;
+        livraison.repertoireId = formGroup.get('repertoireId')?.value;
+        livraison.typeReglment = formGroup.get('typeReglment')?.value;
+        livraison.typeReglment2 = formGroup.get('typeReglment2')?.value;
+        livraison.typeReglment3 = formGroup.get('typeReglment3')?.value;
+        livraison.typeReglment4 = formGroup.get('typeReglment4')?.value;
+        livraison.mantantBL = formGroup.get('mantantBL')?.value;
+        livraison.mntReglement = formGroup.get('mntReglement')?.value;
+        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
+        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
+        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+        livraison.codeTransport = formGroup.get('codeTransport')?.value;
+        livraison.repertoireObservation = formGroup.get('remarqueClient')?.value;
+
+        return livraison;
+    }
+
+    giveMeMntBlBenefice(livraison: Livraison, detLivraisons: DetLivraison[], etablissement: Etablissement) {
+        let mntp: number = 0;
+        for (let detlivraison of detLivraisons) {
+            let charge = (detlivraison.stock?.pattc || 0 * (etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)) / 100;
+            mntp += detlivraison.montantProduit - detlivraison.qteLivrer * (detlivraison.stock?.pattc || 0 + charge);
+        }
+        livraison.mantantBLBenefice = mntp;
+    }
+
+    giveMeMntReel(livraison: Livraison, detLivraisons: DetLivraison[]) {
+        let mntReel: number = detLivraisons.reduce((total: number, detLivraison: DetLivraison) => Number(total) + Number(detLivraison.montantProduit), 0);
+        livraison.mantantBLReel = mntReel;
+    }
+
+    giveMeMntBLPourcent(livraison: Livraison) {
+        let infinity: number = 1;
+        if (livraison.mantantBLBenefice == 0 && livraison.mantantBL == 0) infinity = 0;
+        if (livraison.mantantBL == 0) infinity = 0;
+        let mntBenPourcent: number = livraison.mantantBL > 0 ? (livraison.mantantBLBenefice * 100) / livraison.mantantBL : 5555.0;
+
+        livraison.mantantBLPourcent = mntBenPourcent;
+
+        livraison.infinity = infinity;
+    }
+
+    reglerNonRegler() {
+        this.livraison.reglerNonRegler = this.livraison.reglerNonRegler === 0 ? 1 : 0;
+    }
+
+    prepareLivraison() {
+        this.giveMeMntBlBenefice(this.livraison, this.listDetLivraison, this.etablissement);
+        this.giveMeMntReel(this.livraison, this.listDetLivraison);
+        this.giveMeMntBLPourcent(this.livraison);
+
+        if (this.livraison.mantantBL == 0) {
+            this.livraison.reglerNonRegler = 1;
+        }
+    }
+
+    miseAjour() {
+        this.submitted = true;
+        let trvErreur: boolean = false;
+        if (!trvErreur) {
+            this.livraison = this.mapFormGroupToObject(this.formGroup, this.livraison);
+            this.prepareLivraison();
+
+            let livraisonRequest: LivraisonRequest = {
+                livraison: this.livraison,
+                detLivraisons: this.listDetLivraison
+            };
+
+            if (this.livraison.id) {
+                this.livraisonService.update(this.livraison.id, livraisonRequest).subscribe({
+                    next: (data: Livraison) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: this.msg.summary.labelSuccess,
+                            detail: this.msg.messages.messageUpdateSuccess
+                        });
+
+                        this.router.navigate(['/livraison']);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
+                        });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            } else {
+                livraisonRequest.livraison.employeOperateurId = BigInt(this.personnelCreationId || 0);
+                this.livraisonService.create(livraisonRequest).subscribe({
+                    next: (data: Livraison) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: this.msg.summary.labelSuccess,
+                            detail: this.msg.messages.messageAddSuccess
+                        });
+
+                        this.router.navigate(['/livraison']);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: this.msg.summary.labelError,
+                            detail: this.msg.messages.messageErrorProduite
+                        });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            }
+        }
+    }
+
+    fermer() {
+        this.router.navigate(['/livraison']);
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 }

@@ -18,7 +18,7 @@
                 selectionMode="single" [(selection)]="selectedFacture" [metaKeySelection]="false"
                 [rows]="10" 
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['codeBF', 'sysDate', 'dateBF', 'mantantBF','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurId', 'personnelId']"
+                [globalFilterFields]="['codeBF', 'sysDate', 'dateBF', 'mantantBF','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurDesignation', 'repertoireDesignation', 'repertoireIce']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -90,8 +90,8 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
-                        <td>{{ getDesignationRepertoire(p.repertoireId) }}</td>
-                        <td>{{ getRepertoireICE(p.repertoireId) }}</td>
+                        <td>{{ p.repertoireDesignation }}</td>
+                        <td>{{ p.repertoireIce }}</td>
                         <td>{{ p.dateBF | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.codeBF }}</td>
                         <td>
@@ -174,7 +174,7 @@
                             }
                         </td>
                         
-                        <td>{{ p.mantantBF }}</td>
+                        <td>{{ p.mantantBF | number:'1.2-2' }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />

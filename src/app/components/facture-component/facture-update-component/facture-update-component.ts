@@ -343,6 +343,9 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         if (this.stockSelected.id !== null && this.stockSelected.id !== undefined) {
             if (this.detFactureSelected.stockId === null) {
                 this.detFactureSelected.stockId = this.stockSelected.id;
+                this.detFactureSelected.stockDesignation = this.stockSelected.designation;
+                this.detFactureSelected.stockPvttc = this.stockSelected.pvttc;
+                this.detFactureSelected.stockQteFacturer = this.stockSelected.qteFacturer;
             }
 
             this.initFormGroupStock();
