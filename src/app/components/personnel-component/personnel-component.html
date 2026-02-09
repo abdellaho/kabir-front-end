@@ -166,7 +166,7 @@
 
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="cin" formControlName="cin" required
+                  <input pInputText id="cin" formControlName="cin"
                     [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
                   <label for="cin">{{ msg.components.personnel.cin }}</label>
                 </p-floatlabel>
@@ -201,8 +201,7 @@
 
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body"
-                    [dateFormat]="msg.formats.date_Format_DDMMYY" />
+                  <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" />
                   <label for="dateEntrer">{{ msg.components.personnel.dateEntrer }}</label>
                 </p-floatlabel>
               </div>
@@ -211,25 +210,21 @@
             <div class="flex flex-wrap gap-6">
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="tel1" formControlName="tel1" [maxLength]="10"
-                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                  <input pInputText id="tel1" formControlName="tel1" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                   <label for="tel1">{{ msg.components.personnel.tel1 }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['tel1EqualTel2']) {
-                <p-message severity="error" variant="simple" size="small">{{
-                  msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
+                  <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
                 }
               </div>
 
               <div class="flex flex-col grow basis-0">
                 <p-floatlabel variant="on">
-                  <input pInputText id="tel2" formControlName="tel2" [maxLength]="10"
-                    [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
+                  <input pInputText id="tel2" formControlName="tel2" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
                   <label for="tel2">{{ msg.components.personnel.tel2 }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['tel1EqualTel2']) {
-                <p-message severity="error" variant="simple" size="small">{{
-                  msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
+                  <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
                 }
               </div>
             </div>

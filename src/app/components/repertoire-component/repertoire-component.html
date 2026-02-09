@@ -5,8 +5,16 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left" class="gap-2">
                     <div class="my-2">
-                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
-                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+
+                    <div class="my-2">
+                        <p-floatlabel class="w-full md:w-56" variant="on">
+                            <p-select [(ngModel)]="personnelIdSearch" inputId="personnelIdSearch"
+                                [options]="listPersonnelSearch" appendTo="body" optionLabel="designation"
+                                optionValue="id" style="height: 30px;" class="w-full md:w-56" (onChange)="onChangeIdPersonnelSearch()" />
+                            <label for="personnelIdSearch">{{ msg.components.repertoire.choisirPersonnel }}</label>
+                        </p-floatlabel>
                     </div>
 
                     <div class="my-2">

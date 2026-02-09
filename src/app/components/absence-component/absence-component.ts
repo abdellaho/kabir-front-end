@@ -1,5 +1,5 @@
 import { Absence, initObjectAbsence } from '@/models/absence';
-import { Personnel } from '@/models/personnel';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { AbsenceService } from '@/services/absence/absence-service';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -28,6 +28,7 @@ import { AbsencelValidator } from '@/validators/absence-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { CheckboxModule } from 'primeng/checkbox';
 import { StateService } from '@/state/state-service';
+import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 
 @Component({
     selector: 'app-absence-component',
@@ -59,6 +60,9 @@ export class AbsenceComponent implements OnInit {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
     //Tableau ---> Date + Personnel + Matin + Soir
     //Ajouter ---> Date + Personnel + Matin + Soir
+    dateDebut: Date | null = null;
+    dateFin: Date | null = null;
+    personnelIdImprimer: bigint | null = null;
     personnelCreationId: number | null = null;
     listPersonnelFixe: Personnel[] = [];
     listPersonnel: Personnel[] = [];
@@ -68,6 +72,7 @@ export class AbsenceComponent implements OnInit {
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;
+    dialogImprimer: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
@@ -116,7 +121,7 @@ export class AbsenceComponent implements OnInit {
         this.absenceService.getAll().subscribe({
             next: (data: Absence[]) => {
                 this.listAbsence = (data || []).map((a) => {
-                    const dateAbsence = a && (a as any).dateAbsence ? new Date((a as any).dateAbsence) : new Date();
+                    const dateAbsence = new Date(a.dateAbsence);
                     return {
                         ...a,
                         dateAbsence: dateAbsence,
@@ -132,7 +137,8 @@ export class AbsenceComponent implements OnInit {
     }
 
     getAllPersonnelFixe(): void {
-        this.personnelService.getAll().subscribe({
+        let personnel: Personnel = initObjectPersonnel();
+        this.personnelService.getAllExceptAdmin(personnel).subscribe({
             next: (data: Personnel[]) => {
                 this.listPersonnelFixe = data;
                 this.mapOfPersonnels = arrayToMap(this.listPersonnelFixe, 'id', ['designation'], ['']);
@@ -155,6 +161,17 @@ export class AbsenceComponent implements OnInit {
         this.dialogSupprimer = openClose;
     }
 
+    openCloseDialogImprimer(openClose: boolean): void {
+        this.dialogImprimer = openClose;
+    }
+
+    viderConsulter() {
+        this.dateDebut = null;
+        this.dateFin = null;
+        this.personnelIdImprimer = BigInt(0);
+        this.openCloseDialogImprimer(true);
+    }
+
     viderAjouter() {
         this.openCloseDialogAjouter(true);
         this.submitted = false;
@@ -163,10 +180,12 @@ export class AbsenceComponent implements OnInit {
         this.onChangeDateAbsence();
     }
 
-    async getPersonnelPresent(date: Date): Promise<Personnel[]> {
+    async getPersonnelPresent(absence: Absence): Promise<Personnel[]> {
         try {
-            let dateAbsence = mapToDateTimeBackEnd(date);
-            const existsObservable = this.personnelService.present(dateAbsence).pipe(
+            let absenceToSend: Absence = structuredClone(absence);
+            absenceToSend.dateAbsence = mapToDateTimeBackEnd(absence.dateAbsence);
+
+            const existsObservable = this.personnelService.present(absenceToSend).pipe(
                 catchError((error) => {
                     console.error('Error in absence existence observable:', error);
                     return of([]); // Gracefully handle observable errors by returning false
@@ -181,7 +200,8 @@ export class AbsenceComponent implements OnInit {
 
     async onChangeDateAbsence() {
         let dateAbsence: Date = this.formGroup.get('dateAbsence')?.value ?? new Date();
-        this.listPersonnel = await this.getPersonnelPresent(dateAbsence);
+        this.absence.dateAbsence = dateAbsence;
+        this.listPersonnel = await this.getPersonnelPresent(this.absence);
         this.formGroup.patchValue({
             personnelId: 0
         });
@@ -194,7 +214,7 @@ export class AbsenceComponent implements OnInit {
         });
     }
 
-    recupperer(operation: number, absenceEdit: Absence) {
+    async recupperer(operation: number, absenceEdit: Absence) {
         if (absenceEdit && absenceEdit.id) {
             this.absence = absenceEdit;
             if (operation === 1) {
@@ -204,6 +224,8 @@ export class AbsenceComponent implements OnInit {
                     matin: this.absence.matin,
                     apresMidi: this.absence.apresMidi
                 });
+
+                this.listPersonnel = await this.getPersonnelPresent(this.absence);
 
                 this.openCloseDialogAjouter(true);
             } else {
@@ -216,6 +238,7 @@ export class AbsenceComponent implements OnInit {
 
     updateList(absence: Absence, list: Absence[], operationType: OperationType, id?: bigint): Absence[] {
         if (absence && absence.dateAbsence) {
+            absence.dateAbsence = new Date(absence.dateAbsence);
             absence.dateAbsenceStr = this.formatDate(absence.dateAbsence);
         }
         if (operationType === OperationType.ADD) {
@@ -276,15 +299,11 @@ export class AbsenceComponent implements OnInit {
             if (this.absence.id) {
                 this.absenceService.update(this.absence.id, this.absence).subscribe({
                     next: (data) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageUpdateSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
+                        console.log('Close dialog Ajouter');
                     },
                     error: (err) => {
                         console.log(err);
@@ -303,15 +322,11 @@ export class AbsenceComponent implements OnInit {
                 this.absence.personnelOperationId = BigInt(this.personnelCreationId || 0);
                 this.absenceService.create(this.absence).subscribe({
                     next: (data: Absence) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageAddSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
+                        console.log('Close dialog Ajouter');
                     },
                     error: (err) => {
                         console.log(err);
@@ -339,12 +354,7 @@ export class AbsenceComponent implements OnInit {
             let id = this.absence.id;
             this.absenceService.delete(this.absence.id).subscribe({
                 next: (data) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: this.msg.summary.labelSuccess,
-                        closable: true,
-                        detail: this.msg.messages.messageDeleteSuccess
-                    });
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
                     this.checkIfListIsNull();
                     this.listAbsence = this.updateList(initObjectAbsence(), this.listAbsence, OperationType.DELETE, id);
                     this.absence = initObjectAbsence();
@@ -352,11 +362,7 @@ export class AbsenceComponent implements OnInit {
                 error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.msg.summary.labelError,
-                        detail: this.msg.messages.messageErrorProduite
-                    });
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                 },
                 complete: () => {
                     this.loadingService.hide();
@@ -379,5 +385,34 @@ export class AbsenceComponent implements OnInit {
         if (day.length < 2) day = '0' + day;
 
         return [year, month, day].join('-');
+    }
+
+    imprimer(): void {
+        this.loadingService.show();
+
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+        commonSearchModel.searchByDate = true;
+        commonSearchModel.personnelId = this.personnelIdImprimer;
+        commonSearchModel.dateDebut = this.dateDebut ? new Date(this.dateDebut) : null;
+        commonSearchModel.dateFin = this.dateFin ? new Date(this.dateFin) : null;
+
+        this.absenceService.imprimer(commonSearchModel).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }

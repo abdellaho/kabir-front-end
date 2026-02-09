@@ -29,6 +29,7 @@ import { PersonnelValidator } from '@/validators/personnel-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { CheckboxModule } from 'primeng/checkbox';
+import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 
 @Component({
     selector: 'app-personnel-component',
@@ -60,11 +61,10 @@ import { CheckboxModule } from 'primeng/checkbox';
     styleUrl: './personnel-component.scss'
 })
 export class PersonnelComponent implements OnInit {
-
     personnel: Personnel = initObjectPersonnel();
     selectedPersonnel!: Personnel;
     listPersonnel: Personnel[] = [];
-    typePersonnel: { label: string, value: TypePersonnel }[] = filteredTypePersonnelAll;
+    typePersonnel: { label: string; value: TypePersonnel }[] = filteredTypePersonnelAll;
     dialogSupprimer: boolean = false;
     dialogAjouter: boolean = false;
     dialogArchiver: boolean = false;
@@ -84,8 +84,7 @@ export class PersonnelComponent implements OnInit {
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.typeOfList = 0;
@@ -133,9 +132,11 @@ export class PersonnelComponent implements OnInit {
         this.personnelService.search(objectSearch).subscribe({
             next: (data: Personnel[]) => {
                 this.listPersonnel = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -147,9 +148,11 @@ export class PersonnelComponent implements OnInit {
         this.personnelService.search(objectSearch).subscribe({
             next: (data: Personnel[]) => {
                 this.listPersonnel = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -161,9 +164,11 @@ export class PersonnelComponent implements OnInit {
         this.personnelService.search(objectSearch).subscribe({
             next: (data: Personnel[]) => {
                 this.listPersonnel = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -206,19 +211,22 @@ export class PersonnelComponent implements OnInit {
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group({
-            designation: ['', [Validators.required, Validators.min(1)]],
-            cin: ['', [Validators.required, Validators.min(1)]],
-            email: ['', [Validators.email]],
-            password: [''],
-            typePersonnel: [0, [Validators.required, Validators.min(1)]],
-            dateEntrer: [new Date()],
-            tel1: [''],
-            tel2: [''],
-            adresse: [''],
-            salaire: [null],
-            etatComptePersonnel: [true]
-        }, { validators: [ PersonnelValidator ] });
+        this.formGroup = this.formBuilder.group(
+            {
+                designation: ['', [Validators.required, Validators.min(1)]],
+                cin: [''],
+                email: [''],
+                password: [''],
+                typePersonnel: [0, [Validators.required, Validators.min(1)]],
+                dateEntrer: [new Date()],
+                tel1: [''],
+                tel2: [''],
+                adresse: [''],
+                salaire: [null],
+                etatComptePersonnel: [true]
+            },
+            { validators: [PersonnelValidator] }
+        );
     }
 
     initFormGroupRole() {
@@ -230,7 +238,7 @@ export class PersonnelComponent implements OnInit {
             consulterRepertoire: [false],
             ajouterRepertoire: [false],
             modifierRepertoire: [false],
-            supprimerRepertoire: [false],
+            supprimerRepertoire: [false]
         });
     }
 
@@ -246,9 +254,9 @@ export class PersonnelComponent implements OnInit {
         if (personnelEdit && personnelEdit.id) {
             this.personnel = personnelEdit;
             if (operation === 1) {
-                if(this.personnel.typePersonnel === 1) {
+                if (this.personnel.typePersonnel === 1) {
                     this.typePersonnel = filteredTypePersonnel;
-                } else{
+                } else {
                     this.typePersonnel = filteredTypePersonnelAll;
                 }
 
@@ -287,7 +295,7 @@ export class PersonnelComponent implements OnInit {
                     consulterRepertoire: this.personnel.consulterRepertoire ?? false,
                     ajouterRepertoire: this.personnel.ajouterRepertoire ?? false,
                     modifierRepertoire: this.personnel.modifierRepertoire ?? false,
-                    supprimerRepertoire: this.personnel.supprimerRepertoire ?? false,
+                    supprimerRepertoire: this.personnel.supprimerRepertoire ?? false
                 });
                 this.openCloseDialogRole(true);
             }
@@ -298,12 +306,12 @@ export class PersonnelComponent implements OnInit {
         if (operationType === OperationType.ADD) {
             list = [...list, personnel];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === personnel.id);
+            let index = list.findIndex((x) => x.id === personnel.id);
             if (index > -1) {
                 list[index] = personnel;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -315,14 +323,14 @@ export class PersonnelComponent implements OnInit {
     }
 
     mapFormGroupToObject(formGroup: FormGroup, personnel: Personnel, type: number): Personnel {
-        if(type === 0){
+        if (type === 0) {
             personnel.designation = formGroup.get('designation')?.value;
             personnel.cin = formGroup.get('cin')?.value;
             personnel.email = formGroup.get('email')?.value;
             personnel.login = formGroup.get('email')?.value;
             personnel.passwordFake = formGroup.get('password')?.value;
             personnel.typePersonnel = formGroup.get('typePersonnel')?.value;
-            personnel.dateEntrer = formGroup.get('dateEntrer')?.value;
+            personnel.dateEntrer = mapToDateTimeBackEnd(formGroup.get('dateEntrer')?.value);
             personnel.tel1 = formGroup.get('tel1')?.value;
             personnel.tel2 = formGroup.get('tel2')?.value;
             personnel.adresse = formGroup.get('adresse')?.value;
@@ -333,13 +341,12 @@ export class PersonnelComponent implements OnInit {
             personnel.ajouterRepertoire = formGroup.get('ajouterRepertoire')?.value ?? false;
             personnel.modifierRepertoire = formGroup.get('modifierRepertoire')?.value ?? false;
             personnel.supprimerRepertoire = formGroup.get('supprimerRepertoire')?.value ?? false;
-            
+
             personnel.consulterStock = formGroup.get('consulterStock')?.value ?? false;
             personnel.ajouterStock = formGroup.get('ajouterStock')?.value ?? false;
             personnel.modifierStock = formGroup.get('modifierStock')?.value ?? false;
             personnel.supprimerStock = formGroup.get('supprimerStock')?.value ?? false;
         }
-        
 
         return personnel;
     }
@@ -347,7 +354,7 @@ export class PersonnelComponent implements OnInit {
     async checkIfExists(personnel: Personnel): Promise<boolean> {
         try {
             const existsObservable = this.personnelService.exist(personnel).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in personnel existence observable:', error);
                     return of(false); // Gracefully handle observable errors by returning false
                 })
@@ -360,8 +367,12 @@ export class PersonnelComponent implements OnInit {
     }
 
     checkEmailAndPassword(autoriser: boolean): boolean {
-        if((this.formGroup.get('email')?.value !== null && this.formGroup.get('email')?.value.trim() !== '') 
-            && ((this.formGroup.get('motDePasse')?.value === null || this.formGroup.get('motDePasse')?.value.trim() === '') && (this.personnel.password === null || this.personnel.password.trim() === ''))){
+        if (
+            this.formGroup.get('email')?.value !== null &&
+            this.formGroup.get('email')?.value.trim() !== '' &&
+            (this.formGroup.get('password')?.value === null || this.formGroup.get('password')?.value.trim() === '') &&
+            (this.personnel.password === null || this.personnel.password.trim() === '')
+        ) {
             autoriser = false;
             this.messageService.add({
                 severity: 'error',
@@ -372,7 +383,10 @@ export class PersonnelComponent implements OnInit {
             return autoriser;
         }
 
-        if(this.formGroup.get('motDePasse')?.value !== null && this.formGroup.get('motDePasse')?.value.trim() !== '' && (this.formGroup.get('email')?.value === null || this.formGroup.get('email')?.value.trim() === '')){
+        if (
+            ((this.personnel.password !== null && this.personnel.password.trim() !== '') || (this.formGroup.get('password')?.value !== null && this.formGroup.get('password')?.value.trim() !== '')) &&
+            (this.formGroup.get('email')?.value === null || this.formGroup.get('email')?.value.trim() === '')
+        ) {
             autoriser = false;
             this.messageService.add({
                 severity: 'error',
@@ -414,8 +428,10 @@ export class PersonnelComponent implements OnInit {
                         });
                         this.checkIfListIsNull();
                         this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY);
+                        this.trier();
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -423,7 +439,8 @@ export class PersonnelComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -438,8 +455,10 @@ export class PersonnelComponent implements OnInit {
                         });
                         this.checkIfListIsNull();
                         this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.ADD);
+                        this.trier();
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -447,7 +466,8 @@ export class PersonnelComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -456,6 +476,10 @@ export class PersonnelComponent implements OnInit {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.personnel.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }
+    }
+
+    trier(): void {
+        this.listPersonnel.sort((a, b) => a.designation.localeCompare(b.designation));
     }
 
     supprimer(): void {
@@ -472,8 +496,10 @@ export class PersonnelComponent implements OnInit {
                     });
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
+                    this.trier();
                     this.personnel = initObjectPersonnel();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -481,7 +507,8 @@ export class PersonnelComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -509,7 +536,8 @@ export class PersonnelComponent implements OnInit {
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
                     this.personnel = initObjectPersonnel();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -517,7 +545,8 @@ export class PersonnelComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -537,8 +566,8 @@ export class PersonnelComponent implements OnInit {
             this.loadingService.show();
             let id = this.personnel.id;
             this.personnel.supprimer = corbeille;
-            
-            if(corbeille) {
+
+            if (corbeille) {
                 this.personnel.dateSuppression = new Date();
             } else {
                 this.personnel.dateSuppression = null;
@@ -555,7 +584,8 @@ export class PersonnelComponent implements OnInit {
                     this.checkIfListIsNull();
                     this.listPersonnel = this.updateList(initObjectPersonnel(), this.listPersonnel, OperationType.DELETE, id);
                     this.personnel = initObjectPersonnel();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -563,7 +593,8 @@ export class PersonnelComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -596,7 +627,8 @@ export class PersonnelComponent implements OnInit {
                     this.listPersonnel = this.updateList(data, this.listPersonnel, OperationType.MODIFY, id);
                     this.personnel = initObjectPersonnel();
                     this.openCloseDialogRole(false);
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -604,7 +636,8 @@ export class PersonnelComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -643,14 +676,14 @@ export class PersonnelComponent implements OnInit {
             case 1:
                 if (this.formGroupRole.get('consulterStock')?.value === false) {
                     this.formGroupRole.patchValue({
-                        ajouterStock: false,
+                        ajouterStock: false
                     });
                 }
                 break;
             case 2:
                 if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
                     this.formGroupRole.patchValue({
-                        ajouterRepertoire: false,
+                        ajouterRepertoire: false
                     });
                 }
                 break;
@@ -662,14 +695,14 @@ export class PersonnelComponent implements OnInit {
             case 1:
                 if (this.formGroupRole.get('consulterStock')?.value === false) {
                     this.formGroupRole.patchValue({
-                        modifierStock: false,
+                        modifierStock: false
                     });
                 }
                 break;
             case 2:
                 if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
                     this.formGroupRole.patchValue({
-                        modifierRepertoire: false,
+                        modifierRepertoire: false
                     });
                 }
                 break;
@@ -694,5 +727,4 @@ export class PersonnelComponent implements OnInit {
                 break;
         }
     }
-
 }

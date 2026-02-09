@@ -1,53 +1,61 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Absence } from '@/models/absence';
+import { CommonSearchModel } from '@/search/common-search-model';
 import { omit } from '@/shared/classes/generic-methods';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AbsenceService {
+    constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) {}
+    getHeadersPDF(): HttpHeaders {
+        let headers = new HttpHeaders();
+        headers = headers.set('Accept', 'application/pdf');
+        return headers;
+    }
 
-  getAll(): Observable<Absence[]> {
-    return this.http.get<Absence[]>(ENDPOINTS.ABSENCE.getAll);
-  }
+    getAll(): Observable<Absence[]> {
+        return this.http.get<Absence[]>(ENDPOINTS.ABSENCE.getAll);
+    }
 
-  getById(id: bigint): Observable<Absence> {
-    return this.http.get<Absence>(ENDPOINTS.ABSENCE.getById(id));
-  }
+    getById(id: bigint): Observable<Absence> {
+        return this.http.get<Absence>(ENDPOINTS.ABSENCE.getById(id));
+    }
 
-  create(absence: Absence): Observable<Absence> {
-    const serializedObj = this.serialization(absence);
-    const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'dateAbsenceStr');
-    return this.http.post<Absence>(ENDPOINTS.ABSENCE.create, obj);
-  }
+    create(absence: Absence): Observable<Absence> {
+        const serializedObj = this.serialization(absence);
+        const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'dateAbsenceStr');
+        return this.http.post<Absence>(ENDPOINTS.ABSENCE.create, obj);
+    }
 
-  update(id: bigint, absence: Absence): Observable<Absence> {
-    const serializedObj = this.serialization(absence);
-    const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'dateAbsenceStr');
-    return this.http.patch<Absence>(ENDPOINTS.ABSENCE.update(id), obj);
-  }
+    update(id: bigint, absence: Absence): Observable<Absence> {
+        const serializedObj = this.serialization(absence);
+        const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'dateAbsenceStr');
+        return this.http.patch<Absence>(ENDPOINTS.ABSENCE.update(id), obj);
+    }
 
-  delete(id: bigint): Observable<void> {
-    return this.http.delete<void>(ENDPOINTS.ABSENCE.delete(id));
-  }
+    delete(id: bigint): Observable<void> {
+        return this.http.delete<void>(ENDPOINTS.ABSENCE.delete(id));
+    }
 
-  exist(absence: Absence): Observable<boolean> {
-    const serializedObj = this.serialization(absence);
-    const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'personnelOperationId', 'dateAbsenceStr');
-    return this.http.post<boolean>(ENDPOINTS.ABSENCE.exist, obj);
-  }
+    exist(absence: Absence): Observable<boolean> {
+        const serializedObj = this.serialization(absence);
+        const obj = omit(serializedObj, 'personnelOperation', 'personnel', 'personnelOperationId', 'dateAbsenceStr');
+        return this.http.post<boolean>(ENDPOINTS.ABSENCE.exist, obj);
+    }
 
-  serialization(obj: Absence): any {
-    console.log(obj)
-    return {
-      ...obj,
-      id: obj.id?.toString(),
-    };
-  }
-  
+    imprimer(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post<any>(ENDPOINTS.ABSENCE.imprimer, commonSearchModel, { headers: this.getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    serialization(obj: Absence): any {
+        return {
+            ...obj,
+            id: obj.id?.toString()
+        };
+    }
 }

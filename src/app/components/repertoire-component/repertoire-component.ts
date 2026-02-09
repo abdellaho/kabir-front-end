@@ -57,11 +57,14 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    personnelIdSearch: bigint = BigInt(0);
     typeOfList: number = 0;
     typeRepertoire: { label: string; value: number }[] = filteredTypeRepertoire;
     listVille: Ville[] = [];
     listPersonnel: Personnel[] = [];
+    listPersonnelSearch: Personnel[] = [];
     listRepertoire: Repertoire[] = [];
+    listRepertoireFixe: Repertoire[] = [];
     selectedRepertoire!: Repertoire;
     repertoire: Repertoire = initObjectRepertoire();
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
@@ -86,10 +89,12 @@ export class RepertoireComponent {
     ) {}
 
     ngOnInit(): void {
+        this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
         this.search();
         this.getAllVille();
         this.getAllPersonnel();
+        this.getAllPersonnelSearch();
         this.initFormGroup();
     }
 
@@ -105,7 +110,7 @@ export class RepertoireComponent {
         this.formGroup = this.formBuilder.group(
             {
                 typeRepertoire: [0, [Validators.required, Validators.min(1)]],
-                designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+                designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
                 villeId: [0, [Validators.required, Validators.min(1)]],
                 tel1: ['', [Validators.maxLength(10)]],
                 tel2: ['', [Validators.maxLength(10)]],
@@ -158,6 +163,7 @@ export class RepertoireComponent {
         this.repertoireService.search(search).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -171,6 +177,7 @@ export class RepertoireComponent {
         this.repertoireService.search(search).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -187,6 +194,7 @@ export class RepertoireComponent {
         this.repertoireService.search(stockSearch).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -211,6 +219,20 @@ export class RepertoireComponent {
         });
     }
 
+    getAllPersonnelSearch(): void {
+        let search: Personnel = initObjectPersonnel();
+        this.personnelService.getAllExceptAdmin(search).subscribe({
+            next: (data: Personnel[]) => {
+                const emptyPersonnel = initObjectPersonnel();
+                emptyPersonnel.id = BigInt(0);
+                this.listPersonnelSearch = [emptyPersonnel, ...data];
+            },
+            error: (error: any) => {
+                console.error(error);
+            }
+        });
+    }
+
     getAllVille(): void {
         this.villeService.getVilles().subscribe({
             next: (data: Ville[]) => {
@@ -221,6 +243,16 @@ export class RepertoireComponent {
                 console.error(error);
             }
         });
+    }
+
+    onChangeIdPersonnelSearch() {
+        if (this.personnelIdSearch === BigInt(0)) {
+            this.listRepertoire = this.listRepertoireFixe;
+        } else {
+            this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
+                return repertoire.personnelId === this.personnelIdSearch;
+            });
+        }
     }
 
     openCloseDialogAjouter(openClose: boolean): void {

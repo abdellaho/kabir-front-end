@@ -250,11 +250,9 @@ export class AuthSecurityService {
     }
 
     refreshToken(): Observable<any> {
-        console.log('Refreshing token...');
         const refreshToken = this.getRefreshToken();
 
         if (!refreshToken) {
-            console.log('No refresh token available');
             return throwError(
                 () =>
                     ({
@@ -297,7 +295,6 @@ export class AuthSecurityService {
         const expiryTime = new Date(expiry).getTime();
         const now = Date.now();
         const refreshTime = expiryTime - now - 5 * 60 * 1000; // 5 mins before expiry
-        console.log('Refresh time', refreshTime, 'expiryTime', expiryTime, 'now', now.toString(), 'expiry', expiry.toString());
 
         if (refreshTime > 0) {
             this.tokenRefreshTimer$ = timer(refreshTime).pipe(

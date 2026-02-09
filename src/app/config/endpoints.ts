@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 const BASE_URL = environment.production ? '/api' : 'http://localhost:8080/api';
 const FACTURE = `facture`;
 const BON_SORTIE = `bon-sortie`;
+const ABSENCE = `absence`;
 const ACHAT_FACTURE = `achat-facture`;
 const ACHAT_SIMPLE = `achat-simple`;
 const ACHAT_ETRANGER = `achat-etranger`;
@@ -13,6 +14,7 @@ const COMPTE_CAISSE = `compte-caisse`;
 const COMPTA = `compta`;
 const BULLETIN_PAI = `bulletin-pai`;
 const PRIME = `prime`;
+const PERSONNEL = `personnel`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -60,13 +62,14 @@ export const ENDPOINTS = {
         updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/${REPERTOIRE}/${id}/update-nbr-operation/${nbrOperation}`
     },
     ABSENCE: {
-        getAll: `${BASE_URL}/absence`,
-        getById: (id: bigint) => `${BASE_URL}/absence/${id}`,
-        create: `${BASE_URL}/absence`,
-        update: (id: bigint) => `${BASE_URL}/absence/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/absence/${id}`,
-        exist: `${BASE_URL}/absence/exist`,
-        search: `${BASE_URL}/absence/search`
+        getAll: `${BASE_URL}/${ABSENCE}`,
+        getById: (id: bigint) => `${BASE_URL}/${ABSENCE}/${id}`,
+        create: `${BASE_URL}/${ABSENCE}`,
+        update: (id: bigint) => `${BASE_URL}/${ABSENCE}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${ABSENCE}/${id}`,
+        exist: `${BASE_URL}/${ABSENCE}/exist`,
+        search: `${BASE_URL}/${ABSENCE}/search`,
+        imprimer: `${BASE_URL}/${ABSENCE}/imprimer`
     },
     BULLETIN_PAI: {
         getAll: `${BASE_URL}/${BULLETIN_PAI}`,
@@ -112,22 +115,23 @@ export const ENDPOINTS = {
         checkIsLast: `${BASE_URL}/${COMPTA}/check-is-last`
     },
     PERSONNEL: {
-        getAll: `${BASE_URL}/personnel`,
-        getAllAlowed: `${BASE_URL}/personnel/allowed`,
-        getById: (id: bigint) => `${BASE_URL}/personnel/${id}`,
-        create: `${BASE_URL}/personnel`,
-        update: (id: bigint) => `${BASE_URL}/personnel/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/personnel/${id}`,
-        exist: `${BASE_URL}/personnel/exist`,
-        search: `${BASE_URL}/personnel/search`,
-        present: `${BASE_URL}/personnel/present`,
+        getAll: `${BASE_URL}/${PERSONNEL}`,
+        getAllAlowed: `${BASE_URL}/${PERSONNEL}/allowed`,
+        getById: (id: bigint) => `${BASE_URL}/${PERSONNEL}/${id}`,
+        create: `${BASE_URL}/${PERSONNEL}`,
+        update: (id: bigint) => `${BASE_URL}/${PERSONNEL}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${PERSONNEL}/${id}`,
+        exist: `${BASE_URL}/${PERSONNEL}/exist`,
+        search: `${BASE_URL}/${PERSONNEL}/search`,
+        present: `${BASE_URL}/${PERSONNEL}/present`,
+        allExceptAdmin: `${BASE_URL}/${PERSONNEL}/all-except-admin`,
         auth: {
-            login: `${BASE_URL}/personnel/auth/login`,
-            register: `${BASE_URL}/personnel/auth/register`,
-            refresh: `${BASE_URL}/personnel/auth/refresh-token`,
-            logout: `${BASE_URL}/personnel/auth/logout`,
-            adminExist: `${BASE_URL}/personnel/auth/admin-exist`,
-            me: `${BASE_URL}/personnel/auth/me`
+            login: `${BASE_URL}/${PERSONNEL}/auth/login`,
+            register: `${BASE_URL}/${PERSONNEL}/auth/register`,
+            refresh: `${BASE_URL}/${PERSONNEL}/auth/refresh-token`,
+            logout: `${BASE_URL}/${PERSONNEL}/auth/logout`,
+            adminExist: `${BASE_URL}/${PERSONNEL}/auth/admin-exist`,
+            me: `${BASE_URL}/${PERSONNEL}/auth/me`
         }
     },
     PRIME: {
