@@ -57,6 +57,7 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    repertoireInputSearch: string = '';
     personnelIdSearch: bigint = BigInt(0);
     typeOfList: number = 0;
     typeRepertoire: { label: string; value: number }[] = filteredTypeRepertoire;
@@ -89,6 +90,7 @@ export class RepertoireComponent {
     ) {}
 
     ngOnInit(): void {
+        this.repertoireInputSearch = '';
         this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
         this.search();
@@ -206,7 +208,8 @@ export class RepertoireComponent {
     }
 
     getAllPersonnel(): void {
-        this.personnelService.getAll().subscribe({
+        let search: Personnel = initObjectPersonnel();
+        this.personnelService.getAllExceptAdmin(search).subscribe({
             next: (data: Personnel[]) => {
                 const emptyPersonnel = initObjectPersonnel();
                 emptyPersonnel.id = BigInt(0);
@@ -252,6 +255,38 @@ export class RepertoireComponent {
             this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
                 return repertoire.personnelId === this.personnelIdSearch;
             });
+        }
+    }
+
+    filterByTypeText(text: string): number[] {
+        const lower = text.toLowerCase();
+
+        const matchedTypes = this.typeRepertoire.find((t) => t.label.toLowerCase().includes(lower));
+
+        return matchedTypes ? [matchedTypes.value] : [];
+    }
+
+    searchByInputText() {
+        if (this.repertoireInputSearch.length > 0) {
+            let matchedTypes = this.filterByTypeText(this.repertoireInputSearch);
+            this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
+                return (
+                    repertoire.designation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    matchedTypes.includes(repertoire.typeRepertoire) ||
+                    repertoire.adresse.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel1.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel2.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel3.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.email.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.ice.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.ife.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.villeNomVille.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.personnelDesignation.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.nbrOperationClient.toString().includes(this.repertoireInputSearch.toLowerCase())
+                );
+            });
+        } else {
+            this.listRepertoire = this.listRepertoireFixe;
         }
     }
 

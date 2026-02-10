@@ -22,6 +22,10 @@ export class AbsenceService {
         return this.http.get<Absence[]>(ENDPOINTS.ABSENCE.getAll);
     }
 
+    searchByCommon(commonSearchModel: CommonSearchModel): Observable<Absence[]> {
+        return this.http.post<Absence[]>(ENDPOINTS.ABSENCE.searchByCommon, commonSearchModel);
+    }
+
     getById(id: bigint): Observable<Absence> {
         return this.http.get<Absence>(ENDPOINTS.ABSENCE.getById(id));
     }

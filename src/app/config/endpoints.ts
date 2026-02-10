@@ -69,7 +69,8 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/${ABSENCE}/${id}`,
         exist: `${BASE_URL}/${ABSENCE}/exist`,
         search: `${BASE_URL}/${ABSENCE}/search`,
-        imprimer: `${BASE_URL}/${ABSENCE}/imprimer`
+        imprimer: `${BASE_URL}/${ABSENCE}/imprimer`,
+        searchByCommon: `${BASE_URL}/${ABSENCE}/searchByCommon`
     },
     BULLETIN_PAI: {
         getAll: `${BASE_URL}/${BULLETIN_PAI}`,

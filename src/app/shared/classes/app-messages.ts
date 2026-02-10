@@ -270,6 +270,12 @@ export const APP_MESSAGES = {
             apresMidi: 'Soir',
             personnel: 'Personnel',
             dateAbsence: 'Date',
+            imprimer: {
+                label: 'Consulter',
+                dateDebut: 'Date Début',
+                dateFin: 'Date Fin',
+                personnel: 'Personnel'
+            },
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce présence ?'
         },
         stock: {
@@ -387,6 +393,7 @@ export const APP_MESSAGES = {
         },
         repertoire: {
             label: 'Repertoire',
+            search: 'Rechercher',
             typeRepertoire: 'Type',
             designation: 'Designation',
             villeId: 'Ville',

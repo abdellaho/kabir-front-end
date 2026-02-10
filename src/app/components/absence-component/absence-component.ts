@@ -60,9 +60,6 @@ export class AbsenceComponent implements OnInit {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
     //Tableau ---> Date + Personnel + Matin + Soir
     //Ajouter ---> Date + Personnel + Matin + Soir
-    dateDebut: Date | null = null;
-    dateFin: Date | null = null;
-    personnelIdImprimer: bigint | null = null;
     personnelCreationId: number | null = null;
     listPersonnelFixe: Personnel[] = [];
     listPersonnel: Personnel[] = [];
@@ -75,6 +72,7 @@ export class AbsenceComponent implements OnInit {
     dialogImprimer: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
+    formGroupImprimer!: FormGroup;
     msg = APP_MESSAGES;
 
     constructor(
@@ -117,8 +115,19 @@ export class AbsenceComponent implements OnInit {
         );
     }
 
+    initFormGroupImprimer() {
+        this.formGroupImprimer = this.formBuilder.group({
+            personnelId: [0],
+            dateDebut: [null],
+            dateFin: [null]
+        });
+    }
+
     getAllAbsence(): void {
-        this.absenceService.getAll().subscribe({
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+        commonSearchModel.searchByDate = true;
+
+        this.absenceService.searchByCommon(commonSearchModel).subscribe({
             next: (data: Absence[]) => {
                 this.listAbsence = (data || []).map((a) => {
                     const dateAbsence = new Date(a.dateAbsence);
@@ -166,9 +175,7 @@ export class AbsenceComponent implements OnInit {
     }
 
     viderConsulter() {
-        this.dateDebut = null;
-        this.dateFin = null;
-        this.personnelIdImprimer = BigInt(0);
+        this.initFormGroupImprimer();
         this.openCloseDialogImprimer(true);
     }
 
@@ -303,7 +310,6 @@ export class AbsenceComponent implements OnInit {
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
-                        console.log('Close dialog Ajouter');
                     },
                     error: (err) => {
                         console.log(err);
@@ -326,7 +332,6 @@ export class AbsenceComponent implements OnInit {
                         this.checkIfListIsNull();
                         this.listAbsence = this.updateList(data, this.listAbsence, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
-                        console.log('Close dialog Ajouter');
                     },
                     error: (err) => {
                         console.log(err);
@@ -392,9 +397,9 @@ export class AbsenceComponent implements OnInit {
 
         let commonSearchModel: CommonSearchModel = initCommonSearchModel();
         commonSearchModel.searchByDate = true;
-        commonSearchModel.personnelId = this.personnelIdImprimer;
-        commonSearchModel.dateDebut = this.dateDebut ? new Date(this.dateDebut) : null;
-        commonSearchModel.dateFin = this.dateFin ? new Date(this.dateFin) : null;
+        commonSearchModel.personnelId = this.formGroupImprimer.get('personnelId')?.value;
+        commonSearchModel.dateDebut = this.formGroupImprimer.get('dateDebut')?.value !== null ? mapToDateTimeBackEnd(this.formGroupImprimer.get('dateDebut')?.value) : null;
+        commonSearchModel.dateFin = this.formGroupImprimer.get('dateFin')?.value !== null ? mapToDateTimeBackEnd(this.formGroupImprimer.get('dateFin')?.value) : null;
 
         this.absenceService.imprimer(commonSearchModel).subscribe({
             next: (data) => {

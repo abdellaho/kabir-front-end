@@ -9,15 +9,6 @@
                     </div>
 
                     <div class="my-2">
-                        <p-floatlabel class="w-full md:w-56" variant="on">
-                            <p-select [(ngModel)]="personnelIdSearch" inputId="personnelIdSearch"
-                                [options]="listPersonnelSearch" appendTo="body" optionLabel="designation"
-                                optionValue="id" style="height: 30px;" class="w-full md:w-56" (onChange)="onChangeIdPersonnelSearch()" />
-                            <label for="personnelIdSearch">{{ msg.components.repertoire.choisirPersonnel }}</label>
-                        </p-floatlabel>
-                    </div>
-
-                    <div class="my-2">
                         <p-button severity="success" [outlined]="typeOfList === 0 ? false : true" pRipple
                             icon="pi pi-crown" [label]="msg.components.repertoire.label" class="mr-2"
                             (click)="listOfAll()"></p-button>
@@ -33,6 +24,10 @@
                         <p-button severity="danger" [outlined]="typeOfList === 2 ? false : true" pRipple
                             [label]="msg.buttons.corbeille" icon="pi pi-trash" class="mr-2"
                             (click)="bloqueListe()"></p-button>
+                    </div>
+
+                    <div class="my-2">
+                        <input pInputText type="text" placeholder="{{ msg.components.repertoire.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
                     </div>
                 </ng-template>
 
