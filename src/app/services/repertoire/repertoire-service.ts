@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Repertoire } from '@/models/repertoire';
-import { getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { CommonSearchModel } from '@/search/common-search-model';
+import { getHeadersPDF, getTypeOperation, omit } from '@/shared/classes/generic-methods';
 import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -50,6 +51,10 @@ export class RepertoireService {
     updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
         let nbrOperation: number = getTypeOperation(operationType);
         return this.http.patch<void>(ENDPOINTS.REPERTOIRE.updateNbrOperation(id, nbrOperation), {});
+    }
+
+    imprimer(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimer, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
     serialization(repertoire: Repertoire): any {

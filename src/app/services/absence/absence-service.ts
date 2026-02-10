@@ -1,7 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Absence } from '@/models/absence';
 import { CommonSearchModel } from '@/search/common-search-model';
-import { omit } from '@/shared/classes/generic-methods';
+import { getHeadersPDF, omit } from '@/shared/classes/generic-methods';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -11,12 +11,6 @@ import { Observable } from 'rxjs';
 })
 export class AbsenceService {
     constructor(private http: HttpClient) {}
-
-    getHeadersPDF(): HttpHeaders {
-        let headers = new HttpHeaders();
-        headers = headers.set('Accept', 'application/pdf');
-        return headers;
-    }
 
     getAll(): Observable<Absence[]> {
         return this.http.get<Absence[]>(ENDPOINTS.ABSENCE.getAll);
@@ -53,7 +47,7 @@ export class AbsenceService {
     }
 
     imprimer(commonSearchModel: CommonSearchModel): Observable<any> {
-        return this.http.post<any>(ENDPOINTS.ABSENCE.imprimer, commonSearchModel, { headers: this.getHeadersPDF(), responseType: 'blob' as 'json' });
+        return this.http.post<any>(ENDPOINTS.ABSENCE.imprimer, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
     serialization(obj: Absence): any {

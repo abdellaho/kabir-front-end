@@ -6,7 +6,7 @@ import { PersonnelService } from '@/services/personnel/personnel-service';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypeRepertoire } from '@/shared/enums/type-repertoire';
+import { filteredTypeRepertoire, typeImprimerRepertoirePharmacie, typeImprimerRepertoireRevendeur } from '@/shared/enums/type-repertoire';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -28,6 +28,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { RepertoireValidator } from '@/validators/repertoire-validator';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
+import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -57,6 +58,9 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    typeRepertoireImprim: number = 1;
+    typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
+
     repertoireInputSearch: string = '';
     personnelIdSearch: bigint = BigInt(0);
     typeOfList: number = 0;
@@ -74,10 +78,12 @@ export class RepertoireComponent {
     dialogAjouter: boolean = false;
     dialogArchiver: boolean = false;
     dialogCorbeille: boolean = false;
+    dialogImprimer: boolean = false;
     dialogAnnulerArchiver: boolean = false;
     dialogAnnulerCorbeille: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
+    formGroupImprimer!: FormGroup;
     msg = APP_MESSAGES;
 
     constructor(
@@ -98,6 +104,7 @@ export class RepertoireComponent {
         this.getAllPersonnel();
         this.getAllPersonnelSearch();
         this.initFormGroup();
+        this.initFormGroupImprimer();
     }
 
     clear(table: Table) {
@@ -124,6 +131,14 @@ export class RepertoireComponent {
             },
             { validators: [RepertoireValidator] }
         );
+    }
+
+    initFormGroupImprimer() {
+        this.formGroupImprimer = this.formBuilder.group({
+            villeId: [BigInt(0)],
+            personnelId: [BigInt(0)],
+            typeImprimRepertoire: [0]
+        });
     }
 
     search() {
@@ -312,6 +327,10 @@ export class RepertoireComponent {
 
     openCloseDialogAnnulerCorbeille(openClose: boolean): void {
         this.dialogAnnulerCorbeille = openClose;
+    }
+
+    openCloseDialogImprimer(openClose: boolean): void {
+        this.dialogImprimer = openClose;
     }
 
     getNomVille(id: number) {
@@ -562,5 +581,42 @@ export class RepertoireComponent {
         } else {
             this.openCloseDialogAnnulerCorbeille(false);
         }
+    }
+
+    viderImprimer(typeRepertoire: number) {
+        this.typeRepertoireImprim = typeRepertoire;
+        typeRepertoire === 0 ? (this.typeRepertoireImprimPharmacie = typeImprimerRepertoirePharmacie) : (this.typeRepertoireImprimPharmacie = typeImprimerRepertoireRevendeur);
+        this.initFormGroupImprimer();
+        this.openCloseDialogImprimer(true);
+    }
+
+    imprimer(): void {
+        this.loadingService.show();
+
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+
+        commonSearchModel.typeRepertoire = this.typeRepertoireImprim;
+        commonSearchModel.personnelId = this.formGroupImprimer.get('personnelId')?.value;
+        commonSearchModel.typeImprimRepertoire = this.formGroupImprimer.get('typeImprimRepertoire')?.value;
+        commonSearchModel.villeId = this.formGroupImprimer.get('villeId')?.value;
+
+        this.repertoireService.imprimer(commonSearchModel).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }

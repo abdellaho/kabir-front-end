@@ -405,6 +405,7 @@ export const APP_MESSAGES = {
             personnelId: 'Personnel',
             nbrOperationClient: 'N.O.C',
             plafond: 'Plafond',
+            typeImprimRepertoire: 'Type Impression',
             choisirPersonnel: 'Choisir Personnel',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce repertoire ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce repertoire ?',
@@ -760,7 +761,9 @@ export const APP_MESSAGES = {
         regler: 'Régler',
         nonRegler: 'N.Régler',
         imprimer: 'Imprimer',
-        consulter: 'Consulter'
+        consulter: 'Consulter',
+        pharmacie: 'Pharmacie',
+        revendeur: 'Revendeur'
     },
     messages: {
         miseAJour: 'Mise à jour',

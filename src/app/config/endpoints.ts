@@ -59,7 +59,8 @@ export const ENDPOINTS = {
         search: `${BASE_URL}/${REPERTOIRE}/search`,
         searchClientsOnly: `${BASE_URL}/${REPERTOIRE}/search/clients`,
         searchPersonnel: `${BASE_URL}/${REPERTOIRE}/search-personnel`,
-        updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/${REPERTOIRE}/${id}/update-nbr-operation/${nbrOperation}`
+        updateNbrOperation: (id: bigint, nbrOperation: number) => `${BASE_URL}/${REPERTOIRE}/${id}/update-nbr-operation/${nbrOperation}`,
+        imprimer: `${BASE_URL}/${REPERTOIRE}/imprimer`
     },
     ABSENCE: {
         getAll: `${BASE_URL}/${ABSENCE}`,

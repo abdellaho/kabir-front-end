@@ -27,6 +27,14 @@
                     </div>
 
                     <div class="my-2">
+                        <p-button severity="danger" pRipple [label]="msg.buttons.consulter + ' ' + msg.buttons.pharmacie" icon="pi pi-print" class="mr-2" (click)="viderImprimer(1)"></p-button>
+                    </div>
+
+                    <div class="my-2">
+                        <p-button severity="danger" pRipple [label]="msg.buttons.consulter + ' ' + msg.buttons.revendeur" icon="pi pi-print" class="mr-2" (click)="viderImprimer(2)"></p-button>
+                    </div>
+
+                    <div class="my-2">
                         <input pInputText type="text" placeholder="{{ msg.components.repertoire.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
                     </div>
                 </ng-template>
@@ -389,6 +397,54 @@
                     class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
                     (click)="corbeille(false)"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.components.absence.imprimer.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroupImprimer" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="villeId" inputId="villeIdImprimer" [options]="listVille"
+                                        appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
+                                        class="w-full md:w-56" />
+                                    <label for="villeIdImprimer">{{ msg.components.repertoire.villeId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="personnelId" inputId="personnelIdImprimer"
+                                        [options]="listPersonnel" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="personnelIdImprimer">{{ msg.components.repertoire.personnelId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="typeImprimRepertoire" inputId="typeImprimRepertoireImprimer"
+                                        [options]="typeRepertoireImprimPharmacie" appendTo="body"
+                                        optionLabel="label" optionValue="value" style="height: 30px;"
+                                        class="w-full md:w-56" />
+                                    <label for="typeImprimRepertoireImprimer">{{ msg.components.repertoire.typeImprimRepertoire }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="openCloseDialogImprimer(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="imprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>
