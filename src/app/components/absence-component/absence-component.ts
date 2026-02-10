@@ -60,10 +60,12 @@ export class AbsenceComponent implements OnInit {
     //Buttons ---> Ajouter + Rechercher + Actualiser + Consulter
     //Tableau ---> Date + Personnel + Matin + Soir
     //Ajouter ---> Date + Personnel + Matin + Soir
+    personnelIdSearch: bigint | null = null;
     personnelCreationId: number | null = null;
     listPersonnelFixe: Personnel[] = [];
     listPersonnel: Personnel[] = [];
     listAbsence: Absence[] = [];
+    listAbsenceFixe: Absence[] = [];
     absence: Absence = initObjectAbsence();
     selectedAbsence!: Absence;
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
@@ -85,6 +87,7 @@ export class AbsenceComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.personnelIdSearch = BigInt(0);
         this.personnelCreationId = this.stateService.getState().user?.id || null;
         this.getAllAbsence();
         this.getAllPersonnelFixe();
@@ -137,7 +140,8 @@ export class AbsenceComponent implements OnInit {
                         dateAbsenceStr: this.formatDate(dateAbsence)
                     };
                 });
-                this.listAbsence = this.sortList(this.listAbsence);
+                this.listAbsenceFixe = this.sortList(this.listAbsence);
+                this.listAbsence = this.listAbsenceFixe;
             },
             error: (error: any) => {
                 console.error(error);
@@ -149,7 +153,9 @@ export class AbsenceComponent implements OnInit {
         let personnel: Personnel = initObjectPersonnel();
         this.personnelService.getAllExceptAdmin(personnel).subscribe({
             next: (data: Personnel[]) => {
-                this.listPersonnelFixe = data;
+                const emptyPersonnel = initObjectPersonnel();
+                emptyPersonnel.id = BigInt(0);
+                this.listPersonnelFixe = [emptyPersonnel, ...data];
                 this.mapOfPersonnels = arrayToMap(this.listPersonnelFixe, 'id', ['designation'], ['']);
             },
             error: (error: any) => {
@@ -185,6 +191,14 @@ export class AbsenceComponent implements OnInit {
         this.absence = initObjectAbsence();
         this.initFormGroup();
         this.onChangeDateAbsence();
+    }
+
+    onChangePersonnelIdSearch() {
+        if (this.personnelIdSearch === BigInt(0)) {
+            this.listAbsence = this.listAbsenceFixe;
+        } else {
+            this.listAbsence = this.listAbsenceFixe.filter((a) => a.personnelId === this.personnelIdSearch);
+        }
     }
 
     async getPersonnelPresent(absence: Absence): Promise<Personnel[]> {

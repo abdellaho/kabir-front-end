@@ -12,6 +12,15 @@
                         <button pButton pRipple [label]="msg.buttons.consulter" icon="pi pi-printer"
                             class="p-button-success mr-2" (click)="viderConsulter()"></button>
                     </div>
+                    <div class="my-2">
+                        <p-floatlabel class="w-full md:w-56" variant="on">
+                            <p-select [options]="listPersonnelFixe" [(ngModel)]="personnelIdSearch" style="height: 30px;" class="w-full md:w-56"
+                                inputId="personnelIdSearch" (ngModelChange)="onChangePersonnelIdSearch()"
+                                optionLabel="designation" optionValue="id"
+                                placeholder="{{ msg.components.absence.personnel }}" />
+                            <label for="personnelIdSearch">{{ msg.components.absence.personnel }}</label>
+                        </p-floatlabel>
+                    </div>
                 </ng-template>
             </p-toolbar>
 
