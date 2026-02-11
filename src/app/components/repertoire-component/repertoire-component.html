@@ -26,12 +26,8 @@
                             (click)="bloqueListe()"></p-button>
                     </div>
 
-                    <div class="my-2">
-                        <p-button severity="danger" pRipple [label]="msg.buttons.consulter + ' ' + msg.buttons.pharmacie" icon="pi pi-print" class="mr-2" (click)="viderImprimer(1)"></p-button>
-                    </div>
-
-                    <div class="my-2">
-                        <p-button severity="danger" pRipple [label]="msg.buttons.consulter + ' ' + msg.buttons.revendeur" icon="pi pi-print" class="mr-2" (click)="viderImprimer(2)"></p-button>
+                    <div class="my-2" style="margin-right: 1ch;">
+                        <p-splitbutton severity="help" pRipple [label]="msg.buttons.consulter" [model]="printItems" />
                     </div>
 
                     <div class="my-2">
@@ -43,11 +39,11 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="10"
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="20"
                 selectionMode="single" [(selection)]="selectedRepertoire"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['typeRepertoire', 'designation', 'villeNomVille', 'ice', 'tel1', 'tel2', 'tel3', 'personnelDesignation', 'observation', 'nbrOperationClient']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20, 30, 40, 50, 60]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})">
 
                 <ng-template #header>

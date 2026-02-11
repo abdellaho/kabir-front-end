@@ -118,8 +118,8 @@ export class StockComponent {
             {
                 designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
                 fournisseurId: [0, [Validators.required, Validators.min(1)]],
-                pvttc: [null, [Validators.required, Validators.min(0)]],
-                pattc: [null, [Validators.required, Validators.min(0)]],
+                pvttc: [null, [Validators.required]],
+                pattc: [null, [Validators.required]],
                 tva: [20, [Validators.required, NegativeValidator]],
                 benifice: [{ value: null, disabled: true }, [Validators.required, NegativeValidator]],
                 qteStock: [null],

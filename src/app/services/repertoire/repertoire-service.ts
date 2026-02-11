@@ -57,6 +57,14 @@ export class RepertoireService {
         return this.http.post(ENDPOINTS.REPERTOIRE.imprimer, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
+    imprimerClientAdresse(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimerClientAdresse, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerTransport(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimerTransport, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
     serialization(repertoire: Repertoire): any {
         return {
             ...repertoire,

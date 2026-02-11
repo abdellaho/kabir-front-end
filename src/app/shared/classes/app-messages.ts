@@ -763,7 +763,10 @@ export const APP_MESSAGES = {
         imprimer: 'Imprimer',
         consulter: 'Consulter',
         pharmacie: 'Pharmacie',
-        revendeur: 'Revendeur'
+        revendeur: 'Revendeur',
+        client: 'Client',
+        adresse: 'Adresse',
+        transport: 'Transport'
     },
     messages: {
         miseAJour: 'Mise à jour',

@@ -17,12 +17,13 @@ export enum TypeImprimerRepertoire {
     BL_EGALE_ZERO = 1,
     BL_EGALE_UN = 2,
     BL_SUPERIEUR_UN = 3,
-    BL_SUPERIEUR_SIX_MONTH = 4,
-    BL_INFERIEUR_SIX_MONTH = 5,
-    BL_INFERIEUR_ONE_YEAR = 6,
+    BL_SUPERIEUR_SIX_MONTH = 5,
+    BL_INFERIEUR_SIX_MONTH = 6,
+    BL_INFERIEUR_ONE_YEAR = 4,
     BL_SUPERIEUR_ONE_YEAR = 7,
     LIB_TEL_EGALE_1 = 8,
-    LIB_TEL_SUPERIEUR_1 = 9
+    LIB_TEL_SUPERIEUR_1 = 9,
+    CLIENT_PLUS_ADRESSE = 10
 }
 
 export const typeImprimerRepertoirePharmacie = [
@@ -42,5 +43,6 @@ export const typeImprimerRepertoireRevendeur = [
     { label: 'Bon de Livraison', value: TypeImprimerRepertoire.BON_LIVRAISON },
     { label: 'BL = 0', value: TypeImprimerRepertoire.BL_EGALE_ZERO },
     { label: 'BL = 1', value: TypeImprimerRepertoire.BL_EGALE_UN },
-    { label: 'BL > 1', value: TypeImprimerRepertoire.BL_SUPERIEUR_UN }
+    { label: 'BL > 1', value: TypeImprimerRepertoire.BL_SUPERIEUR_UN },
+    { label: 'Client + Adresse', value: TypeImprimerRepertoire.CLIENT_PLUS_ADRESSE }
 ];

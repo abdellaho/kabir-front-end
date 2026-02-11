@@ -11,7 +11,8 @@ import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -48,7 +49,8 @@ import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search
         InputTextModule,
         MessageModule,
         SelectModule,
-        TypeRepertoirePipe
+        TypeRepertoirePipe,
+        SplitButtonModule
     ],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'
@@ -58,6 +60,7 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    printItems: MenuItem[] = [];
     typeRepertoireImprim: number = 1;
     typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
 
@@ -99,12 +102,21 @@ export class RepertoireComponent {
         this.repertoireInputSearch = '';
         this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
+        this.initPrintItems();
         this.search();
         this.getAllVille();
         this.getAllPersonnel();
         this.getAllPersonnelSearch();
         this.initFormGroup();
         this.initFormGroupImprimer();
+    }
+
+    initPrintItems() {
+        this.printItems = [
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.pharmacie}`, icon: 'pi pi-print', command: () => this.viderImprimer(1) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.revendeur}`, icon: 'pi pi-print', command: () => this.viderImprimer(2) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.transport}`, icon: 'pi pi-print', command: () => this.imprimerTransport() }
+        ];
     }
 
     clear(table: Table) {
@@ -585,22 +597,16 @@ export class RepertoireComponent {
 
     viderImprimer(typeRepertoire: number) {
         this.typeRepertoireImprim = typeRepertoire;
-        typeRepertoire === 0 ? (this.typeRepertoireImprimPharmacie = typeImprimerRepertoirePharmacie) : (this.typeRepertoireImprimPharmacie = typeImprimerRepertoireRevendeur);
+        typeRepertoire === 1 ? (this.typeRepertoireImprimPharmacie = typeImprimerRepertoirePharmacie) : (this.typeRepertoireImprimPharmacie = typeImprimerRepertoireRevendeur);
         this.initFormGroupImprimer();
         this.openCloseDialogImprimer(true);
     }
 
-    imprimer(): void {
-        this.loadingService.show();
-
+    imprimerTransport(): void {
         let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+        commonSearchModel.typeRepertoire = 3;
 
-        commonSearchModel.typeRepertoire = this.typeRepertoireImprim;
-        commonSearchModel.personnelId = this.formGroupImprimer.get('personnelId')?.value;
-        commonSearchModel.typeImprimRepertoire = this.formGroupImprimer.get('typeImprimRepertoire')?.value;
-        commonSearchModel.villeId = this.formGroupImprimer.get('villeId')?.value;
-
-        this.repertoireService.imprimer(commonSearchModel).subscribe({
+        this.repertoireService.imprimerTransport(commonSearchModel).subscribe({
             next: (data) => {
                 const file = new Blob([data], { type: 'application/pdf' });
                 const fileURL = URL.createObjectURL(file);
@@ -618,5 +624,56 @@ export class RepertoireComponent {
                 this.loadingService.hide();
             }
         });
+    }
+
+    imprimer(): void {
+        this.loadingService.show();
+
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+
+        commonSearchModel.typeRepertoire = this.typeRepertoireImprim;
+        commonSearchModel.personnelId = this.formGroupImprimer.get('personnelId')?.value;
+        commonSearchModel.typeImprimRepertoire = this.formGroupImprimer.get('typeImprimRepertoire')?.value;
+        commonSearchModel.villeId = this.formGroupImprimer.get('villeId')?.value;
+
+        if (commonSearchModel.typeImprimRepertoire === 10) {
+            this.repertoireService.imprimerClientAdresse(commonSearchModel).subscribe({
+                next: (data) => {
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    var a = document.createElement('a');
+                    a.href = fileURL;
+                    a.target = '_blank';
+                    a.click();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.repertoireService.imprimer(commonSearchModel).subscribe({
+                next: (data) => {
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    var a = document.createElement('a');
+                    a.href = fileURL;
+                    a.target = '_blank';
+                    a.click();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        }
     }
 }
