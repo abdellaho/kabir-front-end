@@ -2,6 +2,7 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { Repertoire } from '@/models/repertoire';
 import { CommonSearchModel } from '@/search/common-search-model';
 import { getHeadersPDF, getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -43,9 +44,9 @@ export class RepertoireService {
         return this.http.post<Repertoire[]>(ENDPOINTS.REPERTOIRE.searchClientsOnly, obj);
     }
 
-    exist(repertoire: Repertoire): Observable<boolean> {
+    exist(repertoire: Repertoire): Observable<RepertoireValidationResponse> {
         const serializedObj = this.serialization(repertoire);
-        return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
+        return this.http.post<RepertoireValidationResponse>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
     }
 
     updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
