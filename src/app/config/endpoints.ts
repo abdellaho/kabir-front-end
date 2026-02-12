@@ -15,6 +15,7 @@ const COMPTA = `compta`;
 const BULLETIN_PAI = `bulletin-pai`;
 const PRIME = `prime`;
 const PERSONNEL = `personnel`;
+const STOCK = `stock`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -43,6 +44,7 @@ export const ENDPOINTS = {
     },
     STOCK_DEPOT: {
         getAll: `${BASE_URL}/stock-depot`,
+        getAllDetails: `${BASE_URL}/stock-depot/details`,
         getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
         getByIdRequest: (id: bigint) => `${BASE_URL}/stock-depot/response/${id}`,
         create: `${BASE_URL}/stock-depot`,
@@ -148,16 +150,17 @@ export const ENDPOINTS = {
         searchMontant: `${BASE_URL}/${PRIME}/search/montant`
     },
     STOCK: {
-        getAll: `${BASE_URL}/stock`,
-        getById: (id: bigint) => `${BASE_URL}/stock/${id}`,
-        create: `${BASE_URL}/stock`,
-        update: (id: bigint) => `${BASE_URL}/stock/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/stock/${id}`,
-        exist: `${BASE_URL}/stock/exist`,
-        search: `${BASE_URL}/stock/search`,
-        updateQteStock: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock`,
-        updateQteStockImport: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock-import`,
-        updateQteStockFacturer: (id: bigint) => `${BASE_URL}/stock/${id}/update-qte-stock-facturer`
+        getAll: `${BASE_URL}/${STOCK}`,
+        getById: (id: bigint) => `${BASE_URL}/${STOCK}/${id}`,
+        create: `${BASE_URL}/${STOCK}`,
+        update: (id: bigint) => `${BASE_URL}/${STOCK}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${STOCK}/${id}`,
+        exist: `${BASE_URL}/${STOCK}/exist`,
+        search: `${BASE_URL}/${STOCK}/search`,
+        updateQteStock: (id: bigint) => `${BASE_URL}/${STOCK}/${id}/update-qte-stock`,
+        updateQteStockImport: (id: bigint) => `${BASE_URL}/${STOCK}/${id}/update-qte-stock-import`,
+        updateQteStockFacturer: (id: bigint) => `${BASE_URL}/${STOCK}/${id}/update-qte-stock-facturer`,
+        imprimer: `${BASE_URL}/${STOCK}/imprimer`
     },
     VOITURE: {
         getAll: `${BASE_URL}/voiture`,

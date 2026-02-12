@@ -61,11 +61,12 @@ export class StockDepotComponent {
     //Affichage --> Buttons --> Ajouter Rechercher Actualiser Consulter
     //          ---> Achat BL (Ancien App)
     // Tableau  ---> date AL - fournisseur - N°BL Externe - montant TTCActions(Supprimer Modifier Imprimer)
-    // Ajouter --> date - fournisseur - N°BL Externe - ListProduit --> designation + qte Stock + prix vente + qte + unite gratuite + remise
+    // Ajouter --> date - fournisseur - N°BL Externe - ListProduit --> designation + qte Stock + prix vente + qte + unite gratuite + remise findAllDetails
 
     isValid: boolean = false;
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
+    listDetStockDepotPrincipal: DetStockDepot[] = [];
     listDetStockDepot: DetStockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
     selectedStockDepot!: StockDepot;
@@ -115,7 +116,22 @@ export class StockDepotComponent {
     }
 
     search() {
-        this.getAllStockDepot();
+        this.getAllDetStockDepot();
+    }
+
+    getAllDetStockDepot(): void {
+        this.listDetStockDepotPrincipal = [];
+        this.stockDepotService.getAllDetails().subscribe({
+            next: (data: DetStockDepot[]) => {
+                this.listDetStockDepotPrincipal = data;
+            },
+            error: (error: any) => {
+                console.error(error);
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 
     getAllStockDepot(): void {
@@ -252,10 +268,10 @@ export class StockDepotComponent {
         return getElementFromMap(this.mapOfStock, id);
     }
 
-    recupperer(operation: number, stockDepotEdit: StockDepot) {
-        if (stockDepotEdit && stockDepotEdit.id) {
+    recupperer(operation: number, detStockDepotEdit: DetStockDepot) {
+        if (detStockDepotEdit && detStockDepotEdit.stockDepotId) {
             if (operation === 1) {
-                this.stockDepotService.getByIdRequest(stockDepotEdit.id).subscribe({
+                this.stockDepotService.getByIdRequest(detStockDepotEdit.stockDepotId).subscribe({
                     next: (data: StockDepotRequest) => {
                         this.stockDepot = data.stockDepot;
                         this.listDetStockDepot = data.detStockDepots;
@@ -279,7 +295,8 @@ export class StockDepotComponent {
                     }
                 });
             } else if (operation === 2) {
-                this.stockDepot = structuredClone(stockDepotEdit);
+                this.stockDepot = initObjectStockDepot(); //structuredClone(stockDepotEdit);
+                this.stockDepot.id = detStockDepotEdit.stockDepotId;
                 this.openCloseDialogSupprimer(true);
             }
         } else {
@@ -287,16 +304,20 @@ export class StockDepotComponent {
         }
     }
 
-    updateList(stockDepot: StockDepot, list: StockDepot[], operationType: OperationType, id?: bigint): StockDepot[] {
+    updateList(listDetStockDepot: DetStockDepot[], list: DetStockDepot[], operationType: OperationType, id?: bigint): DetStockDepot[] {
         if (operationType === OperationType.ADD) {
-            list = [...list, stockDepot];
+            list = [...list, ...listDetStockDepot];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex((x) => x.id === stockDepot.id);
-            if (index > -1) {
-                list[index] = stockDepot;
+            if (listDetStockDepot && listDetStockDepot.length > 0) {
+                for (let detStockDepot of listDetStockDepot) {
+                    let index = list.findIndex((x) => x.id === detStockDepot.id);
+                    if (index > -1) {
+                        list[index] = detStockDepot;
+                    }
+                }
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter((x) => x.id !== id);
+            list = list.filter((x) => x.stockDepotId !== id);
         }
         return list;
     }
@@ -327,7 +348,7 @@ export class StockDepotComponent {
 
             if (this.stockDepot.id) {
                 this.stockDepotService.update(this.stockDepot.id, stockDepotRequest).subscribe({
-                    next: (data) => {
+                    next: (data: StockDepotRequest) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: this.msg.summary.labelSuccess,
@@ -337,7 +358,7 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.MODIFY);
+                        this.listDetStockDepotPrincipal = this.updateList(data.detStockDepots, this.listDetStockDepotPrincipal, OperationType.MODIFY);
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -355,7 +376,7 @@ export class StockDepotComponent {
                 });
             } else {
                 this.stockDepotService.create(stockDepotRequest).subscribe({
-                    next: (data: StockDepot) => {
+                    next: (data: StockDepotRequest) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: this.msg.summary.labelSuccess,
@@ -365,7 +386,7 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listStockDepot = this.updateList(data, this.listStockDepot, OperationType.ADD);
+                        this.listDetStockDepotPrincipal = this.updateList(data.detStockDepots, this.listDetStockDepotPrincipal, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -402,7 +423,7 @@ export class StockDepotComponent {
                     });
 
                     this.checkIfListIsNull();
-                    this.listStockDepot = this.updateList(initObjectStockDepot(), this.listStockDepot, OperationType.DELETE, id);
+                    this.listDetStockDepotPrincipal = this.updateList([], this.listDetStockDepotPrincipal, OperationType.DELETE, id);
                     this.stockDepot = initObjectStockDepot();
                 },
                 error: (err) => {

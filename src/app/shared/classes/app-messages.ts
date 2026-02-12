@@ -361,6 +361,7 @@ export const APP_MESSAGES = {
             dateSys: 'Date Système',
             qte: 'Qte',
             dateOperation: 'Date Operation',
+            stockDesignation: 'Désignation',
             stockId: 'Produit',
             qteStock: 'Qte Stock',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce stock ?',
@@ -766,7 +767,11 @@ export const APP_MESSAGES = {
         revendeur: 'Revendeur',
         client: 'Client',
         adresse: 'Adresse',
-        transport: 'Transport'
+        transport: 'Transport',
+        stockSimple: 'Stock Simple',
+        stockGenerale: 'Stock Général',
+        prixInitial: 'Prix Initial',
+        prixVentePlusRemise: 'Prix Vente + Remise'
     },
     messages: {
         miseAJour: 'Mise à jour',

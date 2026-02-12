@@ -8,7 +8,7 @@ import { StockValidator } from '@/validators/stock-validator';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -29,10 +29,29 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { filteredTypeProduit, TypeProduit } from '@/shared/enums/type-produit';
 import { StateService } from '@/state/state-service';
 import { Permission } from '@/shared/classes/other/permissions';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { initObjectPrintRequest, PrintRequest } from '@/shared/classes/requests/print-request';
 
 @Component({
     selector: 'app-stock-component',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule, InputTextModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
+        ButtonModule,
+        DialogModule,
+        FloatLabelModule,
+        InputNumberModule,
+        SelectModule,
+        MessageModule,
+        InputTextModule,
+        SplitButtonModule
+    ],
     templateUrl: './stock-component.html',
     styleUrl: './stock-component.scss'
 })
@@ -59,9 +78,10 @@ export class StockComponent {
 
     */
 
+    printItems: MenuItem[] = [];
     listFournisseur: Fournisseur[] = [];
     listStock: Stock[] = [];
-    selectedStock!: Stock;
+    listStockSelected: Stock[] = [];
     stock: Stock = initObjectStock();
     typeOfList: number = 0;
     mapOfFournisseurs: Map<number, string> = new Map<number, string>();
@@ -90,6 +110,7 @@ export class StockComponent {
 
     ngOnInit(): void {
         this.checkPermissions();
+        this.initPrintItems();
         this.typeOfList = 0;
         this.search();
         this.getAllFournisseur();
@@ -103,6 +124,15 @@ export class StockComponent {
         this.canAdd = permissions.includes(Permission.AJOUTER_STOCK) || permissions.includes(Permission.ALL);
         this.canEdit = permissions.includes(Permission.MODIFIER_STOCK) || permissions.includes(Permission.ALL);
         this.canDelete = permissions.includes(Permission.SUPPRIMER_STOCK) || permissions.includes(Permission.ALL);
+    }
+
+    initPrintItems() {
+        this.printItems = [
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.stockSimple}`, icon: 'pi pi-print', command: () => this.imprimer(2) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.stockGenerale}`, icon: 'pi pi-print', command: () => this.imprimer(1) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.prixInitial}`, icon: 'pi pi-print', command: () => this.imprimer(8) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.prixVentePlusRemise}`, icon: 'pi pi-print', command: () => this.imprimer(11) }
+        ];
     }
 
     clear(table: Table) {
@@ -690,5 +720,37 @@ export class StockComponent {
         } else {
             this.openCloseDialogAnnulerCorbeille(false);
         }
+    }
+
+    imprimer(type: number): void {
+        this.loadingService.show();
+        let printRequest: PrintRequest = initObjectPrintRequest();
+
+        printRequest.type = type;
+        if (type !== 1) {
+            if (this.listStockSelected && this.listStockSelected.length > 0) {
+                printRequest.ids = this.listStockSelected.map((s) => (s.id ? s.id : 0n));
+            }
+        }
+
+        this.stockService.imprimer(printRequest).subscribe({
+            next: (data) => {
+                const blob = new Blob([data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.msg.summary.labelError,
+                    detail: this.msg.messages.messageErrorProduite
+                });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }
