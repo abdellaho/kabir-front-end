@@ -179,6 +179,7 @@ export const APP_MESSAGES = {
             label: 'Ville',
             nomVille: 'Nom Ville',
             codePostal: 'Code Postal',
+            chercherParNomVille: 'Chercher par Nom Ville',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette ville ?'
         },
         etablissement: {
@@ -211,6 +212,7 @@ export const APP_MESSAGES = {
             label: 'Prime',
             montant: 'Montant',
             prime: 'Prime',
+            messageErrorSupOrEgal: 'Il existe un prime avec un montant ou un prime supérieur ou égal',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce prime ?'
         },
         personnel: {
@@ -268,6 +270,12 @@ export const APP_MESSAGES = {
             apresMidi: 'Soir',
             personnel: 'Personnel',
             dateAbsence: 'Date',
+            imprimer: {
+                label: 'Consulter',
+                dateDebut: 'Date Début',
+                dateFin: 'Date Fin',
+                personnel: 'Personnel'
+            },
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce présence ?'
         },
         stock: {
@@ -353,6 +361,7 @@ export const APP_MESSAGES = {
             dateSys: 'Date Système',
             qte: 'Qte',
             dateOperation: 'Date Operation',
+            stockDesignation: 'Désignation',
             stockId: 'Produit',
             qteStock: 'Qte Stock',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce stock ?',
@@ -385,6 +394,7 @@ export const APP_MESSAGES = {
         },
         repertoire: {
             label: 'Repertoire',
+            search: 'Rechercher',
             typeRepertoire: 'Type',
             designation: 'Designation',
             villeId: 'Ville',
@@ -396,6 +406,8 @@ export const APP_MESSAGES = {
             personnelId: 'Personnel',
             nbrOperationClient: 'N.O.C',
             plafond: 'Plafond',
+            typeImprimRepertoire: 'Type Impression',
+            choisirPersonnel: 'Choisir Personnel',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce repertoire ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce repertoire ?',
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce repertoire dans la corbeille ?',
@@ -748,13 +760,25 @@ export const APP_MESSAGES = {
         actualiser: 'Actualiser',
         facturer: 'Facturer',
         regler: 'Régler',
-        nonRegler: 'N.Régler'
+        nonRegler: 'N.Régler',
+        imprimer: 'Imprimer',
+        consulter: 'Consulter',
+        pharmacie: 'Pharmacie',
+        revendeur: 'Revendeur',
+        client: 'Client',
+        adresse: 'Adresse',
+        transport: 'Transport',
+        stockSimple: 'Stock Simple',
+        stockGenerale: 'Stock Général',
+        prixInitial: 'Prix Initial',
+        prixVentePlusRemise: 'Prix Vente + Remise'
     },
     messages: {
         miseAJour: 'Mise à jour',
         welcome: 'Welcome back!',
         confirm: 'Confirmer',
         required: '* Champs obligatoire',
+        imprimer: 'Imprimer',
         saved: '',
         messageError: "Veuillez réessayer l'opération",
         messageErrorProduite: "Une erreur s'est produite",

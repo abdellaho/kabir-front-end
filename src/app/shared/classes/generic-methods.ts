@@ -8,12 +8,19 @@ import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { TypeSearch } from '../enums/type-search';
 import { OperationType } from '../enums/operation-type';
 import { Facture } from '@/models/facture';
+import { HttpHeaders } from '@angular/common/http';
 
 export interface AllValidationErrors {
     control_name: string;
     error_name: string;
     error_value: any;
     control_modified: string;
+}
+
+export function getHeadersPDF(): HttpHeaders {
+    let headers = new HttpHeaders();
+    headers = headers.set('Accept', 'application/pdf');
+    return headers;
 }
 
 export interface FormGroupControls {

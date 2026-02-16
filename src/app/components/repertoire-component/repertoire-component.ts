@@ -6,12 +6,13 @@ import { PersonnelService } from '@/services/personnel/personnel-service';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypeRepertoire } from '@/shared/enums/type-repertoire';
+import { filteredTypeRepertoire, typeImprimerRepertoirePharmacie, typeImprimerRepertoireRevendeur } from '@/shared/enums/type-repertoire';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -28,6 +29,8 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { RepertoireValidator } from '@/validators/repertoire-validator';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
+import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
+import { initRepertoireValidationResponse, RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -47,7 +50,8 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
         InputTextModule,
         MessageModule,
         SelectModule,
-        TypeRepertoirePipe
+        TypeRepertoirePipe,
+        SplitButtonModule
     ],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'
@@ -57,11 +61,19 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    printItems: MenuItem[] = [];
+    typeRepertoireImprim: number = 1;
+    typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
+
+    repertoireInputSearch: string = '';
+    personnelIdSearch: bigint = BigInt(0);
     typeOfList: number = 0;
     typeRepertoire: { label: string; value: number }[] = filteredTypeRepertoire;
     listVille: Ville[] = [];
     listPersonnel: Personnel[] = [];
+    listPersonnelSearch: Personnel[] = [];
     listRepertoire: Repertoire[] = [];
+    listRepertoireFixe: Repertoire[] = [];
     selectedRepertoire!: Repertoire;
     repertoire: Repertoire = initObjectRepertoire();
     mapOfPersonnels: Map<number, string> = new Map<number, string>();
@@ -70,10 +82,12 @@ export class RepertoireComponent {
     dialogAjouter: boolean = false;
     dialogArchiver: boolean = false;
     dialogCorbeille: boolean = false;
+    dialogImprimer: boolean = false;
     dialogAnnulerArchiver: boolean = false;
     dialogAnnulerCorbeille: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
+    formGroupImprimer!: FormGroup;
     msg = APP_MESSAGES;
 
     constructor(
@@ -86,11 +100,24 @@ export class RepertoireComponent {
     ) {}
 
     ngOnInit(): void {
+        this.repertoireInputSearch = '';
+        this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
+        this.initPrintItems();
         this.search();
         this.getAllVille();
         this.getAllPersonnel();
+        this.getAllPersonnelSearch();
         this.initFormGroup();
+        this.initFormGroupImprimer();
+    }
+
+    initPrintItems() {
+        this.printItems = [
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.pharmacie}`, icon: 'pi pi-print', command: () => this.viderImprimer(1) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.revendeur}`, icon: 'pi pi-print', command: () => this.viderImprimer(2) },
+            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.transport}`, icon: 'pi pi-print', command: () => this.imprimerTransport() }
+        ];
     }
 
     clear(table: Table) {
@@ -105,7 +132,7 @@ export class RepertoireComponent {
         this.formGroup = this.formBuilder.group(
             {
                 typeRepertoire: [0, [Validators.required, Validators.min(1)]],
-                designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+                designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
                 villeId: [0, [Validators.required, Validators.min(1)]],
                 tel1: ['', [Validators.maxLength(10)]],
                 tel2: ['', [Validators.maxLength(10)]],
@@ -117,6 +144,14 @@ export class RepertoireComponent {
             },
             { validators: [RepertoireValidator] }
         );
+    }
+
+    initFormGroupImprimer() {
+        this.formGroupImprimer = this.formBuilder.group({
+            villeId: [BigInt(0)],
+            personnelId: [BigInt(0)],
+            typeImprimRepertoire: [0]
+        });
     }
 
     search() {
@@ -158,6 +193,7 @@ export class RepertoireComponent {
         this.repertoireService.search(search).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -171,6 +207,7 @@ export class RepertoireComponent {
         this.repertoireService.search(search).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -187,6 +224,7 @@ export class RepertoireComponent {
         this.repertoireService.search(stockSearch).subscribe({
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
+                this.listRepertoireFixe = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -198,12 +236,27 @@ export class RepertoireComponent {
     }
 
     getAllPersonnel(): void {
-        this.personnelService.getAll().subscribe({
+        let search: Personnel = initObjectPersonnel();
+        this.personnelService.getAllExceptAdmin(search).subscribe({
             next: (data: Personnel[]) => {
                 const emptyPersonnel = initObjectPersonnel();
                 emptyPersonnel.id = BigInt(0);
                 this.listPersonnel = [emptyPersonnel, ...data];
                 this.mapOfPersonnels = arrayToMap(data, 'id', ['designation'], ['']);
+            },
+            error: (error: any) => {
+                console.error(error);
+            }
+        });
+    }
+
+    getAllPersonnelSearch(): void {
+        let search: Personnel = initObjectPersonnel();
+        this.personnelService.getAllExceptAdmin(search).subscribe({
+            next: (data: Personnel[]) => {
+                const emptyPersonnel = initObjectPersonnel();
+                emptyPersonnel.id = BigInt(0);
+                this.listPersonnelSearch = [emptyPersonnel, ...data];
             },
             error: (error: any) => {
                 console.error(error);
@@ -221,6 +274,48 @@ export class RepertoireComponent {
                 console.error(error);
             }
         });
+    }
+
+    onChangeIdPersonnelSearch() {
+        if (this.personnelIdSearch === BigInt(0)) {
+            this.listRepertoire = this.listRepertoireFixe;
+        } else {
+            this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
+                return repertoire.personnelId === this.personnelIdSearch;
+            });
+        }
+    }
+
+    filterByTypeText(text: string): number[] {
+        const lower = text.toLowerCase();
+
+        const matchedTypes = this.typeRepertoire.find((t) => t.label.toLowerCase().includes(lower));
+
+        return matchedTypes ? [matchedTypes.value] : [];
+    }
+
+    searchByInputText() {
+        if (this.repertoireInputSearch.length > 0) {
+            let matchedTypes = this.filterByTypeText(this.repertoireInputSearch);
+            this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
+                return (
+                    repertoire.designation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    matchedTypes.includes(repertoire.typeRepertoire) ||
+                    repertoire.adresse.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel1.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel2.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.tel3.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.email.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.ice.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.ife.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.villeNomVille.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.personnelDesignation.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.nbrOperationClient.toString().includes(this.repertoireInputSearch.toLowerCase())
+                );
+            });
+        } else {
+            this.listRepertoire = this.listRepertoireFixe;
+        }
     }
 
     openCloseDialogAjouter(openClose: boolean): void {
@@ -245,6 +340,10 @@ export class RepertoireComponent {
 
     openCloseDialogAnnulerCorbeille(openClose: boolean): void {
         this.dialogAnnulerCorbeille = openClose;
+    }
+
+    openCloseDialogImprimer(openClose: boolean): void {
+        this.dialogImprimer = openClose;
     }
 
     getNomVille(id: number) {
@@ -331,18 +430,19 @@ export class RepertoireComponent {
         return repertoire;
     }
 
-    async checkIfRepertoireExists(repertoire: Repertoire): Promise<boolean> {
+    async checkIfRepertoireExists(repertoire: Repertoire): Promise<RepertoireValidationResponse> {
+        let repertoireValidationResponse: RepertoireValidationResponse = initRepertoireValidationResponse();
         try {
             const existsObservable = this.repertoireService.exist(repertoire).pipe(
                 catchError((error) => {
                     console.error('Error in repertoire existence observable:', error);
-                    return of(false); // Gracefully handle observable errors by returning false
+                    return of(repertoireValidationResponse); // Gracefully handle observable errors by returning false
                 })
             );
             return await firstValueFrom(existsObservable);
         } catch (error) {
             console.error('Unexpected error checking if repertoire exists:', error);
-            return false;
+            return repertoireValidationResponse;
         }
     }
 
@@ -351,9 +451,9 @@ export class RepertoireComponent {
         let repertoireEdit: Repertoire = { ...this.repertoire };
         this.mapFormGroupToObject(this.formGroup, repertoireEdit);
         let repertoireSearch: Repertoire = { ...repertoireEdit };
-        let trvErreur = await this.checkIfRepertoireExists(repertoireSearch);
+        let repertoireValidationResponse: RepertoireValidationResponse = await this.checkIfRepertoireExists(repertoireSearch);
 
-        if (!trvErreur) {
+        if (!repertoireValidationResponse.exists) {
             this.mapFormGroupToObject(this.formGroup, this.repertoire);
             this.submitted = true;
 
@@ -393,6 +493,23 @@ export class RepertoireComponent {
                 });
             }
         } else {
+            if (repertoireValidationResponse.errors['designation']) {
+                this.formGroup.get('designation')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['designation'] });
+            }
+            if (repertoireValidationResponse.errors['tel1']) {
+                this.formGroup.get('tel1')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel1'] });
+            }
+            if (repertoireValidationResponse.errors['tel2']) {
+                this.formGroup.get('tel2')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel2'] });
+            }
+            if (repertoireValidationResponse.errors['tel3']) {
+                this.formGroup.get('tel3')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel3'] });
+            }
+            if (repertoireValidationResponse.errors['ice']) {
+                this.formGroup.get('ice')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['ice'] });
+            }
+            this.formGroup.updateValueAndValidity();
+
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.repertoire.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }
@@ -494,6 +611,88 @@ export class RepertoireComponent {
             this.openCloseDialogCorbeille(false);
         } else {
             this.openCloseDialogAnnulerCorbeille(false);
+        }
+    }
+
+    viderImprimer(typeRepertoire: number) {
+        this.typeRepertoireImprim = typeRepertoire;
+        typeRepertoire === 1 ? (this.typeRepertoireImprimPharmacie = typeImprimerRepertoirePharmacie) : (this.typeRepertoireImprimPharmacie = typeImprimerRepertoireRevendeur);
+        this.initFormGroupImprimer();
+        this.openCloseDialogImprimer(true);
+    }
+
+    imprimerTransport(): void {
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+        commonSearchModel.typeRepertoire = 3;
+
+        this.repertoireService.imprimerTransport(commonSearchModel).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    imprimer(): void {
+        this.loadingService.show();
+
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+
+        commonSearchModel.typeRepertoire = this.typeRepertoireImprim;
+        commonSearchModel.personnelId = this.formGroupImprimer.get('personnelId')?.value;
+        commonSearchModel.typeImprimRepertoire = this.formGroupImprimer.get('typeImprimRepertoire')?.value;
+        commonSearchModel.villeId = this.formGroupImprimer.get('villeId')?.value;
+
+        if (commonSearchModel.typeImprimRepertoire === 10) {
+            this.repertoireService.imprimerClientAdresse(commonSearchModel).subscribe({
+                next: (data) => {
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    var a = document.createElement('a');
+                    a.href = fileURL;
+                    a.target = '_blank';
+                    a.click();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.repertoireService.imprimer(commonSearchModel).subscribe({
+                next: (data) => {
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    var a = document.createElement('a');
+                    a.href = fileURL;
+                    a.target = '_blank';
+                    a.click();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
         }
     }
 }

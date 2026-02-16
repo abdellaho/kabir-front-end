@@ -518,7 +518,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     giveMeMntBlBenefice(livraison: Livraison, detLivraisons: DetLivraison[], etablissement: Etablissement) {
         let mntp: number = 0;
         for (let detlivraison of detLivraisons) {
-            let charge = (detlivraison.stock?.pattc || 0 * (etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)) / 100;
+            let charge = (detlivraison.stock?.pattc || 0 * 0) /*(etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)*/ / 100;
             mntp += detlivraison.montantProduit - detlivraison.qteLivrer * (detlivraison.stock?.pattc || 0 + charge);
         }
         livraison.mantantBLBenefice = mntp;

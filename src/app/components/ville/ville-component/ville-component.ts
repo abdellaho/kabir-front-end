@@ -5,243 +5,240 @@ import { LoadingService } from '@/shared/services/loading-service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from "primeng/toast";
-import { ToolbarModule } from "primeng/toolbar";
-import { Table, TableModule } from "primeng/table";
-import { DialogModule } from "primeng/dialog";
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { Table, TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
-import { SelectModule } from "primeng/select";
+import { SelectModule } from 'primeng/select';
 import { getAttribut } from '@/shared/classes/generic-methods';
 import { ButtonModule } from 'primeng/button';
-import { IconFieldModule } from "primeng/iconfield";
-import { InputIconModule } from "primeng/inputicon";
-import { InputTextModule } from "primeng/inputtext";
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 @Component({
-  standalone: true,
-  selector: 'app-ville-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    DialogModule,
-    SelectModule,
-    IconFieldModule,
-    InputIconModule,
-    FloatLabelModule,
-    InputTextModule
-],
-  templateUrl: './ville-component.html',
-  styleUrl: './ville-component.scss'
+    standalone: true,
+    selector: 'app-ville-component',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, ToastModule, ToolbarModule, TableModule, DialogModule, SelectModule, IconFieldModule, InputIconModule, FloatLabelModule, InputTextModule],
+    templateUrl: './ville-component.html',
+    styleUrl: './ville-component.scss'
 })
 export class VilleComponent implements OnInit {
+    constructor(
+        private villeService: VilleService,
+        private formBuilder: FormBuilder,
+        private messageService: MessageService,
+        private loadingService: LoadingService
+    ) {}
 
-  constructor(
-    private villeService: VilleService,
-    private formBuilder: FormBuilder,
-    private messageService: MessageService,
-    private loadingService: LoadingService,
-  ) { }
+    cols: any[] = [];
+    listVilleConstante: Ville[] = [];
+    listVille: Ville[] = [];
+    ville: Ville = initObjectVille();
+    selectedVille!: Ville;
+    villeSearch: string = '';
+    dialogSupprimer: boolean = false;
+    dialogAjouter: boolean = false;
+    submitted: boolean = false;
+    loading: boolean = true;
+    formGroup!: FormGroup;
+    mapOfPays: Map<number, string> = new Map<number, string>();
+    msg = APP_MESSAGES;
 
-  cols: any[] = [];
-  listVille: Ville[] = [];
-  ville: Ville = initObjectVille();
-  selectedVille!: Ville;
-  dialogSupprimer: boolean = false;
-  dialogAjouter: boolean = false;
-  submitted: boolean = false;
-  loading: boolean = true;
-  formGroup!: FormGroup;
-  mapOfPays: Map<number, string> = new Map<number, string>();
-  msg = APP_MESSAGES;
-
-  ngOnInit(): void {
-    this.getAllVilles();
-    this.initFormGroup();
-  }
-
-  buildCols(): void {
-    this.cols = [
-      { field: 'nomVille', header: 'Ville' },
-    ];
-  }
-
-  clear(table: Table) {
-    table.clear();
-  }
-
-  onGlobalFilter(table: Table, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
-
-  initFormGroup() {
-    this.formGroup = this.formBuilder.group({
-      nomVille: ['', [Validators.required]],
-    });
-  }
-
-  getAllVilles(): void {
-    this.villeService.getVilles().subscribe({
-      next: (data: Ville[]) => {
-        this.listVille = data;
-        this.loading = false;
-      }, error: (error: any) => {
-        console.error(error);
-      }
-    });
-  }
-
-  getPaysLib(id: number): string {
-    return getAttribut(id, this.mapOfPays);
-  }
-
-  openCloseDialogAjouter(openClose: boolean): void {
-    this.dialogAjouter = openClose;
-  }
-
-  openCloseDialogSupprimer(openClose: boolean): void {
-    this.dialogSupprimer = openClose;
-  }
-
-  viderAjouter() {
-    this.openCloseDialogAjouter(true);
-    this.submitted = false;
-    this.ville = initObjectVille();
-    this.initFormGroup();
-  }
-
-  recupperer(operation: number, villeEdit: Ville) {
-    if(villeEdit && villeEdit.id) {
-        this.ville = villeEdit;
-        if(operation === 1) {
-            this.formGroup.patchValue({
-                nomVille: this.ville.nomVille
-            });
-
-            this.openCloseDialogAjouter(true);
-        } else {
-            this.openCloseDialogSupprimer(true);
-        }
-    } else {
-        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+    ngOnInit(): void {
+        this.villeSearch = '';
+        this.getAllVilles();
+        this.initFormGroup();
     }
-  }
 
-  updateList(ville: Ville, list: Ville[], operationType: OperationType, id?: bigint): Ville[] {
-    if(operationType === OperationType.ADD) {
-        list = [ ...list, ville ];
-    } else if(operationType === OperationType.MODIFY) {
-        let index = list.findIndex(x => x.id === ville.id);
-        if(index > -1) {
-            list[index] = ville;
-        }
-    } else if(operationType === OperationType.DELETE) {
-        list = list.filter(x => x.id !== id);
+    buildCols(): void {
+        this.cols = [{ field: 'nomVille', header: 'Ville' }];
     }
-    return list.sort((a, b) => a.nomVille.localeCompare(b.nomVille));
-  }
 
-  checkIfListIsNull() {
-    if(null == this.listVille) {
-        this.listVille = [];
+    clear(table: Table) {
+        table.clear();
     }
-  }
 
-  mapFormGroupToObject(formGroup: FormGroup, ville: Ville): Ville {
-    ville.nomVille = formGroup.get('nomVille')?.value;
-
-    return ville;
-  }
-
-  async checkIfExists(ville: Ville): Promise<boolean> {
-    try {
-      const existsObservable = this.villeService.exist(ville).pipe(
-        catchError(error => {
-          console.error('Error in Ville existence observable:', error);
-          return of(false); // Gracefully handle observable errors by returning false
-        })
-      );
-      return await firstValueFrom(existsObservable);
-    } catch (error) {
-      console.error('Unexpected error checking if ville exists:', error);
-      return false;
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
-  }
 
-  async miseAjour(): Promise<void> {
-    this.ville = this.mapFormGroupToObject(this.formGroup, this.ville);
-    let trvErreur = await this.checkIfExists(this.ville);
-    this.loadingService.show();
-    this.submitted = true;
-
-    if(!trvErreur) {
-      if(this.ville.id) {
-        this.villeService.updateVille(this.ville.id, this.ville).subscribe({
-          next: (data) => {
-              this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
-              this.checkIfListIsNull();
-              this.listVille = this.updateList(data, this.listVille, OperationType.MODIFY);
-              this.openCloseDialogAjouter(false);
-          }, error: (err) => {
-              console.log(err);
-              this.loadingService.hide();
-              this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
-          }, complete: () => {
-            this.loadingService.hide();
-          }
+    initFormGroup() {
+        this.formGroup = this.formBuilder.group({
+            nomVille: ['', [Validators.required]]
         });
-      } else {
-        this.villeService.createVille(this.ville).subscribe({
-            next: (data: Ville) => {
-                this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
-                this.checkIfListIsNull();
-                this.listVille = this.updateList(data, this.listVille, OperationType.ADD);
-                this.openCloseDialogAjouter(false);
-            }, error: (err) => {
-                console.log(err);
-                this.loadingService.hide();
-                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
-            }, complete: () => {
-              this.loadingService.hide();
+    }
+
+    getAllVilles(): void {
+        this.villeService.getVilles().subscribe({
+            next: (data: Ville[]) => {
+                this.listVilleConstante = data;
+                this.listVille = data;
+                this.loading = false;
+            },
+            error: (error: any) => {
+                console.error(error);
             }
         });
-      }
-    } else {
-      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.ville.label} ${this.msg.messages.messageExistDeja}` });
-      this.loadingService.hide();
-      this.submitted = false;
     }
-  }
 
-  supprimer(): void {
-    if(this.ville && this.ville.id) {
-      this.loadingService.show();
-      let id = this.ville.id;
-      this.villeService.deleteVille(this.ville.id).subscribe({
-        next: (data) => {
-            this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
-            this.checkIfListIsNull();
-            this.listVille = this.updateList(initObjectVille(), this.listVille, OperationType.DELETE, id);
-            this.ville = initObjectVille() ;
-        }, error: (err) => {
-            console.log(err);
-            this.loadingService.hide();
-            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
-        }, complete: () => {
-          this.loadingService.hide();
+    getPaysLib(id: number): string {
+        return getAttribut(id, this.mapOfPays);
+    }
+
+    openCloseDialogAjouter(openClose: boolean): void {
+        this.dialogAjouter = openClose;
+    }
+
+    openCloseDialogSupprimer(openClose: boolean): void {
+        this.dialogSupprimer = openClose;
+    }
+
+    viderAjouter() {
+        this.openCloseDialogAjouter(true);
+        this.submitted = false;
+        this.ville = initObjectVille();
+        this.initFormGroup();
+    }
+
+    searchVille() {
+        this.listVille = this.listVilleConstante.filter((x) => x.nomVille.toLowerCase().includes(this.villeSearch.toLowerCase()));
+    }
+
+    recupperer(operation: number, villeEdit: Ville) {
+        if (villeEdit && villeEdit.id) {
+            this.ville = villeEdit;
+            if (operation === 1) {
+                this.formGroup.patchValue({
+                    nomVille: this.ville.nomVille
+                });
+
+                this.openCloseDialogAjouter(true);
+            } else {
+                this.openCloseDialogSupprimer(true);
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
         }
-      });
-    } else {
-      this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
     }
 
-    this.openCloseDialogSupprimer(false);
-  }
+    updateList(ville: Ville, list: Ville[], operationType: OperationType, id?: bigint): Ville[] {
+        if (operationType === OperationType.ADD) {
+            list = [...list, ville];
+        } else if (operationType === OperationType.MODIFY) {
+            let index = list.findIndex((x) => x.id === ville.id);
+            if (index > -1) {
+                list[index] = ville;
+            }
+        } else if (operationType === OperationType.DELETE) {
+            list = list.filter((x) => x.id !== id);
+        }
+        return list.sort((a, b) => a.nomVille.localeCompare(b.nomVille));
+    }
 
+    checkIfListIsNull() {
+        if (null == this.listVille) {
+            this.listVille = [];
+        }
+    }
+
+    mapFormGroupToObject(formGroup: FormGroup, ville: Ville): Ville {
+        ville.nomVille = formGroup.get('nomVille')?.value;
+
+        return ville;
+    }
+
+    async checkIfExists(ville: Ville): Promise<boolean> {
+        try {
+            const existsObservable = this.villeService.exist(ville).pipe(
+                catchError((error) => {
+                    console.error('Error in Ville existence observable:', error);
+                    return of(false); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if ville exists:', error);
+            return false;
+        }
+    }
+
+    async miseAjour(): Promise<void> {
+        this.ville = this.mapFormGroupToObject(this.formGroup, this.ville);
+        let trvErreur = await this.checkIfExists(this.ville);
+        this.loadingService.show();
+        this.submitted = true;
+
+        if (!trvErreur) {
+            if (this.ville.id) {
+                this.villeService.updateVille(this.ville.id, this.ville).subscribe({
+                    next: (data) => {
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
+                        this.checkIfListIsNull();
+                        this.listVille = this.updateList(data, this.listVille, OperationType.MODIFY);
+                        this.openCloseDialogAjouter(false);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            } else {
+                this.villeService.createVille(this.ville).subscribe({
+                    next: (data: Ville) => {
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
+                        this.checkIfListIsNull();
+                        this.listVille = this.updateList(data, this.listVille, OperationType.ADD);
+                        this.openCloseDialogAjouter(false);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.loadingService.hide();
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
+            }
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.ville.label} ${this.msg.messages.messageExistDeja}` });
+            this.loadingService.hide();
+            this.submitted = false;
+        }
+    }
+
+    supprimer(): void {
+        if (this.ville && this.ville.id) {
+            this.loadingService.show();
+            let id = this.ville.id;
+            this.villeService.deleteVille(this.ville.id).subscribe({
+                next: (data) => {
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageDeleteSuccess });
+                    this.checkIfListIsNull();
+                    this.listVille = this.updateList(initObjectVille(), this.listVille, OperationType.DELETE, id);
+                    this.ville = initObjectVille();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+        }
+
+        this.openCloseDialogSupprimer(false);
+    }
 }

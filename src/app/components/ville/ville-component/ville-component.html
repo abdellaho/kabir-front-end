@@ -5,8 +5,8 @@
       <p-toolbar class="mb-4">
         <ng-template pTemplate="left">
           <div class="my-2">
-            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2"
-              (click)="viderAjouter()"></button>
+            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+            <input pInputText type="text" placeholder="{{ msg.components.ville.chercherParNomVille }}" (input)="searchVille()" [(ngModel)]="villeSearch" />
           </div>
         </ng-template>
 
@@ -14,7 +14,7 @@
         </ng-template>
       </p-toolbar>
 
-      <p-table #dt size="small" [value]="listVille" dataKey="id" [rows]="10" [rowHover]="true" [showGridlines]="true"
+      <p-table #dt size="small" [value]="listVille" dataKey="id" [rows]="20" [rowHover]="true" [showGridlines]="true"
         selectionMode="single" [(selection)]="selectedVille"
         [paginator]="true" [globalFilterFields]="['nomVille']" [rowsPerPageOptions]="[10, 20, 30]"
         [showCurrentPageReport]="true" currentPageReportTemplate="({currentPage} sur {totalPages})">

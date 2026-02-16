@@ -5,8 +5,7 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left" class="gap-2">
                     <div class="my-2">
-                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
-                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
 
                     <div class="my-2">
@@ -26,17 +25,25 @@
                             [label]="msg.buttons.corbeille" icon="pi pi-trash" class="mr-2"
                             (click)="bloqueListe()"></p-button>
                     </div>
+
+                    <div class="my-2" style="margin-right: 1ch;">
+                        <p-splitbutton severity="help" pRipple [label]="msg.buttons.consulter" [model]="printItems" />
+                    </div>
+
+                    <div class="my-2">
+                        <input pInputText type="text" placeholder="{{ msg.components.repertoire.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="10"
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listRepertoire" dataKey="id" [rows]="20"
                 selectionMode="single" [(selection)]="selectedRepertoire"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['typeRepertoire', 'designation', 'villeNomVille', 'ice', 'tel1', 'tel2', 'tel3', 'personnelDesignation', 'observation', 'nbrOperationClient']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20, 30, 40, 50, 60]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})">
 
                 <ng-template #header>
@@ -184,9 +191,12 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="designation" formControlName="designation" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid || formGroup.get('designation')?.errors?.['exist'] }" />
                                     <label for="designation">{{ msg.components.repertoire.designation }}</label>
                                 </p-floatlabel>
+                                @if(formGroup.get('designation')?.errors?.['exist']) {
+                                    <p-message severity="error">{{ formGroup.get('designation')?.errors?.['message'] }}</p-message>
+                                }
                             </div>
                         </div>
 
@@ -203,18 +213,19 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel1" formControlName="tel1" [maxlength]="10"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] }" />
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] || formGroup.get('tel1')?.errors?.['exist'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel1 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3']) {
-                                @if (formGroup.errors?.['tel1EqualTel2']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                    @if (formGroup.errors?.['tel1EqualTel2']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                    }
+                                    @if (formGroup.errors?.['tel1EqualTel3']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                    }
                                 }
-                                @if (formGroup.errors?.['tel1EqualTel3']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
-                                }
+                                @if(formGroup.get('tel1')?.errors?.['exist']) {
+                                    <p-message severity="error">{{ formGroup.get('tel1')?.errors?.['message'] }}</p-message>
                                 }
                             </div>
                         </div>
@@ -223,36 +234,38 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel2" formControlName="tel2" [maxlength]="10"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] }" />
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel2')?.errors?.['exist'] }" />
                                     <label for="tel2">{{ msg.components.repertoire.tel2 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3']) {
-                                @if (formGroup.errors?.['tel1EqualTel2']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                    @if (formGroup.errors?.['tel1EqualTel2']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                    }
+                                    @if (formGroup.errors?.['tel2EqualTel3']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                    }
                                 }
-                                @if (formGroup.errors?.['tel2EqualTel3']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
-                                }
+                                @if(formGroup.get('tel2')?.errors?.['exist']) {
+                                    <p-message severity="error">{{ formGroup.get('tel2')?.errors?.['message'] }}</p-message>
                                 }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel3" formControlName="tel3" [maxlength]="10"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] }" />
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel3')?.errors?.['exist'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel3 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3']) {
-                                @if (formGroup.errors?.['tel1EqualTel3']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                    @if (formGroup.errors?.['tel1EqualTel3']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                    }
+                                    @if (formGroup.errors?.['tel2EqualTel3']) {
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                    }
                                 }
-                                @if (formGroup.errors?.['tel2EqualTel3']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                    msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
-                                }
+                                @if(formGroup.get('tel3')?.errors?.['exist']) {
+                                    <p-message severity="error">{{ formGroup.get('tel3')?.errors?.['message'] }}</p-message>
                                 }
                             </div>
                         </div>
@@ -260,9 +273,13 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="ice" formControlName="ice" maxlength="15" />
+                                    <input pInputText id="ice" formControlName="ice" maxlength="15"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('ice')?.errors?.['exist'] }" />
                                     <label for="ice">{{ msg.components.repertoire.ice }}</label>
                                 </p-floatlabel>
+                                @if(formGroup.get('ice')?.errors?.['exist']) {
+                                    <p-message severity="error">{{ formGroup.get('ice')?.errors?.['message'] }}</p-message>
+                                }
                             </div>
 
                             <div class="flex flex-col grow basis-0">
@@ -386,6 +403,54 @@
                     class="p-button-outlined p-button-danger" (click)="dialogAnnulerCorbeille = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
                     (click)="corbeille(false)"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.components.absence.imprimer.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroupImprimer" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="villeId" inputId="villeIdImprimer" [options]="listVille"
+                                        appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
+                                        class="w-full md:w-56" />
+                                    <label for="villeIdImprimer">{{ msg.components.repertoire.villeId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="personnelId" inputId="personnelIdImprimer"
+                                        [options]="listPersonnel" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="personnelIdImprimer">{{ msg.components.repertoire.personnelId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="typeImprimRepertoire" inputId="typeImprimRepertoireImprimer"
+                                        [options]="typeRepertoireImprimPharmacie" appendTo="body"
+                                        optionLabel="label" optionValue="value" style="height: 30px;"
+                                        class="w-full md:w-56" />
+                                    <label for="typeImprimRepertoireImprimer">{{ msg.components.repertoire.typeImprimRepertoire }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="openCloseDialogImprimer(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="imprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>

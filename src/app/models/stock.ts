@@ -41,6 +41,7 @@ export interface Stock {
     fournisseurId: bigint | null;
     fournisseurDesignation: string;
     fournisseur?: Fournisseur | null;
+    prixVenteMinTemp: number;
 }
 
 export function initObjectStock(): Stock {
@@ -84,6 +85,7 @@ export function initObjectStock(): Stock {
         typeProduit: 0,
         fournisseurId: null,
         fournisseurDesignation: '',
-        fournisseur: null
+        fournisseur: null,
+        prixVenteMinTemp: 0
     };
 }

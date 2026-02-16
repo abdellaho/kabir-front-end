@@ -565,7 +565,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     giveMeMntBlBenefice(facture: Facture, detFactures: DetFacture[], etablissement: Etablissement) {
         let mntp: number = 0;
         for (let detFacture of detFactures) {
-            let charge = (detFacture.stock?.pattc || 0 * (etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)) / 100;
+            let charge = (detFacture.stock?.pattc || 0 * 0) /* (etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)*/ / 100;
             mntp += detFacture.montantProduit - detFacture.qteFacturer * (detFacture.stock?.pattc || 0 + charge);
         }
         facture.mantantBFBenefice = mntp;

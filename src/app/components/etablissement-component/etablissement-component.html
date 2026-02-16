@@ -86,15 +86,15 @@
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="email" formControlName="email" />
-          <label for="email">{{ msg.components.etablissement.email }}</label>
+          <input pInputText id="adresse" formControlName="adresse" />
+          <label for="adresse">{{ msg.components.etablissement.adresse }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="adresse" formControlName="adresse" />
-          <label for="adresse">{{ msg.components.etablissement.adresse }}</label>
+          <input pInputText id="siteweb" formControlName="siteweb" />
+          <label for="siteweb">{{ msg.components.etablissement.siteWeb }}</label>
         </p-floatlabel>
       </div>
     </div>
@@ -102,15 +102,22 @@
     <div class="flex flex-col md:flex-row gap-2">
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="siteweb" formControlName="siteweb" />
-          <label for="siteweb">{{ msg.components.etablissement.siteWeb }}</label>
+          <input pInputText id="email" formControlName="email" />
+          <label for="email">{{ msg.components.etablissement.email }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="lienBackupDB" formControlName="lienBackupDB" />
-          <label for="lienBackupDB">{{ msg.components.etablissement.lienBackupDB }}</label>
+          <p-password id="paswordMail" formControlName="paswordMail" />
+          <label for="paswordMail">{{ msg.components.etablissement.passwordMail }}</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <p-date-picker id="dateTime" formControlName="dateTime" [timeOnly]="true" />
+          <label for="dateTime">Date Time</label>
         </p-floatlabel>
       </div>
 
@@ -127,23 +134,9 @@
           <label for="port">{{ msg.components.etablissement.port }}</label>
         </p-floatlabel>
       </div>
-
-      <div class="flex flex-col gap-4">
-        <p-floatlabel variant="on">
-          <p-password id="paswordMail" formControlName="paswordMail" />
-          <label for="paswordMail">{{ msg.components.etablissement.passwordMail }}</label>
-        </p-floatlabel>
-      </div>
     </div>
 
     <div class="flex flex-col md:flex-row gap-2">
-      <div class="flex flex-col gap-4">
-        <p-floatlabel variant="on">
-          <input pInputText id="lienDbDump" formControlName="lienDbDump" />
-          <label for="lienDbDump">{{ msg.components.etablissement.lienDbDump }}</label>
-        </p-floatlabel>
-      </div>
-
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
           <input pInputText id="cheminBD" formControlName="cheminBD" />
@@ -153,15 +146,22 @@
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <input pInputText id="pourcentageLiv" formControlName="pourcentageLiv" />
-          <label for="pourcentageLiv">{{ msg.components.etablissement.pourcentageLiv }}</label>
+          <input pInputText id="lienBackupDB" formControlName="lienBackupDB" />
+          <label for="lienBackupDB">{{ msg.components.etablissement.lienBackupDB }}</label>
         </p-floatlabel>
       </div>
 
       <div class="flex flex-col gap-4">
         <p-floatlabel variant="on">
-          <p-date-picker id="dateTime" formControlName="dateTime" [timeOnly]="true" />
-          <label for="dateTime">Date Time</label>
+          <input pInputText id="lienDbDump" formControlName="lienDbDump" />
+          <label for="lienDbDump">{{ msg.components.etablissement.lienDbDump }}</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="pourcentageLiv" formControlName="pourcentageLiv" />
+          <label for="pourcentageLiv">{{ msg.components.etablissement.pourcentageLiv }}</label>
         </p-floatlabel>
       </div>
 

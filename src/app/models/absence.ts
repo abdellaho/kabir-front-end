@@ -9,6 +9,7 @@ export interface Absence {
     personnelOperationId: bigint | null;
     personnelId: bigint | null;
     personnelDesignation: string;
+    personnelSalaire: number;
     dateAbsenceStr?: string;
 }
 
@@ -22,6 +23,7 @@ export function initObjectAbsence(): Absence {
         personnelOperationId: null,
         personnelId: null,
         personnelDesignation: '',
+        personnelSalaire: 0,
         dateAbsenceStr: ''
     };
 }

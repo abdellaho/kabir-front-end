@@ -8,9 +8,19 @@
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
                             class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.consulter" icon="pi pi-printer"
+                            class="p-button-success mr-2" (click)="viderConsulter()"></button>
+                    </div>
+                    <div class="my-2">
+                        <p-floatlabel class="w-full md:w-56" variant="on">
+                            <p-select [options]="listPersonnelFixe" [(ngModel)]="personnelIdSearch" style="height: 30px;" class="w-full md:w-56"
+                                inputId="personnelIdSearch" (ngModelChange)="onChangePersonnelIdSearch()"
+                                optionLabel="designation" optionValue="id"
+                                placeholder="{{ msg.components.absence.personnel }}" />
+                            <label for="personnelIdSearch">{{ msg.components.absence.personnel }}</label>
+                        </p-floatlabel>
+                    </div>
                 </ng-template>
             </p-toolbar>
 
@@ -18,16 +28,16 @@
                 selectionMode="single" [(selection)]="selectedAbsence" [metaKeySelection]="false"
                 [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['dateAbsence', 'personnelDesignation', 'matin', 'apresMidi']"
+                [globalFilterFields]="['dateAbsenceStr', 'personnelDesignation', 'matin', 'apresMidi']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="dateAbsence" style="width: 30%">
+                        <th pSortableColumn="dateAbsenceStr" style="width: 30%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.absence.dateAbsence }}
-                                <p-sortIcon field="dateAbsence" />
+                                <p-sortIcon field="dateAbsenceStr" />
                             </div>
                         </th>
 
@@ -58,7 +68,7 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="p">
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateAbsence | date:'dd/MM/yyyy' }}</td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateAbsenceStr }}</td>
                         <td>{{ p.personnelDesignation }}</td>
                         <td>
                             <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />
@@ -157,6 +167,47 @@
                     class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
                 <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
                     (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '300px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.components.absence.imprimer.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroupImprimer" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker formControlName="dateDebut" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateDebut" />
+                                    <label for="dateDebut">{{ msg.components.absence.imprimer.dateDebut }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on">
+                                    <p-date-picker formControlName="dateFin" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateFin" />
+                                    <label for="dateFin">{{ msg.components.absence.imprimer.dateFin }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnelFixe" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                    <label for="personnelId">{{ msg.components.absence.imprimer.personnel }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="openCloseDialogImprimer(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="imprimer()"></button>
             </ng-template>
         </p-dialog>
     </div>

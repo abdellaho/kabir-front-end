@@ -52,7 +52,6 @@ import { MessageModule } from 'primeng/message';
     styleUrl: './fournisseur-component.scss'
 })
 export class FournisseurComponent implements OnInit {
-
     //Buttons ---> Ajouter + Rechercher + Actualiser + Archiver + Corbeille
     //Tableau ---> Designation + Type + Tel1 + Tel2
     //Ajouter ---> Designation* + Type + Tel1 + Tel2  + ICE
@@ -65,7 +64,7 @@ export class FournisseurComponent implements OnInit {
         { key: 'Fourniture', value: 4 }
     ];
 
-    typeFournisseurs: { label: string, value: number | null }[] = filteredTypeFourniseurWithNull;
+    typeFournisseurs: { label: string; value: number | null }[] = filteredTypeFourniseurWithNull;
     listVille: Ville[] = [];
     listFournisseur: Fournisseur[] = [];
     fournisseur: Fournisseur = initObjectFournisseur();
@@ -88,8 +87,7 @@ export class FournisseurComponent implements OnInit {
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.typeOfList = 0;
@@ -138,9 +136,11 @@ export class FournisseurComponent implements OnInit {
         this.fournisseurService.search(objectSearch).subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -152,9 +152,11 @@ export class FournisseurComponent implements OnInit {
         this.fournisseurService.search(objectSearch).subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -166,9 +168,11 @@ export class FournisseurComponent implements OnInit {
         this.fournisseurService.search(objectSearch).subscribe({
             next: (data: Fournisseur[]) => {
                 this.listFournisseur = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
-            }, complete: () => {
+            },
+            complete: () => {
                 this.loadingService.hide();
             }
         });
@@ -183,21 +187,25 @@ export class FournisseurComponent implements OnInit {
     }
 
     initFormGroup() {
-        this.formGroup = this.formBuilder.group({
-            designation: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-            type: [null],
-            tel1: [''],
-            tel2: [''],
-            ice: ['', [Validators.maxLength(15)]],
-            adresse: [''],
-        }, { validators: [FournisseurValidator] });
+        this.formGroup = this.formBuilder.group(
+            {
+                designation: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+                type: [null, [Validators.required, Validators.min(0)]],
+                tel1: [''],
+                tel2: [''],
+                ice: ['', [Validators.maxLength(15)]],
+                adresse: ['']
+            },
+            { validators: [FournisseurValidator] }
+        );
     }
 
     getAllVille(): void {
         this.villeService.getVilles().subscribe({
             next: (data: Ville[]) => {
                 this.listVille = data;
-            }, error: (error: any) => {
+            },
+            error: (error: any) => {
                 console.error(error);
             }
         });
@@ -248,7 +256,7 @@ export class FournisseurComponent implements OnInit {
                 });
 
                 this.openCloseDialogAjouter(true);
-            } else if(operation === 2) {
+            } else if (operation === 2) {
                 this.openCloseDialogSupprimer(true);
             } else if (operation === 3) {
                 this.openCloseDialogArchiver(true);
@@ -268,12 +276,12 @@ export class FournisseurComponent implements OnInit {
         if (operationType === OperationType.ADD) {
             list = [...list, fournisseur];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === fournisseur.id);
+            let index = list.findIndex((x) => x.id === fournisseur.id);
             if (index > -1) {
                 list[index] = fournisseur;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -299,7 +307,7 @@ export class FournisseurComponent implements OnInit {
     async checkIfExists(fournisseur: Fournisseur): Promise<boolean> {
         try {
             const existsObservable = this.fournisseurService.exist(fournisseur).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in fournisseur existence observable:', error);
                     return of(false); // Gracefully handle observable errors by returning false
                 })
@@ -332,8 +340,10 @@ export class FournisseurComponent implements OnInit {
                         });
                         this.checkIfListIsNull();
                         this.listFournisseur = this.updateList(data, this.listFournisseur, OperationType.MODIFY);
+                        this.trier();
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -341,7 +351,8 @@ export class FournisseurComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -356,8 +367,10 @@ export class FournisseurComponent implements OnInit {
                         });
                         this.checkIfListIsNull();
                         this.listFournisseur = this.updateList(data, this.listFournisseur, OperationType.ADD);
+                        this.trier();
                         this.openCloseDialogAjouter(false);
-                    }, error: (err) => {
+                    },
+                    error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({
@@ -365,7 +378,8 @@ export class FournisseurComponent implements OnInit {
                             summary: this.msg.summary.labelError,
                             detail: this.msg.messages.messageErrorProduite
                         });
-                    }, complete: () => {
+                    },
+                    complete: () => {
                         this.loadingService.hide();
                     }
                 });
@@ -390,8 +404,10 @@ export class FournisseurComponent implements OnInit {
                     });
                     this.checkIfListIsNull();
                     this.listFournisseur = this.updateList(initObjectFournisseur(), this.listFournisseur, OperationType.DELETE, id);
+                    this.trier();
                     this.fournisseur = initObjectFournisseur();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -399,7 +415,8 @@ export class FournisseurComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -426,8 +443,10 @@ export class FournisseurComponent implements OnInit {
                     });
                     this.checkIfListIsNull();
                     this.listFournisseur = this.updateList(initObjectFournisseur(), this.listFournisseur, OperationType.DELETE, id);
+                    this.trier();
                     this.fournisseur = initObjectFournisseur();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -435,7 +454,8 @@ export class FournisseurComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -456,7 +476,7 @@ export class FournisseurComponent implements OnInit {
             let id = this.fournisseur.id;
             this.fournisseur.supprimer = corbeille;
 
-            if(corbeille) {
+            if (corbeille) {
                 this.fournisseur.dateSuppression = new Date();
             } else {
                 this.fournisseur.dateSuppression = null;
@@ -472,8 +492,10 @@ export class FournisseurComponent implements OnInit {
                     });
                     this.checkIfListIsNull();
                     this.listFournisseur = this.updateList(initObjectFournisseur(), this.listFournisseur, OperationType.DELETE, id);
+                    this.trier();
                     this.fournisseur = initObjectFournisseur();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -481,7 +503,8 @@ export class FournisseurComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -496,4 +519,7 @@ export class FournisseurComponent implements OnInit {
         }
     }
 
+    trier(): void {
+        this.listFournisseur.sort((a, b) => a.designation.localeCompare(b.designation));
+    }
 }

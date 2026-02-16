@@ -26,21 +26,26 @@
                         <p-button pRipple [outlined]="typeOfList === 2 ? false : true" [label]="msg.buttons.corbeille"
                             icon="pi pi-trash" severity="danger" class="mr-2" (click)="corbeilleListe()"></p-button>
                     </div>
+
+                    <div class="my-2" style="margin-right: 1ch;">
+                        <p-splitbutton severity="help" pRipple [label]="msg.buttons.consulter" [model]="printItems" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm" [value]="listStock" dataKey="id" [rows]="10"
-                selectionMode="single" [(selection)]="selectedStock"
+            <p-table #dt size="small" class="p-datatable-sm" [value]="listStock" dataKey="id" [rows]="20"
+                selectionMode="multiple" [(selection)]="listStockSelected"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurDesignation']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})">
 
                 <ng-template #header>
                     <tr>
+                        <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
                         <th pSortableColumn="designation" style="width: 40%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.designation }}
@@ -123,15 +128,38 @@
                 </ng-template>
                 <ng-template #body let-p>
                     <tr [pSelectableRow]="p">
+                        <td><p-tableCheckbox [value]="p"></p-tableCheckbox></td>
                         <td>{{ p.designation }}</td>
                         <td>{{ p.qteStock }}</td>
                         <td>{{ p.qteFacturer }}</td>
                         <td>{{ p.qteStockImport }}</td>
-                        <td>{{ p.pattc }}</td>
-                        <td>{{ p.pvttc }}</td>
-                        <td>{{ p.prixVentMin2 }}</td>
-                        <td>{{ p.prixVentMin1 }}</td>
-                        <td>{{ p.remiseMax1 }}</td>
+                        <td>{{ p.pattc | number: '1.2-3' }}</td>
+                        <td>{{ p.pvttc | number: '1.2-3' }}</td>
+                        <td>{{ p.prixVentMin2 | number: '1.2-3' }}</td>
+                        <td>
+                            @if(p.prixVentMin4 > 0){
+                                {{ p.prixVentMin4 | number: '1.2-3' }}
+                            } @else if(p.prixVentMin3 > 0){
+                                {{ p.prixVentMin3 | number: '1.2-3' }}
+                            } @else if(p.prixVentMin2 > 0){
+                                {{ p.prixVentMin2 | number: '1.2-3' }}
+                            } @else if(p.prixVentMin1 > 0){
+                                {{ p.prixVentMin1 | number: '1.2-3' }}
+                            } @else {
+                                {{ p.pvttc | number: '1.2-3' }}
+                            }
+                        </td>
+                        <td>
+                            @if(p.remiseMax4 > 0){
+                                {{ p.remiseMax4 | number: '1.2-3' }}
+                            } @else if(p.remiseMax3 > 0){
+                                {{ p.remiseMax3 | number: '1.2-3' }}
+                            } @else if(p.remiseMax2 > 0){
+                                {{ p.remiseMax2 | number: '1.2-3' }}
+                            } @else if(p.remiseMax1 > 0){
+                                {{ p.remiseMax1 | number: '1.2-3' }}
+                            }
+                        </td>
                         <td>{{ p.benifice | number: '1.2-3' }}</td>
                         <td>{{ p.fournisseurDesignation }}</td>
                         <td style="width: 10%; min-width: 7rem">
@@ -210,16 +238,16 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="pattc" inputId="pattc" allowEmpty="false"
+                                    <p-input-number formControlName="pattc" inputId="pattc"
                                         [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }" />
                                     <label for="pattc">{{ msg.components.stock.pattc }}</label>
                                 </p-floatlabel>
                             </div>
-
+                            
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="pvttc" inputId="pvttc" allowEmpty="false"
+                                    <p-input-number formControlName="pvttc" inputId="pvttc"
                                         [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('pvttc')?.invalid || formGroup.errors?.['pvttcMustBeGreatThanPattc'] }" />
                                     <label for="pvttc">{{ msg.components.stock.pvttcMAJ }}</label>

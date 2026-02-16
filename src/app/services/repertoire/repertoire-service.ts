@@ -1,6 +1,8 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Repertoire } from '@/models/repertoire';
-import { getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { CommonSearchModel } from '@/search/common-search-model';
+import { getHeadersPDF, getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -42,14 +44,26 @@ export class RepertoireService {
         return this.http.post<Repertoire[]>(ENDPOINTS.REPERTOIRE.searchClientsOnly, obj);
     }
 
-    exist(repertoire: Repertoire): Observable<boolean> {
+    exist(repertoire: Repertoire): Observable<RepertoireValidationResponse> {
         const serializedObj = this.serialization(repertoire);
-        return this.http.post<boolean>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
+        return this.http.post<RepertoireValidationResponse>(ENDPOINTS.REPERTOIRE.exist, serializedObj);
     }
 
     updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {
         let nbrOperation: number = getTypeOperation(operationType);
         return this.http.patch<void>(ENDPOINTS.REPERTOIRE.updateNbrOperation(id, nbrOperation), {});
+    }
+
+    imprimer(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimer, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerClientAdresse(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimerClientAdresse, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerTransport(commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post(ENDPOINTS.REPERTOIRE.imprimerTransport, commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
     serialization(repertoire: Repertoire): any {

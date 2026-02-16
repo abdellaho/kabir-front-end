@@ -13,6 +13,9 @@ export interface CommonSearchModel {
     compteCaisse: boolean;
     numCheque: string;
     numRemise: string;
+    typeRepertoire: number;
+    villeId: number;
+    typeImprimRepertoire: number;
 }
 
 export function initCommonSearchModel(): CommonSearchModel {
@@ -30,6 +33,9 @@ export function initCommonSearchModel(): CommonSearchModel {
         etatcheque: 0,
         compteCaisse: false,
         numCheque: '',
-        numRemise: ''
+        numRemise: '',
+        typeRepertoire: 0,
+        villeId: 0,
+        typeImprimRepertoire: 0
     };
 }
