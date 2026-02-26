@@ -154,106 +154,93 @@
       <!-- Form content must go inside ng-template -->
       <ng-template pTemplate="content">
         <div [formGroup]="formGroup" class="p-fluid">
-          <div class="card flex flex-col gap-4">
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="designation" formControlName="designation" required
-                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
-                  <label for="designation">{{ msg.components.personnel.designation }}</label>
-                </p-floatlabel>
-              </div>
-
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="cin" formControlName="cin"
-                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
-                  <label for="cin">{{ msg.components.personnel.cin }}</label>
-                </p-floatlabel>
-              </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="designation" formControlName="designation" required class="w-full"
+                  [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
+                <label for="designation">{{ msg.components.personnel.designation }}</label>
+              </p-floatlabel>
             </div>
 
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel class="w-full md:w-56" variant="on">
-                  <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel"
-                    appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;"
-                    class="w-full md:w-56" />
-                  <label for="typePersonnel">{{ msg.components.personnel.typePersonnel }}</label>
-                </p-floatlabel>
-              </div>
-
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="email" formControlName="email" />
-                  <label for="email">{{ msg.components.personnel.email }}</label>
-                </p-floatlabel>
-              </div>
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="cin" formControlName="cin" class="w-full"
+                  [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
+                <label for="cin">{{ msg.components.personnel.cin }}</label>
+              </p-floatlabel>
             </div>
 
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <p-password id="password" formControlName="password" />
-                  <label for="password">{{ msg.components.personnel.password }}</label>
-                </p-floatlabel>
-              </div>
-
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" />
-                  <label for="dateEntrer">{{ msg.components.personnel.dateEntrer }}</label>
-                </p-floatlabel>
-              </div>
+            <div class="flex flex-col">
+              <p-floatlabel class="w-full" variant="on">
+                <p-select formControlName="typePersonnel" inputId="typePersonnel" [options]="typePersonnel"
+                  appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;"
+                  class="w-full" />
+                <label for="typePersonnel">{{ msg.components.personnel.typePersonnel }}</label>
+              </p-floatlabel>
             </div>
 
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="tel1" formControlName="tel1" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
-                  <label for="tel1">{{ msg.components.personnel.tel1 }}</label>
-                </p-floatlabel>
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="email" formControlName="email" class="w-full" />
+                <label for="email">{{ msg.components.personnel.email }}</label>
+              </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <p-password id="password" formControlName="password" class="w-full" inputStyleClass="w-full" />
+                <label for="password">{{ msg.components.personnel.password }}</label>
+              </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <p-date-picker id="dateEntrer" formControlName="dateEntrer" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" />
+                <label for="dateEntrer">{{ msg.components.personnel.dateEntrer }}</label>
+              </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="tel1" formControlName="tel1" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" class="w-full" />
+                <label for="tel1">{{ msg.components.personnel.tel1 }}</label>
+              </p-floatlabel>
                 @if (formGroup.errors?.['tel1EqualTel2']) {
                   <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
                 }
-              </div>
+            </div>
 
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="tel2" formControlName="tel2" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" />
-                  <label for="tel2">{{ msg.components.personnel.tel2 }}</label>
-                </p-floatlabel>
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="tel2" formControlName="tel2" [maxLength]="10" [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] }" class="w-full" />
+                <label for="tel2">{{ msg.components.personnel.tel2 }}</label>
+              </p-floatlabel>
                 @if (formGroup.errors?.['tel1EqualTel2']) {
                   <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
                 }
-              </div>
             </div>
 
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <input pInputText id="adresse" formControlName="adresse" />
-                  <label for="adresse">{{ msg.components.personnel.adresse }}</label>
-                </p-floatlabel>
-              </div>
-
-              <div class="flex flex-col grow basis-0">
-                <p-floatlabel variant="on">
-                  <p-input-number id="salaire" formControlName="salaire" [min]="0" [maxFractionDigits]="2" />
-                  <label for="salaire">{{ msg.components.personnel.salaire }}</label>
-                </p-floatlabel>
-              </div>
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <input pInputText id="adresse" formControlName="adresse" class="w-full" />
+                <label for="adresse">{{ msg.components.personnel.adresse }}</label>
+              </p-floatlabel>
             </div>
 
-            <div class="flex flex-wrap gap-6">
-              <div class="flex flex-col grow basis-0">
-                <span id="etatComptePersonnelSpan">{{ msg.components.personnel.etatComptePersonnel }}</span>
-                <p-toggleswitch name="etatComptePersonnel" id="etatComptePersonnel"
-                  formControlName="etatComptePersonnel" />
-              </div>
-
-              <div class="flex flex-col grow basis-0"></div>
+            <div class="flex flex-col">
+              <p-floatlabel variant="on">
+                <p-input-number id="salaire" formControlName="salaire" [min]="0" [maxFractionDigits]="2" class="w-full" />
+                <label for="salaire">{{ msg.components.personnel.salaire }}</label>
+              </p-floatlabel>
             </div>
+
+            <div class="flex flex-col">
+              <span id="etatComptePersonnelSpan">{{ msg.components.personnel.etatComptePersonnel }}</span>
+              <p-toggleswitch name="etatComptePersonnel" id="etatComptePersonnel" formControlName="etatComptePersonnel" />
+            </div>
+
+            <div class="flex flex-col"></div>
           </div>
         </div>
       </ng-template>

@@ -180,17 +180,17 @@
                     <div class="card flex flex-col gap-4">
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="typeRepertoire" inputId="typeRepertoire"
                                         [options]="typeRepertoire" appendTo="body" optionLabel="label"
-                                        optionValue="value" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="value" style="height: 30px;" class="w-full" />
                                     <label for="typeRepertoire">{{ msg.components.repertoire.typeRepertoire }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="designation" formControlName="designation" required
+                                    <input pInputText id="designation" formControlName="designation" required class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid || formGroup.get('designation')?.errors?.['exist'] }" />
                                     <label for="designation">{{ msg.components.repertoire.designation }}</label>
                                 </p-floatlabel>
@@ -202,17 +202,17 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="villeId" inputId="villeId" [options]="listVille"
                                         appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
-                                        class="w-full md:w-56" />
+                                        class="w-full" />
                                     <label for="villeId">{{ msg.components.repertoire.villeId }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10"
+                                    <input pInputText id="tel1" formControlName="tel1" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] || formGroup.get('tel1')?.errors?.['exist'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel1 }}</label>
                                 </p-floatlabel>
@@ -233,7 +233,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10"
+                                    <input pInputText id="tel2" formControlName="tel2" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel2')?.errors?.['exist'] }" />
                                     <label for="tel2">{{ msg.components.repertoire.tel2 }}</label>
                                 </p-floatlabel>
@@ -252,7 +252,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="tel3" formControlName="tel3" [maxlength]="10"
+                                    <input pInputText id="tel3" formControlName="tel3" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel3')?.errors?.['exist'] }" />
                                     <label for="tel1">{{ msg.components.repertoire.tel3 }}</label>
                                 </p-floatlabel>
@@ -273,7 +273,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="ice" formControlName="ice" maxlength="15"
+                                    <input pInputText id="ice" formControlName="ice" maxlength="15" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('ice')?.errors?.['exist'] }" />
                                     <label for="ice">{{ msg.components.repertoire.ice }}</label>
                                 </p-floatlabel>
@@ -284,7 +284,7 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="observation" formControlName="observation" />
+                                    <input pInputText id="observation" formControlName="observation" class="w-full" />
                                     <label for="observation">{{ msg.components.repertoire.observation }}</label>
                                 </p-floatlabel>
                             </div>
@@ -292,10 +292,10 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelId"
                                         [options]="listPersonnel" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="id" style="height: 30px;" class="w-full" />
                                     <label for="personnelId">{{ msg.components.repertoire.personnelId }}</label>
                                 </p-floatlabel>
                             </div>
@@ -303,7 +303,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
                                     <p-input-number id="plafond" formControlName="plafond" [min]="0"
-                                        [maxFractionDigits]="2" />
+                                        [maxFractionDigits]="2" class="w-full" />
                                     <label for="plafond">{{ msg.components.repertoire.plafond }}</label>
                                 </p-floatlabel>
                             </div>

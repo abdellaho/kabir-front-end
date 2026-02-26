@@ -110,7 +110,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-date-picker id="dateAbsence" formControlName="dateAbsence" appendTo="body"
+                                    <p-date-picker id="dateAbsence" formControlName="dateAbsence" appendTo="body" class="w-full"
                                         [dateFormat]="msg.formats.date_Format_DDMMYY" required (onSelect)="onChangeDateAbsence()" (onClear)="onClearDateAbsence()"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAbsence')?.invalid }" />
                                     <label for="dateAbsence">{{ msg.components.absence.dateAbsence }}</label>
@@ -120,10 +120,10 @@
                         
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelId"
                                         [options]="listPersonnel" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="id" style="height: 30px;" class="w-full" />
                                     <label for="personnelId">{{ msg.components.absence.personnel }}</label>
                                 </p-floatlabel>
                             </div>
@@ -181,21 +181,21 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-date-picker formControlName="dateDebut" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateDebut" />
+                                    <p-date-picker formControlName="dateDebut" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateDebut" class="w-full" />
                                     <label for="dateDebut">{{ msg.components.absence.imprimer.dateDebut }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-date-picker formControlName="dateFin" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateFin" />
+                                    <p-date-picker formControlName="dateFin" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateFin" class="w-full" />
                                     <label for="dateFin">{{ msg.components.absence.imprimer.dateFin }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnelFixe" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnelFixe" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full" />
                                     <label for="personnelId">{{ msg.components.absence.imprimer.personnel }}</label>
                                 </p-floatlabel>
                             </div>
