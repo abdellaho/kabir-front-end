@@ -7,6 +7,10 @@
                     <div class="my-2">
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
+
+                    <div class="my-2">
+                        <input pInputText type="text" placeholder="{{ msg.components.stockDepot.search }}" (input)="searchByInputText()" [(ngModel)]="stockDepotInputSearch" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -14,19 +18,19 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetStockDepotPrincipal" dataKey="id"
-                [rows]="10" rowGroupMode="rowspan" groupRowsBy="stockDateOperation" sortField="stockDateOperation" [sortOrder]="-1"
+                [rows]="20" rowGroupMode="rowspan" groupRowsBy="stockDepotDateOperation" [groupRowsByOrder]="-1" sortField="stockDepotDateOperation" [sortOrder]="-1"
                 selectionMode="single" [(selection)]="selectedStockDepot" dataKey="id"
-                sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['stockDateOperation', 'stockDesignation', 'qte']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                sortMode="single" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['stockDepotDateOperation', 'stockDesignation', 'qte']"
+                [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="stockDateOperation" style="width: 20%">
+                        <th pSortableColumn="stockDepotDateOperation" style="width: 20%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stockDepot.dateOperation }}
-                                <p-sortIcon field="stockDateOperation" />
+                                <p-sortIcon field="stockDepotDateOperation" />
                             </div>
                         </th>
 
@@ -50,7 +54,7 @@
 
                 <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.stockDateOperation | date:'dd/MM/yyyy' }}</td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.stockDepotDateOperation | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.stockDesignation }}</td>
                         <td>{{ p.qte }}</td>
 
@@ -58,6 +62,7 @@
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
                                 <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                                <p-button (click)="imprimer(p)" icon="pi pi-print" severity="info" rounded [title]="msg.buttons.imprimer" />
                             </div>
                         </td>
                     </tr>
@@ -87,7 +92,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body"
+                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
                                         [dateFormat]="msg.formats.date_Format_DDMMYY" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
                                     <label for="dateOperation">{{ msg.components.stockDepot.dateOperation }}</label>
@@ -100,10 +105,10 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="stockId" inputId="stockId"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId" class="w-full"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="id" style="height: 30px;" />
                                     <label for="stockId">{{ msg.components.stockDepot.stockId }}</label>
                                 </p-floatlabel>
                             </div>
@@ -114,19 +119,23 @@
                             && formGroup.get('stockId')?.value !== BigInt(0)) {
                             <div class="flex flex-wrap gap-6">
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="designationStockDepotSpan">{{ msg.components.stockDepot.designation }}</span>
-                                    <input pInputText name="designation" id="designation" formControlName="designation" />
+                                    <p-floatlabel class="w-full" variant="on">
+                                    <input pInputText name="designation" id="designation" formControlName="designation" class="w-full" />
+                                    <label for="designation">{{ msg.components.stockDepot.designation }}</label>
+                                </p-floatlabel>
                                 </div>
                             
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="qteStockDepotSpan">{{ msg.components.stockDepot.qte }}</span>
-                                    <p-inputNumber name="qte" id="qte" formControlName="qte" />
+                                    <p-floatlabel class="w-full" variant="on">
+                                        <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" />
+                                        <label for="qte">{{ msg.components.stockDepot.qte }}</label>
+                                    </p-floatlabel>
                                 </div>
                             </div>
 
                             <div class="flex flex-wrap gap-6" style="justify-content: center;">
                                 <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
-                                    (click)="validerDetStockDepot()" [disabled]="formGroup.get('stockId')?.value === null || formGroup.get('stockId')?.value === undefined || formGroup.get('stockId')?.value === BigInt(0)"></button>
+                                    (click)="validerDetStockDepot()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
                             </div>
                         }
                     </div>

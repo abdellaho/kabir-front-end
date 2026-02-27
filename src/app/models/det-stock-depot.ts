@@ -4,7 +4,7 @@ export interface DetStockDepot {
     id?: bigint | null;
     qte: number;
     stockDepotId: bigint | null;
-    stockDateOperation: Date | null;
+    stockDepotDateOperation: Date | null;
     stockId: bigint | null;
     stockDesignation: string;
     stockQteStock: number;
@@ -18,7 +18,7 @@ export function initObjectDetStockDepot(): DetStockDepot {
         id: null,
         qte: 1,
         stockDepotId: null,
-        stockDateOperation: null,
+        stockDepotDateOperation: null,
         stockId: null,
         stockDesignation: '',
         stockQteStock: 0,

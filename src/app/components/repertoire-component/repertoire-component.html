@@ -26,12 +26,14 @@
                             (click)="bloqueListe()"></p-button>
                     </div>
 
-                    <div class="my-2" style="margin-right: 1ch;">
-                        <p-splitbutton severity="help" pRipple [label]="msg.buttons.consulter" [model]="printItems" />
-                    </div>
-
                     <div class="my-2">
                         <input pInputText type="text" placeholder="{{ msg.components.repertoire.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
+                    </div>
+
+                    <div class="my-2" style="margin-left: 0.5ch;">
+                        <p-button severity="help" pRipple [label]="`${msg.buttons.consulter} ${msg.buttons.pharmacie}`" icon="pi pi-print" (onClick)="viderImprimer(1)" class="mr-2" />
+                        <p-button pRipple [label]="`${msg.buttons.consulter} ${msg.buttons.revendeur}`" icon="pi pi-print" (onClick)="viderImprimer(2)" class="p-button-blueRoyal mr-2" />
+                        <p-button pRipple [label]="`${msg.buttons.consulter} ${msg.buttons.transport}`" icon="pi pi-print" (onClick)="imprimerTransport()" class="p-button-bleuCiel mr-2" />
                     </div>
                 </ng-template>
 
@@ -142,7 +144,7 @@
                                 <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
                                     [title]="msg.buttons.archiver" />
                                 <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
-                                    [title]="msg.buttons.corbeille" />
+                                    [title]="msg.buttons.supprimer" />
                                 }
                                 @if (typeOfList === 1) {
                                 <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded

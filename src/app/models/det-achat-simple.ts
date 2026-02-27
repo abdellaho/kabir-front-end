@@ -2,32 +2,28 @@ import { Stock } from './stock';
 
 export interface DetAchatSimple {
     id: bigint | null;
+    stockId: bigint | null;
+    stockDesignation: string;
+    achatSimpleId: bigint | null;
     qte: number;
-    prixVente: number;
+    prixAchat: number;
+    remiseAchat: number;
     remise: number;
     uniteGratuite: number;
     montant: number;
-    stockId: bigint | null;
-    stockDesignation: string;
-    stockPvttc: number;
-    stockQteStock: number;
-    achatSimpleId: bigint | null;
-    stock?: Stock | null;
 }
 
 export function initObjectDetAchatSimple(): DetAchatSimple {
     return {
         id: null,
+        prixAchat: 0,
+        remiseAchat: 0,
         qte: 0,
-        prixVente: 0,
         remise: 0,
         uniteGratuite: 0,
         montant: 0,
         stockId: null,
         stockDesignation: '',
-        stockPvttc: 0,
-        stockQteStock: 0,
-        achatSimpleId: null,
-        stock: null
+        achatSimpleId: null
     };
 }

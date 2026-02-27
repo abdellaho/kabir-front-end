@@ -79,15 +79,15 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-cart-plus', routerLink: ['/achat-simple'], visible: this.hasPermission([Permission.ALL]) }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',
                 items: [{ label: this.msg.menu.facture, icon: 'pi pi-fw pi-file', routerLink: ['/facture'], visible: this.hasPermission([Permission.ALL]) }]
-            },
-            {
-                label: '',
-                items: [{ label: this.msg.menu.achatSimple, icon: 'pi pi-fw pi-cart-plus', routerLink: ['/achat-simple'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',

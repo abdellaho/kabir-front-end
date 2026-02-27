@@ -28,7 +28,10 @@
                     </div>
 
                     <div class="my-2" style="margin-right: 1ch;">
-                        <p-splitbutton severity="help" pRipple [label]="msg.buttons.consulter" [model]="printItems" />
+                        <p-button severity="help" pRipple [label]="`${msg.buttons.stockSimple}`" icon="pi pi-print" (onClick)="imprimer(2)" class="mr-2" />
+                        <p-button pRipple [label]="`${msg.buttons.stockGenerale}`" icon="pi pi-print" (onClick)="imprimer(1)" class="p-button-blueRoyal mr-2" />
+                        <p-button pRipple [label]="`${msg.buttons.prixInitial}`" icon="pi pi-print" (onClick)="imprimer(8)" class="p-button-bleuCiel mr-2" />
+                        <p-button pRipple [label]="`${msg.buttons.prixVentePlusRemise}`" icon="pi pi-print" (onClick)="imprimer(11)" class="p-button-rose mr-2" />
                     </div>
                 </ng-template>
 
@@ -46,28 +49,28 @@
                 <ng-template #header>
                     <tr>
                         <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-                        <th pSortableColumn="designation" style="width: 40%">
+                        <th pSortableColumn="designation" style="width: 30%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.designation }}
                                 <p-sortIcon field="designation" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteStock" style="width: 5%">
+                        <th pSortableColumn="qteStock" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteStockTable }}
                                 <p-sortIcon field="qteStock" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteFacturer" style="width: 5%">
+                        <th pSortableColumn="qteFacturer" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteFacturerTable }}
                                 <p-sortIcon field="qteFacturer" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="qteStockImport" style="width: 5%">
+                        <th pSortableColumn="qteStockImport" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.qteStockImportTable }}
                                 <p-sortIcon field="qteStockImport" />
@@ -81,21 +84,21 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="pvttc" style="width: 6%">
+                        <th pSortableColumn="pvttc" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.pvttc }}
                                 <p-sortIcon field="pvttc" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="prixCommercial" style="width: 6%">
+                        <th pSortableColumn="prixCommercial" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.prixCommercial }}
                                 <p-sortIcon field="prixCommercial" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="prixVentMin1" style="width: 6%">
+                        <th pSortableColumn="prixVentMin1" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.prixVentMin }}
                                 <p-sortIcon field="prixVentMin1" />
@@ -116,7 +119,7 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="fournisseurDesignation" style="width: 10%">
+                        <th pSortableColumn="fournisseurDesignation" style="width: 13%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stock.fournisseurId }}
                                 <p-sortIcon field="fournisseurDesignation" />
@@ -151,16 +154,16 @@
                         </td>
                         <td>
                             @if(p.remiseMax4 > 0){
-                                {{ p.remiseMax4 | number: '1.2-3' }}
+                                {{ p.remiseMax4 | number: '1.2-2' }}
                             } @else if(p.remiseMax3 > 0){
-                                {{ p.remiseMax3 | number: '1.2-3' }}
+                                {{ p.remiseMax3 | number: '1.2-2' }}
                             } @else if(p.remiseMax2 > 0){
-                                {{ p.remiseMax2 | number: '1.2-3' }}
+                                {{ p.remiseMax2 | number: '1.2-2' }}
                             } @else if(p.remiseMax1 > 0){
-                                {{ p.remiseMax1 | number: '1.2-3' }}
+                                {{ p.remiseMax1 | number: '1.2-2' }}
                             }
                         </td>
-                        <td>{{ p.benifice | number: '1.2-3' }}</td>
+                        <td>{{ p.benifice | number: '1.2-2' }}</td>
                         <td>{{ p.fournisseurDesignation }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
@@ -170,7 +173,7 @@
                                 }
 
                                 @if(canDelete && typeOfList === 0) {
-                                    <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.corbeille" />
+                                    <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                                 }
 
                                 @if(canEdit) {
@@ -209,27 +212,27 @@
                     <div class="card flex flex-col gap-4">
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="fournisseurId" inputId="fournisseurId"
                                         [options]="listFournisseur" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="id" style="height: 30px;" class="w-full" />
                                     <label for="fournisseurId">{{ msg.components.stock.fournisseurId }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="designation" formControlName="designation" required
+                                    <input pInputText id="designation" formControlName="designation" required class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
                                     <label for="designation">{{ msg.components.stock.designation }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="typeProduit" inputId="typeProduit"
                                         [options]="typeProduits" appendTo="body" optionLabel="label"
-                                        optionValue="value" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="value" style="height: 30px;" class="w-full" />
                                     <label for="typeProduit">{{ msg.components.stock.typeProduit }}</label>
                                 </p-floatlabel>
                             </div>
@@ -237,8 +240,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="pattc" inputId="pattc"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="pattc" inputId="pattc" class="w-full"
                                         [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('pattc')?.invalid }" />
                                     <label for="pattc">{{ msg.components.stock.pattc }}</label>
@@ -246,8 +249,8 @@
                             </div>
                             
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="pvttc" inputId="pvttc"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="pvttc" inputId="pvttc" class="w-full"
                                         [maxFractionDigits]="2" (onBlur)="calculerBenefice()" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('pvttc')?.invalid || formGroup.errors?.['pvttcMustBeGreatThanPattc'] }" />
                                     <label for="pvttc">{{ msg.components.stock.pvttcMAJ }}</label>
@@ -259,8 +262,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="benifice" inputId="benifice" [maxFractionDigits]="2" />
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="benifice" inputId="benifice" [maxFractionDigits]="2" class="w-full" />
                                     <label for="benifice">{{ msg.components.stock.benifice }}</label>
                                 </p-floatlabel>
                             </div>
@@ -268,22 +271,22 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport" />
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qteStockImport" inputId="qteStockImport" class="w-full" />
                                     <label for="qteStockImport">{{ msg.components.stock.qteStockImport }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteStock" inputId="qteStock" />
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qteStock" inputId="qteStock" class="w-full" />
                                     <label for="qteStock">{{ msg.components.stock.qteStock }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qteFacturer" inputId="qteFacturer" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('qteFacturer')?.invalid }" />
                                     <label for="qteFacturer">{{ msg.components.stock.qteFacturer }}</label>
                                 </p-floatlabel>
@@ -292,8 +295,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" />
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="tva" allowEmpty="false" inputId="tva" [min]="0" class="w-full" />
                                     <label for="tva">{{ msg.components.stock.tva }}</label>
                                 </p-floatlabel>
                             </div>
@@ -304,8 +307,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prixVentMin1" inputId="prixVentMin1"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prixVentMin1" inputId="prixVentMin1" class="w-full"
                                         (onBlur)="onChangePrixVenteMin(1)" [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prixVentMin1Required'] || formGroup.get('prixVentMin1')?.errors?.['negative'] || formGroup.errors?.['prixVentMin1MustBeGreaterThanprixVentMin2'] || formGroup.errors?.['prixVentMin1MustBeGreaterThanPATTC'] }" />
                                     <label for="prixVentMin1">{{ msg.components.stock.prixVentMin1 }}</label>
@@ -333,8 +336,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin1Required'] || formGroup.get('qtePVMin1')?.errors?.['negative'] }" />
                                     <label for="qtePVMin1">{{ msg.components.stock.qtePVMin1 }}</label>
                                 </p-floatlabel>
@@ -349,8 +352,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="remiseMax1" inputId="remiseMax1" class="w-full"
                                         [maxFractionDigits]="2" />
                                     <label for="remiseMax1">{{ msg.components.stock.remiseMax1 }}</label>
                                 </p-floatlabel>
@@ -359,8 +362,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prixVentMin2" inputId="prixVentMin2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prixVentMin2" inputId="prixVentMin2" class="w-full"
                                         (onBlur)="onChangePrixVenteMin(2)" [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prixVentMin2Required'] || formGroup.get('prixVentMin2')?.errors?.['negative'] || formGroup.errors?.['prixVentMin2MustBeGreaterThanprixVentMin3'] || formGroup.errors?.['prixVentMin2MustBeGreaterThanPATTC'] }" />
                                     <label for="prixVentMin2">{{ msg.components.stock.prixVentMin2 }}</label>
@@ -388,8 +391,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qtePVMin2" inputId="qtePVMin2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qtePVMin2" inputId="qtePVMin2" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin2Required'] || formGroup.get('qtePVMin2')?.errors?.['negative'] || formGroup.errors?.['qtePVMin2MustBeGreaterThanqtePVMin1'] }" />
                                     <label for="qtePVMin2">{{ msg.components.stock.qtePVMin2 }}</label>
                                 </p-floatlabel>
@@ -411,9 +414,9 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
+                                <p-floatlabel class="w-full" variant="on">
                                     <p-input-number formControlName="remiseMax2" inputId="remiseMax2"
-                                        [maxFractionDigits]="2" />
+                                        [maxFractionDigits]="2" class="w-full" />
                                     <label for="remiseMax2">{{ msg.components.stock.remiseMax2 }}</label>
                                 </p-floatlabel>
                             </div>
@@ -421,8 +424,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prixVentMin3" inputId="prixVentMin3"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prixVentMin3" inputId="prixVentMin3" class="w-full"
                                         (onBlur)="onChangePrixVenteMin(3)" [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prixVentMin3Required'] || formGroup.get('prixVentMin3')?.errors?.['negative'] || formGroup.errors?.['prixVentMin3MustBeGreaterThanprixVentMin4'] || formGroup.errors?.['prixVentMin3MustBeGreaterThanPATTC'] }" />
                                     <label for="prixVentMin3">{{ msg.components.stock.prixVentMin3 }}</label>
@@ -450,8 +453,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qtePVMin3" inputId="qtePVMin3"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qtePVMin3" inputId="qtePVMin3" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin3Required'] || formGroup.get('qtePVMin3')?.errors?.['negative'] || formGroup.errors?.['qtePVMin3MustBeGreaterThanqtePVMin2'] }" />
                                     <label for="qtePVMin3">{{ msg.components.stock.qtePVMin3 }}</label>
                                 </p-floatlabel>
@@ -473,8 +476,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="remiseMax3" inputId="remiseMax3" class="w-full"
                                         [maxFractionDigits]="2" />
                                     <label for="remiseMax3">{{ msg.components.stock.remiseMax3 }}</label>
                                 </p-floatlabel>
@@ -483,8 +486,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prixVentMin4" inputId="prixVentMin4"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prixVentMin4" inputId="prixVentMin4" class="w-full"
                                         (onBlur)="onChangePrixVenteMin(4)" [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prixVentMin4Required'] || formGroup.get('prixVentMin4')?.errors?.['negative'] || formGroup.errors?.['prixVentMin4MustBeGreaterThanPATTC'] }" />
                                     <label for="prixVentMin4">{{ msg.components.stock.prixVentMin4 }}</label>
@@ -507,8 +510,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="qtePVMin4" inputId="qtePVMin4"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="qtePVMin4" inputId="qtePVMin4" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin4Required'] || formGroup.get('qtePVMin4')?.errors?.['negative'] || formGroup.errors?.['qtePVMin4MustBeGreaterThanprixVentMin2'] }" />
                                     <label for="qtePVMin4">{{ msg.components.stock.qtePVMin4 }}</label>
                                 </p-floatlabel>
@@ -530,8 +533,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="remiseMax4" inputId="remiseMax4" class="w-full"
                                         [maxFractionDigits]="2" />
                                     <label for="remiseMax4">{{ msg.components.stock.remiseMax4 }}</label>
                                 </p-floatlabel>
@@ -540,8 +543,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="montant1" inputId="montant1"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="montant1" inputId="montant1" class="w-full"
                                         [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant1Required'] || formGroup.get('montant1')?.errors?.['negative'] }" />
                                     <label for="montant1">{{ msg.components.stock.montant1 }}</label>
@@ -557,8 +560,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="montant2" inputId="montant2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="montant2" inputId="montant2" class="w-full"
                                         [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant2Required'] || formGroup.get('montant2')?.errors?.['negative'] || formGroup.errors?.['montant2MustBeGreaterThanmontant1'] }" />
                                     <label for="montant2">{{ msg.components.stock.montant2 }}</label>
@@ -581,8 +584,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="montant3" inputId="montant3"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="montant3" inputId="montant3" class="w-full"
                                         [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['montant3Required'] || formGroup.get('montant3')?.errors?.['negative'] || formGroup.errors?.['montant3MustBeGreaterThanmontant2'] }" />
                                     <label for="montant3">{{ msg.components.stock.montant3 }}</label>
@@ -607,8 +610,8 @@
 
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prime1" inputId="prime1" [maxFractionDigits]="2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prime1" inputId="prime1" [maxFractionDigits]="2" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime1Required'] || formGroup.get('prime1')?.errors?.['negative'] }" />
                                     <label for="prime1">{{ msg.components.stock.prime1 }}</label>
                                 </p-floatlabel>
@@ -623,8 +626,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prime2" inputId="prime2" [maxFractionDigits]="2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prime2" inputId="prime2" [maxFractionDigits]="2" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime2Required'] || formGroup.get('prime2')?.errors?.['negative'] || formGroup.errors?.['prime2MustBeGreaterThanprime1'] }" />
                                     <label for="prime2">{{ msg.components.stock.prime2 }}</label>
                                 </p-floatlabel>
@@ -643,8 +646,8 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number formControlName="prime3" inputId="prime3" [maxFractionDigits]="2"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number formControlName="prime3" inputId="prime3" [maxFractionDigits]="2" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['prime3Required'] || formGroup.get('prime3')?.errors?.['negative'] || formGroup.errors?.['prime3MustBeGreaterThanprime2'] }" />
                                     <label for="prime3">{{ msg.components.stock.prime3 }}</label>
                                 </p-floatlabel>

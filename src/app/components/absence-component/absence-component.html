@@ -26,10 +26,10 @@
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAbsence" dataKey="id"
                 selectionMode="single" [(selection)]="selectedAbsence" [metaKeySelection]="false"
-                [rows]="10" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
+                [rows]="20" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['dateAbsenceStr', 'personnelDesignation', 'matin', 'apresMidi']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
@@ -170,35 +170,33 @@
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '300px', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '600px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.components.absence.imprimer.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroupImprimer" class="p-fluid">
-                    <div class="card flex flex-col gap-4">
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker formControlName="dateDebut" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateDebut" class="w-full" />
-                                    <label for="dateDebut">{{ msg.components.absence.imprimer.dateDebut }}</label>
-                                </p-floatlabel>
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" style="margin-top: 5px;">
+                        <div class="flex flex-col">
+                            <p-floatlabel variant="on">
+                                <p-date-picker formControlName="dateDebut" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateDebut" class="w-full" />
+                                <label for="dateDebut">{{ msg.components.absence.imprimer.dateDebut }}</label>
+                            </p-floatlabel>
+                        </div>
 
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker formControlName="dateFin" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateFin" class="w-full" />
-                                    <label for="dateFin">{{ msg.components.absence.imprimer.dateFin }}</label>
-                                </p-floatlabel>
-                            </div>
+                        <div class="flex flex-col">
+                            <p-floatlabel variant="on">
+                                <p-date-picker formControlName="dateFin" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" inputId="dateFin" class="w-full" />
+                                <label for="dateFin">{{ msg.components.absence.imprimer.dateFin }}</label>
+                            </p-floatlabel>
+                        </div>
 
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full" variant="on">
-                                    <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnelFixe" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full" />
-                                    <label for="personnelId">{{ msg.components.absence.imprimer.personnel }}</label>
-                                </p-floatlabel>
-                            </div>
+                        <div class="flex flex-col">
+                            <p-floatlabel class="w-full" variant="on">
+                                <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnelFixe" appendTo="body" optionLabel="designation" optionValue="id" style="height: 30px;" class="w-full" />
+                                <label for="personnelId">{{ msg.components.absence.imprimer.personnel }}</label>
+                            </p-floatlabel>
                         </div>
                     </div>
                 </div>

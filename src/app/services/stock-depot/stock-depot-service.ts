@@ -5,6 +5,7 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { StockDepot } from '@/models/stock-depot';
 import { StockDepotRequest } from '@/shared/classes/stock-depot-request';
 import { DetStockDepot } from '@/models/det-stock-depot';
+import { getHeadersPDF } from '@/shared/classes/generic-methods';
 
 @Injectable({
     providedIn: 'root'
@@ -40,6 +41,10 @@ export class StockDepotService {
 
     delete(id: bigint): Observable<void> {
         return this.http.delete<void>(ENDPOINTS.STOCK_DEPOT.delete(id));
+    }
+
+    imprimer(detStockDepot: DetStockDepot): Observable<any> {
+        return this.http.post<any>(ENDPOINTS.STOCK_DEPOT.imprimer, detStockDepot, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
     serialization(obj: StockDepotRequest): any {

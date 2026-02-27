@@ -16,6 +16,7 @@ const BULLETIN_PAI = `bulletin-pai`;
 const PRIME = `prime`;
 const PERSONNEL = `personnel`;
 const STOCK = `stock`;
+const STOCK_DEPOT = `stock-depot`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -43,13 +44,14 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/etablissement/${id}`
     },
     STOCK_DEPOT: {
-        getAll: `${BASE_URL}/stock-depot`,
-        getAllDetails: `${BASE_URL}/stock-depot/details`,
-        getById: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
-        getByIdRequest: (id: bigint) => `${BASE_URL}/stock-depot/response/${id}`,
-        create: `${BASE_URL}/stock-depot`,
-        update: (id: bigint) => `${BASE_URL}/stock-depot/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/stock-depot/${id}`
+        getAll: `${BASE_URL}/${STOCK_DEPOT}`,
+        getAllDetails: `${BASE_URL}/${STOCK_DEPOT}/details`,
+        getById: (id: bigint) => `${BASE_URL}/${STOCK_DEPOT}/${id}`,
+        getByIdRequest: (id: bigint) => `${BASE_URL}/${STOCK_DEPOT}/response/${id}`,
+        create: `${BASE_URL}/${STOCK_DEPOT}`,
+        update: (id: bigint) => `${BASE_URL}/${STOCK_DEPOT}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${STOCK_DEPOT}/${id}`,
+        imprimer: `${BASE_URL}/${STOCK_DEPOT}/imprimer`
     },
     REPERTOIRE: {
         getAll: `${BASE_URL}/${REPERTOIRE}`,

@@ -64,9 +64,11 @@ export class StockDepotComponent {
     // Ajouter --> date - fournisseur - N°BL Externe - ListProduit --> designation + qte Stock + prix vente + qte + unite gratuite + remise findAllDetails
 
     isValid: boolean = false;
+    stockDepotInputSearch: string = '';
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
     listDetStockDepotPrincipal: DetStockDepot[] = [];
+    listDetStockDepotOriginal: DetStockDepot[] = [];
     listDetStockDepot: DetStockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
     selectedStockDepot!: StockDepot;
@@ -90,6 +92,7 @@ export class StockDepotComponent {
     ) {}
 
     ngOnInit(): void {
+        this.stockDepotInputSearch = '';
         this.search();
         this.getAllStock();
         this.initFormGroup();
@@ -108,7 +111,7 @@ export class StockDepotComponent {
             {
                 dateOperation: [new Date(), [Validators.required]],
                 stockId: [BigInt(0)],
-                qte: [1],
+                qte: [null],
                 designation: [{ value: '', disabled: true }]
             },
             { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] }
@@ -120,9 +123,11 @@ export class StockDepotComponent {
     }
 
     getAllDetStockDepot(): void {
+        this.listDetStockDepotOriginal = [];
         this.listDetStockDepotPrincipal = [];
         this.stockDepotService.getAllDetails().subscribe({
             next: (data: DetStockDepot[]) => {
+                this.listDetStockDepotOriginal = data;
                 this.listDetStockDepotPrincipal = data;
             },
             error: (error: any) => {
@@ -132,6 +137,16 @@ export class StockDepotComponent {
                 this.loadingService.hide();
             }
         });
+    }
+
+    searchByInputText() {
+        if (this.stockDepotInputSearch.length > 0) {
+            this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal.filter((detStockDepot: DetStockDepot) => {
+                return detStockDepot.stockDesignation.toLowerCase().includes(this.stockDepotInputSearch.toLowerCase());
+            });
+        } else {
+            this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
+        }
     }
 
     getAllStockDepot(): void {
@@ -190,7 +205,7 @@ export class StockDepotComponent {
             if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
-                    qte: 1,
+                    qte: null,
                     designation: this.stock.designation
                 });
 
@@ -204,7 +219,7 @@ export class StockDepotComponent {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
             stockId: BigInt(0),
-            qte: 1,
+            qte: null,
             designation: ''
         });
         this.formGroup.get('designation')?.disable();
@@ -219,6 +234,17 @@ export class StockDepotComponent {
                 this.openCloseDialogSupprimerDetStockDepot(true);
             }
         }
+    }
+
+    disableButtonAjouterDetStockDepot(): boolean {
+        return (
+            this.formGroup.get('stockId')?.value === null ||
+            this.formGroup.get('stockId')?.value === undefined ||
+            this.formGroup.get('stockId')?.value === BigInt(0) ||
+            this.formGroup.get('qte')?.value === null ||
+            this.formGroup.get('qte')?.value === undefined ||
+            this.formGroup.get('qte')?.value === 0
+        );
     }
 
     validerDetStockDepot() {
@@ -279,7 +305,7 @@ export class StockDepotComponent {
                         this.formGroup.patchValue({
                             designation: '',
                             stockId: BigInt(0),
-                            qte: 1,
+                            qte: null,
                             dateOperation: new Date(this.stockDepot.dateOperation)
                         });
                         this.formGroup.get('designation')?.disable();
@@ -358,7 +384,8 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listDetStockDepotPrincipal = this.updateList(data.detStockDepots, this.listDetStockDepotPrincipal, OperationType.MODIFY);
+                        this.listDetStockDepotOriginal = this.updateList(data.detStockDepots, this.listDetStockDepotOriginal, OperationType.MODIFY);
+                        this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -386,7 +413,8 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listDetStockDepotPrincipal = this.updateList(data.detStockDepots, this.listDetStockDepotPrincipal, OperationType.ADD);
+                        this.listDetStockDepotOriginal = this.updateList(data.detStockDepots, this.listDetStockDepotOriginal, OperationType.ADD);
+                        this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -423,7 +451,8 @@ export class StockDepotComponent {
                     });
 
                     this.checkIfListIsNull();
-                    this.listDetStockDepotPrincipal = this.updateList([], this.listDetStockDepotPrincipal, OperationType.DELETE, id);
+                    this.listDetStockDepotOriginal = this.updateList([], this.listDetStockDepotOriginal, OperationType.DELETE, id);
+                    this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
                     this.stockDepot = initObjectStockDepot();
                 },
                 error: (err) => {
@@ -444,5 +473,28 @@ export class StockDepotComponent {
         }
 
         this.openCloseDialogSupprimer(false);
+    }
+
+    imprimer(detStockDepot: DetStockDepot): void {
+        this.loadingService.show();
+
+        this.stockDepotService.imprimer(detStockDepot).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }

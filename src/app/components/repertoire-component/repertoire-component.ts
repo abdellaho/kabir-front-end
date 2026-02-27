@@ -31,6 +31,7 @@ import { RepertoireValidator } from '@/validators/repertoire-validator';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initRepertoireValidationResponse, RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -51,7 +52,8 @@ import { initRepertoireValidationResponse, RepertoireValidationResponse } from '
         MessageModule,
         SelectModule,
         TypeRepertoirePipe,
-        SplitButtonModule
+        SplitButtonModule,
+        Ripple
     ],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'

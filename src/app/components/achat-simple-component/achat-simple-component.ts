@@ -112,11 +112,11 @@ export class AchatSimpleComponent {
                 numBlExterne: [''],
                 montant: [{ value: 0, disabled: true }],
                 designation: [{ value: '', disabled: true }],
-                qteStock: [{ value: 0, disabled: true }],
-                qte: [1],
-                prixVente: [0],
-                remise: [0],
-                uniteGratuite: [0]
+                qte: [null],
+                prixAchat: [null],
+                remiseAchat: [null],
+                remise: [null],
+                uniteGratuite: [null]
             },
             { validators: [AchatSimpleValidator({ getListDetAchatSimple: () => this.listDetAchatSimple })] }
         );
@@ -202,16 +202,15 @@ export class AchatSimpleComponent {
             if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
-                    uniteGratuite: 0,
-                    qteStock: this.stock.qteStock,
-                    prixVente: this.stock.pvttc,
-                    remise: 0,
-                    qte: 1,
-                    designation: this.stock.designation
+                    designation: this.stock.designation,
+                    qte: null,
+                    uniteGratuite: null,
+                    remise: null,
+                    prixAchat: null,
+                    remiseAchat: null
                 });
 
                 this.formGroup.get('designation')?.disable();
-                this.formGroup.get('qteStock')?.disable();
                 this.isValid = true;
             }
         }
@@ -221,15 +220,14 @@ export class AchatSimpleComponent {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
             stockId: BigInt(0),
-            prixVente: 0,
-            qteStock: 0,
-            remise: 0,
-            uniteGratuite: 0,
-            qte: 1,
-            designation: ''
+            designation: '',
+            qte: null,
+            uniteGratuite: null,
+            remise: null,
+            prixAchat: null,
+            remiseAchat: null
         });
         this.formGroup.get('designation')?.disable();
-        this.formGroup.get('qteStock')?.disable();
     }
 
     recuppererDetAchatSimple(operation: number, detAchatSimpleEdit: DetAchatSimple) {
@@ -261,16 +259,14 @@ export class AchatSimpleComponent {
             let detAchatSimple: DetAchatSimple = initObjectDetAchatSimple();
             detAchatSimple.stockId = this.formGroup.get('stockId')?.value;
             detAchatSimple.qte = this.formGroup.get('qte')?.value;
-            detAchatSimple.prixVente = this.formGroup.get('prixVente')?.value;
-            detAchatSimple.remise = this.formGroup.get('remise')?.value;
-            detAchatSimple.uniteGratuite = this.formGroup.get('uniteGratuite')?.value;
+            detAchatSimple.prixAchat = this.formGroup.get('prixAchat')?.value || 0;
+            detAchatSimple.remiseAchat = this.formGroup.get('remiseAchat')?.value || 0;
+            detAchatSimple.remise = this.formGroup.get('remise')?.value || 0;
+            detAchatSimple.uniteGratuite = this.formGroup.get('uniteGratuite')?.value || 0;
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-            detAchatSimple.stock = stock;
             detAchatSimple.stockDesignation = stock.designation;
-            detAchatSimple.stockPvttc = stock.pvttc;
-            detAchatSimple.stockQteStock = stock.qteStock;
-            detAchatSimple.montant = detAchatSimple.qte * detAchatSimple.prixVente - detAchatSimple.qte * detAchatSimple.prixVente * detAchatSimple.remise * 0.01;
+            detAchatSimple.montant = detAchatSimple.qte * detAchatSimple.prixAchat - detAchatSimple.qte * detAchatSimple.prixAchat * detAchatSimple.remise * 0.01;
 
             this.listDetAchatSimple.push(detAchatSimple);
 
@@ -322,21 +318,14 @@ export class AchatSimpleComponent {
                         this.achatSimple = data.achatSimple;
                         this.listDetAchatSimple = data.detAchatSimples;
 
-                        this.listDetAchatSimple.forEach((detAchatSimple: DetAchatSimple) => {
-                            if (detAchatSimple.stockId && detAchatSimple.stockId !== BigInt(0)) {
-                                let stock: Stock = this.listStock.find((stock: Stock) => stock.id === detAchatSimple.stockId) || initObjectStock();
-                                detAchatSimple.stock = stock;
-                            }
-                        });
-
                         this.formGroup.patchValue({
-                            uniteGratuite: 0,
-                            qteStock: 0,
-                            prixVente: 0,
-                            remise: 0,
+                            uniteGratuite: null,
+                            prixAchat: null,
+                            remiseAchat: null,
+                            remise: null,
                             designation: '',
                             stockId: BigInt(0),
-                            qte: 1,
+                            qte: null,
                             dateOperation: new Date(this.achatSimple.dateOperation),
                             fournisseurId: this.achatSimple.fournisseurId,
                             numBlExterne: this.achatSimple.numBlExterne,
@@ -344,7 +333,6 @@ export class AchatSimpleComponent {
                         });
 
                         this.formGroup.get('designation')?.disable();
-                        this.formGroup.get('qteStock')?.disable();
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
