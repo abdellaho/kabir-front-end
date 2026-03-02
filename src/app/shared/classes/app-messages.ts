@@ -380,12 +380,11 @@ export const APP_MESSAGES = {
             stockId: 'Produit',
             qteStock: 'Qte Stock',
             designationStock: 'Produit',
-            uniteGratuite: 'Unite gratuite Achat',
+            uniteGratuite: 'Unite gratuite',
             remise: 'Remise',
             prixVente: 'Prix Vente',
             qte: 'Qte Achat',
             prixAchat: 'Prix Achat',
-            remiseAchat: 'Remise Achat',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce achat simple ?',
             errors: {
                 fournisseurIdRequired: 'Fournisseur obligatoire',

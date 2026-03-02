@@ -298,8 +298,11 @@ export class RepertoireComponent {
 
     searchByInputText() {
         if (this.repertoireInputSearch.length > 0) {
+            console.log('searchByInputText', this.repertoireInputSearch);
             let matchedTypes = this.filterByTypeText(this.repertoireInputSearch);
+            console.log('matchedTypes', matchedTypes);
             this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
+                console.log('repertoire', repertoire);
                 return (
                     repertoire.designation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     matchedTypes.includes(repertoire.typeRepertoire) ||
@@ -310,14 +313,16 @@ export class RepertoireComponent {
                     repertoire.email.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.ice.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.ife.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.observation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.villeNomVille.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
-                    repertoire.personnelDesignation.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    (repertoire.personnelDesignation ? repertoire.personnelDesignation.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) : false) ||
                     repertoire.nbrOperationClient.toString().includes(this.repertoireInputSearch.toLowerCase())
                 );
             });
         } else {
             this.listRepertoire = this.listRepertoireFixe;
         }
+        console.log('listRepertoire', this.listRepertoire);
     }
 
     openCloseDialogAjouter(openClose: boolean): void {

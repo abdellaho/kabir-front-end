@@ -221,6 +221,7 @@ export const ENDPOINTS = {
         create: `${BASE_URL}/${ACHAT_SIMPLE}`,
         update: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/${id}`,
         delete: (id: bigint) => `${BASE_URL}/${ACHAT_SIMPLE}/${id}`,
+        imprimer: `${BASE_URL}/${ACHAT_SIMPLE}/imprimer`,
         exist: `${BASE_URL}/${ACHAT_SIMPLE}/exist`,
         search: `${BASE_URL}/${ACHAT_SIMPLE}/search`,
         present: `${BASE_URL}/${ACHAT_SIMPLE}/present`,

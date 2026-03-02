@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AchatSimple } from '../../models/achat-simple';
 import { ENDPOINTS } from '../../config/endpoints';
 import { AchatSimpleRequest } from '@/shared/classes/achat-simple-request';
+import { getHeadersPDF } from '@/shared/classes/generic-methods';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,10 @@ export class AchatSimpleService {
 
   update(id: bigint, achatSimpleRequest: AchatSimpleRequest): Observable<AchatSimple> {
     return this.http.put<AchatSimple>(this.ENDPOINTS.update(id), achatSimpleRequest);
+  }
+
+  imprimer(achatSimple: AchatSimple): Observable<any> {
+      return this.http.post<any>(this.ENDPOINTS.imprimer, achatSimple, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
   }
 
   delete(id: bigint): Observable<void> {

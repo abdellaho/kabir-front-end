@@ -65,6 +65,7 @@
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
                                 <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                                <p-button (click)="imprimer(p)" icon="pi pi-print" severity="info" rounded [title]="msg.buttons.imprimer" />
                             </div>
                         </td>
                     </tr>
@@ -83,7 +84,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '600px', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '800px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.achatSimple.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
@@ -174,13 +175,6 @@
                             <div class="flex flex-wrap gap-6">
                                 <div class="flex flex-col grow basis-0">
                                     <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="remise" formControlName="remise" [minFractionDigits]="2" class="w-full" />
-                                        <label for="remise">{{ msg.components.achatSimple.remise }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
                                         <p-input-number id="prixAchat" formControlName="prixAchat" [minFractionDigits]="2" class="w-full" />
                                         <label for="prixAchat">{{ msg.components.achatSimple.prixAchat }}</label>
                                     </p-floatlabel>
@@ -188,15 +182,17 @@
 
                                 <div class="flex flex-col grow basis-0">
                                     <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="remiseAchat" formControlName="remiseAchat" [minFractionDigits]="2" class="w-full" />
-                                        <label for="remiseAchat">{{ msg.components.achatSimple.remiseAchat }}</label>
+                                        <p-input-number id="remise" formControlName="remise" [minFractionDigits]="2" class="w-full" [max]="100" />
+                                        <label for="remise">{{ msg.components.achatSimple.remise }}</label>
                                     </p-floatlabel>
                                 </div>
+
+                                <div class="flex flex-col grow basis-0"></div>
                             </div>
 
                             <div class="flex flex-wrap gap-6" style="justify-content: center;">
                                 <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
-                                    (click)="validerDetAchatSimple()" [disabled]="formGroup.get('stockId')?.value === null || formGroup.get('stockId')?.value === undefined || formGroup.get('stockId')?.value === BigInt(0)"></button>
+                                    (click)="validerDetAchatSimple()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
                             </div>
                         }
                     </div>

@@ -114,7 +114,6 @@ export class AchatSimpleComponent {
                 designation: [{ value: '', disabled: true }],
                 qte: [null],
                 prixAchat: [null],
-                remiseAchat: [null],
                 remise: [null],
                 uniteGratuite: [null]
             },
@@ -207,7 +206,6 @@ export class AchatSimpleComponent {
                     uniteGratuite: null,
                     remise: null,
                     prixAchat: null,
-                    remiseAchat: null
                 });
 
                 this.formGroup.get('designation')?.disable();
@@ -225,7 +223,6 @@ export class AchatSimpleComponent {
             uniteGratuite: null,
             remise: null,
             prixAchat: null,
-            remiseAchat: null
         });
         this.formGroup.get('designation')?.disable();
     }
@@ -254,13 +251,23 @@ export class AchatSimpleComponent {
         });
     }
 
+    disableButtonAjouterDetStockDepot(): boolean {
+        return (
+            this.formGroup.get('stockId')?.value === null ||
+            this.formGroup.get('stockId')?.value === undefined ||
+            this.formGroup.get('stockId')?.value === BigInt(0) ||
+            this.formGroup.get('qte')?.value === null ||
+            this.formGroup.get('qte')?.value === undefined ||
+            this.formGroup.get('qte')?.value === 0
+        );
+    }
+
     validerDetAchatSimple() {
         if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qte')?.value > 0) {
             let detAchatSimple: DetAchatSimple = initObjectDetAchatSimple();
             detAchatSimple.stockId = this.formGroup.get('stockId')?.value;
             detAchatSimple.qte = this.formGroup.get('qte')?.value;
             detAchatSimple.prixAchat = this.formGroup.get('prixAchat')?.value || 0;
-            detAchatSimple.remiseAchat = this.formGroup.get('remiseAchat')?.value || 0;
             detAchatSimple.remise = this.formGroup.get('remise')?.value || 0;
             detAchatSimple.uniteGratuite = this.formGroup.get('uniteGratuite')?.value || 0;
 
@@ -321,7 +328,6 @@ export class AchatSimpleComponent {
                         this.formGroup.patchValue({
                             uniteGratuite: null,
                             prixAchat: null,
-                            remiseAchat: null,
                             remise: null,
                             designation: '',
                             stockId: BigInt(0),
@@ -492,5 +498,28 @@ export class AchatSimpleComponent {
         }
 
         this.openCloseDialogSupprimer(false);
+    }
+
+    imprimer(achatSimple: AchatSimple): void {
+        this.loadingService.show();
+
+        this.achatSimpleService.imprimer(achatSimple).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }
