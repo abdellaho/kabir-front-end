@@ -683,6 +683,7 @@ export const APP_MESSAGES = {
             typeReglment: 'Type Réglement',
             fournisseurId: 'Fournisseur',
             fournisseurICE: 'ICE',
+            stockId: 'Produit',
             numCheque: 'Num Cheque',
             remiseFacture: 'Remise Facture',
             mntReglement: 'Mnt Réglement',
@@ -715,6 +716,13 @@ export const APP_MESSAGES = {
             mntTtc: 'Mnt Ttc',
             totalMntProduit: 'Montant Total Produit',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cet achat facture ?',
+            detAchatFactureTVA: {
+                label: 'TVA',
+                taux: 'Taux',
+                mntHT: 'Mnt HT',
+                mntTVA: 'Mnt TVA',
+                mntTTC: 'Mnt TTC'
+            },
             errors: {
                 dateAFRequired: 'Date Achat Facture est obligatoire',
                 dateReglementRequired: 'Date Réglement est obligatoire',
@@ -776,6 +784,7 @@ export const APP_MESSAGES = {
         prixVentePlusRemise: 'Prix Vente + Remise'
     },
     messages: {
+        confirmation: 'Confirmation',
         miseAJour: 'Mise à jour',
         welcome: 'Welcome back!',
         confirm: 'Confirmer',
@@ -789,12 +798,16 @@ export const APP_MESSAGES = {
         messageDeleteSuccess: 'Suppression effectuée avec succès',
         messageUpdateSuccess: 'Mise à jour effectué avec succès',
         messageExistDeja: ' existe déjà',
-        numberMustBeEqualZeroOrPositive: 'Ce champs doit supérieur ou égal 0'
+        numberMustBeEqualZeroOrPositive: 'Ce champs doit supérieur ou égal 0',
+        messageDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer ?',
+        messageDeleteCancel: 'Suppression annulée'
     },
     summary: {
         labelError: 'Erreur',
         labelSuccess: 'Succès',
-        labelInfo: 'Info'
+        labelInfo: 'Info',
+        labelCancel: 'Annuler',
+        labelSave: 'Enregistrer'
     },
     table: {
         columns: {

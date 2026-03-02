@@ -20,6 +20,7 @@ export interface DetAchatFacture {
     achatFactureCodeAF: string;
     stockId: bigint | null;
     stockDesignation: string;
+    stockPvttc: number;
     stockQteStock: number;
     stockQteFacturer: number;
     stock: Stock | null;
@@ -45,6 +46,7 @@ export function initObjectDetAchatFacture(): DetAchatFacture {
         achatFactureCodeAF: '',
         stockId: null,
         stockDesignation: '',
+        stockPvttc: 0,
         stockQteStock: 0,
         stockQteFacturer: 0,
         stock: null
