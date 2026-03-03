@@ -13,11 +13,11 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatEtranger" [rows]="10" 
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatEtranger" [rows]="20" 
                 selectionMode="single" [(selection)]="selectedAchatEtranger" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['fournisseurDesignation', 'codeFacture', 'dateFacture', 'mntFacture', 'totalPaye', 'mntTransportIntern', 'mntDouane', 'mntMagasinage', 'totalAllMnt']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
@@ -91,7 +91,7 @@
                             </div>
                         </th>
 
-                        <th style="width: 5%"></th>
+                        <th style="width: 5%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -129,154 +129,129 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '80%', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '60%', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.achatEtranger.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
-                    <div class="flex flex-wrap -mx-4" style="margin-top: 5px; margin-bottom: -25px;">
-                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="fournisseurId" inputId="fournisseurId"
-                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                                    <label for="fournisseurId">{{ msg.components.achatEtranger.fournisseurId }}</label>
-                                </p-floatlabel>
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
+                        <p-floatlabel class="w-full" variant="on">
+                            <p-select formControlName="fournisseurId" inputId="fournisseurId"
+                                [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                optionValue="id" style="height: 30px;" class="w-full" />
+                            <label for="fournisseurId">{{ msg.components.achatEtranger.fournisseurId }}</label>
+                        </p-floatlabel>
 
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker id="dateAvances1" formControlName="dateAvances1" appendTo="body"
-                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances1')?.invalid }" />
-                                    <label for="dateAvances1">{{ msg.components.achatEtranger.dateAvances1 }}</label>
-                                </p-floatlabel>
+                        <p-floatlabel class="w-full" variant="on">
+                            <input pInputText formControlName="codeFacture" inputId="codeFacture" class="w-full" />
+                            <label for="codeFacture">{{ msg.components.achatEtranger.codeFacture }}</label>
+                        </p-floatlabel>
 
-                                @if (formGroup.errors?.['dateAvances1Required']) {
-                                    <p-message severity="error" variant="simple" size="small">{{
-                                        msg.components.achatEtranger.errors.dateAvances1Required }}</p-message>
-                                }
-                            </div>
+                        <div>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-date-picker id="dateFacture" formControlName="dateFacture" appendTo="body"
+                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateFacture')?.invalid }" />
+                                <label for="dateFacture">{{ msg.components.achatEtranger.dateFacture }}</label>
+                            </p-floatlabel>
 
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="totalPaye" inputId="totalPaye" [maxFractionDigits]="2" />
-                                    <label for="totalPaye">{{ msg.components.achatEtranger.totalPaye }}</label>
-                                </p-floatlabel>
-                            </div>
+                            @if (formGroup.errors?.['dateFactureRequired']) {
+                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatEtranger.errors.dateFactureRequired }}</p-message>
+                            }
                         </div>
-
-                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <input pInputText formControlName="codeFacture" inputId="codeFacture" />
-                                    <label for="codeFacture">{{ msg.components.achatEtranger.codeFacture }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs1')" />
-                                    <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntTransportIntern" inputId="mntTransportIntern" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntTransportIntern')" />
-                                    <label for="mntTransportIntern">{{ msg.components.achatEtranger.mntTransportIntern }}</label>
-                                </p-floatlabel>
-                            </div>
-                        </div>
-
-                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker id="dateFacture" formControlName="dateFacture" appendTo="body"
-                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateFacture')?.invalid }" />
-                                    <label for="dateFacture">{{ msg.components.achatEtranger.dateFacture }}</label>
-                                </p-floatlabel>
-
-                                @if (formGroup.errors?.['dateFactureRequired']) {
-                                    <p-message severity="error" variant="simple" size="small">{{
-                                        msg.components.achatEtranger.errors.dateFactureRequired }}</p-message>
-                                }
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker id="dateAvances2" formControlName="dateAvances2" appendTo="body"
-                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances2')?.invalid }" />
-                                    <label for="dateAvances2">{{ msg.components.achatEtranger.dateAvances2 }}</label>
-                                </p-floatlabel>
-
-                                @if (formGroup.errors?.['dateAvances2Required']) {
-                                    <p-message severity="error" variant="simple" size="small">{{
-                                        msg.components.achatEtranger.errors.dateAvances2Required }}</p-message>
-                                }
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntDouane" inputId="mntDouane" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntDouane')" />
-                                    <label for="mntDouane">{{ msg.components.achatEtranger.mntDouane }}</label>
-                                </p-floatlabel>
-                            </div>
-                        </div>
-
-                        <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/4 xl:basis-1/4 flex flex-col gap-2 px-4 mb-8">
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <input pInputText formControlName="mntFacture" inputId="mntFacture" />
-                                    <label for="mntFacture">{{ msg.components.achatEtranger.mntFacture }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs2')" />
-                                    <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row full-width">
-                                <p-floatlabel variant="on">
-                                    <p-input-number formControlName="mntMagasinage" inputId="mntMagasinage" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntMagasinage')" />
-                                    <label for="mntMagasinage">{{ msg.components.achatEtranger.mntMagasinage }}</label>
-                                </p-floatlabel>
-                            </div>
-                        </div>
+                        
+                        <p-floatlabel class="w-full" variant="on">
+                            <input pInputText formControlName="mntFacture" inputId="mntFacture" class="w-full" />
+                            <label for="mntFacture">{{ msg.components.achatEtranger.mntFacture }}</label>
+                        </p-floatlabel>
                     </div>
 
-                    <div class="card flex flex-col -mx-4 gap-4">
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="stockId" inputId="stockId"
-                                        [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                                    <label for="stockId">{{ msg.components.achatSimple.stockId }}</label>
-                                </p-floatlabel>
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
+                        <div>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-date-picker id="dateAvances1" formControlName="dateAvances1" appendTo="body"
+                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances1')?.invalid }" />
+                                <label for="dateAvances1">{{ msg.components.achatEtranger.dateAvances1 }}</label>
+                            </p-floatlabel>
 
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-input-number id="totalAllMnt" formControlName="totalAllMnt" 
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('totalAllMnt')?.invalid }" />
-                                    <label for="totalAllMnt">{{ msg.components.achatEtranger.totalAllMnt }}</label>
-                                </p-floatlabel>
-                            </div>
+                            @if (formGroup.errors?.['dateAvances1Required']) {
+                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatEtranger.errors.dateAvances1Required }}</p-message>
+                            }
                         </div>
+
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs1')" class="w-full" />
+                            <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
+                        </p-floatlabel>
+
+                        <div>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-date-picker id="dateAvances2" formControlName="dateAvances2" appendTo="body"
+                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAvances2')?.invalid }" />
+                                <label for="dateAvances2">{{ msg.components.achatEtranger.dateAvances2 }}</label>
+                            </p-floatlabel>
+
+                            @if (formGroup.errors?.['dateAvances2Required']) {
+                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatEtranger.errors.dateAvances2Required }}</p-message>
+                            }
+                        </div>
+
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs2')" class="w-full" />
+                            <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="totalPaye" inputId="totalPaye" [maxFractionDigits]="2" class="w-full" />
+                            <label for="totalPaye">{{ msg.components.achatEtranger.totalPaye }}</label>
+                        </p-floatlabel>
+
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="mntTransportIntern" inputId="mntTransportIntern" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntTransportIntern')" class="w-full" />
+                            <label for="mntTransportIntern">{{ msg.components.achatEtranger.mntTransportIntern }}</label>
+                        </p-floatlabel>
+
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="mntDouane" inputId="mntDouane" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntDouane')" class="w-full" />
+                            <label for="mntDouane">{{ msg.components.achatEtranger.mntDouane }}</label>
+                        </p-floatlabel>
+
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-input-number formControlName="mntMagasinage" inputId="mntMagasinage" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mntMagasinage')" class="w-full" />
+                            <label for="mntMagasinage">{{ msg.components.achatEtranger.mntMagasinage }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
+                        <div class="col-span-1">
+                            <p-floatlabel class="w-full" variant="on">
+                                <p-select formControlName="stockId" inputId="stockId"
+                                    [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
+                                    optionValue="id" style="height: 30px;" class="w-full" />
+                                <label for="stockId">{{ msg.components.achatSimple.stockId }}</label>
+                            </p-floatlabel>
+                        </div>
+
+                        <div class="col-span-1">
+                            <p-floatlabel class="w-full" variant="on">
+                                <p-input-number id="totalAllMnt" formControlName="totalAllMnt" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('totalAllMnt')?.invalid }" />
+                                <label for="totalAllMnt">{{ msg.components.achatEtranger.totalAllMnt }}</label>
+                            </p-floatlabel>
+                        </div>
+
+                        <div class="col-span-1"></div>
+                        <div class="col-span-1"></div>
                     </div>
 
                     @if (submitted && formGroup.errors?.['listDetAchatEtrangerRequired']) {
-                        <p-message severity="error" variant="simple" size="small">{{
-                            msg.components.achatEtranger.errors.listDetAchatEtrangerRequired }}</p-message>
+                        <p-message severity="error" variant="simple" size="small">{{ msg.components.achatEtranger.errors.listDetAchatEtrangerRequired }}</p-message>
                     }
 
                     <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">

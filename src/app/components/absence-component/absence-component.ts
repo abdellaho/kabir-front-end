@@ -22,7 +22,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { arrayToMap, getElementFromMap, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { arrayToMap, convertToDateOnly, getElementFromMap, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AbsencelValidator } from '@/validators/absence-validator';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
@@ -126,6 +126,19 @@ export class AbsenceComponent implements OnInit {
         });
     }
 
+    formatDateDisplay(date: Date): string {
+        const d = convertToDateOnly(date);
+
+        const year = d.getFullYear();
+        let month = (d.getMonth() + 1).toString();
+        let day = d.getDate().toString();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return `${day}-${month}-${year}`;
+    }
+
     getAllAbsence(): void {
         let commonSearchModel: CommonSearchModel = initCommonSearchModel();
         commonSearchModel.searchByDate = true;
@@ -137,7 +150,7 @@ export class AbsenceComponent implements OnInit {
                     return {
                         ...a,
                         dateAbsence: dateAbsence,
-                        dateAbsenceStr: this.formatDate(dateAbsence)
+                        dateAbsenceStr: this.formatDateDisplay(dateAbsence)
                     };
                 });
                 this.listAbsenceFixe = this.sortList(this.listAbsence);
@@ -260,7 +273,7 @@ export class AbsenceComponent implements OnInit {
     updateList(absence: Absence, list: Absence[], operationType: OperationType, id?: bigint): Absence[] {
         if (absence && absence.dateAbsence) {
             absence.dateAbsence = new Date(absence.dateAbsence);
-            absence.dateAbsenceStr = this.formatDate(absence.dateAbsence);
+            absence.dateAbsenceStr = this.formatDateDisplay(absence.dateAbsence);
         }
         if (operationType === OperationType.ADD) {
             list = [...list, absence];
@@ -403,7 +416,7 @@ export class AbsenceComponent implements OnInit {
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
 
-        return [year, month, day].join('-');
+        return [day, month, year].join('-');
     }
 
     imprimer(): void {

@@ -176,6 +176,11 @@ export function toLocalDate(date: Date): string {
     return date.toISOString().substring(0, 10);
 }
 
+export function convertToDateOnly(date: Date): Date {
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return dateOnly;
+}
+
 export function mapToDateTimeBackEnd(dateToMap: Date | string): Date {
     if (typeof dateToMap === 'string') {
         dateToMap = new Date(dateToMap);

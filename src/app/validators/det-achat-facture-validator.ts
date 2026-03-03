@@ -1,10 +1,7 @@
 import { Stock } from '@/models/stock';
-import { getPrixVenteMin, getRemiseMax } from '@/shared/classes/generic-methods';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function DetAchatFactureValidator(config: { stock: Stock }): ValidatorFn {
-    const { stock } = config;
-
     return (control: AbstractControl): ValidationErrors | null => {
         let errors: any = {};
         let hasError = false;
@@ -14,14 +11,12 @@ export function DetAchatFactureValidator(config: { stock: Stock }): ValidatorFn 
             errors[key] = true;
         };
 
-        let qteacheter = control.get('qteacheter');
-        //let unitegratuit = control.get('unitegratuit');
+        let qteAcheter = control.get('qteAcheter');
 
-        if(qteacheter?.value === 0) {
-            addError("qteacheterMustBeDifferentThan0");
+        if (qteAcheter?.value === null || qteAcheter?.value === undefined || qteAcheter?.value === 0) {
+            addError('qteAcheterMustBeDifferentThan0');
         }
 
         return hasError ? errors : null;
-    }
+    };
 }
-

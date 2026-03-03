@@ -27,7 +27,7 @@
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAbsence" dataKey="id"
                 selectionMode="single" [(selection)]="selectedAbsence" [metaKeySelection]="false"
                 [rows]="20" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
-                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                sortMode="single" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['dateAbsenceStr', 'personnelDesignation', 'matin', 'apresMidi']"
                 [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">

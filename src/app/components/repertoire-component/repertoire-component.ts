@@ -32,6 +32,7 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initRepertoireValidationResponse, RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
+import { Textarea } from 'primeng/textarea';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -53,7 +54,8 @@ import { Ripple } from 'primeng/ripple';
         SelectModule,
         TypeRepertoirePipe,
         SplitButtonModule,
-        Ripple
+        Ripple,
+        Textarea
     ],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'
@@ -141,6 +143,7 @@ export class RepertoireComponent {
                 tel3: ['', [Validators.maxLength(10)]],
                 ice: ['', [Validators.maxLength(15)]],
                 observation: ['', [Validators.maxLength(250)]],
+                adresse: ['', [Validators.maxLength(250)]],
                 personnelId: [0],
                 plafond: [null]
             },
@@ -298,11 +301,8 @@ export class RepertoireComponent {
 
     searchByInputText() {
         if (this.repertoireInputSearch.length > 0) {
-            console.log('searchByInputText', this.repertoireInputSearch);
             let matchedTypes = this.filterByTypeText(this.repertoireInputSearch);
-            console.log('matchedTypes', matchedTypes);
             this.listRepertoire = this.listRepertoireFixe.filter((repertoire: Repertoire) => {
-                console.log('repertoire', repertoire);
                 return (
                     repertoire.designation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     matchedTypes.includes(repertoire.typeRepertoire) ||
@@ -312,6 +312,7 @@ export class RepertoireComponent {
                     repertoire.tel3.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.email.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.ice.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
+                    repertoire.adresse.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.ife.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.observation.toLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
                     repertoire.villeNomVille.toLocaleLowerCase().includes(this.repertoireInputSearch.toLowerCase()) ||
@@ -380,6 +381,7 @@ export class RepertoireComponent {
                     tel2: this.repertoire.tel2,
                     tel3: this.repertoire.tel3,
                     ice: this.repertoire.ice,
+                    adresse: this.repertoire.adresse,
                     observation: this.repertoire.observation,
                     personnelId: this.repertoire.personnelId ?? 0,
                     plafond: this.repertoire.plafond !== 0 ? this.repertoire.plafond : null
@@ -430,6 +432,7 @@ export class RepertoireComponent {
         repertoire.tel2 = formGroup.get('tel2')?.value;
         repertoire.tel3 = formGroup.get('tel3')?.value;
         repertoire.ice = formGroup.get('ice')?.value;
+        repertoire.adresse = formGroup.get('adresse')?.value;
         repertoire.observation = formGroup.get('observation')?.value;
         repertoire.personnelId = formGroup.get('personnelId')?.value;
         repertoire.plafond = formGroup.get('plafond')?.value ?? 0;

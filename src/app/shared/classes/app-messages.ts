@@ -32,20 +32,20 @@ export const APP_MESSAGES = {
         achatEtranger: {
             label: 'Achat Etranger',
             fournisseurId: 'Fournisseur',
-            codeFacture: 'Code Facture',
+            codeFacture: 'N.Facture',
             dateFacture: 'Date Facture',
             mntFacture: 'Montant Facture',
             totalPaye: 'Total Payé',
-            mntTransportIntern: 'Montant Transport Intern',
-            mntDouane: 'Montant Douane',
-            mntMagasinage: 'Montant Magasinage',
+            mntTransportIntern: 'Mt.Transport',
+            mntDouane: 'Mt.Douane',
+            mntMagasinage: 'Mt.Magasinage',
             dateAvances1: 'Date Avances 1',
             dateAvances2: 'Date Avances 2',
             mantantAvancs1: 'Montant Avances 1',
             mantantAvancs2: 'Montant Avances 2',
             taux: 'Taux',
             mntPaye: 'Montant Payé',
-            totalAllMnt: 'Total All Mnt',
+            totalAllMnt: 'Total',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce achat ?',
             errors: {
                 dateFactureRequired: 'Date Facture est obligatoire',
@@ -399,6 +399,7 @@ export const APP_MESSAGES = {
             search: 'Rechercher',
             typeRepertoire: 'Type',
             designation: 'Designation',
+            adresse: 'Adresse',
             villeId: 'Ville',
             tel1: 'Tel1',
             tel2: 'Tel2',
@@ -734,7 +735,12 @@ export const APP_MESSAGES = {
                 qteacheter: 'Qte Acheté',
                 unitegratuit: 'Unite Gratuite',
                 mantantTTC: 'Montant TTC',
-                qteFacturer: 'Qte Facturé'
+                qteFacturer: 'Qte Facturé',
+                prixAchatTtc: 'Prix Achat TTC',
+                remiseAchat: 'Remise Achat',
+                errors: {
+                    qteAcheterMustBeDifferentThan0: 'Qte Acheté doit être différent de 0'
+                }
             },
             stock: {
                 designation: 'Designation',
@@ -781,7 +787,8 @@ export const APP_MESSAGES = {
         stockSimple: 'Stock Simple',
         stockGenerale: 'Stock Général',
         prixInitial: 'Prix Initial',
-        prixVentePlusRemise: 'Prix Vente + Remise'
+        prixVentePlusRemise: 'Prix Vente + Remise',
+        actions: 'Actions'
     },
     messages: {
         confirmation: 'Confirmation',
