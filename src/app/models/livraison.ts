@@ -1,5 +1,4 @@
 import { Employe } from './employe';
-import { Fournisseur } from './fournisseur';
 import { Personnel } from './personnel';
 import { Repertoire } from './repertoire';
 
@@ -48,8 +47,9 @@ export interface Livraison {
     repertoire: Repertoire | null;
     repertoireId: bigint | null;
     repertoireDesignation: string;
-    repertoireIdOld: bigint | null;
     repertoireObservation: string;
+    repertoireNbrOperationClient: number;
+    repertoireIdOld: bigint | null;
 }
 
 export function initObjectLivraison(): Livraison {
@@ -95,10 +95,11 @@ export function initObjectLivraison(): Livraison {
         personnelAncienId: null,
         repertoireId: null,
         repertoireDesignation: '',
+        repertoireObservation: '',
+        repertoireNbrOperationClient: 0,
         repertoireIdOld: null,
         personnelAncien: null,
         personnel: null,
-        repertoire: null,
-        repertoireObservation: ''
+        repertoire: null
     };
 }

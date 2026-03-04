@@ -146,9 +146,9 @@
                             <div class="flex flex-wrap gap-6">
                                 <div class="flex flex-col grow basis-0">
                                     <span id="qteSortieSpan">{{ msg.components.bonSortie.qteSortie }}</span>
-                                    <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" />
+                                    <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" (onChange)="onChangeQteSortie()"/>
                                 </div>
-                            
+                                
                                 <div class="flex flex-col grow basis-0">
                                     <span id="mntProduitSpan">{{ msg.components.bonSortie.mntProduit }}</span>
                                     <p-inputNumber name="mntProduit" id="mntProduit" formControlName="mntProduit" [minFractionDigits]="2" />
@@ -156,8 +156,7 @@
                             </div>
 
                             <div class="flex flex-wrap gap-6" style="justify-content: center;">
-                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
-                                    (click)="validerDetailBonSortie()" [disabled]="formGroup.get('stockId')?.value === null || formGroup.get('stockId')?.value === undefined || formGroup.get('stockId')?.value === BigInt(0)"></button>
+                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success" (click)="validerDetailBonSortie()" [disabled]="disbledAjouterDetailBonSortie()"></button>
                             </div>
                         }
                     </div>

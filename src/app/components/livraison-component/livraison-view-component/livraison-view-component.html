@@ -16,97 +16,97 @@
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listLivraison" dataKey="id"
                 selectionMode="single" [(selection)]="selectedLivraison" [metaKeySelection]="false"
-                [rows]="10" 
+                [rows]="20" 
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['codeBl', 'sysDate', 'dateBl', 'mantantBL','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'fournisseurDesignation', 'personnelDesignation', 'reglerNonRegler']"
-                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                [globalFilterFields]="['codeBl', 'sysDate', 'dateBl', 'mantantBL','dateReglement', 'dateReglement2', 'dateReglement3', 'dateReglement4', 'mntReglement', 'mntReglement2', 'mntReglement3', 'mntReglement4', 'repertoireNbrOperationClient', 'fournisseurDesignation', 'personnelDesignation', 'reglerNonRegler']"
+                [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="codeBl" style="width: 30%">
+                        <th pSortableColumn="codeBl" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.codeBl }}
                                 <p-sortIcon field="codeBl" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="dateBl" style="width: 10%">
+                        <th pSortableColumn="dateBl" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.dateBl }}
                                 <p-sortIcon field="dateBl" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="repertoireDesignation" style="width: 10%">
+                        <th pSortableColumn="repertoireDesignation" style="width: 24%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.repertoireId }}
                                 <p-sortIcon field="repertoireDesignation" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="personnelDesignation" style="width: 10%">
+                        <th pSortableColumn="personnelDesignation" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.personnelId }}
                                 <p-sortIcon field="personnelDesignation" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="typeReglment" style="width: 10%">
+                        <th pSortableColumn="typeReglment" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.paiement }}
                                 <p-sortIcon field="typeReglment" />
                             </div>
                         </th>
 
-                        <th style="width: 10%">
+                        <th style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.datePaiement }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="numCheque" style="width: 10%">
+                        <th pSortableColumn="numCheque" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.chequeNum }}
                                 <p-sortIcon field="numCheque" />
                             </div>
                         </th>
 
-                        <th style="width: 10%">
+                        <th style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.mtPaye }}
                             </div>
                         </th>
 
-                        <th pSortableColumn="mantantBL" style="width: 10%">
+                        <th pSortableColumn="mantantBL" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.totalPaye }}
                                 <p-sortIcon field="mantantBL" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="transport" style="width: 10%">
+                        <th pSortableColumn="transport" style="width: 7%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.transport }}
                                 <p-sortIcon field="transport" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="mantantBL" style="width: 10%">
+                        <th pSortableColumn="repertoireNbrOperationClient" style="width: 4%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.mantantBL }}
-                                <p-sortIcon field="mantantBL" />
+                                {{ msg.components.livraison.TBl }}
+                                <p-sortIcon field="repertoireNbrOperationClient" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="reglerNonRegler" style="width: 10%">
+                        <th pSortableColumn="reglerNonRegler" style="width: 5%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.livraison.reglerNonRegler }}
+                                {{ msg.components.livraison.etat }}
                                 <p-sortIcon field="reglerNonRegler" />
                             </div>
                         </th>
 
-                        <th style="width: 5%"></th>
+                        <th style="width: 3%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -183,7 +183,7 @@
 
                         <td>{{ p.mantantBL | number:'1.2-2' }}</td>
                         <td>{{ p.codeTransport }}</td>
-                        <td>{{ p.mantantBL | number:'1.2-2' }}</td>
+                        <td>{{ p.repertoireNbrOperationClient }}</td>
 
                         <td>
                             <div [style]="p.reglerNonRegler === 1 ? 'background-color: darkgreen; color: darkgreen' : 'background-color: red; color: red'" class="p-tag p-tag-success">

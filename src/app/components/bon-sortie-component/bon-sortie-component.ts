@@ -112,8 +112,8 @@ export class BonSortieComponent {
                 stockId: [BigInt(0)],
                 designation: [{ value: '', disabled: true }],
                 qteStock: [{ value: 0, disabled: true }],
-                qteSortie: [1],
-                mntProduit: [{ value: 0, disabled: true }]
+                qteSortie: [null],
+                mntProduit: [{ value: null, disabled: true }]
             },
             { validators: [BonSortieValidator({ getListDetailBonSortie: () => this.listDetailBonSortie })] }
         );
@@ -198,8 +198,8 @@ export class BonSortieComponent {
                 this.formGroup.patchValue({
                     designation: this.stock.designation,
                     qteStock: this.stock.qteStock,
-                    qteSortie: 1,
-                    mntProduit: this.stock.pvttc
+                    qteSortie: null,
+                    mntProduit: null
                 });
 
                 this.formGroup.get('designation')?.disable();
@@ -220,8 +220,8 @@ export class BonSortieComponent {
             stockId: BigInt(0),
             designation: '',
             qteStock: 0,
-            qteSortie: 1,
-            mntProduit: 0
+            qteSortie: null,
+            mntProduit: null
         });
         this.formGroup.get('designation')?.disable();
         this.formGroup.get('qteStock')?.disable();
@@ -239,12 +239,33 @@ export class BonSortieComponent {
         }
     }
 
+    disbledAjouterDetailBonSortie() {
+        return this.formGroup.get('stockId')?.value === BigInt(0) || this.formGroup.get('qteSortie')?.value === null || this.formGroup.get('stockId')?.value === 0;
+    }
+
+    onChangeQteSortie() {
+        let mntProduit: number | null = null;
+        if (
+            this.formGroup.get('qteSortie')?.value !== null &&
+            this.formGroup.get('qteSortie')?.value !== 0 &&
+            this.formGroup.get('stockId')?.value !== BigInt(0) &&
+            this.formGroup.get('stockId')?.value !== null &&
+            this.formGroup.get('stockId')?.value !== undefined
+        ) {
+            let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
+            mntProduit = this.formGroup.get('qteSortie')?.value * (stock.pvttc || 0);
+        }
+        this.formGroup.patchValue({
+            mntProduit
+        });
+    }
+
     validerDetailBonSortie() {
-        if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qteSortie')?.value > 0) {
+        if (this.formGroup.get('stockId')?.value > BigInt(0) && this.formGroup.get('qteSortie')?.value !== null && this.formGroup.get('qteSortie')?.value > 0) {
             let detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
             detailBonSortie.stockId = this.formGroup.get('stockId')?.value;
-            detailBonSortie.qteSortie = this.formGroup.get('qteSortie')?.value;
-            detailBonSortie.mntProduit = this.formGroup.get('mntProduit')?.value;
+            detailBonSortie.qteSortie = this.formGroup.get('qteSortie')?.value || 0;
+            detailBonSortie.mntProduit = this.formGroup.get('mntProduit')?.value || 0;
             detailBonSortie.total = detailBonSortie.qteSortie * detailBonSortie.mntProduit;
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
@@ -311,8 +332,8 @@ export class BonSortieComponent {
                             designation: '',
                             stockId: BigInt(0),
                             qteStock: 0,
-                            qteSortie: 1,
-                            mntProduit: 0
+                            qteSortie: null,
+                            mntProduit: null
                         });
                         this.formGroup.get('designation')?.disable();
                         this.formGroup.get('qteStock')?.disable();

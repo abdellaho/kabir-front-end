@@ -206,14 +206,12 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.formGroupStock = this.formBuilder.group(
             {
                 designation: [{ value: this.stockSelected.designation, disabled: true }],
-                pattc: [{ value: this.stockSelected.pattc, disabled: true }],
-                pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
                 qteStock: [{ value: this.stockSelected.qteStock, disabled: true }],
-                prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
-                qteLivrer: [1, [Validators.required, Validators.min(1)]],
+                prixVenteMin: [{ value: this.stockSelected.prixVentMin2 || 0, disabled: true }],
+                qteLivrer: [null, [Validators.required, Validators.min(1)]],
                 prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
-                remiseLivraison: [0, [Validators.min(0), Validators.max(100)]],
-                montantProduit: [0, [Validators.min(0)]]
+                remiseLivraison: [null, [Validators.min(0), Validators.max(100)]],
+                montantProduit: [{ value: 0, disabled: true }]
             },
             { validators: DetLivraisonValidator({ stock: this.stockSelected }) }
         );
@@ -243,8 +241,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 mntReglement2: [0],
                 mntReglement3: [0],
                 mntReglement4: [0],
-                personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
-                repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
+                personnelId: [null, [Validators.required, Validators.min(1)]],
+                repertoireId: [null, [Validators.required, Validators.min(1)]],
                 stockId: [0],
                 codeTransport: [''],
                 remarqueClient: [''],
@@ -348,9 +346,9 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     mapFormGroupStockToObject(formGroup: FormGroup, detailLivraison: DetLivraison): DetLivraison {
         detailLivraison.stock = structuredClone(this.stockSelected);
         detailLivraison.prixVente = formGroup.get('prixVente')?.value;
-        detailLivraison.qteLivrer = formGroup.get('qteLivrer')?.value;
-        detailLivraison.remiseLivraison = formGroup.get('remiseLivraison')?.value;
-        detailLivraison.avecRemise = formGroup.get('remiseLivraison')?.value > 0;
+        detailLivraison.qteLivrer = formGroup.get('qteLivrer')?.value || 0;
+        detailLivraison.remiseLivraison = formGroup.get('remiseLivraison')?.value || 0;
+        detailLivraison.avecRemise = detailLivraison.remiseLivraison > 0;
         detailLivraison.montantProduit = formGroup.get('montantProduit')?.value;
 
         return detailLivraison;
@@ -380,10 +378,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
                 this.formGroupStock.patchValue({
                     designation: this.stockSelected.designation,
-                    pattc: this.stockSelected.pattc,
-                    pvttc: this.stockSelected.pvttc,
                     qteStock: this.stockSelected.qteStock,
-                    prixVenteMin: getPrixVenteMin(this.stockSelected),
+                    prixVenteMin: this.stockSelected.prixVentMin2 || 0,
                     prixVente: this.detLivraisonSelected.prixVente,
                     qteLivrer: this.detLivraisonSelected.qteLivrer,
                     remiseLivraison: this.detLivraisonSelected.remiseLivraison,
@@ -391,8 +387,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 });
 
                 this.formGroupStock.get('designation')?.disable();
-                this.formGroupStock.get('pattc')?.disable();
-                this.formGroupStock.get('pvttc')?.disable();
                 this.formGroupStock.get('qteStock')?.disable();
                 this.formGroupStock.get('prixVenteMin')?.disable();
                 this.formGroupStock.get('montantProduit')?.disable();
@@ -408,7 +402,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
     onChangeMontantProduit() {
         this.formGroupStock.patchValue({
-            montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteLivrer')?.value
+            montantProduit: this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteLivrer')?.value || 0)
         });
     }
 
@@ -440,7 +434,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             if (operation === 1) {
                 this.formGroupStock.patchValue({
                     designation: this.detLivraisonSelected.stock?.designation,
-                    pattc: this.detLivraisonSelected.stock?.pattc,
+                    prixVenteMin: this.detLivraisonSelected.stock?.prixVentMin2 || 0,
                     qteStock: this.detLivraisonSelected.stock?.qteStock,
                     qteLivrer: this.detLivraisonSelected.qteLivrer,
                     prixVente: this.detLivraisonSelected.prixVente,
@@ -518,8 +512,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     giveMeMntBlBenefice(livraison: Livraison, detLivraisons: DetLivraison[], etablissement: Etablissement) {
         let mntp: number = 0;
         for (let detlivraison of detLivraisons) {
-            let charge = (detlivraison.stock?.pattc || 0 * 0) /*(etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)*/ / 100;
-            mntp += detlivraison.montantProduit - detlivraison.qteLivrer * (detlivraison.stock?.pattc || 0 + charge);
+            let charge = (detlivraison.stockPattc || 0 * 0) /*(etablissement && etablissement.pourcentageLiv ? etablissement.pourcentageLiv : 0)*/ / 100;
+            mntp += detlivraison.montantProduit - (detlivraison.qteLivrer || 0) * (detlivraison.stockPattc || 0 + charge);
         }
         livraison.mantantBLBenefice = mntp;
     }

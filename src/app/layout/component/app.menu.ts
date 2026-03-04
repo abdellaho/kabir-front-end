@@ -103,19 +103,7 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.caisse, icon: 'pi pi-fw pi-globe', routerLink: ['/caisse'], visible: this.hasPermission([Permission.ALL]) }]
-            },
-            {
-                label: '',
-                items: [{ label: this.msg.menu.compteCourant, icon: 'pi pi-fw pi-calendar', routerLink: ['/compte-courant'], visible: this.hasPermission([Permission.ALL]) }]
-            },
-            {
-                label: '',
-                items: [{ label: this.msg.menu.cheque, icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/cheque'], visible: this.hasPermission([Permission.ALL]) }]
-            },
-            {
-                label: '',
-                items: [{ label: this.msg.menu.compta, icon: 'pi pi-fw pi-mobile', routerLink: ['/compta'], visible: this.hasPermission([Permission.ALL]) }]
+                items: [{ label: this.msg.menu.comptabilite, icon: 'pi pi-fw pi-globe', routerLink: ['/comptabilite'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',

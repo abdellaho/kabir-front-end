@@ -1,0 +1,36 @@
+<p-tabs [lazy]="true" [value]="value" scrollable (valueChange)="onTabChange($event)">
+    <p-tablist>
+        <ng-template #previcon>
+            <i class="pi pi-minus"></i>
+        </ng-template>
+        <p-tab [value]="0" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">{{ msg.menu.caisseGeneral }}</span>
+        </p-tab>
+        <p-tab [value]="1" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">{{ msg.menu.compteCourant }}</span>
+        </p-tab>
+        <p-tab [value]="2" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">{{ msg.menu.cheque }}</span>
+        </p-tab>
+        <p-tab [value]="3" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">{{ msg.menu.compta }}</span>
+        </p-tab>
+        <ng-template #nexticon>
+            <i class="pi pi-plus"></i>
+        </ng-template>
+    </p-tablist>
+    <p-tabpanels>
+        <p-tabpanel [value]="0">
+            <app-caisse-general-component *ngIf="loadedTabs.has(0)"></app-caisse-general-component>
+        </p-tabpanel>
+        <p-tabpanel [value]="1">
+            <app-compte-courant-component *ngIf="loadedTabs.has(1)"></app-compte-courant-component>
+        </p-tabpanel>
+        <p-tabpanel [value]="2">
+            <app-cheque-component *ngIf="loadedTabs.has(2)"></app-cheque-component>
+        </p-tabpanel>
+        <p-tabpanel [value]="3">
+            <app-compta-component *ngIf="loadedTabs.has(3)"></app-compta-component>
+        </p-tabpanel>
+    </p-tabpanels>
+</p-tabs>

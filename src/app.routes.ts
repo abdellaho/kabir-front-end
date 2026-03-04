@@ -3,7 +3,6 @@ import { AppLayout } from './app/layout/component/app.layout';
 import { Documentation } from './app/pages/documentation/documentation';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
-import { PaysComponent } from '@/components/pays/pays-component/pays-component';
 import { VilleComponent } from '@/components/ville/ville-component/ville-component';
 import { EtablissementComponent } from '@/components/etablissement-component/etablissement-component';
 import { PersonnelComponent } from '@/components/personnel-component/personnel-component';
@@ -25,7 +24,6 @@ import { AchatFactureComponent } from '@/components/achat-facture-component/acha
 import { BonSortieComponent } from '@/components/bon-sortie-component/bon-sortie-component';
 import { FactureViewComponent } from '@/components/facture-component/facture-view-component/facture-view-component';
 import { FactureUpdateComponent } from '@/components/facture-component/facture-update-component/facture-update-component';
-import { CaisseComponent } from '@/components/caisse-component/caisse-component';
 import { ChequeComponent } from '@/components/cheque-component/cheque-component';
 import { AchatEtrangerComponent } from '@/components/achat-etranger-component/achat-etranger-component';
 import { CaisseGeneralComponent } from '@/components/caisse-general-component/caisse-general-component';
@@ -33,6 +31,7 @@ import { CompteCourantComponent } from '@/components/compte-courant-component/co
 import { ComptaComponent } from '@/components/compta-component/compta-component';
 import { Permission } from '@/shared/classes/other/permissions';
 import { Access } from '@/pages/auth/access';
+import { ComptabiliteComponent } from '@/components/comptabilite-component/comptabilite-component';
 
 export const appRoutes: Routes = [
     {
@@ -69,6 +68,7 @@ export const appRoutes: Routes = [
             { path: 'compte-courant', component: CompteCourantComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'comptabilite', component: ComptabiliteComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
