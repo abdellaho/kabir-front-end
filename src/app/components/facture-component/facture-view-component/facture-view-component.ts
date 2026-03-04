@@ -154,7 +154,7 @@ export class FactureViewComponent implements OnInit {
         this.listPersonnel = [];
         let objectSearch: Personnel = this.initObjectPersonnelSearch(false, false);
 
-        this.personnelService.search(objectSearch).subscribe({
+        this.personnelService.getAllExceptAdmin(objectSearch).subscribe({
             next: (personnels) => {
                 this.listPersonnel = personnels;
                 this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());

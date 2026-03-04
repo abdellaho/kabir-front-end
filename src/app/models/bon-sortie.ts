@@ -6,8 +6,8 @@ export interface BonSortie {
     mnt: number;
     personnelId: bigint | null;
     personnelDesignation: string;
-    repertoireId: bigint | null;
-    repertoireDesignation: string;
+    commercialId: bigint | null;
+    commercialDesignation: string;
 }
 
 export function initObjectBonSortie(): BonSortie {
@@ -19,7 +19,7 @@ export function initObjectBonSortie(): BonSortie {
         mnt: 0,
         personnelId: null,
         personnelDesignation: '',
-        repertoireId: null,
-        repertoireDesignation: ''
+        commercialId: null,
+        commercialDesignation: ''
     };
 }

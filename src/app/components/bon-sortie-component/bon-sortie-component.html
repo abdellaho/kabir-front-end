@@ -17,7 +17,7 @@
                 [rows]="10"
                 selectionMode="single" [(selection)]="selectedBonSortie" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['codeSortie', 'dateOperation', 'repertoireDesignation', 'mnt']"
+                [globalFilterFields]="['codeSortie', 'dateOperation', 'commercialDesignation', 'mnt']"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -39,8 +39,8 @@
 
                         <th pSortableColumn="repertoireDesignation" style="width: 20%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.bonSortie.repertoireId }}
-                                <p-sortIcon field="repertoireDesignation" />
+                                {{ msg.components.bonSortie.commercialId }}
+                                <p-sortIcon field="commercialDesignation" />
                             </div>
                         </th>
 
@@ -59,7 +59,7 @@
                     <tr>
                         <td>{{ p.codeSortie }}</td>
                         <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.repertoireDesignation }}</td>
+                        <td>{{ p.commercialDesignation }}</td>
                         <td>{{ p.mnt | number:'1.2-2' }}</td>
 
                         <td style="min-width: 7rem">
@@ -84,7 +84,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '600px', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '800px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.bonSortie.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
@@ -94,15 +94,15 @@
                     <div class="card flex flex-col gap-4">
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="codeSortie" formControlName="codeSortie" />
+                                <p-floatlabel variant="on" class="w-full">
+                                    <input pInputText id="codeSortie" formControlName="codeSortie" class="w-full" />
                                     <label for="codeSortie">{{ msg.components.bonSortie.codeSortie }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body"
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
                                         [dateFormat]="msg.formats.date_Format_DDMMYY" required
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
                                     <label for="dateOperation">{{ msg.components.bonSortie.dateOperation }}</label>
@@ -110,19 +110,19 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="repertoireId" inputId="repertoireId"
-                                        [options]="listRepertoire" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                                    <label for="repertoireId">{{ msg.components.bonSortie.repertoireId }}</label>
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="commercialId" inputId="commercialId" class="w-full"
+                                        [options]="listPersonnel" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" />
+                                    <label for="commercialId">{{ msg.components.bonSortie.commercialId }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel class="w-full md:w-56" variant="on">
-                                    <p-select formControlName="stockId" inputId="stockId"
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId" class="w-full"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
-                                        optionValue="id" style="height: 30px;" class="w-full md:w-56" />
+                                        optionValue="id" style="height: 30px;" />
                                     <label for="stockId">{{ msg.components.bonSortie.stockId }}</label>
                                 </p-floatlabel>
                             </div>
@@ -133,25 +133,31 @@
                             && formGroup.get('stockId')?.value !== BigInt(0)) {
                             <div class="flex flex-wrap gap-6">
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="designationStockDepotSpan">{{ msg.components.bonSortie.stock.designation }}</span>
-                                    <input pInputText name="designation" id="designation" formControlName="designation" />
+                                    <p-floatlabel class="w-full" variant="on">
+                                        <input pInputText name="designation" id="designation" formControlName="designation" class="w-full" />
+                                        <label for="designation">{{ msg.components.bonSortie.stock.designation }}</label>
+                                    </p-floatlabel>
                                 </div>
                             
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="qteStockDepotSpan">{{ msg.components.bonSortie.stock.qteStock }}</span>
-                                    <p-inputNumber name="qteStock" id="qteStock" formControlName="qteStock" />
+                                    <p-floatlabel class="w-full" variant="on">
+                                        <p-inputNumber name="qteStock" id="qteStock" formControlName="qteStock" class="w-full"/>
+                                        <label for="qteStock">{{ msg.components.bonSortie.stock.qteStock }}</label>
+                                    </p-floatlabel>
                                 </div>
-                            </div>
 
-                            <div class="flex flex-wrap gap-6">
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="qteSortieSpan">{{ msg.components.bonSortie.qteSortie }}</span>
-                                    <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" (onChange)="onChangeQteSortie()"/>
+                                    <p-floatlabel class="w-full" variant="on">
+                                        <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" class="w-full"/>
+                                        <label for="qteSortie">{{ msg.components.bonSortie.qteSortie }}</label>
+                                    </p-floatlabel>
                                 </div>
                                 
                                 <div class="flex flex-col grow basis-0">
-                                    <span id="mntProduitSpan">{{ msg.components.bonSortie.mntProduit }}</span>
-                                    <p-inputNumber name="mntProduit" id="mntProduit" formControlName="mntProduit" [minFractionDigits]="2" />
+                                    <p-floatlabel class="w-full" variant="on">
+                                        <p-inputNumber name="mntProduit" id="mntProduit" formControlName="mntProduit" [minFractionDigits]="2" class="w-full" />
+                                        <label for="mntProduit">{{ msg.components.bonSortie.mntProduit }}</label>
+                                    </p-floatlabel>
                                 </div>
                             </div>
 
@@ -176,48 +182,41 @@
 
                             <ng-template #header>
                                 <tr>
-                                    <th pSortableColumn="stockDesignation" style="width: 45%">
+                                    <th pSortableColumn="stockDesignation" style="width: 40%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.bonSortie.stock.designation }}
                                             <p-sortIcon field="stockDesignation" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stockPvttc" style="width: 8%">
+                                    <th pSortableColumn="stockPvttc" style="width: 15%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.bonSortie.stock.pvttc }}
                                             <p-sortIcon field="stockPvttc" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="stockQteStock" style="width: 8%">
+                                    <th pSortableColumn="stockQteStock" style="width: 14%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.bonSortie.stock.qteStock }}
                                             <p-sortIcon field="stockQteStock" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="qteSortie" style="width: 8%">
+                                    <th pSortableColumn="qteSortie" style="width: 14%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.bonSortie.qteSortie }}
                                             <p-sortIcon field="qteSortie" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="mntProduit" style="width: 8%">
-                                        <div class="flex items-center gap-2">
-                                            {{ msg.components.bonSortie.mntProduit }}
-                                            <p-sortIcon field="mntProduit" />
-                                        </div>
-                                    </th>
-
-                                    <th style="width: 8%">
+                                    <th style="width: 13%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.bonSortie.mntTotal }}
                                         </div>
                                     </th>
 
-                                    <th style="width: 5%"></th>
+                                    <th style="width: 3%"></th>
                                 </tr>
                             </ng-template>
 
@@ -227,9 +226,8 @@
                                     <td>{{ p.stockPvttc | number:'1.2-2' }}</td>
                                     <td>{{ p.stockQteStock }}</td>
                                     <td>{{ p.qteSortie }}</td>
-                                    <td>{{ p.mntProduit | number:'1.2-2' }}</td>
                                     <td>{{ p.mntProduit * p.qteSortie | number:'1.2-2' }}</td>
-                                    <td style="width: 5%; min-width: 7rem">
+                                    <td>
                                         <div class="flex gap-2">
                                             <p-button (click)="recuppererDetailBonSortie(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                                         </div>

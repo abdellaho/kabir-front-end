@@ -32,6 +32,8 @@ import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { StateService } from '@/state/state-service';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { PersonnelService } from '@/services/personnel/personnel-service';
+import { initObjectPersonnel, Personnel } from '@/models/personnel';
 
 @Component({
     selector: 'app-bon-sortie-component',
@@ -67,8 +69,8 @@ export class BonSortieComponent {
     detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
     stock: Stock = initObjectStock();
     mapOfStock: Map<number, string> = new Map<number, string>();
-    mapOfRepertoire: Map<number, string> = new Map<number, string>();
-    listRepertoire: Repertoire[] = [];
+    mapOfPersonnel: Map<number, string> = new Map<number, string>();
+    listPersonnel: Personnel[] = [];
     dialogSupprimer: boolean = false;
     dialogSupprimerDetBonSortie: boolean = false;
     dialogAjouter: boolean = false;
@@ -80,7 +82,7 @@ export class BonSortieComponent {
     constructor(
         private stockService: StockService,
         private bonSortieService: BonSortieService,
-        private repertoireService: RepertoireService,
+        private personnelService: PersonnelService,
         private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -90,7 +92,7 @@ export class BonSortieComponent {
     ngOnInit(): void {
         this.personnelCreationId = this.stateService.getState().user?.id || null;
         this.search();
-        this.getAllRepertoire();
+        this.getAllPersonnel();
         this.getAllStock();
         this.initFormGroup();
     }
@@ -108,7 +110,7 @@ export class BonSortieComponent {
             {
                 codeSortie: [{ value: '', disabled: true }],
                 dateOperation: [new Date(), [Validators.required]],
-                repertoireId: [BigInt(0), [Validators.required]],
+                commercialId: [BigInt(0), [Validators.required]],
                 stockId: [BigInt(0)],
                 designation: [{ value: '', disabled: true }],
                 qteStock: [{ value: 0, disabled: true }],
@@ -138,16 +140,16 @@ export class BonSortieComponent {
         });
     }
 
-    getAllRepertoire(): void {
-        this.listRepertoire = [];
-        let repertoireSearch: Repertoire = initObjectSearch(false, false, TypeSearch.Repertoire);
+    getAllPersonnel(): void {
+        this.listPersonnel = [];
+        let personnelSearch: Personnel = initObjectSearch(false, false, TypeSearch.Personnel);
 
-        this.repertoireService.search(repertoireSearch).subscribe({
-            next: (data: Repertoire[]) => {
-                let initRepertoire: Repertoire = initObjectRepertoire();
-                initRepertoire.id = BigInt(0);
-                this.listRepertoire = [initRepertoire, ...data];
-                this.mapOfRepertoire = arrayToMap(this.listRepertoire, 'id', ['designation'], ['']);
+        this.personnelService.getAllExceptAdmin(personnelSearch).subscribe({
+            next: (data: Personnel[]) => {
+                let initPersonnel: Personnel = initObjectPersonnel();
+                initPersonnel.id = BigInt(0);
+                this.listPersonnel = [initPersonnel, ...data];
+                this.mapOfPersonnel = arrayToMap(this.listPersonnel, 'id', ['designation'], ['']);
             },
             error: (error: any) => {
                 console.error(error);
@@ -199,7 +201,7 @@ export class BonSortieComponent {
                     designation: this.stock.designation,
                     qteStock: this.stock.qteStock,
                     qteSortie: null,
-                    mntProduit: null
+                    mntProduit: this.stock.pvttc
                 });
 
                 this.formGroup.get('designation')?.disable();
@@ -210,8 +212,8 @@ export class BonSortieComponent {
         }
     }
 
-    getDesignationRepertoire(id: number) {
-        return getElementFromMap(this.mapOfRepertoire, id);
+    getDesignationPersonnel(id: number) {
+        return getElementFromMap(this.mapOfPersonnel, id);
     }
 
     initDetailBonSortieFormInformation() {
@@ -240,24 +242,7 @@ export class BonSortieComponent {
     }
 
     disbledAjouterDetailBonSortie() {
-        return this.formGroup.get('stockId')?.value === BigInt(0) || this.formGroup.get('qteSortie')?.value === null || this.formGroup.get('stockId')?.value === 0;
-    }
-
-    onChangeQteSortie() {
-        let mntProduit: number | null = null;
-        if (
-            this.formGroup.get('qteSortie')?.value !== null &&
-            this.formGroup.get('qteSortie')?.value !== 0 &&
-            this.formGroup.get('stockId')?.value !== BigInt(0) &&
-            this.formGroup.get('stockId')?.value !== null &&
-            this.formGroup.get('stockId')?.value !== undefined
-        ) {
-            let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
-            mntProduit = this.formGroup.get('qteSortie')?.value * (stock.pvttc || 0);
-        }
-        this.formGroup.patchValue({
-            mntProduit
-        });
+        return this.formGroup.get('stockId')?.value === null || this.formGroup.get('stockId')?.value === BigInt(0) || this.formGroup.get('qteSortie')?.value === null || this.formGroup.get('stockId')?.value === 0;
     }
 
     validerDetailBonSortie() {
@@ -265,7 +250,7 @@ export class BonSortieComponent {
             let detailBonSortie: DetailBonSortie = initObjectDetailBonSortie();
             detailBonSortie.stockId = this.formGroup.get('stockId')?.value;
             detailBonSortie.qteSortie = this.formGroup.get('qteSortie')?.value || 0;
-            detailBonSortie.mntProduit = this.formGroup.get('mntProduit')?.value || 0;
+            detailBonSortie.mntProduit = this.formGroup.get('mntProduit')?.value;
             detailBonSortie.total = detailBonSortie.qteSortie * detailBonSortie.mntProduit;
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
@@ -328,7 +313,7 @@ export class BonSortieComponent {
                         this.formGroup.patchValue({
                             codeSortie: this.bonSortie.codeSortie,
                             dateOperation: new Date(this.bonSortie.dateOperation),
-                            repertoireId: this.bonSortie.repertoireId,
+                            commercialId: this.bonSortie.commercialId,
                             designation: '',
                             stockId: BigInt(0),
                             qteStock: 0,
@@ -421,7 +406,7 @@ export class BonSortieComponent {
     mapFormGroupToObject(formGroup: FormGroup, bonSortie: BonSortie): BonSortie {
         bonSortie.dateOperation = mapToDateTimeBackEnd(formGroup.get('dateOperation')?.value);
         bonSortie.codeSortie = formGroup.get('codeSortie')?.value;
-        bonSortie.repertoireId = formGroup.get('repertoireId')?.value;
+        bonSortie.commercialId = formGroup.get('commercialId')?.value;
         bonSortie.mnt = this.calculerMontant(this.listDetailBonSortie);
 
         return bonSortie;

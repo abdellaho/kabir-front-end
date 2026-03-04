@@ -35,57 +35,41 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
 
 @Component({
-  selector: 'app-livraison-view-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    IconFieldModule,
-    InputIconModule,
-    InputTextModule,
-    ButtonModule,
-    DialogModule,
-    FloatLabelModule,
-    InputNumberModule,
-    SelectModule,
-    MessageModule
-  ],
-  templateUrl: './livraison-view-component.html',
-  styleUrl: './livraison-view-component.scss'
+    selector: 'app-livraison-view-component',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule],
+    templateUrl: './livraison-view-component.html',
+    styleUrl: './livraison-view-component.scss'
 })
 export class LivraisonViewComponent implements OnInit {
-  listLivraison: Livraison[] = [];
-  livraison: Livraison = initObjectLivraison();
-  listRepertoire: Repertoire[] = [];
-  listPersonnel: Personnel[] = [];
-  listStock: Stock[] = [];
-  selectedLivraison: Livraison | null = null;
-  mapOfPersonnels: Map<number, string> = new Map<number, string>();
-  mapOfStocks: Map<number, string> = new Map<number, string>();
-  mapOfRepertoire: Map<number, string> = new Map<number, string>();
-  dialogSupprimer: boolean = false;
-  typeReglements: { label: string, value: number }[] = filteredTypeReglement;
-  msg = APP_MESSAGES;
+    listLivraison: Livraison[] = [];
+    livraison: Livraison = initObjectLivraison();
+    listRepertoire: Repertoire[] = [];
+    listPersonnel: Personnel[] = [];
+    listStock: Stock[] = [];
+    selectedLivraison: Livraison | null = null;
+    mapOfPersonnels: Map<number, string> = new Map<number, string>();
+    mapOfStocks: Map<number, string> = new Map<number, string>();
+    mapOfRepertoire: Map<number, string> = new Map<number, string>();
+    dialogSupprimer: boolean = false;
+    typeReglements: { label: string; value: number }[] = filteredTypeReglement;
+    msg = APP_MESSAGES;
 
-  constructor(
-      private livraisonService: LivraisonService,
-      private repertoireService: RepertoireService,
-      private stockService: StockService,
-      private dataService: DataService,
-      private personnelService: PersonnelService,
-      private router: Router,
-      private messageService: MessageService,
-      private loadingService: LoadingService
-  ) {}
+    constructor(
+        private livraisonService: LivraisonService,
+        private repertoireService: RepertoireService,
+        private stockService: StockService,
+        private dataService: DataService,
+        private personnelService: PersonnelService,
+        private router: Router,
+        private messageService: MessageService,
+        private loadingService: LoadingService
+    ) {}
 
     ngOnInit(): void {
-      this.search();
-      this.getAllStock();
-      this.getAllPersonnel();
-      this.getAllRepertoire();
+        this.search();
+        this.getAllStock();
+        this.getAllPersonnel();
+        this.getAllRepertoire();
     }
 
     initObjectFournisseurSearch(archiver: boolean, supprimer: boolean): Fournisseur {
@@ -116,7 +100,7 @@ export class LivraisonViewComponent implements OnInit {
     }
 
     search() {
-      this.listLivraison = [];
+        this.listLivraison = [];
         this.loadingService.show();
         //let livraison = initObjectLivraison();
         this.livraisonService.getAll().subscribe({
@@ -147,33 +131,33 @@ export class LivraisonViewComponent implements OnInit {
     }
 
     getAllStock() {
-      this.listStock = [];
-      let objectSearch: Stock = this.initObjectStockSearch(false, false);
+        this.listStock = [];
+        let objectSearch: Stock = this.initObjectStockSearch(false, false);
 
         this.stockService.search(objectSearch).subscribe({
-          next: (stocks) => {
-              this.listStock = stocks;
-              this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
-          },
-          error: (error) => {
-              console.log(error);
-          },
-      });
+            next: (stocks) => {
+                this.listStock = stocks;
+                this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
     }
 
     getAllPersonnel() {
-      this.listPersonnel = [];
-      let objectSearch: Personnel = this.initObjectPersonnelSearch(false, false);
+        this.listPersonnel = [];
+        let objectSearch: Personnel = this.initObjectPersonnelSearch(false, false);
 
-        this.personnelService.search(objectSearch).subscribe({
-          next: (personnels) => {
-              this.listPersonnel = personnels;
-              this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
-          },
-          error: (error) => {
-              console.log(error);
-          },
-      });
+        this.personnelService.getAllExceptAdmin(objectSearch).subscribe({
+            next: (personnels) => {
+                this.listPersonnel = personnels;
+                this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
     }
 
     getDesignationPersonnel(personnelId: number): string {
@@ -193,36 +177,36 @@ export class LivraisonViewComponent implements OnInit {
     }
 
     async generateNumLivraison(livraison: Livraison) {
-		let changeCodeBL: boolean = true;
-		let localDate: Date = null != livraison.dateBl ? livraison.dateBl : new Date();
-		let annee: string = localDate.getFullYear().toString().substring(2);
-		
-		if(livraison.codeBl && livraison.codeBl.length > 0) {
-			let anneeAncien: string = livraison.codeBl.substring(0, 2);
-			if(annee === anneeAncien) {
-				changeCodeBL = false;
-			}
-		}
-		
-		if(changeCodeBL) {
-			let num: number = 0;
-			num = await this.getLastNumLivraison(livraison.dateBl, livraison.id ? Number(livraison.id) : null);
+        let changeCodeBL: boolean = true;
+        let localDate: Date = null != livraison.dateBl ? livraison.dateBl : new Date();
+        let annee: string = localDate.getFullYear().toString().substring(2);
 
-			let codbl: string = num + "";
-			let codeBL: string = "";
-			if (codbl.length == 1) {
-				codeBL = annee + "-000" + num /*"L000" + num*/;
-			} else if (codbl.length == 2) {
-				codeBL = annee + "-00" + num /*"L00" + num*/;
-			}
-			if (codbl.length >= 3) {
-				codeBL = annee + "-0" + num /*"L0" + num*/;
-			}
-			
-			livraison.numLivraison = num;
-			livraison.codeBl = codeBL;
-		}
-	}
+        if (livraison.codeBl && livraison.codeBl.length > 0) {
+            let anneeAncien: string = livraison.codeBl.substring(0, 2);
+            if (annee === anneeAncien) {
+                changeCodeBL = false;
+            }
+        }
+
+        if (changeCodeBL) {
+            let num: number = 0;
+            num = await this.getLastNumLivraison(livraison.dateBl, livraison.id ? Number(livraison.id) : null);
+
+            let codbl: string = num + '';
+            let codeBL: string = '';
+            if (codbl.length == 1) {
+                codeBL = annee + '-000' + num /*"L000" + num*/;
+            } else if (codbl.length == 2) {
+                codeBL = annee + '-00' + num /*"L00" + num*/;
+            }
+            if (codbl.length >= 3) {
+                codeBL = annee + '-0' + num /*"L0" + num*/;
+            }
+
+            livraison.numLivraison = num;
+            livraison.codeBl = codeBL;
+        }
+    }
 
     getTypeReglement(typeReglement: number): string {
         let filteredTypeReglement = this.typeReglements.filter((type) => type.value === typeReglement);
@@ -236,10 +220,10 @@ export class LivraisonViewComponent implements OnInit {
     }
 
     emitToPageUpdate(selectedLivraison: Livraison) {
-        if(selectedLivraison) {
+        if (selectedLivraison) {
             let listDetail: DetLivraison[] = [];
-            
-            if(selectedLivraison.id) {
+
+            if (selectedLivraison.id) {
                 this.livraisonService.getByIdWithDetLivraison(selectedLivraison.id).subscribe({
                     next: (livraisonRequest) => {
                         selectedLivraison = livraisonRequest.livraison;
@@ -251,11 +235,11 @@ export class LivraisonViewComponent implements OnInit {
                     },
                     complete: () => {
                         this.dataService.setLivraisonData({
-                            livraison: selectedLivraison, 
-                            detLivraisons: listDetail, 
+                            livraison: selectedLivraison,
+                            detLivraisons: listDetail,
                             listRepertoire: this.listRepertoire,
                             listStock: this.listStock,
-                            listPersonnel: this.listPersonnel 
+                            listPersonnel: this.listPersonnel
                         });
                         this.router.navigate(['/livraison-update']);
                     }
@@ -263,10 +247,10 @@ export class LivraisonViewComponent implements OnInit {
             } else {
                 this.dataService.setLivraisonData({
                     livraison: selectedLivraison,
-                    detLivraisons: [], 
+                    detLivraisons: [],
                     listRepertoire: this.listRepertoire,
                     listStock: this.listStock,
-                    listPersonnel: this.listPersonnel 
+                    listPersonnel: this.listPersonnel
                 });
                 this.router.navigate(['/livraison-update']);
             }
@@ -290,12 +274,12 @@ export class LivraisonViewComponent implements OnInit {
         if (operationType === OperationType.ADD) {
             list = [...list, livraison];
         } else if (operationType === OperationType.MODIFY) {
-            let index = list.findIndex(x => x.id === livraison.id);
+            let index = list.findIndex((x) => x.id === livraison.id);
             if (index > -1) {
                 list[index] = livraison;
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter(x => x.id !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -328,7 +312,8 @@ export class LivraisonViewComponent implements OnInit {
                     this.checkIfListIsNull();
                     this.listLivraison = this.updateList(initObjectLivraison(), this.listLivraison, OperationType.DELETE, id);
                     this.livraison = initObjectLivraison();
-                }, error: (err) => {
+                },
+                error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
                     this.messageService.add({
@@ -336,7 +321,8 @@ export class LivraisonViewComponent implements OnInit {
                         summary: this.msg.summary.labelError,
                         detail: this.msg.messages.messageErrorProduite
                     });
-                }, complete: () => {
+                },
+                complete: () => {
                     this.loadingService.hide();
                 }
             });
@@ -352,7 +338,7 @@ export class LivraisonViewComponent implements OnInit {
             let dateBl = mapToDateTimeBackEnd(date);
             let body = { dateBl: dateBl.toISOString(), id: id };
             const existsObservable = this.livraisonService.getLastNumLivraison(body).pipe(
-                catchError(error => {
+                catchError((error) => {
                     console.error('Error in absence existence observable:', error);
                     return of(1); // Gracefully handle observable errors by returning false
                 })
@@ -363,5 +349,4 @@ export class LivraisonViewComponent implements OnInit {
             return 1;
         }
     }
-
 }

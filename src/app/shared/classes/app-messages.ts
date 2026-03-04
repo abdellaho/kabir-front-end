@@ -548,12 +548,12 @@ export const APP_MESSAGES = {
             label: 'Bon Sortie',
             codeSortie: 'Code Sortie',
             dateOperation: 'Date Opération',
-            repertoireId: 'Repertoire',
+            commercialId: 'Commercial',
             stockId: 'Produit',
             mnt: 'Montant',
             qteSortie: 'Qte Sortie',
-            mntProduit: 'Montant Produit',
-            mntTotal: 'Montant Total',
+            mntProduit: 'Mt. Produit',
+            mntTotal: 'Mt. Total',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce bon sortie ?',
             detailBonSortie: {
                 messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce détail de bon sortie ?'
@@ -561,7 +561,7 @@ export const APP_MESSAGES = {
             stock: {
                 designation: 'Designation',
                 qteStock: 'Qte Stock',
-                pvttc: 'Prix Vente TTC'
+                pvttc: 'P.Vente TTC'
             }
         },
         facture: {
