@@ -502,6 +502,8 @@ export const APP_MESSAGES = {
                 messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce produit ?'
             },
             errors: {
+                noLivraison: 'Aucune livraison trouvée',
+                noDetLivraison: 'Aucun détail de livraison trouvé',
                 mntReglementRequired: 'Mnt Réglement doit être supérieur à 0',
                 mntReglement2Required: 'Mnt Réglement 2 doit être supérieur à 0',
                 mntReglement3Required: 'Mnt Réglement 3 doit être supérieur à 0',

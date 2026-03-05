@@ -60,6 +60,7 @@ export interface Facture {
     repertoireTel2: string;
     repertoireTel3: string;
     repertoireIce: string;
+    livraisonId: bigint | null;
 }
 
 export function initObjectFacture(): Facture {
@@ -124,6 +125,7 @@ export function initObjectFacture(): Facture {
         repertoireTel1: '',
         repertoireTel2: '',
         repertoireTel3: '',
-        repertoireIce: ''
+        repertoireIce: '',
+        livraisonId: null
     };
 }

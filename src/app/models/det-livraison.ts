@@ -17,8 +17,10 @@ export interface DetLivraison {
     stockId: bigint | null;
     stockDesignation: string;
     stockQteStock: number;
+    stockQteFacturer: number;
     stockPvttc: number;
     stockPattc: number;
+    stockBenifice: number;
     stock?: Stock | null;
 }
 
@@ -39,8 +41,10 @@ export function initObjectDetLivraison(): DetLivraison {
         stockId: null,
         stockDesignation: '',
         stockQteStock: 0,
+        stockQteFacturer: 0,
         stockPvttc: 0,
         stockPattc: 0,
+        stockBenifice: 0,
         stock: null
     };
 }

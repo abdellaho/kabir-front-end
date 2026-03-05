@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DataService } from '@/shared/services/data-service';
 import { Router } from '@angular/router';
 import { Facture, initObjectFacture } from '@/models/facture';
@@ -41,6 +41,7 @@ import { FactureValidator } from '@/validators/facture-validator';
 import { FactureRequest } from '@/shared/classes/facture-request';
 import { DetFactureValidator } from '@/validators/det-facture-validator';
 import { StateService } from '@/state/state-service';
+import { FactureData } from '@/shared/classes/facture-data';
 
 @Component({
     selector: 'app-facture-update-component',
@@ -78,6 +79,24 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     //Tableau produit --> designation + qte facture(stock) + prix vente + qte + tva + remise + montant + buttons(modifier + supprimer)
     // total tva 20 + mt total ht + mt total ttc en bas du tableau (footer)
 
+    private _factureData: FactureData | null = null;
+
+    @Input() set factureData(value: FactureData | null) {
+        this._factureData = value;
+        if (value) {
+            // Ensure forms are initialized before processing data
+            if (!this.formGroup) this.initFormGroup();
+            if (!this.formGroupStock) this.initFormGroupStock();
+            this.initFromData(value);
+        }
+    }
+
+    get factureData(): FactureData | null {
+        return this._factureData;
+    }
+
+    @Output() onSaveSuccess = new EventEmitter<void>();
+    @Output() onClose = new EventEmitter<void>();
     personnelCreationId: number | null = null;
     submitted: boolean = false;
     etablissement: Etablissement = initObjectEtablissement();
@@ -101,6 +120,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     formGroup!: FormGroup;
     formGroupStock!: FormGroup;
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
+    dataFrom: string = 'FACTURE';
 
     constructor(
         private factureService: FactureService,
@@ -120,24 +140,34 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         this.initFormGroupStock();
         this.initFormGroup();
 
+        if (this.factureData) {
+            this.initFromData(this.factureData);
+            return;
+        }
+
         this.subscription = this.dataService.currentFacture$.subscribe((data) => {
             if (!data) {
                 this.router.navigate(['/facture']);
                 return;
             }
-            this.getEtablissement();
-            this.facture = this.adjustFacture(data.facture);
-            this.listDetFacture = data.detFactures;
-            this.listRepertoire = [initObjectRepertoire(), ...data.listRepertoire];
-            this.mapOfRepertoire = this.listRepertoire.reduce((map, repertoire) => map.set(Number(repertoire.id), repertoire.designation), new Map<number, string>());
-            this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
-            this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
-            this.listStock = [initObjectStock(), ...data.listStock];
-            this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
-            this.mapObjectToFormGroup(this.facture);
-            this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.facture.repertoireId) || initObjectRepertoire();
-            this.adjustDetFacture();
+            this.initFromData(data);
         });
+    }
+
+    initFromData(data: FactureData) {
+        this.getEtablissement();
+        this.facture = this.adjustFacture(data.facture);
+        this.listDetFacture = data.detFactures;
+        this.listRepertoire = [initObjectRepertoire(), ...data.listRepertoire];
+        this.mapOfRepertoire = this.listRepertoire.reduce((map, repertoire) => map.set(Number(repertoire.id), repertoire.designation), new Map<number, string>());
+        this.listPersonnel = [initObjectPersonnel(), ...data.listPersonnel];
+        this.mapOfPersonnels = this.listPersonnel.reduce((map, personnel) => map.set(Number(personnel.id), personnel.designation), new Map<number, string>());
+        this.listStock = [initObjectStock(), ...data.listStock];
+        this.mapOfStocks = this.listStock.reduce((map, stock) => map.set(Number(stock.id), stock.designation), new Map<number, string>());
+        this.mapObjectToFormGroup(this.facture);
+        this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.facture.repertoireId) || initObjectRepertoire();
+        this.adjustDetFacture();
+        this.dataFrom = data.dataFrom;
     }
 
     getEtablissement() {
@@ -590,22 +620,18 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             if (this.facture.id) {
                 this.factureService.update(this.facture.id, factureRequest).subscribe({
                     next: (data: Facture) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            detail: this.msg.messages.messageUpdateSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageUpdateSuccess });
 
-                        this.router.navigate(['/facture']);
+                        if (this.dataFrom === 'FACTURE') {
+                            this.router.navigate(['/facture']);
+                        } else if (this.dataFrom === 'LIVRAISON') {
+                            this.onSaveSuccess.emit();
+                        }
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -615,22 +641,18 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 factureRequest.facture.employeOperateurId = BigInt(this.personnelCreationId || 0);
                 this.factureService.create(factureRequest).subscribe({
                     next: (data: Facture) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            detail: this.msg.messages.messageAddSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageAddSuccess });
 
-                        this.router.navigate(['/facture']);
+                        if (this.dataFrom === 'FACTURE') {
+                            this.router.navigate(['/facture']);
+                        } else if (this.dataFrom === 'LIVRAISON') {
+                            this.onSaveSuccess.emit();
+                        }
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -641,10 +663,14 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     }
 
     fermer() {
-        this.router.navigate(['/facture']);
+        if (this.dataFrom === 'FACTURE') {
+            this.router.navigate(['/facture']);
+        } else if (this.dataFrom === 'LIVRAISON') {
+            this.onClose.emit();
+        }
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.subscription?.unsubscribe();
     }
 }

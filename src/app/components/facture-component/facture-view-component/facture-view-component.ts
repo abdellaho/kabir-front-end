@@ -190,7 +190,7 @@ export class FactureViewComponent implements OnInit {
         this.dialogSupprimer = openClose;
     }
 
-    async generateNumLivraison(facture: Facture) {
+    async generateNumFacture(facture: Facture) {
         let changeCodeBL: boolean = true;
         let localDate: Date = null != facture.dateBF ? facture.dateBF : new Date();
         let annee: string = localDate.getFullYear().toString().substring(2);
@@ -224,7 +224,7 @@ export class FactureViewComponent implements OnInit {
 
     async viderAjouter() {
         let facture = initObjectFacture();
-        await this.generateNumLivraison(facture);
+        await this.generateNumFacture(facture);
         this.emitToPageUpdate(facture);
     }
 
@@ -247,7 +247,8 @@ export class FactureViewComponent implements OnInit {
                             detFactures: listDetail,
                             listRepertoire: this.listRepertoire,
                             listStock: this.listStock,
-                            listPersonnel: this.listPersonnel
+                            listPersonnel: this.listPersonnel,
+                            dataFrom: 'FACTURE'
                         });
                         this.router.navigate(['/facture-update']);
                     }
@@ -258,7 +259,8 @@ export class FactureViewComponent implements OnInit {
                     detFactures: [],
                     listRepertoire: this.listRepertoire,
                     listStock: this.listStock,
-                    listPersonnel: this.listPersonnel
+                    listPersonnel: this.listPersonnel,
+                    dataFrom: 'FACTURE'
                 });
                 this.router.navigate(['/facture-update']);
             }

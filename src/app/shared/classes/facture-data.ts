@@ -1,8 +1,8 @@
-import { Facture, initObjectFacture } from "@/models/facture";
-import { DetFacture } from "@/models/det-facture";
-import { Repertoire } from "@/models/repertoire";
-import { Stock } from "@/models/stock";
-import { Personnel } from "@/models/personnel";
+import { Facture, initObjectFacture } from '@/models/facture';
+import { DetFacture } from '@/models/det-facture';
+import { Repertoire } from '@/models/repertoire';
+import { Stock } from '@/models/stock';
+import { Personnel } from '@/models/personnel';
 
 export interface FactureData {
     facture: Facture;
@@ -10,6 +10,7 @@ export interface FactureData {
     listRepertoire: Repertoire[];
     listStock: Stock[];
     listPersonnel: Personnel[];
+    dataFrom: string;
 }
 
 export function initFactureData(): FactureData {
@@ -18,6 +19,7 @@ export function initFactureData(): FactureData {
         detFactures: [],
         listRepertoire: [],
         listStock: [],
-        listPersonnel: []
+        listPersonnel: [],
+        dataFrom: 'FACTURE'
     };
 }

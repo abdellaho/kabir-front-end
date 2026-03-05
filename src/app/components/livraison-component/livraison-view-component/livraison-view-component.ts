@@ -33,14 +33,38 @@ import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { Repertoire } from '@/models/repertoire';
 import { TypeSearch } from '@/shared/enums/type-search';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
+import { FactureData, initFactureData } from '@/shared/classes/facture-data';
+import { Facture, initObjectFacture } from '@/models/facture';
+import { FactureService } from '@/services/facture/facture-service';
+import { DetFacture, initObjectDetFacture } from '@/models/det-facture';
+import { LivraisonRequest } from '@/shared/classes/livraison-request';
+import { FactureUpdateComponent } from '@/components/facture-component/facture-update-component/facture-update-component';
 
 @Component({
     selector: 'app-livraison-view-component',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
+        InputTextModule,
+        ButtonModule,
+        DialogModule,
+        FloatLabelModule,
+        InputNumberModule,
+        SelectModule,
+        MessageModule,
+        FactureUpdateComponent
+    ],
     templateUrl: './livraison-view-component.html',
     styleUrl: './livraison-view-component.scss'
 })
 export class LivraisonViewComponent implements OnInit {
+    factureData: FactureData | null = null;
     listLivraison: Livraison[] = [];
     livraison: Livraison = initObjectLivraison();
     listRepertoire: Repertoire[] = [];
@@ -51,11 +75,13 @@ export class LivraisonViewComponent implements OnInit {
     mapOfStocks: Map<number, string> = new Map<number, string>();
     mapOfRepertoire: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
+    dialogFacturer: boolean = false;
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     msg = APP_MESSAGES;
 
     constructor(
         private livraisonService: LivraisonService,
+        private factureService: FactureService,
         private repertoireService: RepertoireService,
         private stockService: StockService,
         private dataService: DataService,
@@ -348,5 +374,175 @@ export class LivraisonViewComponent implements OnInit {
             console.error('Unexpected error checking if absence exists:', error);
             return 1;
         }
+    }
+
+    /***************************************** Facturer ********************************************/
+    openCloseDialogFacturer(openClose: boolean): void {
+        this.dialogFacturer = openClose;
+    }
+
+    async viderAjouterFacture(livraison: Livraison) {
+        this.factureData = initFactureData();
+        this.factureData = await this.convertLivraisonToFacture(livraison);
+
+        if (this.factureData && this.factureData.detFactures.length > 0) {
+            this.openCloseDialogFacturer(true);
+        }
+    }
+
+    async generateNumFacture(facture: Facture) {
+        let changeCodeBL: boolean = true;
+        let localDate: Date = null != facture.dateBF ? facture.dateBF : new Date();
+        let annee: string = localDate.getFullYear().toString().substring(2);
+
+        if (facture.codeBF && facture.codeBF.length > 0) {
+            let anneeAncien: string = facture.codeBF.substring(0, 2);
+            if (annee === anneeAncien) {
+                changeCodeBL = false;
+            }
+        }
+
+        if (changeCodeBL) {
+            let num: number = 0;
+            num = await this.getLastNumFacture(facture);
+
+            let codbl: string = num + '';
+            let codeBF: string = '';
+            if (codbl.length == 1) {
+                codeBF = annee + '-000' + num /*"L000" + num*/;
+            } else if (codbl.length == 2) {
+                codeBF = annee + '-00' + num /*"L00" + num*/;
+            }
+            if (codbl.length >= 3) {
+                codeBF = annee + '-0' + num /*"L0" + num*/;
+            }
+
+            facture.numFacture = num;
+            facture.codeBF = codeBF;
+        }
+    }
+
+    async getLastNumFacture(facture: Facture): Promise<number> {
+        try {
+            facture.dateBF = mapToDateTimeBackEnd(facture.dateBF);
+            const existsObservable = this.factureService.getLastNumFacture(facture).pipe(
+                catchError((error) => {
+                    console.error('Error in facture last num search observable:', error);
+                    return of(1); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if facture last num exists:', error);
+            return 1;
+        }
+    }
+
+    livraisonToFacture(livraison: Livraison, facture: Facture): Facture {
+        facture.repertoireId = livraison.repertoireId;
+        facture.dateBF = new Date(livraison.dateBl);
+        facture.dateReglement = new Date(livraison.dateReglement);
+        facture.dateReglement2 = livraison.dateReglement2 ? new Date(livraison.dateReglement2) : null;
+        facture.dateReglement3 = livraison.dateReglement3 ? new Date(livraison.dateReglement3) : null;
+        facture.dateReglement4 = livraison.dateReglement4 ? new Date(livraison.dateReglement4) : null;
+        facture.typeReglment = livraison.typeReglment;
+        facture.typeReglment2 = livraison.typeReglment2;
+        facture.typeReglment3 = livraison.typeReglment3;
+        facture.typeReglment4 = livraison.typeReglment4;
+        facture.mntReglement = livraison.mntReglement;
+        facture.mntReglement2 = livraison.mntReglement2;
+        facture.mntReglement3 = livraison.mntReglement3;
+        facture.mntReglement4 = livraison.mntReglement4;
+        facture.numCheque = livraison.numCheque;
+        facture.numCheque2 = livraison.numCheque2;
+        facture.numCheque3 = livraison.numCheque3;
+        facture.numCheque4 = livraison.numCheque4;
+        facture.mantantBF = livraison.mantantBL;
+        facture.livraisonId = livraison.id;
+
+        return facture;
+    }
+
+    async convertLivraisonToFacture(livraisonEdit: Livraison): Promise<FactureData | null> {
+        if (!livraisonEdit || !livraisonEdit.id) {
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.components.livraison.errors.noLivraison });
+            return null;
+        }
+
+        try {
+            let factureData: FactureData = initFactureData();
+            let facture: Facture = initObjectFacture();
+
+            let livraison: Livraison = initObjectLivraison();
+            let listDetlivraison: DetLivraison[] = [];
+
+            const data: LivraisonRequest = await firstValueFrom(this.livraisonService.getByIdWithDetLivraison(livraisonEdit.id));
+
+            if (!data) {
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.components.livraison.errors.noLivraison });
+                return null;
+            }
+
+            listDetlivraison = data.detLivraisons;
+            livraison = data.livraison;
+            facture = this.livraisonToFacture(livraison, facture);
+            await this.generateNumFacture(facture);
+
+            let listDetFacture: DetFacture[] = [];
+
+            if (listDetlivraison.length === 1 && livraison && livraison.facturer100) {
+                facture.facturer100 = true;
+            }
+
+            for (const detlivraison of listDetlivraison) {
+                let mntProduit = detlivraison.montantProduit;
+
+                if (facture.facturer100 && detlivraison.remiseLivraison === 100.0) {
+                    mntProduit = detlivraison.qteLivrer * detlivraison.prixVente;
+                }
+
+                const detfacture: DetFacture = initObjectDetFacture();
+
+                detfacture.stock = detlivraison.stock;
+                detfacture.stockId = detlivraison.stockId;
+                detfacture.stockDesignation = detlivraison.stockDesignation;
+                detfacture.stockPvttc = detlivraison.stockPvttc;
+                detfacture.stockQteFacturer = detlivraison.stockQteFacturer;
+                detfacture.qteFacturer = detlivraison.qteLivrer;
+                detfacture.prixVente = detlivraison.prixVente;
+                detfacture.remiseFacture = detlivraison.remiseLivraison;
+                detfacture.montantProduit = mntProduit;
+
+                detfacture.beneficeDH = detlivraison.prixVente - detlivraison.stockPattc;
+                detfacture.benepourcentage = detlivraison.stockBenifice;
+
+                listDetFacture.push(detfacture);
+            }
+
+            if (listDetFacture.length === 0) {
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.components.livraison.errors.noDetLivraison });
+                return null;
+            }
+
+            factureData.facture = facture;
+            factureData.detFactures = listDetFacture;
+            factureData.dataFrom = 'LIVRAISON';
+            factureData.listPersonnel = this.listPersonnel;
+            factureData.listRepertoire = this.listRepertoire;
+            factureData.listStock = this.listStock;
+
+            return factureData;
+        } catch (error) {
+            console.log(error);
+            this.loadingService.hide();
+            return null;
+        } finally {
+            this.loadingService.hide();
+        }
+    }
+
+    onFactureSaved() {
+        this.openCloseDialogFacturer(false);
+        this.search();
     }
 }

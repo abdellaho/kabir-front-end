@@ -5,8 +5,7 @@
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
-                            class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
                 </ng-template>
 
@@ -195,6 +194,9 @@
                         <div class="flex gap-2">
                             <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
                             <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            @if (p.facturer === false) {
+                                <p-button (click)="viderAjouterFacture(p)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.facturer" />
+                            }
                         </div>
                         </td>
                     </tr>
@@ -231,3 +233,11 @@
         </p-dialog>
     </div>
 </div>
+
+<p-dialog [(visible)]="dialogFacturer" [header]="`${msg.messages.miseAJour} ${msg.components.facture.label}`" [modal]="true" [style]="{ width: '90%' }">
+    @if (factureData) {
+        <div style="margin-top: 1ch;">
+            <app-facture-update-component [factureData]="factureData" (onSaveSuccess)="onFactureSaved()" (onClose)="dialogFacturer = false"></app-facture-update-component>
+        </div>
+    }
+</p-dialog>

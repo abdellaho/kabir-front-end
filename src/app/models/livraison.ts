@@ -34,6 +34,7 @@ export interface Livraison {
     mntReglement2: number;
     mntReglement3: number;
     mntReglement4: number;
+    facturer: boolean;
     facturer100: boolean;
     codeTransport: string;
     employeOperateurId: bigint | null;
@@ -85,6 +86,7 @@ export function initObjectLivraison(): Livraison {
         mntReglement2: 0,
         mntReglement3: 0,
         mntReglement4: 0,
+        facturer: false,
         facturer100: false,
         codeTransport: '',
         employeOperateurId: null,
