@@ -39,6 +39,8 @@ import { FactureService } from '@/services/facture/facture-service';
 import { DetFacture, initObjectDetFacture } from '@/models/det-facture';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { FactureUpdateComponent } from '@/components/facture-component/facture-update-component/facture-update-component';
+import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
     selector: 'app-livraison-view-component',
@@ -56,6 +58,7 @@ import { FactureUpdateComponent } from '@/components/facture-component/facture-u
         DialogModule,
         FloatLabelModule,
         InputNumberModule,
+        DatePickerModule,
         SelectModule,
         MessageModule,
         FactureUpdateComponent
@@ -64,6 +67,11 @@ import { FactureUpdateComponent } from '@/components/facture-component/facture-u
     styleUrl: './livraison-view-component.scss'
 })
 export class LivraisonViewComponent implements OnInit {
+    rangeDateSearch: Date[] | null = null;
+    repertoireIdSearch: bigint | null = null;
+    personnelIdSearch: bigint | null = null;
+    numChequeSearch: string = '';
+
     factureData: FactureData | null = null;
     listLivraison: Livraison[] = [];
     livraison: Livraison = initObjectLivraison();
@@ -92,10 +100,57 @@ export class LivraisonViewComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.search();
+        this.initSearchLivraison();
         this.getAllStock();
         this.getAllPersonnel();
         this.getAllRepertoire();
+    }
+
+    initSearchValues() {
+        this.rangeDateSearch = null;
+        this.repertoireIdSearch = null;
+        this.personnelIdSearch = null;
+        this.numChequeSearch = '';
+    }
+
+    initSearchLivraison() {
+        this.initSearchValues();
+        this.searchLivraison();
+    }
+
+    mapSearchDataIntoCommonSearchModel(): CommonSearchModel {
+        let commonSearch: CommonSearchModel = initCommonSearchModel();
+        commonSearch.dateDebut = this.rangeDateSearch ? this.rangeDateSearch[0] : null;
+        commonSearch.dateFin = this.rangeDateSearch ? this.rangeDateSearch[1] : null;
+        commonSearch.repertoireId = this.repertoireIdSearch;
+        commonSearch.personnelId = this.personnelIdSearch;
+        commonSearch.numCheque = this.numChequeSearch;
+        return commonSearch;
+    }
+
+    searchLivraison() {
+        this.listLivraison = [];
+        this.loadingService.show();
+        let commonSearch: CommonSearchModel = this.mapSearchDataIntoCommonSearchModel();
+
+        commonSearch.dateDebut = this.rangeDateSearch && this.rangeDateSearch.length > 0 ? this.rangeDateSearch[0] : null;
+        commonSearch.dateFin = this.rangeDateSearch && this.rangeDateSearch.length > 1 ? this.rangeDateSearch[1] : null;
+        commonSearch.repertoireId = this.repertoireIdSearch;
+        commonSearch.personnelId = this.personnelIdSearch;
+        commonSearch.numCheque = this.numChequeSearch;
+
+        this.livraisonService.searchByCommon(commonSearch).subscribe({
+            next: (livraisons) => {
+                this.listLivraison = livraisons;
+            },
+            error: (error) => {
+                console.log(error);
+                this.loadingService.hide();
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 
     initObjectFournisseurSearch(archiver: boolean, supprimer: boolean): Fournisseur {
@@ -123,24 +178,6 @@ export class LivraisonViewComponent implements OnInit {
         personnelSearch.supprimer = supprimer;
 
         return personnelSearch;
-    }
-
-    search() {
-        this.listLivraison = [];
-        this.loadingService.show();
-        //let livraison = initObjectLivraison();
-        this.livraisonService.getAll().subscribe({
-            next: (livraisons) => {
-                this.listLivraison = livraisons;
-            },
-            error: (error) => {
-                console.log(error);
-                this.loadingService.hide();
-            },
-            complete: () => {
-                this.loadingService.hide();
-            }
-        });
     }
 
     getAllRepertoire(): void {
@@ -543,6 +580,50 @@ export class LivraisonViewComponent implements OnInit {
 
     onFactureSaved() {
         this.openCloseDialogFacturer(false);
-        this.search();
+        this.searchLivraison();
+    }
+
+    imprimerBonLivraison(id: bigint): void {
+        this.loadingService.show();
+        this.livraisonService.imprimerBonLivraison(id).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    imprimerClient(id: bigint): void {
+        this.loadingService.show();
+        this.livraisonService.imprimerClient(id).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }

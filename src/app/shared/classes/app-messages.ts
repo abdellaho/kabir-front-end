@@ -773,6 +773,8 @@ export const APP_MESSAGES = {
         valider: 'Valider',
         fermer: 'Fermer',
         save: 'Enregistrer',
+        search: 'Rechercher',
+        vider: 'Vider',
         cancel: 'Annuler',
         delete: 'Supprimer',
         login: 'Log In',

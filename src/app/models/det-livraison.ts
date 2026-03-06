@@ -13,6 +13,11 @@ export interface DetLivraison {
     infinity: number;
     avecRemise: boolean;
     livraisonId: bigint | null;
+    livraisonCodeBl: string;
+    livraisonDateBl: Date | null;
+    livraisonRepertoireDesignation: string;
+    livraisonRepertoireTel1: string;
+    livraisonRepertoireAdresse: string;
     livraison?: Livraison | null;
     stockId: bigint | null;
     stockDesignation: string;
@@ -37,6 +42,11 @@ export function initObjectDetLivraison(): DetLivraison {
         infinity: 0,
         avecRemise: false,
         livraisonId: null,
+        livraisonCodeBl: '',
+        livraisonDateBl: null,
+        livraisonRepertoireDesignation: '',
+        livraisonRepertoireTel1: '',
+        livraisonRepertoireAdresse: '',
         livraison: null,
         stockId: null,
         stockDesignation: '',

@@ -7,6 +7,34 @@
                     <div class="my-2">
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
+
+                    <div class="my-2">
+                        <div class="flex gap-2">
+                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" [readonlyInput]="true" />
+                            
+                            <p-floatlabel variant="on">
+                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" />
+                                <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
+                            </p-floatlabel>
+
+                            <p-floatlabel variant="on" class="full-width">
+                                <p-select [(ngModel)]="repertoireIdSearch" inputId="repertoireId" [options]="listRepertoire"
+                                    appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="full-width"
+                                    placeholder="{{ msg.components.livraison.selectRepertoire }}" />
+                                <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
+                            </p-floatlabel>
+
+                            <p-floatlabel variant="on" class="full-width">
+                                <p-select [(ngModel)]="personnelIdSearch" inputId="personnelId" [options]="listPersonnel"
+                                    appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="full-width"
+                                    placeholder="{{ msg.components.livraison.personnelId }}" />
+                                <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
+                            </p-floatlabel>
+
+                            <p-button (click)="searchLivraison()" icon="pi pi-search" severity="info" rounded [title]="msg.buttons.search" />
+                            <p-button (click)="initSearchLivraison()" icon="pi pi-times" severity="info" rounded [title]="msg.buttons.vider" />
+                        </div>
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -197,6 +225,8 @@
                             @if (p.facturer === false) {
                                 <p-button (click)="viderAjouterFacture(p)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.facturer" />
                             }
+                            <p-button (click)="imprimerBonLivraison(p.id)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.imprimer" />
+                            <p-button (click)="imprimerClient(p.id)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.imprimer" />
                         </div>
                         </td>
                     </tr>

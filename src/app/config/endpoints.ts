@@ -17,6 +17,7 @@ const PRIME = `prime`;
 const PERSONNEL = `personnel`;
 const STOCK = `stock`;
 const STOCK_DEPOT = `stock-depot`;
+const LIVRAISON = `livraison`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -174,16 +175,19 @@ export const ENDPOINTS = {
         search: `${BASE_URL}/voiture/search`
     },
     LIVRAISON: {
-        getAll: `${BASE_URL}/livraison`,
-        getById: (id: bigint) => `${BASE_URL}/livraison/${id}`,
-        getByIdWithDetLivraison: (id: bigint) => `${BASE_URL}/livraison/${id}/with-det-livraison`,
-        create: `${BASE_URL}/livraison`,
-        update: (id: bigint) => `${BASE_URL}/livraison/${id}`,
-        delete: (id: bigint) => `${BASE_URL}/livraison/${id}`,
-        exist: `${BASE_URL}/livraison/exist`,
-        search: `${BASE_URL}/livraison/search`,
-        present: `${BASE_URL}/livraison/present`,
-        getLastNumLivraison: `${BASE_URL}/livraison/last-num-livraison`
+        getAll: `${BASE_URL}/${LIVRAISON}`,
+        getById: (id: bigint) => `${BASE_URL}/${LIVRAISON}/${id}`,
+        getByIdWithDetLivraison: (id: bigint) => `${BASE_URL}/${LIVRAISON}/${id}/with-det-livraison`,
+        create: `${BASE_URL}/${LIVRAISON}`,
+        update: (id: bigint) => `${BASE_URL}/${LIVRAISON}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${LIVRAISON}/${id}`,
+        exist: `${BASE_URL}/${LIVRAISON}/exist`,
+        search: `${BASE_URL}/${LIVRAISON}/search`,
+        present: `${BASE_URL}/${LIVRAISON}/present`,
+        getLastNumLivraison: `${BASE_URL}/${LIVRAISON}/last-num-livraison`,
+        searchByCommon: `${BASE_URL}/${LIVRAISON}/searchByCommon`,
+        imprimerBonLivraison: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}`,
+        imprimerClient: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}/client`
     },
     DET_LIVRAISON: {
         getAll: `${BASE_URL}/det-livraison`,
