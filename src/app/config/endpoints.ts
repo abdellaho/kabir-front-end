@@ -18,6 +18,7 @@ const PERSONNEL = `personnel`;
 const STOCK = `stock`;
 const STOCK_DEPOT = `stock-depot`;
 const LIVRAISON = `livraison`;
+const ENTRETIEN = `entretien`;
 
 export const ENDPOINTS = {
     VILLE: {
@@ -36,6 +37,16 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/pays/${id}`,
         search: `${BASE_URL}/pays/search`,
         exist: `${BASE_URL}/pays/exist`
+    },
+    ENTRETIEN: {
+        getAll: `${BASE_URL}/${ENTRETIEN}`,
+        getById: (id: bigint) => `${BASE_URL}/${ENTRETIEN}/${id}`,
+        create: `${BASE_URL}/${ENTRETIEN}`,
+        update: (id: bigint) => `${BASE_URL}/${ENTRETIEN}/${id}`,
+        delete: (id: bigint) => `${BASE_URL}/${ENTRETIEN}/${id}`,
+        exist: `${BASE_URL}/${ENTRETIEN}/exist`,
+        search: `${BASE_URL}/${ENTRETIEN}/search`,
+        imprimer: `${BASE_URL}/${ENTRETIEN}/imprimer`,
     },
     ETABLISSEMENT: {
         getAll: `${BASE_URL}/etablissement`,

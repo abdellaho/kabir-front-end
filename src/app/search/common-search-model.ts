@@ -15,6 +15,7 @@ export interface CommonSearchModel {
     numRemise: string;
     typeRepertoire: number;
     villeId: number;
+    voitureId: bigint | null;
     typeImprimRepertoire: number;
 }
 
@@ -36,6 +37,7 @@ export function initCommonSearchModel(): CommonSearchModel {
         numRemise: '',
         typeRepertoire: 0,
         villeId: 0,
+        voitureId: null,
         typeImprimRepertoire: 0
     };
 }

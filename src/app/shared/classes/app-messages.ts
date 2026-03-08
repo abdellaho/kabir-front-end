@@ -183,6 +183,21 @@ export const APP_MESSAGES = {
             chercherParNomVille: 'Chercher par Nom Ville',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cette ville ?'
         },
+        entretien: {
+            label: 'Entretien',
+            dateEntretien: 'Date Entretien',
+            dateSys: 'Date Sys',
+            numVoiture: 'Voiture N°',
+            kmDetecte: 'Km Detecte',
+            kmMax: 'Km Max',
+            huile: 'Huile',
+            filtreHuile: 'Filtre Huile',
+            filtreCarburant: 'Filtre Carburant',
+            filtreAir: 'Filtre Air',
+            filtrePollen: 'Filtre Pollen',
+            vidange: 'Vidange',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce entretien ?'
+        },
         etablissement: {
             label: 'Société',
             nomEtablissement: 'Nom Société',

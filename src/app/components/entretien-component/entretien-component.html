@@ -1,0 +1,151 @@
+<div class="card">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar class="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listEntretien" dataKey="id"
+                [rows]="10"
+                selectionMode="single" [(selection)]="selectedEntretien" dataKey="id"
+                sortMode="multiple" [showGridlines]="true" [paginator]="true"
+                [globalFilterFields]="['dateEntretien', 'voitureNumVoiture', 'kmDetecte', 'kmMax']"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
+
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="dateEntretien" style="width: 20%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.entretien.dateEntretien }}
+                                <p-sortIcon field="dateEntretien" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="voitureNumVoiture" style="width: 20%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.entretien.numVoiture }}
+                                <p-sortIcon field="voitureNumVoiture" />
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="kmDetecte" style="width: 20%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.entretien.kmDetecte }}
+                                <p-sortIcon field="kmDetecte" />
+                            </div>
+                        </th>                   
+
+                        <th pSortableColumn="kmMax" style="width: 10%">
+                            <div class="flex items-center gap-2">
+                                {{ msg.components.entretien.kmMax }}
+                                <p-sortIcon field="kmMax" />
+                            </div>
+                        </th>
+
+                        <th style="width: 5%"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template #body let-p let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ p.dateEntretien | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.voitureNumVoiture }}</td>
+                        <td>{{ p.kmDetecte }}</td>
+                        <td>{{ p.kmMax }}</td>
+
+                        <td style="min-width: 7rem">
+                            <div class="flex gap-2">
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="6">No Entretien found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #loadingbody>
+                    <tr>
+                        <td colspan="6">Loading Entretien data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '800px', maxWidth: '100%' }"
+            [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+            [header]="`${msg.messages.miseAJour} ${msg.components.entretien.label}`" [modal]="true" class="p-fluid"
+            [closable]="false">
+            <!-- Form content must go inside ng-template -->
+            <ng-template pTemplate="content">
+                <div [formGroup]="formGroup" class="p-fluid">
+                    <div class="card flex flex-col gap-4">
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <input pInputText id="codeSortie" formControlName="codeSortie" class="w-full" />
+                                    <label for="codeSortie">{{ msg.components.bonSortie.codeSortie }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
+                                    <label for="dateOperation">{{ msg.components.bonSortie.dateOperation }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="voitureId" inputId="voitureId" class="w-full"
+                                        [options]="listVoiture" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" />
+                                    <label for="voitureId">{{ msg.components.entretien.numVoiture }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Footer template -->
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
+                    class="p-button-outlined p-button-danger" (click)="openCloseDialogAjouter(false)"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="miseAjour()" [disabled]="!formGroup.valid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="dialogSupprimer" [header]="msg.messages.confirm" [modal]="true"
+            [style]="{ width: '450px' }" [closable]="false">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                @if (entretien) {
+                <span>{{ msg.components.entretien.messageDeleteAreYouSure }}</span>
+                }
+            </div>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+                    class="p-button-outlined p-button-danger" (click)="dialogSupprimer = false"></button>
+                <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success"
+                    (click)="supprimer()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
