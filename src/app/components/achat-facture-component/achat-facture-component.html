@@ -8,6 +8,10 @@
                     <div class="my-2">
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
+
+                    <div class="my-2" style="margin-right: 0.5ch;">
+                        <input pInputText type="text" placeholder="{{ msg.components.achatFacture.search }}" (input)="searchByFournisseur()" [(ngModel)]="fournisseurDesignationSearch" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -410,7 +414,7 @@
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroupDetAchatFacture" class="p-fluid">
                     <div class="card flex flex-col gap-4">
-                        <div class="flex flex-wrap gap-6">
+                        <div class="flex flex-col gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="w-full">
                                     <input pInputText formControlName="designation" id="designation" inputId="designation" class="w-full" />
@@ -477,22 +481,22 @@
                     <div class="card flex flex-col gap-4">
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="taux" id="taux" inputId="taux" [minFractionDigits]="1" [max]="100" />
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-inputNumber formControlName="taux" id="taux" inputId="taux" [minFractionDigits]="1" [max]="100" class="w-full" />
                                     <label for="taux">{{ msg.components.achatFacture.detAchatFactureTVA.taux }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="mntHT" id="mntHT" inputId="mntHT" [minFractionDigits]="2"/>
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-inputNumber formControlName="mntHT" id="mntHT" inputId="mntHT" [minFractionDigits]="2" class="w-full" />
                                     <label for="mntHT">{{ msg.components.achatFacture.detAchatFactureTVA.mntHT }}</label>
                                 </p-floatlabel>
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on">
-                                    <p-inputNumber formControlName="mntTVA" id="mntTVA" inputId="mntTVA" [minFractionDigits]="2" />
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-inputNumber formControlName="mntTVA" id="mntTVA" inputId="mntTVA" [minFractionDigits]="2" class="w-full" />
                                     <label for="mntTVA">{{ msg.components.achatFacture.detAchatFactureTVA.mntTVA }}</label>
                                 </p-floatlabel>
                             </div>

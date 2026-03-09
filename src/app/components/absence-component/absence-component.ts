@@ -341,11 +341,7 @@ export class AbsenceComponent implements OnInit {
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -363,11 +359,7 @@ export class AbsenceComponent implements OnInit {
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();

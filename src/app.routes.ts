@@ -32,6 +32,7 @@ import { ComptaComponent } from '@/components/compta-component/compta-component'
 import { Permission } from '@/shared/classes/other/permissions';
 import { Access } from '@/pages/auth/access';
 import { ComptabiliteComponent } from '@/components/comptabilite-component/comptabilite-component';
+import { EntretienComponent } from '@/components/entretien-component/entretien-component';
 
 export const appRoutes: Routes = [
     {
@@ -69,6 +70,7 @@ export const appRoutes: Routes = [
             { path: 'cheque', component: ChequeComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'comptabilite', component: ComptabiliteComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            { path: 'entretien', component: EntretienComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

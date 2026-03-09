@@ -4,41 +4,40 @@
             <p-toast></p-toast>
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left">
-                    <div class="my-2">
+                    <!-- First div: fixed width (just the button) -->
+                    <div class="my-2 flex-shrink-0">
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
 
-                    <div class="my-2">
-                        <div class="flex gap-2">
-                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" [readonlyInput]="true" />
-                            
-                            <p-floatlabel variant="on">
-                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" />
+                    <!-- Second div: stretches to fill remaining space, wraps on small screens -->
+                    <div class="my-2 flex-1 min-w-0">
+                        <div class="flex flex-wrap gap-2">
+                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" [readonlyInput]="true" [placeholder]="msg.search.dateDebutDateFin" class="flex-1 min-w-40" />
+
+                            <p-floatlabel variant="on" class="flex-1 min-w-32">
+                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" class="w-full" />
                                 <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
                             </p-floatlabel>
 
-                            <p-floatlabel variant="on" class="full-width">
-                                <p-select [(ngModel)]="repertoireIdSearch" inputId="repertoireId" [options]="listRepertoire"
-                                    appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="full-width"
-                                    placeholder="{{ msg.components.livraison.selectRepertoire }}" />
+                            <p-floatlabel variant="on" class="flex-1 min-w-40">
+                                <p-select [(ngModel)]="repertoireIdSearch" inputId="repertoireId" [options]="listRepertoire" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
                                 <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
                             </p-floatlabel>
 
-                            <p-floatlabel variant="on" class="full-width">
-                                <p-select [(ngModel)]="personnelIdSearch" inputId="personnelId" [options]="listPersonnel"
-                                    appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="full-width"
-                                    placeholder="{{ msg.components.livraison.personnelId }}" />
+                            <p-floatlabel variant="on" class="flex-1 min-w-40">
+                                <p-select [(ngModel)]="personnelIdSearch" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
                                 <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
                             </p-floatlabel>
 
-                            <p-button (click)="searchLivraison()" icon="pi pi-search" severity="info" rounded [title]="msg.buttons.search" />
-                            <p-button (click)="initSearchLivraison()" icon="pi pi-times" severity="info" rounded [title]="msg.buttons.vider" />
+                            <div class="flex gap-2 flex-shrink-0">
+                                <p-button [label]="msg.buttons.search" (click)="searchLivraison()" icon="pi pi-search" severity="contrast" [title]="msg.buttons.search" />
+                                <p-button [label]="msg.buttons.vider" (click)="initSearchLivraison()" icon="pi pi-times" severity="warn" [title]="msg.buttons.vider" />
+                            </div>
+
                         </div>
                     </div>
                 </ng-template>
-
-                <ng-template pTemplate="right">
-                </ng-template>
+                <ng-template pTemplate="right"></ng-template>
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listLivraison" dataKey="id"
@@ -225,8 +224,8 @@
                             @if (p.facturer === false) {
                                 <p-button (click)="viderAjouterFacture(p)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.facturer" />
                             }
-                            <p-button (click)="imprimerBonLivraison(p.id)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.imprimer" />
-                            <p-button (click)="imprimerClient(p.id)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.imprimer" />
+                            <p-button (click)="imprimerBonLivraison(p.id)" icon="pi pi-print" severity="help" rounded [title]="msg.buttons.imprimer" />
+                            <p-button (click)="imprimerClient(p.id)" icon="pi pi-print" severity="contrast" rounded [title]="msg.buttons.imprimer" />
                         </div>
                         </td>
                     </tr>

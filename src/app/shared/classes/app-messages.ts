@@ -2,6 +2,11 @@ export const APP_MESSAGES = {
     locale: {
         default: 'en-US'
     },
+    search: {
+        dateDebutDateFin: 'Date début - Date fin',
+        dateDebut: 'Date début',
+        dateFin: 'Date fin'
+    },
     menu: {
         ville: 'Ville',
         etablissement: 'Société',
@@ -27,6 +32,7 @@ export const APP_MESSAGES = {
         compteCourant: 'Compte Courant',
         compta: 'TVA',
         cheque: 'Chèque',
+        entretien: 'Entretien',
         deconnexion: 'Déconnexion'
     },
     components: {
@@ -188,15 +194,23 @@ export const APP_MESSAGES = {
             dateEntretien: 'Date Entretien',
             dateSys: 'Date Sys',
             numVoiture: 'Voiture N°',
+            voitureKmMax: 'Voiture Km Max',
             kmDetecte: 'Km Detecte',
             kmMax: 'Km Max',
             huile: 'Huile',
             filtreHuile: 'Filtre Huile',
             filtreCarburant: 'Filtre Carburant',
             filtreAir: 'Filtre Air',
-            filtrePollen: 'Filtre Pollen',
-            vidange: 'Vidange',
-            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce entretien ?'
+            plaquetteAV: 'Plaquette AV',
+            plaquetteAR: 'Plaquette AR',
+            pneuAV: 'Pneu AV',
+            pneuAR: 'Pneu AR',
+            kitDistribution: 'Kit de Distribution',
+            batterie: 'Batterie',
+            messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce entretien ?',
+            errors: {
+                messageExist: 'Il y a au moins un entretien pour cette voiture ou la date inférieur ou égale la date saisie et avec un km supérieur'
+            }
         },
         etablissement: {
             label: 'Société',
@@ -563,6 +577,7 @@ export const APP_MESSAGES = {
         },
         bonSortie: {
             label: 'Bon Sortie',
+            search: 'Rechercher',
             codeSortie: 'Code Sortie',
             dateOperation: 'Date Opération',
             commercialId: 'Commercial',
@@ -702,6 +717,7 @@ export const APP_MESSAGES = {
         },
         achatFacture: {
             label: 'Achat Facture',
+            search: 'Rechercher',
             numeroFacExterne: 'Numéro Facture Externe',
             dateAF: 'Date Achat Facture',
             dateReglement: 'Date Réglement',

@@ -60,8 +60,10 @@ export class AchatSimpleComponent {
     // Ajouter --> Modal --> Date BL + Fournisseur + N BL Externe + Montant TTC + combo Produit + List Produits
     //Designation + Qte Stock + prix vente + qte + uniteGratuite + remise
 
+    fournisseurDesignationSearch: string = '';
     isValid: boolean = false;
     listStock: Stock[] = [];
+    listAchatSimpleFixe: AchatSimple[] = [];
     listAchatSimple: AchatSimple[] = [];
     listDetAchatSimple: DetAchatSimple[] = [];
     listFournisseur: Fournisseur[] = [];
@@ -126,10 +128,12 @@ export class AchatSimpleComponent {
     }
 
     getAllStockDepot(): void {
+        this.listAchatSimpleFixe = [];
         this.listAchatSimple = [];
         this.achatSimpleService.getAll().subscribe({
             next: (data: AchatSimple[]) => {
-                this.listAchatSimple = data;
+                this.listAchatSimpleFixe = data;
+                this.setListFixToTemp();
             },
             error: (error: any) => {
                 console.error(error);
@@ -205,7 +209,7 @@ export class AchatSimpleComponent {
                     qte: null,
                     uniteGratuite: null,
                     remise: null,
-                    prixAchat: null,
+                    prixAchat: null
                 });
 
                 this.formGroup.get('designation')?.disable();
@@ -222,7 +226,7 @@ export class AchatSimpleComponent {
             qte: null,
             uniteGratuite: null,
             remise: null,
-            prixAchat: null,
+            prixAchat: null
         });
         this.formGroup.get('designation')?.disable();
     }
@@ -301,6 +305,19 @@ export class AchatSimpleComponent {
         this.dialogSupprimerDetAchatSimple = openClose;
     }
 
+    searchByFournisseur() {
+        if (this.fournisseurDesignationSearch && this.fournisseurDesignationSearch.length > 0) {
+            this.listAchatSimple = this.listAchatSimpleFixe.filter((x) => x.fournisseurDesignation.toLocaleLowerCase().includes(this.fournisseurDesignationSearch.toLocaleLowerCase().trim()));
+        } else {
+            this.setListFixToTemp();
+        }
+    }
+
+    setListFixToTemp() {
+        this.checkIfListIsNull();
+        this.listAchatSimple = [...this.listAchatSimpleFixe];
+    }
+
     viderAjouter() {
         this.openCloseDialogAjouter(true);
         this.submitted = false;
@@ -374,6 +391,9 @@ export class AchatSimpleComponent {
     }
 
     checkIfListIsNull() {
+        if (null == this.listAchatSimpleFixe) {
+            this.listAchatSimpleFixe = [];
+        }
         if (null == this.listAchatSimple) {
             this.listAchatSimple = [];
         }
@@ -412,7 +432,8 @@ export class AchatSimpleComponent {
 
                         this.listDetAchatSimple = [];
                         this.checkIfListIsNull();
-                        this.listAchatSimple = this.updateList(data, this.listAchatSimple, OperationType.MODIFY);
+                        this.listAchatSimpleFixe = this.updateList(data, this.listAchatSimpleFixe, OperationType.MODIFY);
+                        this.setListFixToTemp();
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -431,26 +452,16 @@ export class AchatSimpleComponent {
             } else {
                 this.achatSimpleService.create(achatSimpleRequest).subscribe({
                     next: (data: AchatSimple) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageAddSuccess
-                        });
-
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageAddSuccess });
                         this.listDetAchatSimple = [];
                         this.checkIfListIsNull();
-                        this.listAchatSimple = this.updateList(data, this.listAchatSimple, OperationType.ADD);
+                        this.listAchatSimpleFixe = this.updateList(data, this.listAchatSimpleFixe, OperationType.ADD);
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -469,25 +480,17 @@ export class AchatSimpleComponent {
             let id = this.achatSimple.id;
             this.achatSimpleService.delete(this.achatSimple.id).subscribe({
                 next: (data) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: this.msg.summary.labelSuccess,
-                        closable: true,
-                        detail: this.msg.messages.messageDeleteSuccess
-                    });
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageDeleteSuccess });
 
                     this.checkIfListIsNull();
-                    this.listAchatSimple = this.updateList(initObjectAchatSimple(), this.listAchatSimple, OperationType.DELETE, id);
+                    this.listAchatSimpleFixe = this.updateList(initObjectAchatSimple(), this.listAchatSimpleFixe, OperationType.DELETE, id);
+                    this.setListFixToTemp();
                     this.achatSimple = initObjectAchatSimple();
                 },
                 error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.msg.summary.labelError,
-                        detail: this.msg.messages.messageErrorProduite
-                    });
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                 },
                 complete: () => {
                     this.loadingService.hide();

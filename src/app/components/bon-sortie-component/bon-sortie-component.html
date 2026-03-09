@@ -7,6 +7,9 @@
                     <div class="my-2">
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
+                    <div class="my-2" style="margin-right: 0.5ch;">
+                        <input pInputText type="text" placeholder="{{ msg.components.bonSortie.search }}" (input)="searchByCommercial()" [(ngModel)]="commercialDesignationSearch" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">

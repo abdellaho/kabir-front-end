@@ -1,0 +1,21 @@
+/* Make the toolbar's left section a flex row that can wrap */
+:host ::ng-deep .p-toolbar-group-start,
+:host ::ng-deep .p-toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+/* Make the toolbar itself wrap on small screens */
+:host ::ng-deep .p-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Remove fixed height from p-select to match inputs */
+:host ::ng-deep .p-select {
+  height: 33px;
+}

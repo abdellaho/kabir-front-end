@@ -94,28 +94,91 @@
                     <div class="card flex flex-col gap-4">
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on" class="w-full">
-                                    <input pInputText id="codeSortie" formControlName="codeSortie" class="w-full" />
-                                    <label for="codeSortie">{{ msg.components.bonSortie.codeSortie }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on" class="w-full">
-                                    <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
-                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
-                                    <label for="dateOperation">{{ msg.components.bonSortie.dateOperation }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-select formControlName="voitureId" inputId="voitureId" class="w-full"
-                                        [options]="listVoiture" appendTo="body" optionLabel="designation"
+                                    <p-select formControlName="voitureId" inputId="voitureId" class="w-full" (onChange)="onChangeVoitureId()"
+                                        [options]="listVoiture" appendTo="body" optionLabel="numVoiture"
                                         optionValue="id" style="height: 30px;" />
                                     <label for="voitureId">{{ msg.components.entretien.numVoiture }}</label>
                                 </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <input pInputText id="voitureKmMax" formControlName="voitureKmMax" class="w-full" />
+                                    <label for="voitureKmMax">{{ msg.components.entretien.voitureKmMax }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-date-picker id="dateEntretien" formControlName="dateEntretien" appendTo="body" class="w-full"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateEntretien')?.invalid }" />
+                                    <label for="dateEntretien">{{ msg.components.entretien.dateEntretien }}</label>
+                                </p-floatlabel>
+                            </div>
+                        
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <input pInputText id="kmDetecte" formControlName="kmDetecte" class="w-full" />
+                                    <label for="kmDetecte">{{ msg.components.entretien.kmDetecte }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <span id="huileSpan">{{ msg.components.entretien.huile }}</span>
+                                <p-toggleswitch name="huile" id="huile" formControlName="huile" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="filtreHuileSpan">{{ msg.components.entretien.filtreHuile }}</span>
+                                <p-toggleswitch name="filtreHuile" id="filtreHuile" formControlName="filtreHuile" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="filtreCarburantSpan">{{ msg.components.entretien.filtreCarburant }}</span>
+                                <p-toggleswitch name="filtreCarburant" id="filtreCarburant" formControlName="filtreCarburant" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="filtreAirSpan">{{ msg.components.entretien.filtreAir }}</span>
+                                <p-toggleswitch name="filtreAir" id="filtreAir" formControlName="filtreAir" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="plaquetteAVSpan">{{ msg.components.entretien.plaquetteAV }}</span>
+                                <p-toggleswitch name="plaquetteAV" id="plaquetteAV" formControlName="plaquetteAV" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <span id="plaquetteARSpan">{{ msg.components.entretien.plaquetteAR }}</span>
+                                <p-toggleswitch name="plaquetteAR" id="plaquetteAR" formControlName="plaquetteAR" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="pneuAVSpan">{{ msg.components.entretien.pneuAV }}</span>
+                                <p-toggleswitch name="pneuAV" id="pneuAV" formControlName="pneuAV" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="pneuARSpan">{{ msg.components.entretien.pneuAR }}</span>
+                                <p-toggleswitch name="pneuAR" id="pneuAR" formControlName="pneuAR" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="kitDistributionSpan">{{ msg.components.entretien.kitDistribution }}</span>
+                                <p-toggleswitch name="kitDistribution" id="kitDistribution" formControlName="kitDistribution" />
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <span id="batterieSpan">{{ msg.components.entretien.batterie }}</span>
+                                <p-toggleswitch name="batterie" id="batterie" formControlName="batterie" />
                             </div>
                         </div>
                     </div>

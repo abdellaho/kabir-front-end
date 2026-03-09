@@ -138,6 +138,9 @@ export class LivraisonViewComponent implements OnInit {
         commonSearch.repertoireId = this.repertoireIdSearch;
         commonSearch.personnelId = this.personnelIdSearch;
         commonSearch.numCheque = this.numChequeSearch;
+        if (commonSearch.dateDebut || commonSearch.dateFin) {
+            commonSearch.searchByDate = true;
+        }
 
         this.livraisonService.searchByCommon(commonSearch).subscribe({
             next: (livraisons) => {

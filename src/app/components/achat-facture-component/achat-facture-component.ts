@@ -76,8 +76,10 @@ export class AchatFactureComponent {
     // || combo Produit + List Produits
     //Designation + St Facturé (qte facturé) + qte Acheté + uniteGratuite + Mt Produit + Action (delete)
 
+    fournisseurDesignationSearch: string = '';
     isValid: boolean = false;
     listStock: Stock[] = [];
+    listAchatFactureFixe: AchatFacture[] = [];
     listAchatFacture: AchatFacture[] = [];
     listDetAchatFactureTVA: DetAchatFactureTVA[] = [];
     listDetAchatFacture: DetAchatFacture[] = [];
@@ -114,6 +116,7 @@ export class AchatFactureComponent {
     ) {}
 
     ngOnInit(): void {
+        this.fournisseurDesignationSearch = '';
         this.search();
         this.getAllStock();
         this.getAllFournisseur();
@@ -175,11 +178,21 @@ export class AchatFactureComponent {
         this.getAllAchatFacture();
     }
 
+    searchByFournisseur() {
+        if (this.fournisseurDesignationSearch && this.fournisseurDesignationSearch.length > 0) {
+            this.listAchatFacture = this.listAchatFactureFixe.filter((x) => x.fournisseurDesignation.toLocaleLowerCase().includes(this.fournisseurDesignationSearch.toLocaleLowerCase().trim()));
+        } else {
+            this.listAchatFacture = [...this.listAchatFactureFixe];
+        }
+    }
+
     getAllAchatFacture(): void {
+        this.listAchatFactureFixe = [];
         this.listAchatFacture = [];
         this.achatFactureService.getAll().subscribe({
             next: (data: AchatFacture[]) => {
-                this.listAchatFacture = data;
+                this.listAchatFactureFixe = data;
+                this.listAchatFacture = [...this.listAchatFactureFixe];
             },
             error: (error: any) => {
                 console.error(error);
@@ -677,6 +690,9 @@ export class AchatFactureComponent {
     }
 
     checkIfListIsNull() {
+        if (null == this.listAchatFactureFixe) {
+            this.listAchatFactureFixe = [];
+        }
         if (null == this.listAchatFacture) {
             this.listAchatFacture = [];
         }
@@ -731,7 +747,8 @@ export class AchatFactureComponent {
 
                         this.listDetAchatFacture = [];
                         this.checkIfListIsNull();
-                        this.listAchatFacture = this.updateList(data, this.listAchatFacture, OperationType.MODIFY);
+                        this.listAchatFactureFixe = this.updateList(data, this.listAchatFactureFixe, OperationType.MODIFY);
+                        this.listAchatFacture = [...this.listAchatFactureFixe];
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -750,17 +767,14 @@ export class AchatFactureComponent {
 
                         this.listDetAchatFacture = [];
                         this.checkIfListIsNull();
-                        this.listAchatFacture = this.updateList(data, this.listAchatFacture, OperationType.ADD);
+                        this.listAchatFactureFixe = this.updateList(data, this.listAchatFactureFixe, OperationType.ADD);
+                        this.listAchatFacture = [...this.listAchatFactureFixe];
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -779,25 +793,17 @@ export class AchatFactureComponent {
             let id = this.achatFacture.id;
             this.achatFactureService.delete(this.achatFacture.id).subscribe({
                 next: (data) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: this.msg.summary.labelSuccess,
-                        closable: true,
-                        detail: this.msg.messages.messageDeleteSuccess
-                    });
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageDeleteSuccess });
 
                     this.checkIfListIsNull();
-                    this.listAchatFacture = this.updateList(initObjectAchatFacture(), this.listAchatFacture, OperationType.DELETE, id);
+                    this.listAchatFactureFixe = this.updateList(initObjectAchatFacture(), this.listAchatFactureFixe, OperationType.DELETE, id);
+                    this.listAchatFacture = [...this.listAchatFactureFixe];
                     this.achatFacture = initObjectAchatFacture();
                 },
                 error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.msg.summary.labelError,
-                        detail: this.msg.messages.messageErrorProduite
-                    });
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                 },
                 complete: () => {
                     this.loadingService.hide();

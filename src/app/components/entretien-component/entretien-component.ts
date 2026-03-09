@@ -54,7 +54,7 @@ import { EntretienValidator } from '@/validators/entretien-validator';
         MultiSelectModule
     ],
     templateUrl: './entretien-component.html',
-  styleUrl: './entretien-component.scss'
+    styleUrl: './entretien-component.scss'
 })
 export class EntretienComponent implements OnInit {
     personnelCreationId: number | null = null;
@@ -98,7 +98,7 @@ export class EntretienComponent implements OnInit {
         this.formGroup = this.formBuilder.group(
             {
                 voitureId: [0, [Validators.required, Validators.min(1)]],
-                voitureKmMax: [0, [Validators.required, Validators.min(1)]],
+                voitureKmMax: [{ value: 0, disabled: true }],
                 dateEntretien: [new Date(), Validators.required],
                 kmDetecte: [0, Validators.required],
                 huile: [false],
@@ -114,6 +114,22 @@ export class EntretienComponent implements OnInit {
             },
             { validators: EntretienValidator }
         );
+    }
+
+    onChangeVoitureId() {
+        let kmMax: number = 0;
+        if (this.formGroup.get('voitureId')?.value !== null && this.formGroup.get('voitureId')?.value !== undefined && this.formGroup.get('voitureId')?.value !== BigInt(0)) {
+            let voiture = this.listVoiture.find((x) => x.id === this.formGroup.get('voitureId')?.value);
+            if (voiture && voiture.id) {
+                kmMax = voiture.kmMax;
+            }
+        }
+
+        this.formGroup.patchValue({
+            voitureKmMax: kmMax
+        });
+
+        this.formGroup.get('voitureKmMax')?.disable();
     }
 
     getAllEntretien(): void {
@@ -184,6 +200,7 @@ export class EntretienComponent implements OnInit {
             if (operation === 1) {
                 this.formGroup.patchValue({
                     voitureId: this.entretien.voitureId,
+                    voitureKmMax: this.entretien.voitureKmMax,
                     dateEntretien: new Date(this.entretien.dateEntretien) ?? new Date(),
                     kmDetecte: this.entretien.kmDetecte,
                     huile: this.entretien.huile,
@@ -218,7 +235,7 @@ export class EntretienComponent implements OnInit {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);
         }
-        
+
         return list;
     }
 
@@ -276,7 +293,7 @@ export class EntretienComponent implements OnInit {
                 });
             } else {
                 //this.entretien.personnelOperationId = BigInt(this.personnelCreationId || 0);
-                this.entretien.kmMax = this.entretien.voitureKmMax;
+                this.entretien.kmMax = this.formGroup.get('voitureKmMax')?.value || 0;
                 this.entretienService.create(this.entretien).subscribe({
                     next: (data: Entretien) => {
                         this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
@@ -287,11 +304,7 @@ export class EntretienComponent implements OnInit {
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -299,7 +312,7 @@ export class EntretienComponent implements OnInit {
                 });
             }
         } else {
-            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.absence.label} ${this.msg.messages.messageExistDeja}` });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.entretien.errors.messageExist}`, sticky: true });
             this.loadingService.hide();
         }
     }

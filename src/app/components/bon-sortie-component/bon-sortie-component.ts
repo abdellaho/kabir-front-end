@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -28,8 +28,6 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { BonSortieRequest } from '@/shared/classes/bon-sortie-request';
 import { OperationType } from '@/shared/enums/operation-type';
 import { BonSortieValidator } from '@/validators/bon-sortie-validator';
-import { RepertoireService } from '@/services/repertoire/repertoire-service';
-import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { StateService } from '@/state/state-service';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { PersonnelService } from '@/services/personnel/personnel-service';
@@ -58,10 +56,12 @@ import { initObjectPersonnel, Personnel } from '@/models/personnel';
     templateUrl: './bon-sortie-component.html',
     styleUrl: './bon-sortie-component.scss'
 })
-export class BonSortieComponent {
+export class BonSortieComponent implements OnInit {
+    commercialDesignationSearch: string = '';
     personnelCreationId: number | null = null;
     isValid: boolean = false;
     listStock: Stock[] = [];
+    listBonSortieFixe: BonSortie[] = [];
     listBonSortie: BonSortie[] = [];
     listDetailBonSortie: DetailBonSortie[] = [];
     bonSortie: BonSortie = initObjectBonSortie();
@@ -90,6 +90,7 @@ export class BonSortieComponent {
     ) {}
 
     ngOnInit(): void {
+        this.commercialDesignationSearch = '';
         this.personnelCreationId = this.stateService.getState().user?.id || null;
         this.search();
         this.getAllPersonnel();
@@ -103,6 +104,19 @@ export class BonSortieComponent {
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    searchByCommercial() {
+        if (this.commercialDesignationSearch && this.commercialDesignationSearch.length > 0) {
+            this.listBonSortie = this.listBonSortieFixe.filter((x) => x.commercialDesignation.toLocaleLowerCase().includes(this.commercialDesignationSearch.toLocaleLowerCase().trim()));
+        } else {
+            this.setListFixToTemp();
+        }
+    }
+
+    setListFixToTemp() {
+        this.checkIfListIsNull();
+        this.listBonSortie = [...this.listBonSortieFixe];
     }
 
     initFormGroup() {
@@ -126,10 +140,12 @@ export class BonSortieComponent {
     }
 
     getAllBonSortie(): void {
+        this.listBonSortieFixe = [];
         this.listBonSortie = [];
         this.bonSortieService.getAll().subscribe({
             next: (data: BonSortie[]) => {
-                this.listBonSortie = data;
+                this.listBonSortieFixe = data;
+                this.setListFixToTemp();
             },
             error: (error: any) => {
                 console.error(error);
@@ -358,6 +374,9 @@ export class BonSortieComponent {
     }
 
     checkIfListIsNull() {
+        if (null == this.listBonSortieFixe) {
+            this.listBonSortieFixe = [];
+        }
         if (null == this.listBonSortie) {
             this.listBonSortie = [];
         }
@@ -427,26 +446,17 @@ export class BonSortieComponent {
             if (this.bonSortie.id) {
                 this.bonSortieService.update(this.bonSortie.id, bonSortieRequest).subscribe({
                     next: (data) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageUpdateSuccess
-                        });
-
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageUpdateSuccess });
                         this.listDetailBonSortie = [];
                         this.checkIfListIsNull();
-                        this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.MODIFY);
+                        this.listBonSortieFixe = this.updateList(data, this.listBonSortieFixe, OperationType.MODIFY);
+                        this.setListFixToTemp();
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -456,16 +466,12 @@ export class BonSortieComponent {
                 bonSortieRequest.bonSortie.personnelId = BigInt(this.personnelCreationId || 0);
                 this.bonSortieService.create(bonSortieRequest).subscribe({
                     next: (data: BonSortie) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageAddSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageAddSuccess });
 
                         this.listDetailBonSortie = [];
                         this.checkIfListIsNull();
-                        this.listBonSortie = this.updateList(data, this.listBonSortie, OperationType.ADD);
+                        this.listBonSortieFixe = this.updateList(data, this.listBonSortieFixe, OperationType.ADD);
+                        this.setListFixToTemp();
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -494,25 +500,17 @@ export class BonSortieComponent {
             let id = this.bonSortie.id;
             this.bonSortieService.delete(this.bonSortie.id).subscribe({
                 next: (data) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: this.msg.summary.labelSuccess,
-                        closable: true,
-                        detail: this.msg.messages.messageDeleteSuccess
-                    });
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, detail: this.msg.messages.messageDeleteSuccess });
 
                     this.checkIfListIsNull();
-                    this.listBonSortie = this.updateList(initObjectBonSortie(), this.listBonSortie, OperationType.DELETE, id);
+                    this.listBonSortieFixe = this.updateList(initObjectBonSortie(), this.listBonSortieFixe, OperationType.DELETE, id);
+                    this.setListFixToTemp();
                     this.bonSortie = initObjectBonSortie();
                 },
                 error: (err) => {
                     console.log(err);
                     this.loadingService.hide();
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.msg.summary.labelError,
-                        detail: this.msg.messages.messageErrorProduite
-                    });
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                 },
                 complete: () => {
                     this.loadingService.hide();
