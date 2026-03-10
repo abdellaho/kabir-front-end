@@ -23,8 +23,13 @@ export function FactureValidator(conf: { getListDetFacture: () => DetFacture[] }
         }
 
         // Validate required fields
-        if (!hasValue(getValue('personnelId'))) addError('personnelIdRequired');
-        if (!hasValue(getValue('repertoireId'))) addError('repertoireIdRequired');
+        if (get('personnelId')?.touched) {
+            if (!hasValue(getValue('personnelId'))) addError('personnelIdRequired');
+        }
+
+        if (get('repertoireId')?.touched) {
+            if (!hasValue(getValue('repertoireId'))) addError('repertoireIdRequired');
+        }
 
         // Payment validation config
         const reglements = [

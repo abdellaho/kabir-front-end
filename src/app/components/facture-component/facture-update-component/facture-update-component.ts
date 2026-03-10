@@ -246,10 +246,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
                 qteStock: [{ value: this.stockSelected.qteFacturer, disabled: true }],
                 prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
-                qteFacturer: [1, [Validators.required, Validators.min(1)]],
+                qteFacturer: [null, [Validators.required, Validators.min(1)]],
                 prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
-                remiseFacture: [0, [Validators.min(0), Validators.max(100)]],
-                montantProduit: [0, [Validators.min(0)]]
+                remiseFacture: [null, [Validators.min(0), Validators.max(100)]],
+                montantProduit: [{ value: 0, disabled: true }]
             },
             { validators: DetFactureValidator({ stock: this.stockSelected }) }
         );
@@ -387,9 +387,9 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     mapFormGroupStockToObject(formGroup: FormGroup, detailFacture: DetFacture): DetFacture {
         detailFacture.stock = structuredClone(this.stockSelected);
         detailFacture.prixVente = formGroup.get('prixVente')?.value;
-        detailFacture.qteFacturer = formGroup.get('qteFacturer')?.value;
-        detailFacture.remiseFacture = formGroup.get('remiseFacture')?.value;
-        detailFacture.montantProduit = formGroup.get('montantProduit')?.value;
+        detailFacture.qteFacturer = formGroup.get('qteFacturer')?.value || 0;
+        detailFacture.remiseFacture = formGroup.get('remiseFacture')?.value || 0;
+        detailFacture.montantProduit = formGroup.get('montantProduit')?.value || 0;
 
         return detailFacture;
     }
@@ -446,8 +446,9 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
 
     onChangeMontantProduit() {
         this.formGroupStock.patchValue({
-            montantProduit: this.formGroupStock.get('prixVente')?.value * this.formGroupStock.get('qteFacturer')?.value
+            montantProduit: this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteFacturer')?.value || 0)
         });
+        this.formGroupStock.get('montantProduit')?.disable();
     }
 
     validerStock() {

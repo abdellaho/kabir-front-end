@@ -1,4 +1,4 @@
-import { Ville } from "./ville";
+import { Ville } from './ville';
 
 export interface Fournisseur {
     id: bigint | null;
@@ -14,6 +14,7 @@ export interface Fournisseur {
     nbrOperation: number;
     ville: Ville | null;
     villeId: bigint | null;
+    canDelete: boolean;
 }
 
 export function initObjectFournisseur(): Fournisseur {
@@ -31,5 +32,6 @@ export function initObjectFournisseur(): Fournisseur {
         nbrOperation: 0,
         ville: null,
         villeId: null,
-    }
+        canDelete: false
+    };
 }

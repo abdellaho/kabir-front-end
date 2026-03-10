@@ -480,10 +480,8 @@
 
     <div class="flex flex-col md:flex-row gap-6 justify-content-center align-items-center" style="justify-content: center; margin-top: 1rem;">
         <div class="flex gap-2">
-            <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times"
-                class="p-button-outlined p-button-danger" (click)="fermer()"></button>
-            <p-button pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info"
-                (click)="miseAjour()" [disabled]="!formGroup.valid"></p-button>
+            <p-button pRipple [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-info" (click)="miseAjour()" [disabled]="!formGroup.valid"></p-button>
+            <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="fermer()"></button>
         </div>
     </div>
 </p-fluid>

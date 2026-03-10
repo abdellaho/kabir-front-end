@@ -117,7 +117,7 @@
                   <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded
                     [title]="msg.buttons.archiver" />
                   <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
-                    [title]="msg.buttons.supprimer" />
+                    [title]="msg.buttons.supprimer" [disabled]="!p.canDelete" />
                   <p-button (click)="recupperer(7, p)" icon="pi pi-ban" severity="help" rounded
                     [title]="msg.buttons.role" />
                 }
@@ -153,7 +153,7 @@
       [closable]="false">
       <!-- Form content must go inside ng-template -->
       <ng-template pTemplate="content">
-        <div [formGroup]="formGroup" class="p-fluid">
+        <div [formGroup]="formGroup" class="p-fluid" style="margin-top: 0.5ch;">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col">
               <p-floatlabel variant="on">

@@ -20,6 +20,7 @@ export interface Repertoire {
     observation: string;
     nbrOperationClient: number;
     plafond: number;
+    canDelete: boolean;
     personnelId: bigint | null;
     personnelDesignation: string;
     personnel?: Personnel | null;
@@ -48,6 +49,7 @@ export function initObjectRepertoire(): Repertoire {
         observation: '',
         nbrOperationClient: 0,
         plafond: 0,
+        canDelete: false,
         personnelId: null,
         personnelDesignation: '',
         personnel: null,

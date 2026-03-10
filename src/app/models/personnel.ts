@@ -14,6 +14,7 @@ export interface Personnel {
     dateEntrer: Date;
     dateSuppression: Date | null;
     salaire: number;
+    canDelete: boolean;
     archiver: boolean;
     supprimer: boolean;
     consulterStock: boolean;
@@ -43,6 +44,7 @@ export function initObjectPersonnel(): Personnel {
         dateEntrer: new Date(),
         dateSuppression: null,
         salaire: 0,
+        canDelete: false,
         archiver: false,
         supprimer: false,
         consulterStock: false,
@@ -52,6 +54,6 @@ export function initObjectPersonnel(): Personnel {
         consulterRepertoire: false,
         ajouterRepertoire: false,
         modifierRepertoire: false,
-        supprimerRepertoire: false,
-    }
+        supprimerRepertoire: false
+    };
 }
