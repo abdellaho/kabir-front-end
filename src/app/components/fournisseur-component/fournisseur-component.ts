@@ -26,6 +26,7 @@ import { Ripple } from 'primeng/ripple';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { FournisseurValidator } from '@/validators/fournisseur-validator';
 import { MessageModule } from 'primeng/message';
+import { ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 
 @Component({
     selector: 'app-fournisseur-component',
@@ -319,13 +320,28 @@ export class FournisseurComponent implements OnInit {
         }
     }
 
+    async checkIfPersonnelExists(fournisseur: Fournisseur): Promise<ValidationResponse> {
+        try {
+            const existsObservable = this.fournisseurService.existing(fournisseur).pipe(
+                catchError((error) => {
+                    console.error('Error in fournisseur existence observable:', error);
+                    return of({ exists: false, errors: {} }); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if fournisseur exists:', error);
+            return { exists: false, errors: {} };
+        }
+    }
+
     async miseAjour(): Promise<void> {
         this.loadingService.show();
         let fournisseurEdit: Fournisseur = { ...this.fournisseur };
         this.mapFormGroupToObject(this.formGroup, fournisseurEdit);
-        let trvErreur = await this.checkIfExists(fournisseurEdit);
+        let validationResponse: ValidationResponse = await this.checkIfPersonnelExists(fournisseurEdit);
 
-        if (!trvErreur) {
+        if (!validationResponse.exists) {
             this.mapFormGroupToObject(this.formGroup, this.fournisseur);
             this.submitted = true;
 
@@ -385,6 +401,20 @@ export class FournisseurComponent implements OnInit {
                 });
             }
         } else {
+            if (validationResponse.errors['designation']) {
+                this.formGroup.get('designation')?.setErrors({ exist: true, message: validationResponse.errors['designation'] });
+            }
+            if (validationResponse.errors['tel1']) {
+                this.formGroup.get('tel1')?.setErrors({ exist: true, message: validationResponse.errors['tel1'] });
+            }
+            if (validationResponse.errors['tel2']) {
+                this.formGroup.get('tel2')?.setErrors({ exist: true, message: validationResponse.errors['tel2'] });
+            }
+            if (validationResponse.errors['ice']) {
+                this.formGroup.get('ice')?.setErrors({ exist: true, message: validationResponse.errors['ice'] });
+            }
+            this.formGroup.updateValueAndValidity();
+
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.fournisseur.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }

@@ -1,6 +1,7 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Fournisseur } from '@/models/fournisseur';
 import { getTypeOperation, omit } from '@/shared/classes/generic-methods';
+import { ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { OperationType } from '@/shared/enums/operation-type';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -40,6 +41,10 @@ export class FournisseurService {
   exist(fournisseur: Fournisseur): Observable<boolean> {
     const serializedObj = this.serialization(fournisseur);
     return this.http.post<boolean>(ENDPOINTS.FOURNISSEUR.exist, serializedObj);
+  }
+
+  existing(fournisseur: Fournisseur): Observable<ValidationResponse> {
+    return this.http.post<ValidationResponse>(ENDPOINTS.FOURNISSEUR.existing, fournisseur);
   }
 
   updateNbrOperation(id: bigint, operationType: OperationType): Observable<void> {

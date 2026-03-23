@@ -116,7 +116,7 @@
                         <div class="flex flex-wrap gap-6">
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="full-width">
-                                    <p-input-number id="montant" formControlName="montant" class="full-width" required [minFractionDigits]="2"
+                                    <p-input-number id="montant" formControlName="montant" class="full-width" required [maxFractionDigits]="2"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('montant')?.invalid }" />
                                     <label for="montant">{{ msg.components.cheque.montant }}</label>
                                 </p-floatlabel>

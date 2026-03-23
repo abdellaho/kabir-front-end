@@ -30,7 +30,7 @@ import { MessageModule } from 'primeng/message';
 import { RepertoireValidator } from '@/validators/repertoire-validator';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
-import { initRepertoireValidationResponse, RepertoireValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
+import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
 import { Textarea } from 'primeng/textarea';
 
@@ -440,19 +440,19 @@ export class RepertoireComponent {
         return repertoire;
     }
 
-    async checkIfRepertoireExists(repertoire: Repertoire): Promise<RepertoireValidationResponse> {
-        let repertoireValidationResponse: RepertoireValidationResponse = initRepertoireValidationResponse();
+    async checkIfRepertoireExists(repertoire: Repertoire): Promise<ValidationResponse> {
+        let validationResponse: ValidationResponse = initValidationResponse();
         try {
             const existsObservable = this.repertoireService.exist(repertoire).pipe(
                 catchError((error) => {
                     console.error('Error in repertoire existence observable:', error);
-                    return of(repertoireValidationResponse); // Gracefully handle observable errors by returning false
+                    return of(validationResponse); // Gracefully handle observable errors by returning false
                 })
             );
             return await firstValueFrom(existsObservable);
         } catch (error) {
             console.error('Unexpected error checking if repertoire exists:', error);
-            return repertoireValidationResponse;
+            return validationResponse;
         }
     }
 
@@ -461,9 +461,9 @@ export class RepertoireComponent {
         let repertoireEdit: Repertoire = { ...this.repertoire };
         this.mapFormGroupToObject(this.formGroup, repertoireEdit);
         let repertoireSearch: Repertoire = { ...repertoireEdit };
-        let repertoireValidationResponse: RepertoireValidationResponse = await this.checkIfRepertoireExists(repertoireSearch);
+        let validationResponse: ValidationResponse = await this.checkIfRepertoireExists(repertoireSearch);
 
-        if (!repertoireValidationResponse.exists) {
+        if (!validationResponse.exists) {
             this.mapFormGroupToObject(this.formGroup, this.repertoire);
             this.submitted = true;
 
@@ -503,20 +503,20 @@ export class RepertoireComponent {
                 });
             }
         } else {
-            if (repertoireValidationResponse.errors['designation']) {
-                this.formGroup.get('designation')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['designation'] });
+            if (validationResponse.errors['designation']) {
+                this.formGroup.get('designation')?.setErrors({ exist: true, message: validationResponse.errors['designation'] });
             }
-            if (repertoireValidationResponse.errors['tel1']) {
-                this.formGroup.get('tel1')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel1'] });
+            if (validationResponse.errors['tel1']) {
+                this.formGroup.get('tel1')?.setErrors({ exist: true, message: validationResponse.errors['tel1'] });
             }
-            if (repertoireValidationResponse.errors['tel2']) {
-                this.formGroup.get('tel2')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel2'] });
+            if (validationResponse.errors['tel2']) {
+                this.formGroup.get('tel2')?.setErrors({ exist: true, message: validationResponse.errors['tel2'] });
             }
-            if (repertoireValidationResponse.errors['tel3']) {
-                this.formGroup.get('tel3')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['tel3'] });
+            if (validationResponse.errors['tel3']) {
+                this.formGroup.get('tel3')?.setErrors({ exist: true, message: validationResponse.errors['tel3'] });
             }
-            if (repertoireValidationResponse.errors['ice']) {
-                this.formGroup.get('ice')?.setErrors({ exist: true, message: repertoireValidationResponse.errors['ice'] });
+            if (validationResponse.errors['ice']) {
+                this.formGroup.get('ice')?.setErrors({ exist: true, message: validationResponse.errors['ice'] });
             }
             this.formGroup.updateValueAndValidity();
 

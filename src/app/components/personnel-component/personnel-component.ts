@@ -30,6 +30,7 @@ import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
 import { CheckboxModule } from 'primeng/checkbox';
 import { mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 
 @Component({
     selector: 'app-personnel-component',
@@ -351,6 +352,22 @@ export class PersonnelComponent implements OnInit {
         return personnel;
     }
 
+    async checkIfPersonnelExists(personnel: Personnel): Promise<ValidationResponse> {
+        let validationResponse: ValidationResponse = initValidationResponse();
+        try {
+            const existsObservable = this.personnelService.existing(personnel).pipe(
+                catchError((error) => {
+                    console.error('Error in personnel existence observable:', error);
+                    return of(validationResponse); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if personnel exists:', error);
+            return validationResponse;
+        }
+    }
+
     async checkIfExists(personnel: Personnel): Promise<boolean> {
         try {
             const existsObservable = this.personnelService.exist(personnel).pipe(
@@ -411,9 +428,9 @@ export class PersonnelComponent implements OnInit {
         }
         personnelEdit = this.mapFormGroupToObject(this.formGroup, personnelEdit, 0);
         //let personnelSearch: PersonnelSearch = { ...personnelEdit, id: this.personnel.id };
-        let trvErreur = await this.checkIfExists(personnelEdit);
+        let validationResponse: ValidationResponse = await this.checkIfPersonnelExists(personnelEdit);
 
-        if (!trvErreur) {
+        if (!validationResponse.exists) {
             this.personnel = this.mapFormGroupToObject(this.formGroup, this.personnel, 0);
             this.submitted = true;
 
@@ -473,6 +490,23 @@ export class PersonnelComponent implements OnInit {
                 });
             }
         } else {
+            if (validationResponse.errors['designation']) {
+                this.formGroup.get('designation')?.setErrors({ exist: true, message: validationResponse.errors['designation'] });
+            }
+            if (validationResponse.errors['tel1']) {
+                this.formGroup.get('tel1')?.setErrors({ exist: true, message: validationResponse.errors['tel1'] });
+            }
+            if (validationResponse.errors['tel2']) {
+                this.formGroup.get('tel2')?.setErrors({ exist: true, message: validationResponse.errors['tel2'] });
+            }
+            if (validationResponse.errors['email']) {
+                this.formGroup.get('email')?.setErrors({ exist: true, message: validationResponse.errors['email'] });
+            }
+            if (validationResponse.errors['cin']) {
+                this.formGroup.get('cin')?.setErrors({ exist: true, message: validationResponse.errors['cin'] });
+            }
+            this.formGroup.updateValueAndValidity();
+
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.personnel.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }

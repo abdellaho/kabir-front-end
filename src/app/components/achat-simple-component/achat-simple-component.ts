@@ -113,10 +113,9 @@ export class AchatSimpleComponent {
                 fournisseurId: [BigInt(0)],
                 numBlExterne: [''],
                 montant: [{ value: 0, disabled: true }],
-                designation: [{ value: '', disabled: true }],
                 qte: [null],
                 prixAchat: [null],
-                remise: [null],
+                remise: [null, [Validators.max(100), Validators.min(0)]],
                 uniteGratuite: [null]
             },
             { validators: [AchatSimpleValidator({ getListDetAchatSimple: () => this.listDetAchatSimple })] }
@@ -205,14 +204,12 @@ export class AchatSimpleComponent {
             if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
-                    designation: this.stock.designation,
                     qte: null,
                     uniteGratuite: null,
                     remise: null,
                     prixAchat: null
                 });
 
-                this.formGroup.get('designation')?.disable();
                 this.isValid = true;
             }
         }
@@ -222,13 +219,11 @@ export class AchatSimpleComponent {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
             stockId: BigInt(0),
-            designation: '',
             qte: null,
             uniteGratuite: null,
             remise: null,
             prixAchat: null
         });
-        this.formGroup.get('designation')?.disable();
     }
 
     recuppererDetAchatSimple(operation: number, detAchatSimpleEdit: DetAchatSimple) {
@@ -277,7 +272,8 @@ export class AchatSimpleComponent {
 
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
             detAchatSimple.stockDesignation = stock.designation;
-            detAchatSimple.montant = detAchatSimple.qte * detAchatSimple.prixAchat - detAchatSimple.qte * detAchatSimple.prixAchat * detAchatSimple.remise * 0.01;
+            let montant: number = detAchatSimple.qte * detAchatSimple.prixAchat;
+            detAchatSimple.montant = montant - (montant * detAchatSimple.remise * 0.01);
 
             this.listDetAchatSimple.push(detAchatSimple);
 
@@ -346,7 +342,6 @@ export class AchatSimpleComponent {
                             uniteGratuite: null,
                             prixAchat: null,
                             remise: null,
-                            designation: '',
                             stockId: BigInt(0),
                             qte: null,
                             dateOperation: new Date(this.achatSimple.dateOperation),
@@ -355,7 +350,6 @@ export class AchatSimpleComponent {
                             montant: this.achatSimple.montant
                         });
 
-                        this.formGroup.get('designation')?.disable();
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
@@ -423,12 +417,7 @@ export class AchatSimpleComponent {
             if (this.achatSimple.id) {
                 this.achatSimpleService.update(this.achatSimple.id, achatSimpleRequest).subscribe({
                     next: (data) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: this.msg.summary.labelSuccess,
-                            closable: true,
-                            detail: this.msg.messages.messageUpdateSuccess
-                        });
+                        this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
 
                         this.listDetAchatSimple = [];
                         this.checkIfListIsNull();
@@ -439,11 +428,7 @@ export class AchatSimpleComponent {
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: this.msg.summary.labelError,
-                            detail: this.msg.messages.messageErrorProduite
-                        });
+                        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -456,6 +441,7 @@ export class AchatSimpleComponent {
                         this.listDetAchatSimple = [];
                         this.checkIfListIsNull();
                         this.listAchatSimpleFixe = this.updateList(data, this.listAchatSimpleFixe, OperationType.ADD);
+                        this.setListFixToTemp();
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {

@@ -2,6 +2,7 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { Absence } from '@/models/absence';
 import { Personnel } from '@/models/personnel';
 import { omit } from '@/shared/classes/generic-methods';
+import { ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { PersonnelSearch } from '@/shared/searchModels/personnel-search';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -51,6 +52,10 @@ export class PersonnelService {
         const serializedObj = this.serialization(personnel);
         const obj = omit(serializedObj, 'villeId', 'ville');
         return this.http.post<boolean>(ENDPOINTS.PERSONNEL.exist, obj);
+    }
+
+    existing(personnel: Personnel): Observable<ValidationResponse> {
+        return this.http.post<ValidationResponse>(ENDPOINTS.PERSONNEL.existing, personnel);
     }
 
     present(absence: Absence): Observable<Personnel[]> {

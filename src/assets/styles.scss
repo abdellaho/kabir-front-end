@@ -32,8 +32,14 @@
     color: white !important;
 }
 
-.full-width {
+.full-width1 {
     width: 100% !important;
+}
+
+.full-width {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* critical for flex children */
 }
 
 .p-inputtext:disabled {

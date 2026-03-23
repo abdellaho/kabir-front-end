@@ -140,7 +140,7 @@ export class AchatFactureComponent {
                 qteFacturer: [{ value: this.stock.qteFacturer, disabled: true }],
                 qteAcheter: [null, [Validators.required]],
                 uniteGratuit: [null],
-                remiseAchat: [null],
+                remiseAchat: [null, [Validators.max(100)]],
                 prixAchatTtc: [null]
             },
             { validators: DetAchatFactureValidator({ stock: this.stock }) }
@@ -421,7 +421,8 @@ export class AchatFactureComponent {
         this.detAchatFacture.uniteGratuit = ug;
         this.detAchatFacture.prixAchatTtc = prixAchatTtc;
         this.detAchatFacture.remiseAchat = remiseAchat;
-        this.detAchatFacture.mantantTTC = this.detAchatFacture.qteAcheter * this.detAchatFacture.prixAchatTtc;
+        let montantTTc: number = this.detAchatFacture.qteAcheter * this.detAchatFacture.prixAchatTtc;
+        this.detAchatFacture.mantantTTC = montantTTc - (montantTTc * this.detAchatFacture.remiseAchat / 100);
 
         this.listDetAchatFacture = [...this.listDetAchatFacture, this.detAchatFacture];
 

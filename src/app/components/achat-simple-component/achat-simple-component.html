@@ -131,7 +131,7 @@
                         <div class="flex flex-row gap-6">
                             <div class="flex flex-col grow flex-[1]">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-input-number id="montant" formControlName="montant" appendTo="body" [minFractionDigits]="2" class="w-full"
+                                    <p-input-number id="montant" formControlName="montant" appendTo="body" [maxFractionDigits]="2" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montant')?.invalid }" />
                                     <label for="montant">{{ msg.components.achatSimple.montant }}</label>
                                 </p-floatlabel>
@@ -156,13 +156,6 @@
                             <div class="flex flex-row gap-6">
                                 <div class="flex flex-col grow flex-[1]">
                                     <p-floatlabel class="w-full" variant="on">
-                                        <input pInputText id="designation" formControlName="designation" class="w-full" />
-                                        <label for="designation">{{ msg.components.achatSimple.designationStock }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow flex-[1]">
-                                    <p-floatlabel class="w-full" variant="on">
                                         <p-input-number id="qte" formControlName="qte" class="w-full" />
                                         <label for="qte">{{ msg.components.achatSimple.qte }}</label>
                                     </p-floatlabel>
@@ -179,14 +172,14 @@
                             <div class="flex flex-row gap-6">
                                 <div class="flex flex-col grow flex-[1]">
                                     <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="prixAchat" formControlName="prixAchat" [minFractionDigits]="2" class="w-full" />
+                                        <p-input-number id="prixAchat" formControlName="prixAchat" [maxFractionDigits]="2" class="w-full" />
                                         <label for="prixAchat">{{ msg.components.achatSimple.prixAchat }}</label>
                                     </p-floatlabel>
                                 </div>
 
                                 <div class="flex flex-col grow flex-[1]">
                                     <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="remise" formControlName="remise" [minFractionDigits]="2" class="w-full" [max]="100" />
+                                        <p-input-number id="remise" formControlName="remise" [maxFractionDigits]="2" class="w-full" [max]="100" />
                                         <label for="remise">{{ msg.components.achatSimple.remise }}</label>
                                     </p-floatlabel>
                                 </div>

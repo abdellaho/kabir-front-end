@@ -161,6 +161,9 @@
                   [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid }" />
                 <label for="designation">{{ msg.components.personnel.designation }}</label>
               </p-floatlabel>
+              @if(formGroup.get('designation')?.errors?.['exist']) {
+                  <p-message severity="error">{{ formGroup.get('designation')?.errors?.['message'] }}</p-message>
+              }
             </div>
 
             <div class="flex flex-col">
@@ -169,6 +172,9 @@
                   [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('cin')?.invalid }" />
                 <label for="cin">{{ msg.components.personnel.cin }}</label>
               </p-floatlabel>
+              @if(formGroup.get('cin')?.errors?.['exist']) {
+                  <p-message severity="error">{{ formGroup.get('cin')?.errors?.['message'] }}</p-message>
+              }
             </div>
 
             <div class="flex flex-col">
@@ -185,6 +191,9 @@
                 <input pInputText id="email" formControlName="email" class="w-full" />
                 <label for="email">{{ msg.components.personnel.email }}</label>
               </p-floatlabel>
+              @if(formGroup.get('email')?.errors?.['exist']) {
+                  <p-message severity="error">{{ formGroup.get('email')?.errors?.['message'] }}</p-message>
+              }
             </div>
 
             <div class="flex flex-col">
@@ -209,6 +218,9 @@
                 @if (formGroup.errors?.['tel1EqualTel2']) {
                   <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
                 }
+                @if(formGroup.get('tel1')?.errors?.['exist']) {
+                    <p-message severity="error">{{ formGroup.get('tel1')?.errors?.['message'] }}</p-message>
+                }
             </div>
 
             <div class="flex flex-col">
@@ -218,6 +230,9 @@
               </p-floatlabel>
                 @if (formGroup.errors?.['tel1EqualTel2']) {
                   <p-message severity="error" variant="simple" size="small">{{ msg.components.personnel.errors.tel1AndTel2Identique }}</p-message>
+                }
+                @if(formGroup.get('tel2')?.errors?.['exist']) {
+                    <p-message severity="error">{{ formGroup.get('tel2')?.errors?.['message'] }}</p-message>
                 }
             </div>
 

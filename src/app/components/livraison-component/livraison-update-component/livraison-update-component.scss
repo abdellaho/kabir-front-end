@@ -1,0 +1,15 @@
+/* Truncate long selected option text in p-select */
+::ng-deep .p-select-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+
+/* Ensure the select itself doesn't overflow */
+::ng-deep p-select .p-select {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
