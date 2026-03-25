@@ -33,6 +33,7 @@ export const APP_MESSAGES = {
         compta: 'TVA',
         cheque: 'Chèque',
         entretien: 'Entretien',
+        transport: 'Transport',
         deconnexion: 'Déconnexion'
     },
     components: {
@@ -437,7 +438,7 @@ export const APP_MESSAGES = {
             ice: 'ICE',
             observation: 'Commentaire',
             personnelId: 'Personnel',
-            nbrOperationClient: 'N.O.C',
+            nbrOperationClient: 'NBL',
             plafond: 'Plafond',
             typeImprimRepertoire: 'Type Impression',
             choisirPersonnel: 'Choisir Personnel',
@@ -772,12 +773,12 @@ export const APP_MESSAGES = {
             },
             detAchatFacture: {
                 label: 'Produit',
-                qteacheter: 'Qte Acheté',
+                qteacheter: 'Qte',
                 unitegratuit: 'Unite Gratuite',
-                mantantTTC: 'Montant TTC',
+                mantantTTC: 'Montant',
                 qteFacturer: 'Qte Facturé',
-                prixAchatTtc: 'Prix Achat TTC',
-                remiseAchat: 'Remise Achat',
+                prixAchatTtc: 'Prix Achat',
+                remiseAchat: 'Remise',
                 errors: {
                     qteAcheterMustBeDifferentThan0: 'Qte Acheté doit être différent de 0'
                 }

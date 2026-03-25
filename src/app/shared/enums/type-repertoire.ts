@@ -12,6 +12,12 @@ export const filteredTypeRepertoire = [
     { label: 'Transport', value: TypeRepertoire.TRANSPORT }
 ];
 
+export const filteredTypeRepertoireExceptTransport = [
+    { label: '', value: TypeRepertoire.NONE },
+    { label: 'Pharmacie', value: TypeRepertoire.PHARMACIE },
+    { label: 'Revendeur', value: TypeRepertoire.REVENDEUR }
+];
+
 export enum TypeImprimerRepertoire {
     BON_LIVRAISON = 0,
     BL_EGALE_ZERO = 1,

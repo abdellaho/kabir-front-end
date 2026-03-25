@@ -26,7 +26,7 @@
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAbsence" dataKey="id"
                 selectionMode="single" [(selection)]="selectedAbsence" [metaKeySelection]="false"
-                [rows]="20" rowGroupMode="rowspan" groupRowsBy="dateAbsenceStr" sortField="dateAbsenceStr" [sortOrder]="-1"
+                [rows]="20" sortField="dateAbsenceStr" [sortOrder]="-1"
                 sortMode="single" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['dateAbsenceStr', 'personnelDesignation', 'matin', 'apresMidi']"
                 [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
@@ -66,9 +66,9 @@
                     </tr>
                 </ng-template>
 
-                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                <ng-template #body let-p>
                     <tr [pSelectableRow]="p">
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.dateAbsenceStr }}</td>
+                        <td>{{ p.dateAbsenceStr }}</td>
                         <td>{{ p.personnelDesignation }}</td>
                         <td>
                             <p-checkbox [(ngModel)]="p.matin" [binary]="true" [ngClass]="{ 'custom-disabled': true }" />

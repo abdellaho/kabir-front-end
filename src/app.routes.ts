@@ -33,6 +33,7 @@ import { Permission } from '@/shared/classes/other/permissions';
 import { Access } from '@/pages/auth/access';
 import { ComptabiliteComponent } from '@/components/comptabilite-component/comptabilite-component';
 import { EntretienComponent } from '@/components/entretien-component/entretien-component';
+import { TransportComponent } from '@/components/transport-component/transport-component';
 
 export const appRoutes: Routes = [
     {
@@ -71,6 +72,12 @@ export const appRoutes: Routes = [
             { path: 'compta', component: ComptaComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'comptabilite', component: ComptabiliteComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'entretien', component: EntretienComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
+            {
+                path: 'transport',
+                component: TransportComponent,
+                canActivate: [AuthGuard],
+                data: { permission: [Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE] }
+            },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

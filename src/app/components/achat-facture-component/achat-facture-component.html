@@ -19,7 +19,7 @@
             </p-toolbar>
 
             <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listAchatFacture" dataKey="id"
-                [rows]="20" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation" [sortOrder]="-1"
+                [rows]="20" rowGroupMode="rowspan" groupRowsBy="dateOperation" sortField="dateOperation"
                 selectionMode="single" [(selection)]="selectedAchatFacture" dataKey="id"
                 sortMode="multiple" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['fournisseurDesignation', 'dateAF', 'fournisseurIce', 'dateReglement', 'typeReglment', 'numCheque', 'numeroFacExterne', 'mantantTotTTC']"
@@ -120,7 +120,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '80%', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '50%', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.achatFacture.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
@@ -310,7 +310,7 @@
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatFacture" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
-                            [globalFilterFields]="['stockDesignation', 'stockQteFacturer', 'qteacheter', 'unitegratuit', 'mantantTTC']"
+                            [globalFilterFields]="['stockDesignation', 'qteacheter', 'unitegratuit', 'remiseAchat', 'prixAchatTtc', 'mantantTTC']"
                             [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
                             currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
@@ -320,13 +320,6 @@
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatFacture.stock.designation }}
                                             <p-sortIcon field="stockDesignation" />
-                                        </div>
-                                    </th>
-
-                                    <th pSortableColumn="stockQteFacturer" style="width: 8%">
-                                        <div class="flex items-center gap-2">
-                                            {{ msg.components.achatFacture.stock.qteFacturer }}
-                                            <p-sortIcon field="stockQteFacturer" />
                                         </div>
                                     </th>
 
@@ -344,6 +337,20 @@
                                         </div>
                                     </th>
 
+                                    <th pSortableColumn="remiseAchat" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatFacture.detAchatFacture.remiseAchat }}
+                                            <p-sortIcon field="remiseAchat" />
+                                        </div>
+                                    </th>
+                                    
+                                    <th pSortableColumn="prixAchatTtc" style="width: 8%">
+                                        <div class="flex items-center gap-2">
+                                            {{ msg.components.achatFacture.detAchatFacture.prixAchatTtc }}
+                                            <p-sortIcon field="prixAchatTtc" />
+                                        </div>
+                                    </th>
+                                    
                                     <th pSortableColumn="mantantTTC" style="width: 8%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatFacture.detAchatFacture.mantantTTC }}
@@ -358,9 +365,10 @@
                             <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                                 <tr [pSelectableRow]="p">
                                     <td>{{ p.stockDesignation }}</td>
-                                    <td>{{ p.stockQteFacturer }}</td>
                                     <td>{{ p.qteAcheter }}</td>
                                     <td>{{ p.uniteGratuit }}</td>
+                                    <td>{{ p.remiseAchat | number:'1.2-2' }}</td>
+                                    <td>{{ p.prixAchatTtc | number:'1.2-2' }}</td>
                                     <td>{{ p.mantantTTC | number:'1.2-2' }}</td>
                                     <td style="width: 5%; min-width: 7rem">
                                         <div class="flex gap-2">
@@ -424,13 +432,6 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="w-full">
-                                    <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" class="w-full" />
-                                    <label for="qteFacturer">{{ msg.components.achatFacture.detAchatFacture.qteFacturer }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col grow basis-0">
-                                <p-floatlabel variant="on" class="w-full">
                                     <p-inputNumber formControlName="prixAchatTtc" id="prixAchatTtc" inputId="prixAchatTtc" [maxFractionDigits]="2" class="w-full" />
                                     <label for="prixAchatTtc">{{ msg.components.achatFacture.detAchatFacture.prixAchatTtc }}</label>
                                 </p-floatlabel>
@@ -455,8 +456,15 @@
 
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel variant="on" class="w-full">
-                                    <p-inputNumber formControlName="remiseAchat" id="remiseAchat" inputId="remiseAchat" [maxFractionDigits]="2" class="w-full" />
+                                    <p-inputNumber formControlName="remiseAchat" id="remiseAchat" inputId="remiseAchat" [maxFractionDigits]="2" class="w-full" (onBlur)="calculerMontProd()" />
                                     <label for="remiseAchat">{{ msg.components.achatFacture.detAchatFacture.remiseAchat }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-inputNumber formControlName="mantantTTC" id="mantantTTC" inputId="mantantTTC" [maxFractionDigits]="2" class="w-full" />
+                                    <label for="mantantTTC">{{ msg.components.achatFacture.detAchatFacture.mantantTTC }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>

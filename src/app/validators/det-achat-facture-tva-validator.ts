@@ -8,21 +8,21 @@ export const DetAchatFactureTVAValidator: ValidatorFn = (control: AbstractContro
     };
 
     const mntHT = get('mntHT');
-    const mntTVA = get('mntTVA');
-    const taux = get('taux');
+    //const mntTVA = get('mntTVA');
+    //const taux = get('taux');
 
-    if (!mntHT || !mntTVA || !taux) {
+    if (!mntHT /* || !mntTVA || !taux*/) {
         return null;
     }
 
     const mntHTValue = mntHT.value;
-    const mntTVAValue = mntTVA.value;
-    const tauxValue = taux.value;
+    //const mntTVAValue = mntTVA.value;
+    //const tauxValue = taux.value;
 
-    if ((mntHTValue === null || mntHTValue === undefined) && (mntTVAValue === null || mntTVAValue === undefined) && (tauxValue === null || tauxValue === undefined)) {
+    if (mntHTValue === null || mntHTValue === undefined /*&& (mntTVAValue === null || mntTVAValue === undefined) && (tauxValue === null || tauxValue === undefined)*/) {
         addError('detAchatFactureTVAValidator');
     } else {
-        if (mntHTValue === 0 && mntTVAValue === 0 && tauxValue === 0) {
+        if (mntHTValue === 0 /*&& mntTVAValue === 0 && tauxValue === 0*/) {
             addError('detAchatFactureTVAValidator');
         }
     }

@@ -66,6 +66,17 @@ export class AppMenu implements OnInit {
                 label: '',
                 items: [
                     {
+                        label: this.msg.menu.transport,
+                        icon: 'pi pi-fw pi-truck',
+                        routerLink: ['/transport'],
+                        visible: this.hasPermission([Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE])
+                    }
+                ]
+            },
+            {
+                label: '',
+                items: [
+                    {
                         label: this.msg.menu.stock,
                         icon: 'pi pi-fw pi-box',
                         routerLink: ['/stock'],

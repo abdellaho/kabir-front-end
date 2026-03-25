@@ -129,7 +129,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '60%', maxWidth: '100%' }"
+        <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '40%', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             [header]="`${msg.messages.miseAJour} ${msg.components.achatEtranger.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
@@ -182,10 +182,12 @@
                             }
                         </div>
 
-                        <p-floatlabel variant="on" class="w-full">
-                            <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs1')" class="w-full" />
-                            <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
-                        </p-floatlabel>
+                        <div>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-input-number formControlName="mantantAvancs1" inputId="mantantAvancs1" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs1')" class="w-full" />
+                                <label for="mantantAvancs1">{{ msg.components.achatEtranger.mantantAvancs1 }}</label>
+                            </p-floatlabel>
+                        </div>
 
                         <div>
                             <p-floatlabel variant="on" class="w-full">
@@ -200,10 +202,12 @@
                             }
                         </div>
 
-                        <p-floatlabel variant="on" class="w-full">
-                            <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs2')" class="w-full" />
-                            <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
-                        </p-floatlabel>
+                        <div>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-input-number formControlName="mantantAvancs2" inputId="mantantAvancs2" [maxFractionDigits]="2" (onBlur)="calculerMntTotal('mantantAvancs2')" class="w-full" />
+                                <label for="mantantAvancs2">{{ msg.components.achatEtranger.mantantAvancs2 }}</label>
+                            </p-floatlabel>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">

@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export const RepertoireValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+export const TransportValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const get = (name: string) => control.get(name);
 
     let tel1 = get('tel1');

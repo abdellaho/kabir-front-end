@@ -1,12 +1,11 @@
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { Ville } from '@/models/ville';
-import { TypeRepertoirePipe } from '@/pipes/type-repertoire-pipe';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { VilleService } from '@/services/ville/ville-service';
 import { OperationType } from '@/shared/enums/operation-type';
-import { filteredTypeRepertoireExceptTransport, typeImprimerRepertoirePharmacie, typeImprimerRepertoireRevendeur } from '@/shared/enums/type-repertoire';
+import { filteredTypeRepertoire, typeImprimerRepertoirePharmacie, typeImprimerRepertoireRevendeur } from '@/shared/enums/type-repertoire';
 import { LoadingService } from '@/shared/services/loading-service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -27,15 +26,14 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { MessageModule } from 'primeng/message';
-import { RepertoireValidator } from '@/validators/repertoire-validator';
+import { TransportValidator } from '@/validators/transport-validator';
 import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods';
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
-import { Textarea } from 'primeng/textarea';
 
 @Component({
-    selector: 'app-repertoire-component',
+    selector: 'app-transport-component',
     imports: [
         CommonModule,
         FormsModule,
@@ -52,15 +50,13 @@ import { Textarea } from 'primeng/textarea';
         InputTextModule,
         MessageModule,
         SelectModule,
-        TypeRepertoirePipe,
         SplitButtonModule,
-        Ripple,
-        Textarea
+        Ripple
     ],
-    templateUrl: './repertoire-component.html',
-    styleUrl: './repertoire-component.scss'
+    templateUrl: './transport-component.html',
+    styleUrl: './transport-component.scss'
 })
-export class RepertoireComponent {
+export class TransportComponent {
     //Buttons ---> Ajouter + Rexchercher + Actualiser + Archiver + Corbeille
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
@@ -72,7 +68,7 @@ export class RepertoireComponent {
     repertoireInputSearch: string = '';
     personnelIdSearch: bigint = BigInt(0);
     typeOfList: number = 0;
-    typeRepertoire: { label: string; value: number }[] = filteredTypeRepertoireExceptTransport;
+    typeRepertoire: { label: string; value: number }[] = filteredTypeRepertoire;
     listVille: Ville[] = [];
     listPersonnel: Personnel[] = [];
     listPersonnelSearch: Personnel[] = [];
@@ -117,11 +113,7 @@ export class RepertoireComponent {
     }
 
     initPrintItems() {
-        this.printItems = [
-            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.pharmacie}`, icon: 'pi pi-print', command: () => this.viderImprimer(1) },
-            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.revendeur}`, icon: 'pi pi-print', command: () => this.viderImprimer(2) },
-            { label: `${this.msg.buttons.consulter} ${this.msg.buttons.transport}`, icon: 'pi pi-print', command: () => this.imprimerTransport() }
-        ];
+        this.printItems = [{ label: `${this.msg.buttons.consulter} ${this.msg.buttons.transport}`, icon: 'pi pi-print', command: () => this.imprimerTransport() }];
     }
 
     clear(table: Table) {
@@ -135,19 +127,12 @@ export class RepertoireComponent {
     initFormGroup() {
         this.formGroup = this.formBuilder.group(
             {
-                typeRepertoire: [0, [Validators.required, Validators.min(1)]],
                 designation: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
-                villeId: [0, [Validators.required, Validators.min(1)]],
                 tel1: ['', [Validators.maxLength(10)]],
                 tel2: ['', [Validators.maxLength(10)]],
-                tel3: ['', [Validators.maxLength(10)]],
-                ice: ['', [Validators.maxLength(15)]],
-                observation: ['', [Validators.maxLength(250)]],
-                adresse: ['', [Validators.maxLength(250)]],
-                personnelId: [0],
-                plafond: [null]
+                tel3: ['', [Validators.maxLength(10)]]
             },
-            { validators: [RepertoireValidator] }
+            { validators: [TransportValidator] }
         );
     }
 
@@ -189,7 +174,7 @@ export class RepertoireComponent {
 
         search.archiver = archiver;
         search.bloquer = bloquer;
-        search.typeRepertoire = 0;
+        search.typeRepertoire = 3;
 
         return search;
     }
@@ -324,7 +309,6 @@ export class RepertoireComponent {
         } else {
             this.listRepertoire = this.listRepertoireFixe;
         }
-        console.log('listRepertoire', this.listRepertoire);
     }
 
     openCloseDialogAjouter(openClose: boolean): void {
@@ -375,17 +359,10 @@ export class RepertoireComponent {
             this.repertoire = repertoireEdit;
             if (operation === 1) {
                 this.formGroup.patchValue({
-                    typeRepertoire: this.repertoire.typeRepertoire,
                     designation: this.repertoire.designation,
-                    villeId: this.repertoire.villeId,
                     tel1: this.repertoire.tel1,
                     tel2: this.repertoire.tel2,
-                    tel3: this.repertoire.tel3,
-                    ice: this.repertoire.ice,
-                    adresse: this.repertoire.adresse,
-                    observation: this.repertoire.observation,
-                    personnelId: this.repertoire.personnelId ?? 0,
-                    plafond: this.repertoire.plafond !== 0 ? this.repertoire.plafond : null
+                    tel3: this.repertoire.tel3
                 });
 
                 this.openCloseDialogAjouter(true);
@@ -426,17 +403,11 @@ export class RepertoireComponent {
     }
 
     mapFormGroupToObject(formGroup: FormGroup, repertoire: Repertoire): Repertoire {
-        repertoire.typeRepertoire = formGroup.get('typeRepertoire')?.value;
+        repertoire.typeRepertoire = 3;
         repertoire.designation = formGroup.get('designation')?.value;
-        repertoire.villeId = formGroup.get('villeId')?.value;
         repertoire.tel1 = formGroup.get('tel1')?.value;
         repertoire.tel2 = formGroup.get('tel2')?.value;
         repertoire.tel3 = formGroup.get('tel3')?.value;
-        repertoire.ice = formGroup.get('ice')?.value;
-        repertoire.adresse = formGroup.get('adresse')?.value;
-        repertoire.observation = formGroup.get('observation')?.value;
-        repertoire.personnelId = formGroup.get('personnelId')?.value;
-        repertoire.plafond = formGroup.get('plafond')?.value ?? 0;
 
         return repertoire;
     }
@@ -446,13 +417,13 @@ export class RepertoireComponent {
         try {
             const existsObservable = this.repertoireService.exist(repertoire).pipe(
                 catchError((error) => {
-                    console.error('Error in repertoire existence observable:', error);
+                    console.error('Error in transport existence observable:', error);
                     return of(validationResponse); // Gracefully handle observable errors by returning false
                 })
             );
             return await firstValueFrom(existsObservable);
         } catch (error) {
-            console.error('Unexpected error checking if repertoire exists:', error);
+            console.error('Unexpected error checking if transport exists:', error);
             return validationResponse;
         }
     }
@@ -515,9 +486,6 @@ export class RepertoireComponent {
             }
             if (validationResponse.errors['tel3']) {
                 this.formGroup.get('tel3')?.setErrors({ exist: true, message: validationResponse.errors['tel3'] });
-            }
-            if (validationResponse.errors['ice']) {
-                this.formGroup.get('ice')?.setErrors({ exist: true, message: validationResponse.errors['ice'] });
             }
             this.formGroup.updateValueAndValidity();
 

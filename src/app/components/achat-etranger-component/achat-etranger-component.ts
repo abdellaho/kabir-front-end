@@ -137,9 +137,9 @@ export class AchatEtrangerComponent {
             mntFacture: ['', [Validators.required]],
 
             dateAvances1: [new Date()],
-            mantantAvancs1: [0],
+            mantantAvancs1: [null],
             dateAvances2: [new Date()],
-            mantantAvancs2: [0],
+            mantantAvancs2: [null],
 
             totalPaye: [{ value: 0, disabled: true }],
             mntTransportIntern: [0],
@@ -447,9 +447,9 @@ export class AchatEtrangerComponent {
                             dateFacture: this.achatEtranger.dateFacture,
                             mntFacture: this.achatEtranger.mntFacture,
                             dateAvances1: this.achatEtranger.dateAvances1,
-                            mantantAvancs1: this.achatEtranger.mantantAvancs1,
+                            mantantAvancs1: this.achatEtranger.mantantAvancs1 || 0,
                             dateAvances2: this.achatEtranger.dateAvances2,
-                            mantantAvancs2: this.achatEtranger.mantantAvancs2,
+                            mantantAvancs2: this.achatEtranger.mantantAvancs2 || 0,
                             totalPaye: this.achatEtranger.totalPaye,
                             mntTransportIntern: this.achatEtranger.mntTransportIntern,
                             mntDouane: this.achatEtranger.mntDouane,
@@ -508,8 +508,8 @@ export class AchatEtrangerComponent {
         achatEtranger.sysDate = mapToDateTimeBackEnd(achatEtranger.sysDate);
         achatEtranger.codeFacture = formGroup.get('codeFacture')?.value;
         achatEtranger.mntFacture = formGroup.get('mntFacture')?.value;
-        achatEtranger.mantantAvancs1 = formGroup.get('mantantAvancs1')?.value;
-        achatEtranger.mantantAvancs2 = formGroup.get('mantantAvancs2')?.value;
+        achatEtranger.mantantAvancs1 = formGroup.get('mantantAvancs1')?.value || 0;
+        achatEtranger.mantantAvancs2 = formGroup.get('mantantAvancs2')?.value || 0;
         achatEtranger.totalPaye = formGroup.get('totalPaye')?.value;
         achatEtranger.mntTransportIntern = formGroup.get('mntTransportIntern')?.value;
         achatEtranger.mntDouane = formGroup.get('mntDouane')?.value;
