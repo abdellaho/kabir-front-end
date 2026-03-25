@@ -401,9 +401,9 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     }
 
     onChangeMontantProduit() {
-        this.formGroupStock.patchValue({
-            montantProduit: this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteLivrer')?.value || 0)
-        });
+        let montant: number = this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteLivrer')?.value || 0);
+        let remise: number = (montant * (this.formGroupStock.get('remiseLivraison')?.value || 0) * 0.01);
+        this.formGroupStock.patchValue({ montantProduit: montant - remise });
     }
 
     validerStock() {

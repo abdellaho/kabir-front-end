@@ -455,6 +455,7 @@ export const APP_MESSAGES = {
         },
         livraison: {
             label: 'Livraison',
+            detailLivraison: 'Détail Livraison',
             codeBl: 'BL N°',
             sysDate: 'Date Sys',
             dateBl: 'Date BL',
