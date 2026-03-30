@@ -32,7 +32,6 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
-import { Textarea } from 'primeng/textarea';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -54,8 +53,7 @@ import { Textarea } from 'primeng/textarea';
         SelectModule,
         TypeRepertoirePipe,
         SplitButtonModule,
-        Ripple,
-        Textarea
+        Ripple
     ],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'
@@ -100,7 +98,7 @@ export class RepertoireComponent {
         private repertoireService: RepertoireService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
     ) {}
 
     ngOnInit(): void {

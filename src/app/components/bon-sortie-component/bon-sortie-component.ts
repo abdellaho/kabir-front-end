@@ -124,9 +124,8 @@ export class BonSortieComponent implements OnInit {
             {
                 codeSortie: [{ value: '', disabled: true }],
                 dateOperation: [new Date(), [Validators.required]],
-                commercialId: [BigInt(0), [Validators.required]],
+                commercialId: [BigInt(0), [Validators.required, Validators.min(1)]],
                 stockId: [BigInt(0)],
-                designation: [{ value: '', disabled: true }],
                 qteStock: [{ value: 0, disabled: true }],
                 qteSortie: [null],
                 mntProduit: [{ value: null, disabled: true }]
@@ -214,13 +213,11 @@ export class BonSortieComponent implements OnInit {
             if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
-                    designation: this.stock.designation,
                     qteStock: this.stock.qteStock,
                     qteSortie: null,
                     mntProduit: this.stock.pvttc
                 });
 
-                this.formGroup.get('designation')?.disable();
                 this.formGroup.get('qteStock')?.disable();
                 this.formGroup.get('mntProduit')?.disable();
                 this.isValid = true;
@@ -236,12 +233,10 @@ export class BonSortieComponent implements OnInit {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
             stockId: BigInt(0),
-            designation: '',
             qteStock: 0,
             qteSortie: null,
             mntProduit: null
         });
-        this.formGroup.get('designation')?.disable();
         this.formGroup.get('qteStock')?.disable();
         this.formGroup.get('mntProduit')?.disable();
     }
@@ -330,13 +325,11 @@ export class BonSortieComponent implements OnInit {
                             codeSortie: this.bonSortie.codeSortie,
                             dateOperation: new Date(this.bonSortie.dateOperation),
                             commercialId: this.bonSortie.commercialId,
-                            designation: '',
                             stockId: BigInt(0),
                             qteStock: 0,
                             qteSortie: null,
                             mntProduit: null
                         });
-                        this.formGroup.get('designation')?.disable();
                         this.formGroup.get('qteStock')?.disable();
                         this.formGroup.get('mntProduit')?.disable();
                         this.formGroup.updateValueAndValidity();

@@ -43,8 +43,8 @@ export class StockDepotService {
         return this.http.delete<void>(ENDPOINTS.STOCK_DEPOT.delete(id));
     }
 
-    imprimer(detStockDepot: DetStockDepot): Observable<any> {
-        return this.http.post<any>(ENDPOINTS.STOCK_DEPOT.imprimer, detStockDepot, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    imprimer(stockDepot: StockDepot): Observable<any> {
+        return this.http.post<any>(ENDPOINTS.STOCK_DEPOT.imprimer, stockDepot, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 
     serialization(obj: StockDepotRequest): any {

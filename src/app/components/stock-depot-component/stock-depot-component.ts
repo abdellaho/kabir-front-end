@@ -67,8 +67,8 @@ export class StockDepotComponent {
     stockDepotInputSearch: string = '';
     listStock: Stock[] = [];
     listStockDepot: StockDepot[] = [];
-    listDetStockDepotPrincipal: DetStockDepot[] = [];
-    listDetStockDepotOriginal: DetStockDepot[] = [];
+    listStockDepotPrincipal: StockDepot[] = [];
+    listStockDepotOriginal: StockDepot[] = [];
     listDetStockDepot: DetStockDepot[] = [];
     stockDepot: StockDepot = initObjectStockDepot();
     selectedStockDepot!: StockDepot;
@@ -112,23 +112,22 @@ export class StockDepotComponent {
                 dateOperation: [new Date(), [Validators.required]],
                 stockId: [BigInt(0)],
                 qte: [null],
-                designation: [{ value: '', disabled: true }]
             },
             { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] }
         );
     }
 
     search() {
-        this.getAllDetStockDepot();
+        this.getAllStockDepot();
     }
 
-    getAllDetStockDepot(): void {
-        this.listDetStockDepotOriginal = [];
-        this.listDetStockDepotPrincipal = [];
-        this.stockDepotService.getAllDetails().subscribe({
-            next: (data: DetStockDepot[]) => {
-                this.listDetStockDepotOriginal = data;
-                this.listDetStockDepotPrincipal = data;
+    getAllStockDepot(): void {
+        this.listStockDepotOriginal = [];
+        this.listStockDepotPrincipal = [];
+        this.stockDepotService.getAll().subscribe({
+            next: (data: StockDepot[]) => {
+                this.listStockDepotOriginal = data;
+                this.listStockDepotPrincipal = data;
             },
             error: (error: any) => {
                 console.error(error);
@@ -141,15 +140,15 @@ export class StockDepotComponent {
 
     searchByInputText() {
         if (this.stockDepotInputSearch.length > 0) {
-            this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal.filter((detStockDepot: DetStockDepot) => {
-                return detStockDepot.stockDesignation.toLowerCase().includes(this.stockDepotInputSearch.toLowerCase());
+            this.listStockDepotPrincipal = this.listStockDepotOriginal.filter((stockDepot: StockDepot) => {
+                return stockDepot.dateOperation.toLocaleString().toLowerCase().includes(this.stockDepotInputSearch.toLowerCase());
             });
         } else {
-            this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
+            this.listStockDepotPrincipal = this.listStockDepotOriginal;
         }
     }
 
-    getAllStockDepot(): void {
+    getAllStockDepotOriginal(): void {
         this.listStockDepot = [];
         this.stockDepotService.getAll().subscribe({
             next: (data: StockDepot[]) => {
@@ -206,10 +205,8 @@ export class StockDepotComponent {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
                     qte: null,
-                    designation: this.stock.designation
                 });
 
-                this.formGroup.get('designation')?.disable();
                 this.isValid = true;
             }
         }
@@ -220,9 +217,7 @@ export class StockDepotComponent {
         this.formGroup.patchValue({
             stockId: BigInt(0),
             qte: null,
-            designation: ''
         });
-        this.formGroup.get('designation')?.disable();
     }
 
     recuppererDetStockDepot(operation: number, detStockDepotEdit: DetStockDepot) {
@@ -294,21 +289,19 @@ export class StockDepotComponent {
         return getElementFromMap(this.mapOfStock, id);
     }
 
-    recupperer(operation: number, detStockDepotEdit: DetStockDepot) {
-        if (detStockDepotEdit && detStockDepotEdit.stockDepotId) {
+    recupperer(operation: number, stockDepotEdit: StockDepot) {
+        if (stockDepotEdit && stockDepotEdit.id) {
             if (operation === 1) {
-                this.stockDepotService.getByIdRequest(detStockDepotEdit.stockDepotId).subscribe({
+                this.stockDepotService.getByIdRequest(stockDepotEdit.id).subscribe({
                     next: (data: StockDepotRequest) => {
                         this.stockDepot = data.stockDepot;
                         this.listDetStockDepot = data.detStockDepots;
 
                         this.formGroup.patchValue({
-                            designation: '',
                             stockId: BigInt(0),
                             qte: null,
                             dateOperation: new Date(this.stockDepot.dateOperation)
                         });
-                        this.formGroup.get('designation')?.disable();
                         this.formGroup.updateValueAndValidity();
 
                         this.openCloseDialogAjouter(true);
@@ -322,7 +315,7 @@ export class StockDepotComponent {
                 });
             } else if (operation === 2) {
                 this.stockDepot = initObjectStockDepot(); //structuredClone(stockDepotEdit);
-                this.stockDepot.id = detStockDepotEdit.stockDepotId;
+                this.stockDepot.id = stockDepotEdit.id;
                 this.openCloseDialogSupprimer(true);
             }
         } else {
@@ -330,20 +323,18 @@ export class StockDepotComponent {
         }
     }
 
-    updateList(listDetStockDepot: DetStockDepot[], list: DetStockDepot[], operationType: OperationType, id?: bigint): DetStockDepot[] {
+    updateList(stockDepot: StockDepot, list: StockDepot[], operationType: OperationType, id?: bigint): StockDepot[] {
         if (operationType === OperationType.ADD) {
-            list = [...list, ...listDetStockDepot];
+            list = [...list, stockDepot];
         } else if (operationType === OperationType.MODIFY) {
-            if (listDetStockDepot && listDetStockDepot.length > 0) {
-                for (let detStockDepot of listDetStockDepot) {
-                    let index = list.findIndex((x) => x.id === detStockDepot.id);
-                    if (index > -1) {
-                        list[index] = detStockDepot;
-                    }
+            if (stockDepot) {
+                let index = list.findIndex((x) => x.id === stockDepot.id);
+                if (index > -1) {
+                    list[index] = stockDepot;
                 }
             }
         } else if (operationType === OperationType.DELETE) {
-            list = list.filter((x) => x.stockDepotId !== id);
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -384,8 +375,8 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listDetStockDepotOriginal = this.updateList(data.detStockDepots, this.listDetStockDepotOriginal, OperationType.MODIFY);
-                        this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
+                        this.listStockDepotOriginal = this.updateList(data.stockDepot, this.listStockDepotOriginal, OperationType.MODIFY);
+                        this.listStockDepotPrincipal = this.listStockDepotOriginal;
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -413,8 +404,8 @@ export class StockDepotComponent {
 
                         this.listDetStockDepot = [];
                         this.checkIfListIsNull();
-                        this.listDetStockDepotOriginal = this.updateList(data.detStockDepots, this.listDetStockDepotOriginal, OperationType.ADD);
-                        this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
+                        this.listStockDepotOriginal = this.updateList(data.stockDepot, this.listStockDepotOriginal, OperationType.ADD);
+                        this.listStockDepotPrincipal = this.listStockDepotOriginal;
                         this.openCloseDialogAjouter(false);
                     },
                     error: (err) => {
@@ -451,8 +442,8 @@ export class StockDepotComponent {
                     });
 
                     this.checkIfListIsNull();
-                    this.listDetStockDepotOriginal = this.updateList([], this.listDetStockDepotOriginal, OperationType.DELETE, id);
-                    this.listDetStockDepotPrincipal = this.listDetStockDepotOriginal;
+                    this.listStockDepotOriginal = this.updateList(initObjectStockDepot(), this.listStockDepotOriginal, OperationType.DELETE, id);
+                    this.listStockDepotPrincipal = this.listStockDepotOriginal;
                     this.stockDepot = initObjectStockDepot();
                 },
                 error: (err) => {
@@ -475,10 +466,10 @@ export class StockDepotComponent {
         this.openCloseDialogSupprimer(false);
     }
 
-    imprimer(detStockDepot: DetStockDepot): void {
+    imprimer(stockDepot: StockDepot): void {
         this.loadingService.show();
 
-        this.stockDepotService.imprimer(detStockDepot).subscribe({
+        this.stockDepotService.imprimer(stockDepot).subscribe({
             next: (data) => {
                 const file = new Blob([data], { type: 'application/pdf' });
                 const fileURL = URL.createObjectURL(file);

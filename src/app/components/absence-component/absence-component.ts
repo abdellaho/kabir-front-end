@@ -153,7 +153,7 @@ export class AbsenceComponent implements OnInit {
                         dateAbsenceStr: this.formatDateDisplay(dateAbsence)
                     };
                 });
-                this.listAbsenceFixe = this.sortList(this.listAbsence);
+                this.listAbsenceFixe = this.sortList(this.listAbsenceFixe);
                 this.listAbsence = this.listAbsenceFixe;
             },
             error: (error: any) => {

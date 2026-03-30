@@ -17,46 +17,30 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetStockDepotPrincipal" dataKey="id"
-                [rows]="20" rowGroupMode="rowspan" groupRowsBy="stockDepotDateOperation" [groupRowsByOrder]="-1" sortField="stockDepotDateOperation" [sortOrder]="-1"
+            <p-table #dt size="small" class="p-datatable-sm my-custom-datatable" [value]="listStockDepotPrincipal" dataKey="id"
+                [rows]="20"
                 selectionMode="single" [(selection)]="selectedStockDepot" dataKey="id"
                 sortMode="single" [showGridlines]="true" [paginator]="true"
-                [globalFilterFields]="['stockDepotDateOperation', 'stockDesignation', 'qte']"
+                [globalFilterFields]="['dateOperation']"
                 [rowsPerPageOptions]="[20, 30, 40, 50]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="({currentPage} sur {totalPages})" [rowHover]="true">
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="stockDepotDateOperation" style="width: 20%">
+                        <th pSortableColumn="dateOperation" style="width: 20%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.stockDepot.dateOperation }}
-                                <p-sortIcon field="stockDepotDateOperation" />
+                                <p-sortIcon field="dateOperation" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="stockDesignation" style="width: 60%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.stockDepot.stockDesignation }}
-                                <p-sortIcon field="stockDesignation" />
-                            </div>
-                        </th>
-
-                        <th pSortableColumn="qte" style="width: 15%">
-                            <div class="flex items-center gap-2">
-                                {{ msg.components.stockDepot.qte }}
-                                <p-sortIcon field="qte" />
-                            </div>
-                        </th>
-
-                        <th style="width: 5%"></th>
+                        <th style="width: 5%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
-                <ng-template #body let-p let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
+                <ng-template #body let-p>
                     <tr>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ p.stockDepotDateOperation | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.stockDesignation }}</td>
-                        <td>{{ p.qte }}</td>
+                        <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
 
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">
@@ -112,32 +96,19 @@
                                     <label for="stockId">{{ msg.components.stockDepot.stockId }}</label>
                                 </p-floatlabel>
                             </div>
-                        </div>
 
-                        @if (formGroup.get('stockId')?.value !== null 
-                            && formGroup.get('stockId')?.value !== undefined 
-                            && formGroup.get('stockId')?.value !== BigInt(0)) {
-                            <div class="flex flex-wrap gap-6">
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                    <input pInputText name="designation" id="designation" formControlName="designation" class="w-full" />
-                                    <label for="designation">{{ msg.components.stockDepot.designation }}</label>
-                                </p-floatlabel>
-                                </div>
-                            
-                                <div class="flex flex-col grow basis-0">
+                            <div class="flex flex-col grow basis-0">
                                     <p-floatlabel class="w-full" variant="on">
                                         <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" />
                                         <label for="qte">{{ msg.components.stockDepot.qte }}</label>
                                     </p-floatlabel>
                                 </div>
-                            </div>
+                        </div>
 
-                            <div class="flex flex-wrap gap-6" style="justify-content: center;">
-                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
-                                    (click)="validerDetStockDepot()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
-                            </div>
-                        }
+                        <div class="flex flex-wrap gap-6" style="justify-content: center;">
+                            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
+                                (click)="validerDetStockDepot()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
+                        </div>
                     </div>
 
                     @if (submitted && formGroup.errors?.['listDetStockDepotRequired']) {

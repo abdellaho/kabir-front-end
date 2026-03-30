@@ -236,7 +236,23 @@ export class EntretienComponent implements OnInit {
             list = list.filter((x) => x.id !== id);
         }
 
+        list = this.sortList(list);
+
         return list;
+    }
+
+    sortList(listEntretien: Entretien[]): Entretien[] {
+        return listEntretien.sort((a, b) => {
+            let x = new Date(a.dateEntretien).getTime();
+            let y = new Date(b.dateEntretien).getTime();
+            if (x > y) {
+                return -1;
+            } else if (x < y) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     }
 
     checkIfListIsNull() {
@@ -268,7 +284,7 @@ export class EntretienComponent implements OnInit {
         this.loadingService.show();
         let entretienEdit: Entretien = { ...this.entretien };
         this.mapFormGroupToObject(this.formGroup, entretienEdit);
-        let trvErreur = await this.checkIfExists(entretienEdit);
+        let trvErreur = false;// await this.checkIfExists(entretienEdit);
 
         if (!trvErreur) {
             this.entretien = this.mapFormGroupToObject(this.formGroup, this.entretien);

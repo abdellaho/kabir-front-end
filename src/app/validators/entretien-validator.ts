@@ -22,10 +22,6 @@ export const EntretienValidator: ValidatorFn = (control: AbstractControl): Valid
     const dEntretien: Date = dateEntretien.value;
     const kDetecte: number = kmDetecte.value;
 
-    if(kDetecte <= vKmMax){
-        addError('kmDetecteMustBeGreaterThanVoitureKmMax');
-    }
-
     if(vId === null || vId === undefined || vId === 0){
         addError('voitureIdRequired');
     }

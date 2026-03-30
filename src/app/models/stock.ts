@@ -42,6 +42,7 @@ export interface Stock {
     fournisseurDesignation: string;
     fournisseur?: Fournisseur | null;
     prixVenteMinTemp: number;
+    canDelete: boolean;
 }
 
 export function initObjectStock(): Stock {
@@ -86,6 +87,7 @@ export function initObjectStock(): Stock {
         fournisseurId: null,
         fournisseurDesignation: '',
         fournisseur: null,
-        prixVenteMinTemp: 0
+        prixVenteMinTemp: 0,
+        canDelete: false
     };
 }

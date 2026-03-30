@@ -84,7 +84,7 @@
                             </div>
                         </th>
 
-                        <th style="width: 4%"></th>
+                        <th style="width: 4%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -186,12 +186,12 @@
 
                 <ng-template #emptymessage>
                     <tr>
-                        <td colspan="10">No Factures found.</td>
+                        <td colspan="11">No Factures found.</td>
                     </tr>
                 </ng-template>
                 <ng-template #loadingbody>
                     <tr>
-                        <td colspan="10">Loading Factures data. Please wait.</td>
+                        <td colspan="11">Loading Factures data. Please wait.</td>
                     </tr>
                 </ng-template>
             </p-table>

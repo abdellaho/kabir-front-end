@@ -55,7 +55,7 @@
                             </div>
                         </th>
 
-                        <th style="width: 5%"></th>
+                        <th style="width: 5%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -140,7 +140,7 @@
                                 }
                             </div>
 
-                            <div class="flex flex-col grow flex-[2]">
+                            <div class="flex flex-col grow flex-[1]">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="stockId" inputId="stockId"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
@@ -148,50 +148,42 @@
                                     <label for="stockId">{{ msg.components.achatSimple.stockId }}</label>
                                 </p-floatlabel>
                             </div>
+
+                            <div class="flex flex-col grow flex-[1]">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number id="prixAchat" formControlName="prixAchat" [maxFractionDigits]="2" class="w-full" />
+                                    <label for="prixAchat">{{ msg.components.achatSimple.prixAchat }}</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-row gap-6">
+                            <div class="flex flex-col grow flex-[1]">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number id="qte" formControlName="qte" class="w-full" />
+                                    <label for="qte">{{ msg.components.achatSimple.qte }}</label>
+                                </p-floatlabel>
+                            </div>
+                                   
+                            <div class="flex flex-col grow flex-[1]">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number id="uniteGratuite" formControlName="uniteGratuite" class="w-full" />
+                                    <label for="uniteGratuite">{{ msg.components.achatSimple.uniteGratuite }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="flex flex-col grow flex-[1]">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-input-number id="remise" formControlName="remise" [maxFractionDigits]="2" class="w-full" [max]="100" />
+                                    <label for="remise">{{ msg.components.achatSimple.remise }}</label>
+                                </p-floatlabel>
+                            </div>
                         </div>
 
-                        @if (formGroup.get('stockId')?.value !== null 
-                            && formGroup.get('stockId')?.value !== undefined 
-                            && formGroup.get('stockId')?.value !== BigInt(0)) {
-                            <div class="flex flex-row gap-6">
-                                <div class="flex flex-col grow flex-[1]">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="qte" formControlName="qte" class="w-full" />
-                                        <label for="qte">{{ msg.components.achatSimple.qte }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow flex-[1]">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="uniteGratuite" formControlName="uniteGratuite" class="w-full" />
-                                        <label for="uniteGratuite">{{ msg.components.achatSimple.uniteGratuite }}</label>
-                                    </p-floatlabel>
-                                </div>
-                            </div>
-                        
-                            <div class="flex flex-row gap-6">
-                                <div class="flex flex-col grow flex-[1]">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="prixAchat" formControlName="prixAchat" [maxFractionDigits]="2" class="w-full" />
-                                        <label for="prixAchat">{{ msg.components.achatSimple.prixAchat }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow flex-[1]">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number id="remise" formControlName="remise" [maxFractionDigits]="2" class="w-full" [max]="100" />
-                                        <label for="remise">{{ msg.components.achatSimple.remise }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow flex-[1]"></div>
-                            </div>
-
-                            <div class="flex flex-wrap gap-6" style="justify-content: center;">
-                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
-                                    (click)="validerDetAchatSimple()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
-                            </div>
-                        }
+                        <div class="flex flex-wrap gap-6" style="justify-content: center;">
+                            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
+                                (click)="validerDetAchatSimple()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
+                        </div>
                     </div>
 
                     @if (submitted && formGroup.errors?.['listDetAchatSimpleRequired']) {

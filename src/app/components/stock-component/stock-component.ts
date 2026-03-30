@@ -215,7 +215,7 @@ export class StockComponent {
 
     getAllStock(): void {
         let stockSearch: Stock = this.initStockSearch(false, false);
-        this.stockService.search(stockSearch).subscribe({
+        this.stockService.searchWithDeleteOption(stockSearch).subscribe({
             next: (data: Stock[]) => {
                 this.listStock = data;
             },
@@ -591,6 +591,7 @@ export class StockComponent {
                 });
             }
         } else {
+            this.formGroup.get('designation')?.setErrors({ designationExistDeja: true });
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.stock.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }

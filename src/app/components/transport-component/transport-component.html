@@ -9,12 +9,12 @@
                     </div>
 
                     <div class="my-2" style="margin-right: 0.5ch;">
-                        <input pInputText type="text" placeholder="{{ msg.components.repertoire.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
+                        <input pInputText type="text" placeholder="{{ msg.components.transport.search }}" (input)="searchByInputText()" [(ngModel)]="repertoireInputSearch" />
                     </div>
 
                     <div class="my-2">
                         <p-button severity="success" [outlined]="typeOfList === 0 ? false : true" pRipple
-                            icon="pi pi-crown" [label]="msg.components.repertoire.label" class="mr-2"
+                            icon="pi pi-crown" [label]="msg.components.transport.label" class="mr-2"
                             (click)="listOfAll()"></p-button>
                     </div>
 
@@ -50,33 +50,33 @@
                     <tr>
                         <th pSortableColumn="designation" style="width: 30%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.repertoire.designation }}
+                                {{ msg.components.transport.designation }}
                                 <p-sortIcon field="designation" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel1" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.repertoire.tel1 }}
+                                {{ msg.components.transport.tel1 }}
                                 <p-sortIcon field="tel1" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel2" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.repertoire.tel2 }}
+                                {{ msg.components.transport.tel2 }}
                                 <p-sortIcon field="tel2" />
                             </div>
                         </th>
 
                         <th pSortableColumn="tel3" style="width: 10%">
                             <div class="flex items-center gap-2">
-                                {{ msg.components.repertoire.tel3 }}
+                                {{ msg.components.transport.tel3 }}
                                 <p-sortIcon field="tel3" />
                             </div>
                         </th>
 
-                        <th style="width: 10%"></th>
+                        <th style="width: 10%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -111,12 +111,12 @@
 
                 <ng-template #emptymessage>
                     <tr>
-                        <td colspan="10">No Personnel found.</td>
+                        <td colspan="10">No Transport found.</td>
                     </tr>
                 </ng-template>
                 <ng-template #loadingbody>
                     <tr>
-                        <td colspan="10">Loading personnels data. Please wait.</td>
+                        <td colspan="10">Loading transports data. Please wait.</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -124,7 +124,7 @@
 
         <p-dialog [(visible)]="dialogAjouter" [style]="{ width: '500px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-            [header]="`${msg.messages.miseAJour} ${msg.components.repertoire.label}`" [modal]="true" class="p-fluid"
+            [header]="`${msg.messages.miseAJour} ${msg.components.transport.label}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
@@ -135,7 +135,7 @@
                                 <p-floatlabel variant="on">
                                     <input pInputText id="designation" formControlName="designation" required class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('designation')?.invalid || formGroup.get('designation')?.errors?.['exist'] }" />
-                                    <label for="designation">{{ msg.components.repertoire.designation }}</label>
+                                    <label for="designation">{{ msg.components.transport.designation }}</label>
                                 </p-floatlabel>
                                 @if(formGroup.get('designation')?.errors?.['exist']) {
                                     <p-message severity="error">{{ formGroup.get('designation')?.errors?.['message'] }}</p-message>
@@ -146,14 +146,14 @@
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel1" formControlName="tel1" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3'] || formGroup.get('tel1')?.errors?.['exist'] }" />
-                                    <label for="tel1">{{ msg.components.repertoire.tel1 }}</label>
+                                    <label for="tel1">{{ msg.components.transport.tel1 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel1EqualTel3']) {
                                     @if (formGroup.errors?.['tel1EqualTel2']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel1AndTel2Identique }}</p-message>
                                     }
                                     @if (formGroup.errors?.['tel1EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel1AndTel3Identique }}</p-message>
                                     }
                                 }
                                 @if(formGroup.get('tel1')?.errors?.['exist']) {
@@ -167,14 +167,14 @@
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel2" formControlName="tel2" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel2')?.errors?.['exist'] }" />
-                                    <label for="tel2">{{ msg.components.repertoire.tel2 }}</label>
+                                    <label for="tel2">{{ msg.components.transport.tel2 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel2'] || formGroup.errors?.['tel2EqualTel3']) {
                                     @if (formGroup.errors?.['tel1EqualTel2']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel2Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel1AndTel2Identique }}</p-message>
                                     }
                                     @if (formGroup.errors?.['tel2EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel2AndTel3Identique }}</p-message>
                                     }
                                 }
                                 @if(formGroup.get('tel2')?.errors?.['exist']) {
@@ -186,14 +186,14 @@
                                 <p-floatlabel variant="on">
                                     <input pInputText id="tel3" formControlName="tel3" [maxlength]="10" class="w-full"
                                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3'] || formGroup.get('tel3')?.errors?.['exist'] }" />
-                                    <label for="tel1">{{ msg.components.repertoire.tel3 }}</label>
+                                    <label for="tel1">{{ msg.components.transport.tel3 }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['tel1EqualTel3'] || formGroup.errors?.['tel2EqualTel3']) {
                                     @if (formGroup.errors?.['tel1EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel1AndTel3Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel1AndTel3Identique }}</p-message>
                                     }
                                     @if (formGroup.errors?.['tel2EqualTel3']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.repertoire.errors.tel2AndTel3Identique }}</p-message>
+                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.transport.errors.tel2AndTel3Identique }}</p-message>
                                     }
                                 }
                                 @if(formGroup.get('tel3')?.errors?.['exist']) {
@@ -219,7 +219,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                <span>{{ msg.components.repertoire.messageDeleteAreYouSure }}</span>
+                <span>{{ msg.components.transport.messageDeleteAreYouSure }}</span>
                 }
             </div>
 
@@ -236,7 +236,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                <span>{{ msg.components.repertoire.messageDeleteAreYouSureArchive }}</span>
+                <span>{{ msg.components.transport.messageDeleteAreYouSureArchive }}</span>
                 }
             </div>
 
@@ -253,7 +253,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                <span>{{ msg.components.repertoire.messageDeleteAreYouSureCorbeille }}</span>
+                <span>{{ msg.components.transport.messageDeleteAreYouSureCorbeille }}</span>
                 }
             </div>
 
@@ -270,7 +270,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerArchive }}</span>
+                <span>{{ msg.components.transport.messageDeleteAreYouSureAnnulerArchive }}</span>
                 }
             </div>
 
@@ -287,7 +287,7 @@
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 @if (repertoire) {
-                <span>{{ msg.components.repertoire.messageDeleteAreYouSureAnnulerCorbeille }}</span>
+                <span>{{ msg.components.transport.messageDeleteAreYouSureAnnulerCorbeille }}</span>
                 }
             </div>
 
@@ -313,7 +313,7 @@
                                     <p-select formControlName="villeId" inputId="villeIdImprimer" [options]="listVille"
                                         appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
                                         class="w-full md:w-56" />
-                                    <label for="villeIdImprimer">{{ msg.components.repertoire.villeId }}</label>
+                                    <label for="villeIdImprimer">{{ msg.components.transport.villeId }}</label>
                                 </p-floatlabel>
                             </div>
 
@@ -322,7 +322,7 @@
                                     <p-select formControlName="personnelId" inputId="personnelIdImprimer"
                                         [options]="listPersonnel" appendTo="body" optionLabel="designation"
                                         optionValue="id" style="height: 30px;" class="w-full md:w-56" />
-                                    <label for="personnelIdImprimer">{{ msg.components.repertoire.personnelId }}</label>
+                                    <label for="personnelIdImprimer">{{ msg.components.transport.personnelId }}</label>
                                 </p-floatlabel>
                             </div>
 
@@ -332,7 +332,7 @@
                                         [options]="typeRepertoireImprimPharmacie" appendTo="body"
                                         optionLabel="label" optionValue="value" style="height: 30px;"
                                         class="w-full md:w-56" />
-                                    <label for="typeImprimRepertoireImprimer">{{ msg.components.repertoire.typeImprimRepertoire }}</label>
+                                    <label for="typeImprimRepertoireImprimer">{{ msg.components.transport.typeImprimRepertoire }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>

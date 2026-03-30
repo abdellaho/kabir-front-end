@@ -12,20 +12,20 @@
                     <!-- Second div: stretches to fill remaining space, wraps on small screens -->
                     <div class="my-2 flex-1 min-w-0">
                         <div class="flex flex-wrap gap-2">
-                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" [readonlyInput]="true" [placeholder]="msg.search.dateDebutDateFin" class="flex-1 min-w-40" />
+                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" (onSelect)="searchLivraison()" (onClear)="searchLivraison()" [readonlyInput]="true" [placeholder]="msg.search.dateDebutDateFin" class="flex-1 min-w-40" />
 
                             <p-floatlabel variant="on" class="flex-1 min-w-32">
-                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" class="w-full" />
+                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" class="w-full" (onBlur)="searchLivraison()" />
                                 <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
                             </p-floatlabel>
 
                             <p-floatlabel variant="on" class="flex-1 min-w-40">
-                                <p-select [(ngModel)]="repertoireIdSearch" inputId="repertoireId" [options]="listRepertoire" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                                <p-select [(ngModel)]="repertoireIdSearch" (onChange)="searchLivraison()" inputId="repertoireId" [options]="listRepertoire" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
                                 <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
                             </p-floatlabel>
 
                             <p-floatlabel variant="on" class="flex-1 min-w-40">
-                                <p-select [(ngModel)]="personnelIdSearch" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                                <p-select [(ngModel)]="personnelIdSearch" (onChange)="searchLivraison()" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
                                 <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
                             </p-floatlabel>
 

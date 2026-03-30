@@ -54,7 +54,7 @@
                             </div>
                         </th>
 
-                        <th style="width: 5%"></th>
+                        <th style="width: 5%">{{ msg.buttons.actions }}</th>
                     </tr>
                 </ng-template>
 
@@ -130,44 +130,36 @@
                                 </p-floatlabel>
                             </div>
                         </div>
+                        
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-inputNumber name="qteStock" id="qteStock" formControlName="qteStock" class="w-full"/>
+                                    <label for="qteStock">{{ msg.components.bonSortie.stock.qteStock }}</label>
+                                </p-floatlabel>
+                            </div>
 
-                        @if (formGroup.get('stockId')?.value !== null 
-                            && formGroup.get('stockId')?.value !== undefined 
-                            && formGroup.get('stockId')?.value !== BigInt(0)) {
-                            <div class="flex flex-wrap gap-6">
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <input pInputText name="designation" id="designation" formControlName="designation" class="w-full" />
-                                        <label for="designation">{{ msg.components.bonSortie.stock.designation }}</label>
-                                    </p-floatlabel>
-                                </div>
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" class="w-full"/>
+                                    <label for="qteSortie">{{ msg.components.bonSortie.qteSortie }}</label>
+                                </p-floatlabel>
+                            </div>
                             
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-inputNumber name="qteStock" id="qteStock" formControlName="qteStock" class="w-full"/>
-                                        <label for="qteStock">{{ msg.components.bonSortie.stock.qteStock }}</label>
-                                    </p-floatlabel>
-                                </div>
-
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <input pInputText name="qteSortie" id="qteSortie" formControlName="qteSortie" class="w-full"/>
-                                        <label for="qteSortie">{{ msg.components.bonSortie.qteSortie }}</label>
-                                    </p-floatlabel>
-                                </div>
-                                
-                                <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-inputNumber name="mntProduit" id="mntProduit" formControlName="mntProduit" [minFractionDigits]="2" class="w-full" />
-                                        <label for="mntProduit">{{ msg.components.bonSortie.mntProduit }}</label>
-                                    </p-floatlabel>
-                                </div>
+                            <div class="flex flex-col grow basis-0">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-inputNumber name="mntProduit" id="mntProduit" formControlName="mntProduit" [minFractionDigits]="2" class="w-full" />
+                                    <label for="mntProduit">{{ msg.components.bonSortie.mntProduit }}</label>
+                                </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-wrap gap-6" style="justify-content: center;">
-                                <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success" (click)="validerDetailBonSortie()" [disabled]="disbledAjouterDetailBonSortie()"></button>
+                            <div class="flex flex-col grow basis-0">
                             </div>
-                        }
+                        </div>
+
+                        <div class="flex flex-wrap gap-6" style="justify-content: center;">
+                            <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success" (click)="validerDetailBonSortie()" [disabled]="disbledAjouterDetailBonSortie()"></button>
+                        </div>
                     </div>
 
                     @if (submitted && formGroup.errors?.['listDetStockDepotRequired']) {

@@ -17,6 +17,10 @@ export class StockService {
         return this.http.get<Stock[]>(ENDPOINTS.STOCK.getAll);
     }
 
+    getAllWithDeleteOption(): Observable<Stock[]> {
+        return this.http.get<Stock[]>(ENDPOINTS.STOCK.getAllWithDeleteOption);
+    }
+
     getById(id: bigint): Observable<Stock> {
         return this.http.get<Stock>(ENDPOINTS.STOCK.getById(id));
     }
@@ -31,6 +35,12 @@ export class StockService {
         const serializedObj = this.serialization(stock);
         const obj = omit(serializedObj, 'fournisseur', 'ville');
         return this.http.post<Stock[]>(ENDPOINTS.STOCK.search, obj);
+    }
+
+    searchWithDeleteOption(stock: Stock): Observable<Stock[]> {
+        const serializedObj = this.serialization(stock);
+        const obj = omit(serializedObj, 'fournisseur', 'ville');
+        return this.http.post<Stock[]>(ENDPOINTS.STOCK.searchWithDeleteOption, obj);
     }
 
     update(id: bigint, stock: Stock): Observable<Stock> {
