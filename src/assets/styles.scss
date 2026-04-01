@@ -117,3 +117,70 @@
 .p-button-rose.p-button-outlined .p-button:hover {
     background: rgba(14, 165, 233, 0.1);
 }
+
+/* styles.scss */
+
+p-select {
+  height: 33px !important;
+}
+
+p-select.custom-select {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  line-height: normal !important;
+}
+
+p-select.custom-select > .p-select-label {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+p-select.custom-select > .p-select-dropdown {
+  flex: 0 0 auto !important;
+}
+
+/* styles.scss */
+
+/* 1. Floatlabel must not stretch to content */
+p-floatlabel.w-full {
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 2. The inner .p-floatlabel div PrimeNG renders */
+p-floatlabel.w-full .p-floatlabel {
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 3. p-select stretches to fill floatlabel */
+p-floatlabel.w-full p-select.custom-select {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+/* 4. Label clips instead of expanding */
+p-floatlabel.w-full p-select.custom-select > .p-select-label {
+  flex: 1 1 0 !important;      /* 0 not auto — forces shrink from zero */
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* 5. Chevron fixed */
+p-floatlabel.w-full p-select.custom-select > .p-select-dropdown {
+  flex: 0 0 auto !important;
+}

@@ -23,7 +23,6 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
         }
 
         if (!hasValue(getValue('personnelId'))) {
-            console.log('personnelId required, value:', getValue('personnelId'));
             addError('personnelIdRequired');
         }
 

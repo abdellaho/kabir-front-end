@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
-import { ajusterMontants, getPrixVenteMin, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { ajusterMontants, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -402,7 +402,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
     onChangeMontantProduit() {
         let montant: number = this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteLivrer')?.value || 0);
-        let remise: number = (montant * (this.formGroupStock.get('remiseLivraison')?.value || 0) * 0.01);
+        let remise: number = montant * (this.formGroupStock.get('remiseLivraison')?.value || 0) * 0.01;
         this.formGroupStock.patchValue({ montantProduit: montant - remise });
     }
 

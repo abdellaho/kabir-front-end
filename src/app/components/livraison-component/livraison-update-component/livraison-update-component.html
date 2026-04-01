@@ -7,39 +7,45 @@
     <div class="flex flex-wrap -mx-4">
         <!-- Info Livraison -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="codeBl" formControlName="codeBl" class="full-width" required 
+            <div class="flex flex-col md:flex-row w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText id="codeBl" formControlName="codeBl" class="w-full" required 
                     [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('codeBl')?.invalid }" />
                     <label for="codeBl">{{ msg.components.livraison.codeBl }}</label>
                 </p-floatlabel>
             </div>
             
-            <div class="flex flex-col md:flex-row full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <p-date-picker id="dateBl" formControlName="dateBl" [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" required 
+            <div class="flex flex-col md:flex-row w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <p-date-picker id="dateBl" formControlName="dateBl" [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" required 
                     [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateBl')?.invalid }" />
                     <label for="dateBl">{{ msg.components.livraison.dateBl }}</label>
                 </p-floatlabel>
             </div>
 
-            <div class="flex flex-col md:flex-row full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <p-select formControlName="personnelId" inputId="personnelId" [options]="listPersonnel"
                         [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('personnelId')?.invalid || formGroup.hasError('personnelIdRequired') }"
-                        appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="full-width" />
+                        appendTo="body" optionLabel="designation" optionValue="id" style="height: 33px;" class="w-full custom-select" />
                     <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
                 </p-floatlabel>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width" style="min-width: 0">
-                <div class="flex flex-col gap-4 full-width" style="min-width: 0">
-                    <p-floatlabel variant="on" class="full-width">
-                        <p-select formControlName="repertoireId" inputId="repertoireId" [options]="listRepertoire"
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
+                        <p-select 
+                            formControlName="repertoireId" 
+                            inputId="repertoireId" 
+                            [options]="listRepertoire"
                             [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('repertoireId')?.invalid }"
-                            appendTo="body" optionLabel="designation" optionValue="id"
-                            (onChange)="onChangeIdRepertoire()" style="height: 33px;" class="truncate-select"
-                            placeholder="{{ msg.components.livraison.selectRepertoire }}" />
+                            optionLabel="designation" 
+                            optionValue="id" appendTo="body"
+                            (onChange)="onChangeIdRepertoire()" 
+                            class="w-full custom-select"
+                            placeholder="{{ msg.components.livraison.selectRepertoire }}" 
+                        />
 
                         <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
                     </p-floatlabel>
@@ -54,33 +60,33 @@
 
         <!-- Info Fournisseur -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-2/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <input pInputText formControlName="repertoireDesignation" id="repertoireDesignation"
-                        inputId="repertoireDesignation" class="full-width" />
+                        inputId="repertoireDesignation" class="w-full" />
                     <label for="repertoireDesignation">{{ msg.components.livraison.repertoire.designation }}</label>
                 </p-floatlabel>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText formControlName="repertoireAdresse" id="repertoireAdresse" inputId="repertoireAdresse" class="full-width" />
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText formControlName="repertoireAdresse" id="repertoireAdresse" inputId="repertoireAdresse" class="w-full" />
                     <label for="repertoireAdresse">{{ msg.components.livraison.repertoire.adresse }}</label>
                 </p-floatlabel>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <input pInputText formControlName="repertoireTel1" id="repertoireTel1"
-                        inputId="repertoireTel1" class="full-width" />
+                        inputId="repertoireTel1" class="w-full" />
                     <label for="repertoireTel1">{{ msg.components.livraison.repertoire.tel1 }}</label>
                 </p-floatlabel>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <input pInputText formControlName="repertoireTel2" id="repertoireTel2"
-                        inputId="repertoireTel2" class="full-width" />
+                        inputId="repertoireTel2" class="w-full" />
                     <label for="repertoireTel2">{{ msg.components.livraison.repertoire.tel2 }}</label>
                 </p-floatlabel>
             </div>
@@ -89,21 +95,21 @@
 
         <!-- Div Reglement 1 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
                         appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
+                        class="w-full" />
                     <label for="typeReglment">{{ msg.components.livraison.typeReglment }}</label>
                 </p-floatlabel>
             </div>
             
-            <div class="flex flex-col md:flex-row full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
                         <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
                             [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('dateReglement')?.invalid }"
-                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" />
                         <label for="dateReglement">{{ msg.components.livraison.dateReglement }}</label>
                     </p-floatlabel>
 
@@ -114,9 +120,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque" formControlName="numCheque" class="full-width" />
+            <div class="flex flex-col gap-4 w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText id="numCheque" formControlName="numCheque" class="w-full" />
                     <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['numChequeRequired']) {
@@ -125,10 +131,10 @@
                 }
             </div>
 
-            <div class="flex flex-col md:flex-row full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement" formControlName="mntReglement" class="full-width" [maxFractionDigits]="2" />
+            <div class="flex flex-col md:flex-row w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
+                        <p-input-number id="mntReglement" formControlName="mntReglement" class="w-full" [maxFractionDigits]="2" />
                         <label for="mntReglement">{{ msg.components.livraison.mntReglement }}</label>
                     </p-floatlabel>
 
@@ -155,20 +161,20 @@
 
         <!-- Div Reglement 2 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <p-select formControlName="typeReglment2" inputId="typeReglment2" [options]="typeReglements"
                         appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
+                        class="w-full" />
                     <label for="typeReglment2">{{ msg.components.livraison.typeReglment2 }}</label>
                 </p-floatlabel>
             </div>
             
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
                         <p-date-picker id="dateReglement2" formControlName="dateReglement2" appendTo="body"
-                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" />
                         <label for="dateReglement2">{{ msg.components.livraison.dateReglement2 }}</label>
                     </p-floatlabel>
 
@@ -187,9 +193,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque2" formControlName="numCheque2" class="full-width" />
+            <div class="flex flex-col gap-4 w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText id="numCheque2" formControlName="numCheque2" class="w-full" />
                     <label for="numCheque2">{{ msg.components.livraison.numCheque2 }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['numCheque2Required']) {
@@ -198,10 +204,10 @@
                 }
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement2" formControlName="mntReglement2" class="full-width" [maxFractionDigits]="2" />
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
+                        <p-input-number id="mntReglement2" formControlName="mntReglement2" class="w-full" [maxFractionDigits]="2" />
                         <label for="mntReglement2">{{ msg.components.livraison.mntReglement2 }}</label>
                     </p-floatlabel>
 
@@ -220,20 +226,20 @@
 
         <!-- Div Reglement 3 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <p-select formControlName="typeReglment3" inputId="typeReglment3" [options]="typeReglements"
                         appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
+                        class="w-full" />
                     <label for="typeReglment3">{{ msg.components.livraison.typeReglment3 }}</label>
                 </p-floatlabel>
             </div>
             
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
                         <p-date-picker id="dateReglement3" formControlName="dateReglement3" appendTo="body"
-                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" />
                         <label for="dateReglement3">{{ msg.components.livraison.dateReglement3 }}</label>
                     </p-floatlabel>
 
@@ -252,9 +258,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque3" formControlName="numCheque3" class="full-width" />
+            <div class="flex flex-col gap-4 w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText id="numCheque3" formControlName="numCheque3" class="w-full" />
                     <label for="numCheque3">{{ msg.components.livraison.numCheque3 }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['numCheque3Required']) {
@@ -263,10 +269,10 @@
                 }
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement3" formControlName="mntReglement3" class="full-width" [maxFractionDigits]="2" />
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
+                        <p-input-number id="mntReglement3" formControlName="mntReglement3" class="w-full" [maxFractionDigits]="2" />
                         <label for="mntReglement3">{{ msg.components.livraison.mntReglement3 }}</label>
                     </p-floatlabel>
 
@@ -285,20 +291,20 @@
 
         <!-- Div Reglement 4 -->
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <p-floatlabel variant="on" class="w-full">
                     <p-select formControlName="typeReglment4" inputId="typeReglment4" [options]="typeReglements"
                         appendTo="body" optionLabel="label" optionValue="value" style="height: 33px;"
-                        class="full-width" />
+                        class="w-full" />
                     <label for="typeReglment4">{{ msg.components.livraison.typeReglment4 }}</label>
                 </p-floatlabel>
             </div>
             
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
                         <p-date-picker id="dateReglement4" formControlName="dateReglement4" appendTo="body"
-                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="full-width" />
+                            [dateFormat]="msg.formats.date_Format_DDMMYY" class="w-full" />
                         <label for="dateReglement4">{{ msg.components.livraison.dateReglement4 }}</label>
                     </p-floatlabel>
 
@@ -317,9 +323,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 full-width">
-                <p-floatlabel variant="on" class="full-width">
-                    <input pInputText id="numCheque4" formControlName="numCheque4" class="full-width" />
+            <div class="flex flex-col gap-4 w-full">
+                <p-floatlabel variant="on" class="w-full">
+                    <input pInputText id="numCheque4" formControlName="numCheque4" class="w-full" />
                     <label for="numCheque4">{{ msg.components.livraison.numCheque4 }}</label>
                 </p-floatlabel>
                 @if (formGroup.errors?.['numCheque4Required']) {
@@ -328,10 +334,10 @@
                 }
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 full-width">
-                <div class="flex flex-col gap-4 full-width">
-                    <p-floatlabel variant="on" class="full-width">
-                        <p-input-number id="mntReglement4" formControlName="mntReglement4" class="full-width" [maxFractionDigits]="2" />
+            <div class="flex flex-col md:flex-row gap-2 w-full">
+                <div class="flex flex-col gap-4 w-full">
+                    <p-floatlabel variant="on" class="w-full">
+                        <p-input-number id="mntReglement4" formControlName="mntReglement4" class="w-full" [maxFractionDigits]="2" />
                         <label for="mntReglement4">{{ msg.components.livraison.mntReglement4 }}</label>
                     </p-floatlabel>
 
@@ -351,12 +357,12 @@
         <div class="flex-auto basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/8 flex flex-col gap-2 px-4 mb-8">
             <div class="flex flex-col md:flex-row gap-2">
                 <div class="w-full w-1/6">
-                    <div class="flex flex-col full-width">
-                        <p-floatlabel variant="on" class="full-width">
+                    <div class="flex flex-col w-full">
+                        <p-floatlabel variant="on" class="w-full">
                             <p-select formControlName="stockId" id="stockId" inputId="stockId" [options]="listStock"
                                 appendTo="body" optionLabel="designation" optionValue="id"
                                 (onChange)="onChangeIdStock()"
-                                style="height: 33px;" class="full-width"
+                                style="height: 33px;" class="w-full"
                                 placeholder="{{ msg.components.livraison.selectStock }}" />
                             <label for="stockId">{{ msg.components.livraison.stockId }}</label>
                         </p-floatlabel>
@@ -365,18 +371,18 @@
                 
                 <div class="w-full w-5/6 flex flex-col md:flex-row gap-2">
                     <div class="w-full w-2/12 flex flex-col gap-2">
-                        <div class="flex flex-col full-width">
-                            <p-floatlabel variant="on" class="full-width">
-                                <input pInputText id="codeTransport" formControlName="codeTransport" class="full-width" />
+                        <div class="flex flex-col w-full">
+                            <p-floatlabel variant="on" class="w-full">
+                                <input pInputText id="codeTransport" formControlName="codeTransport" class="w-full" />
                                 <label for="codeTransport">{{ msg.components.livraison.codeTransport }}</label>
                             </p-floatlabel>
                         </div>
                     </div>
                     
                     <div class="w-full w-6/12 flex flex-col gap-2">
-                        <div class="flex flex-col full-width">
-                            <p-floatlabel variant="on" class="full-width">
-                                <input pInputText id="remarqueClient" formControlName="remarqueClient" class="full-width" />
+                        <div class="flex flex-col w-full">
+                            <p-floatlabel variant="on" class="w-full">
+                                <input pInputText id="remarqueClient" formControlName="remarqueClient" class="w-full" />
                                 <label for="remarqueClient">{{ msg.components.livraison.remarqueClient }}</label>
                             </p-floatlabel>
                         </div>
@@ -390,9 +396,9 @@
                     </div>
                     
                     <div class="w-full w-2/12 flex flex-col gap-2">
-                        <div class="flex flex-col gap-4 full-width">
-                            <p-floatlabel variant="on" class="full-width">
-                                <p-date-picker id="sysDate" formControlName="sysDate" [dateFormat]="msg.formats.date_Format_DDMMYY" [title]="formGroup.get('sysDate')?.value | date: msg.formats.date_Format_TIME_ONLY" class="full-width" />
+                        <div class="flex flex-col gap-4 w-full">
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-date-picker id="sysDate" formControlName="sysDate" [dateFormat]="msg.formats.date_Format_DDMMYY" [title]="formGroup.get('sysDate')?.value | date: msg.formats.date_Format_TIME_ONLY" class="w-full" />
                                 <label for="sysDate">{{ msg.components.livraison.sysDate }}</label>
                             </p-floatlabel>
                         </div>
@@ -504,22 +510,22 @@
             <div class="card flex flex-col gap-4">
                 <div class="flex flex-col gap-6">
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <input pInputText formControlName="designation" id="designation" inputId="designation" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <input pInputText formControlName="designation" id="designation" inputId="designation" class="w-full" />
                             <label for="designation">{{ msg.components.livraison.stock.designation }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="qteStock" id="qteStock" inputId="qteStock" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="qteStock" id="qteStock" inputId="qteStock" class="w-full" />
                             <label for="qteStock">{{ msg.components.livraison.stock.qteStock }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" [maxFractionDigits]="2" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" [maxFractionDigits]="2" class="w-full" />
                             <label for="prixVente">{{ msg.components.livraison.stock.prixVente }}</label>
                             
                             @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
@@ -529,22 +535,22 @@
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" [maxFractionDigits]="2" [ngClass]="'ng-invalid'" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" [maxFractionDigits]="2" [ngClass]="'ng-invalid'" class="w-full" />
                             <label for="prixVenteMin">{{ msg.components.livraison.stock.prixCommercial }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" (onBlur)="onChangeMontantProduit()" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" (onBlur)="onChangeMontantProduit()" class="w-full" />
                             <label for="qteLivrer">{{ msg.components.livraison.stock.qteLivrer }}</label>
                         </p-floatlabel>
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="remiseLivraison" id="remiseLivraison" inputId="remiseLivraison" [maxFractionDigits]="2" (onBlur)="onChangeMontantProduit()" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="remiseLivraison" id="remiseLivraison" inputId="remiseLivraison" [maxFractionDigits]="2" (onBlur)="onChangeMontantProduit()" class="w-full" />
                             <label for="remiseLivraison">{{ msg.components.livraison.stock.remiseLivraison }}</label>
                         </p-floatlabel>
 
@@ -554,8 +560,8 @@
                     </div>
 
                     <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="full-width">
-                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" [maxFractionDigits]="2" class="full-width" />
+                        <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" [maxFractionDigits]="2" class="w-full" />
                             <label for="montantProduit">{{ msg.components.livraison.stock.montantProduit }}</label>
                         </p-floatlabel>
                     </div>
