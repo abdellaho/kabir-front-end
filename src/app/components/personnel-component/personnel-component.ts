@@ -265,7 +265,7 @@ export class PersonnelComponent implements OnInit {
                     designation: this.personnel.designation,
                     cin: this.personnel.cin,
                     email: this.personnel.email,
-                    password: '', //this.personnel.password,
+                    password: this.personnel.passwordFake,
                     typePersonnel: this.personnel.typePersonnel,
                     dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
                     tel1: this.personnel.tel1,
