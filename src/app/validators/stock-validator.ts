@@ -82,7 +82,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     if (i < remiseLevels.length - 1) {
       const next = remiseLevels[i + 1];
       validateDescending(lvl.r!.value, next.r!.value, `prixVentMin${lvl.key}`, `prixVentMin${next.key}`);
-      validateAscending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
+      validateDescending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
     }
   });
 

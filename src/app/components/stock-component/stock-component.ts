@@ -1,4 +1,4 @@
-import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
+import { Fournisseur } from '@/models/fournisseur';
 import { initObjectStock, Stock } from '@/models/stock';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
 import { StockService } from '@/services/stock/stock-service';
@@ -134,7 +134,7 @@ export class StockComponent {
             { label: `${this.msg.buttons.consulter} ${this.msg.buttons.prixVentePlusRemise}`, icon: 'pi pi-print', command: () => this.imprimer(11) }
         ];
     }
-
+    
     clear(table: Table) {
         table.clear();
     }
