@@ -184,10 +184,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             numCheque2: livraison.numCheque2,
             numCheque3: livraison.numCheque3,
             numCheque4: livraison.numCheque4,
-            mntReglement: livraison.mntReglement,
-            mntReglement2: livraison.mntReglement2,
-            mntReglement3: livraison.mntReglement3,
-            mntReglement4: livraison.mntReglement4,
+            mntReglement: livraison.mntReglement === 0 ? null : livraison.mntReglement,
+            mntReglement2: livraison.mntReglement2 === 0 ? null : livraison.mntReglement2,
+            mntReglement3: livraison.mntReglement3 === 0 ? null : livraison.mntReglement3,
+            mntReglement4: livraison.mntReglement4 === 0 ? null : livraison.mntReglement4,
             codeTransport: livraison.codeTransport,
             mantantBL: livraison.mantantBL,
             personnelId: livraison.personnelId,
@@ -237,10 +237,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 numCheque3: [''],
                 numCheque4: [''],
                 mantantBL: [0],
-                mntReglement: [0],
-                mntReglement2: [0],
-                mntReglement3: [0],
-                mntReglement4: [0],
+                mntReglement: [null],
+                mntReglement2: [null],
+                mntReglement3: [null],
+                mntReglement4: [null],
                 personnelId: [null, [Validators.required, Validators.min(1)]],
                 repertoireId: [null, [Validators.required, Validators.min(1)]],
                 stockId: [0],
@@ -273,10 +273,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.livraison.numCheque3 = this.formGroup.get('numCheque3')?.value;
         this.livraison.numCheque4 = this.formGroup.get('numCheque4')?.value;
         this.livraison.mantantBL = this.formGroup.get('mantantBL')?.value;
-        this.livraison.mntReglement = this.formGroup.get('mntReglement')?.value;
-        this.livraison.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
-        this.livraison.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
-        this.livraison.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
+        this.livraison.mntReglement = this.formGroup.get('mntReglement')?.value || 0;
+        this.livraison.mntReglement2 = this.formGroup.get('mntReglement2')?.value || 0;
+        this.livraison.mntReglement3 = this.formGroup.get('mntReglement3')?.value || 0;
+        this.livraison.mntReglement4 = this.formGroup.get('mntReglement4')?.value || 0;
         this.livraison.personnelId = this.formGroup.get('personnelId')?.value;
         this.livraison.repertoireId = this.formGroup.get('repertoireId')?.value;
         this.livraison.codeTransport = this.formGroup.get('codeTransport')?.value;
@@ -454,18 +454,18 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison.dateReglement2 = formGroup.get('dateReglement2')?.value;
         livraison.dateReglement3 = formGroup.get('dateReglement3')?.value;
         livraison.dateReglement4 = formGroup.get('dateReglement4')?.value;
-        livraison.mntReglement = formGroup.get('mntReglement')?.value;
-        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
-        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
-        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+        livraison.mntReglement = formGroup.get('mntReglement')?.value || 0;
+        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value || 0;
+        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value || 0;
+        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value || 0;
     }
 
     patchMontantReglement(livraison: Livraison, formGroup: FormGroup) {
         formGroup.patchValue({
-            mntReglement: livraison.mntReglement,
-            mntReglement2: livraison.mntReglement2,
-            mntReglement3: livraison.mntReglement3,
-            mntReglement4: livraison.mntReglement4
+            mntReglement: livraison.mntReglement === 0 ? null : livraison.mntReglement,
+            mntReglement2: livraison.mntReglement2 === 0 ? null : livraison.mntReglement2,
+            mntReglement3: livraison.mntReglement3 === 0 ? null : livraison.mntReglement3,
+            mntReglement4: livraison.mntReglement4 === 0 ? null : livraison.mntReglement4
         });
     }
 
@@ -499,10 +499,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison.typeReglment3 = formGroup.get('typeReglment3')?.value;
         livraison.typeReglment4 = formGroup.get('typeReglment4')?.value;
         livraison.mantantBL = formGroup.get('mantantBL')?.value;
-        livraison.mntReglement = formGroup.get('mntReglement')?.value;
-        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value;
-        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value;
-        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value;
+        livraison.mntReglement = formGroup.get('mntReglement')?.value || 0;
+        livraison.mntReglement2 = formGroup.get('mntReglement2')?.value || 0;
+        livraison.mntReglement3 = formGroup.get('mntReglement3')?.value || 0;
+        livraison.mntReglement4 = formGroup.get('mntReglement4')?.value || 0;
         livraison.codeTransport = formGroup.get('codeTransport')?.value;
         livraison.repertoireObservation = formGroup.get('remarqueClient')?.value;
 

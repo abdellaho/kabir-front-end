@@ -186,6 +186,10 @@ export class AchatFactureComponent {
         }
     }
 
+    sortList(listAchatFacture: AchatFacture[]): AchatFacture[] {
+        return listAchatFacture.sort((a, b) => new Date(b.dateReglement).getTime() - new Date(a.dateReglement).getTime());
+    }
+
     getAllAchatFacture(): void {
         this.listAchatFactureFixe = [];
         this.listAchatFacture = [];
@@ -338,10 +342,10 @@ export class AchatFactureComponent {
                 this.formGroup.patchValue({
                     stockId: BigInt(0)
                 });
-            }
 
-            this.openCloseDialogAjouterDetAchatFacture(true);
-        }
+                this.openCloseDialogAjouterDetAchatFacture(true);
+            }
+        }            
     }
 
     initDetAchatFactureFormInformation() {
@@ -690,6 +694,9 @@ export class AchatFactureComponent {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);
         }
+
+        list = this.sortList(list);
+
         return list;
     }
 

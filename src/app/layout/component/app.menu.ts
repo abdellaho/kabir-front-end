@@ -49,10 +49,6 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-clock', routerLink: ['/absence'], visible: this.hasPermission([Permission.ALL]) }]
-            },
-            {
-                label: '',
                 items: [
                     {
                         label: this.msg.menu.repertoire,
@@ -119,6 +115,10 @@ export class AppMenu implements OnInit {
             {
                 label: '',
                 items: [{ label: this.msg.menu.entretien, icon: 'pi pi-fw pi-bookmark', routerLink: ['/entretien'], visible: this.hasPermission([Permission.ALL]) }]
+            },
+            {
+                label: '',
+                items: [{ label: this.msg.menu.absence, icon: 'pi pi-fw pi-clock', routerLink: ['/absence'], visible: this.hasPermission([Permission.ALL]) }]
             },
             {
                 label: '',

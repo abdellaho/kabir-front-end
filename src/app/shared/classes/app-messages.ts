@@ -338,6 +338,7 @@ export const APP_MESSAGES = {
         },
         stock: {
             label: 'Stock Exposé',
+            stock: 'Stock',
             designation: 'Designation',
             fournisseurId: 'Fournisseur',
             qteStockTable: 'St.Dép',
@@ -751,8 +752,8 @@ export const APP_MESSAGES = {
         achatFacture: {
             label: 'Achat Facture',
             search: 'Rechercher',
-            numeroFacExterne: 'Numéro Facture Externe',
-            dateAF: 'Date Achat Facture',
+            numeroFacExterne: 'Numéro Facture',
+            dateAF: 'Date Facture',
             dateReglement: 'Date Réglement',
             typeReglment: 'Type Réglement',
             fournisseurId: 'Fournisseur',

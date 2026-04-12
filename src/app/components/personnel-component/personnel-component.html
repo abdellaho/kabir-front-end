@@ -198,7 +198,7 @@
 
             <div class="flex flex-col">
               <p-floatlabel variant="on">
-                <p-password id="password" formControlName="password" class="w-full" inputStyleClass="w-full" />
+                <p-password id="password" formControlName="password" [toggleMask]="true" class="w-full" inputStyleClass="w-full" />
                 <label for="password">{{ msg.components.personnel.password }}</label>
               </p-floatlabel>
             </div>

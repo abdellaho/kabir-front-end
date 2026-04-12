@@ -56,7 +56,7 @@
                 </ng-template>
 
                 <ng-template #body let-p let-rowIndex="rowIndex">
-                    <tr>
+                    <tr [pSelectableRow]="p">
                         <td>{{ p.dateEntretien | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.voitureNumVoiture }}</td>
                         <td>{{ p.kmDetecte }}</td>

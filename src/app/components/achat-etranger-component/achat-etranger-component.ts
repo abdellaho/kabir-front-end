@@ -140,9 +140,9 @@ export class AchatEtrangerComponent {
             mantantAvancs2: [null],
 
             totalPaye: [{ value: 0, disabled: true }],
-            mntTransportIntern: [0],
-            mntDouane: [0],
-            mntMagasinage: [0],
+            mntTransportIntern: [null],
+            mntDouane: [null],
+            mntMagasinage: [null],
 
             totalAllMnt: [{ value: 0, disabled: true }],
             stockId: [BigInt(0)]
@@ -356,28 +356,28 @@ export class AchatEtrangerComponent {
         let allMntTotal = 0.0;
 
         if (type === 'mntDouane') {
-            if (this.formGroup.get('mntDouane')?.value < 0) {
-                this.formGroup.patchValue({ mntDouane: 0.0 });
+            if (this.formGroup.get('mntDouane')?.value !== null && this.formGroup.get('mntDouane')?.value < 0) {
+                this.formGroup.patchValue({ mntDouane: null });
             }
         }
         if (type === 'mntTransportIntern') {
-            if (this.formGroup.get('mntTransportIntern')?.value < 0) {
-                this.formGroup.patchValue({ mntTransportIntern: 0.0 });
+            if (this.formGroup.get('mntTransportIntern')?.value !== null && this.formGroup.get('mntTransportIntern')?.value < 0) {
+                this.formGroup.patchValue({ mntTransportIntern: null });
             }
         }
         if (type === 'mntMagasinage') {
-            if (this.formGroup.get('mntMagasinage')?.value < 0) {
-                this.formGroup.patchValue({ mntMagasinage: 0.0 });
+            if (this.formGroup.get('mntMagasinage')?.value !== null && this.formGroup.get('mntMagasinage')?.value < 0) {
+                this.formGroup.patchValue({ mntMagasinage: null });
             }
         }
         if (type === 'mantantAvancs1') {
-            if (this.formGroup.get('mantantAvancs1')?.value < 0) {
-                this.formGroup.patchValue({ mantantAvancs1: 0.0 });
+            if (this.formGroup.get('mantantAvancs1')?.value !== null && this.formGroup.get('mantantAvancs1')?.value < 0) {
+                this.formGroup.patchValue({ mantantAvancs1: null });
             }
         }
         if (type === 'mantantAvancs2') {
-            if (this.formGroup.get('mantantAvancs2')?.value < 0) {
-                this.formGroup.patchValue({ mantantAvancs2: 0.0 });
+            if (this.formGroup.get('mantantAvancs2')?.value !== null && this.formGroup.get('mantantAvancs2')?.value < 0) {
+                this.formGroup.patchValue({ mantantAvancs2: null });
             }
         }
 
@@ -437,13 +437,13 @@ export class AchatEtrangerComponent {
                             dateFacture: this.achatEtranger.dateFacture,
                             mntFacture: this.achatEtranger.mntFacture,
                             dateAvances1: this.achatEtranger.dateAvances1,
-                            mantantAvancs1: this.achatEtranger.mantantAvancs1 || 0,
+                            mantantAvancs1: this.achatEtranger.mantantAvancs1 === 0 ? null : this.achatEtranger.mantantAvancs1,
                             dateAvances2: this.achatEtranger.dateAvances2,
-                            mantantAvancs2: this.achatEtranger.mantantAvancs2 || 0,
+                            mantantAvancs2: this.achatEtranger.mantantAvancs2 === 0 ? null : this.achatEtranger.mantantAvancs2,
                             totalPaye: this.achatEtranger.totalPaye,
-                            mntTransportIntern: this.achatEtranger.mntTransportIntern,
-                            mntDouane: this.achatEtranger.mntDouane,
-                            mntMagasinage: this.achatEtranger.mntMagasinage,
+                            mntTransportIntern: this.achatEtranger.mntTransportIntern === 0 ? null : this.achatEtranger.mntTransportIntern,
+                            mntDouane: this.achatEtranger.mntDouane === 0 ? null : this.achatEtranger.mntDouane,
+                            mntMagasinage: this.achatEtranger.mntMagasinage === 0 ? null : this.achatEtranger.mntMagasinage,
                             totalAllMnt: this.achatEtranger.totalAllMnt,
                             stockId: 0
                         });
@@ -501,9 +501,9 @@ export class AchatEtrangerComponent {
         achatEtranger.mantantAvancs1 = formGroup.get('mantantAvancs1')?.value || 0;
         achatEtranger.mantantAvancs2 = formGroup.get('mantantAvancs2')?.value || 0;
         achatEtranger.totalPaye = formGroup.get('totalPaye')?.value;
-        achatEtranger.mntTransportIntern = formGroup.get('mntTransportIntern')?.value;
-        achatEtranger.mntDouane = formGroup.get('mntDouane')?.value;
-        achatEtranger.mntMagasinage = formGroup.get('mntMagasinage')?.value;
+        achatEtranger.mntTransportIntern = formGroup.get('mntTransportIntern')?.value || 0;
+        achatEtranger.mntDouane = formGroup.get('mntDouane')?.value || 0;
+        achatEtranger.mntMagasinage = formGroup.get('mntMagasinage')?.value || 0;
         achatEtranger.totalAllMnt = formGroup.get('totalAllMnt')?.value;
 
         return achatEtranger;

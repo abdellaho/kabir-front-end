@@ -39,7 +39,7 @@
                 </ng-template>
 
                 <ng-template #body let-p>
-                    <tr>
+                    <tr [pSelectableRow]="p">
                         <td>{{ p.dateOperation | date:'dd/MM/yyyy' }}</td>
 
                         <td style="min-width: 7rem">
