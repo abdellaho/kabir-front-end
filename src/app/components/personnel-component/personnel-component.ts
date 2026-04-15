@@ -239,7 +239,23 @@ export class PersonnelComponent implements OnInit {
             consulterRepertoire: [false],
             ajouterRepertoire: [false],
             modifierRepertoire: [false],
-            supprimerRepertoire: [false]
+            supprimerRepertoire: [false],
+            consulterTransport: [false],
+            ajouterTransport: [false],
+            modifierTransport: [false],
+            supprimerTransport: [false],
+            consulterLivraison: [false],
+            ajouterLivraison: [false],
+            modifierLivraison: [false],
+            supprimerLivraison: [false],
+            consulterFacture: [false],
+            ajouterFacture: [false],
+            modifierFacture: [false],
+            supprimerFacture: [false],
+            consulterEntretien: [false],
+            ajouterEntretien: [false],
+            modifierEntretien: [false],
+            supprimerEntretien: [false]
         });
     }
 
@@ -261,21 +277,32 @@ export class PersonnelComponent implements OnInit {
                     this.typePersonnel = filteredTypePersonnelAll;
                 }
 
-                this.formGroup.patchValue({
-                    designation: this.personnel.designation,
-                    cin: this.personnel.cin,
-                    email: this.personnel.email,
-                    password: this.personnel.passwordFake,
-                    typePersonnel: this.personnel.typePersonnel,
-                    dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
-                    tel1: this.personnel.tel1,
-                    tel2: this.personnel.tel2,
-                    adresse: this.personnel.adresse,
-                    salaire: this.personnel.salaire !== 0 ? this.personnel.salaire : null,
-                    etatComptePersonnel: this.personnel.etatComptePersonnel
-                });
+                this.personnelService.getById(personnelEdit.id).subscribe({
+                    next: (data: Personnel) => {
+                        this.personnel = data;
 
-                this.openCloseDialogAjouter(true);
+                        this.formGroup.patchValue({
+                            designation: this.personnel.designation,
+                            cin: this.personnel.cin,
+                            email: this.personnel.email,
+                            password: this.personnel.passwordFake,
+                            typePersonnel: this.personnel.typePersonnel,
+                            dateEntrer: this.personnel?.dateEntrer ? new Date(this.personnel.dateEntrer) : new Date(),
+                            tel1: this.personnel.tel1,
+                            tel2: this.personnel.tel2,
+                            adresse: this.personnel.adresse,
+                            salaire: this.personnel.salaire !== 0 ? this.personnel.salaire : null,
+                            etatComptePersonnel: this.personnel.etatComptePersonnel
+                        });
+                        this.openCloseDialogAjouter(true);
+                    },
+                    error: (error: any) => {
+                        console.error(error);
+                    },
+                    complete: () => {
+                        this.loadingService.hide();
+                    }
+                });
             } else if (operation === 2) {
                 this.openCloseDialogSupprimer(true);
             } else if (operation === 3) {
@@ -347,6 +374,26 @@ export class PersonnelComponent implements OnInit {
             personnel.ajouterStock = formGroup.get('ajouterStock')?.value ?? false;
             personnel.modifierStock = formGroup.get('modifierStock')?.value ?? false;
             personnel.supprimerStock = formGroup.get('supprimerStock')?.value ?? false;
+
+            personnel.consulterTransport = formGroup.get('consulterTransport')?.value ?? false;
+            personnel.ajouterTransport = formGroup.get('ajouterTransport')?.value ?? false;
+            personnel.modifierTransport = formGroup.get('modifierTransport')?.value ?? false;
+            personnel.supprimerTransport = formGroup.get('supprimerTransport')?.value ?? false;
+
+            personnel.consulterLivraison = formGroup.get('consulterLivraison')?.value ?? false;
+            personnel.ajouterLivraison = formGroup.get('ajouterLivraison')?.value ?? false;
+            personnel.modifierLivraison = formGroup.get('modifierLivraison')?.value ?? false;
+            personnel.supprimerLivraison = formGroup.get('supprimerLivraison')?.value ?? false;
+
+            personnel.consulterFacture = formGroup.get('consulterFacture')?.value ?? false;
+            personnel.ajouterFacture = formGroup.get('ajouterFacture')?.value ?? false;
+            personnel.modifierFacture = formGroup.get('modifierFacture')?.value ?? false;
+            personnel.supprimerFacture = formGroup.get('supprimerFacture')?.value ?? false;
+
+            personnel.consulterEntretien = formGroup.get('consulterEntretien')?.value ?? false;
+            personnel.ajouterEntretien = formGroup.get('ajouterEntretien')?.value ?? false;
+            personnel.modifierEntretien = formGroup.get('modifierEntretien')?.value ?? false;
+            personnel.supprimerEntretien = formGroup.get('supprimerEntretien')?.value ?? false;
         }
 
         return personnel;
@@ -702,6 +749,46 @@ export class PersonnelComponent implements OnInit {
                     });
                 }
                 break;
+            case 3:
+                this.personnel.consulterTransport = this.formGroupRole.get('consulterTransport')?.value;
+                if (this.personnel.consulterTransport === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterTransport: false,
+                        modifierTransport: false,
+                        supprimerTransport: false
+                    });
+                }
+                break;
+            case 4:
+                this.personnel.consulterLivraison = this.formGroupRole.get('consulterLivraison')?.value;
+                if (this.personnel.consulterLivraison === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterLivraison: false,
+                        modifierLivraison: false,
+                        supprimerLivraison: false
+                    });
+                }
+                break;
+            case 5:
+                this.personnel.consulterFacture = this.formGroupRole.get('consulterFacture')?.value;
+                if (this.personnel.consulterFacture === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterFacture: false,
+                        modifierFacture: false,
+                        supprimerFacture: false
+                    });
+                }
+                break;
+            case 6:
+                this.personnel.consulterEntretien = this.formGroupRole.get('consulterEntretien')?.value;
+                if (this.personnel.consulterEntretien === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterEntretien: false,
+                        modifierEntretien: false,
+                        supprimerEntretien: false
+                    });
+                }
+                break;
         }
     }
 
@@ -718,6 +805,34 @@ export class PersonnelComponent implements OnInit {
                 if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
                     this.formGroupRole.patchValue({
                         ajouterRepertoire: false
+                    });
+                }
+                break;
+            case 3:
+                if (this.formGroupRole.get('consulterTransport')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterTransport: false
+                    });
+                }
+                break;
+            case 4:
+                if (this.formGroupRole.get('consulterLivraison')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterLivraison: false
+                    });
+                }
+                break;
+            case 5:
+                if (this.formGroupRole.get('consulterFacture')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterFacture: false
+                    });
+                }
+                break;
+            case 6:
+                if (this.formGroupRole.get('consulterEntretien')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        ajouterEntretien: false
                     });
                 }
                 break;
@@ -740,6 +855,34 @@ export class PersonnelComponent implements OnInit {
                     });
                 }
                 break;
+            case 3:
+                if (this.formGroupRole.get('consulterTransport')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierTransport: false
+                    });
+                }
+                break;
+            case 4:
+                if (this.formGroupRole.get('consulterLivraison')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierLivraison: false
+                    });
+                }
+                break;
+            case 5:
+                if (this.formGroupRole.get('consulterFacture')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierFacture: false
+                    });
+                }
+                break;
+            case 6:
+                if (this.formGroupRole.get('consulterEntretien')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        modifierEntretien: false
+                    });
+                }
+                break;
         }
     }
 
@@ -756,6 +899,34 @@ export class PersonnelComponent implements OnInit {
                 if (this.formGroupRole.get('consulterRepertoire')?.value === false) {
                     this.formGroupRole.patchValue({
                         supprimerRepertoire: false
+                    });
+                }
+                break;
+            case 3:
+                if (this.formGroupRole.get('consulterTransport')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerTransport: false
+                    });
+                }
+                break;
+            case 4:
+                if (this.formGroupRole.get('consulterLivraison')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerLivraison: false
+                    });
+                }
+                break;
+            case 5:
+                if (this.formGroupRole.get('consulterFacture')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerFacture: false
+                    });
+                }
+                break;
+            case 6:
+                if (this.formGroupRole.get('consulterEntretien')?.value === false) {
+                    this.formGroupRole.patchValue({
+                        supprimerEntretien: false
                     });
                 }
                 break;

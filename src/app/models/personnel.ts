@@ -25,6 +25,22 @@ export interface Personnel {
     ajouterRepertoire: boolean;
     modifierRepertoire: boolean;
     supprimerRepertoire: boolean;
+    consulterTransport: boolean;
+    ajouterTransport: boolean;
+    modifierTransport: boolean;
+    supprimerTransport: boolean;
+    consulterLivraison: boolean;
+    ajouterLivraison: boolean;
+    modifierLivraison: boolean;
+    supprimerLivraison: boolean;
+    consulterFacture: boolean;
+    ajouterFacture: boolean;
+    modifierFacture: boolean;
+    supprimerFacture: boolean;
+    consulterEntretien: boolean;
+    ajouterEntretien: boolean;
+    modifierEntretien: boolean;
+    supprimerEntretien: boolean;
 }
 
 export function initObjectPersonnel(): Personnel {
@@ -54,6 +70,22 @@ export function initObjectPersonnel(): Personnel {
         consulterRepertoire: false,
         ajouterRepertoire: false,
         modifierRepertoire: false,
-        supprimerRepertoire: false
+        supprimerRepertoire: false,
+        consulterTransport: false,
+        ajouterTransport: false,
+        modifierTransport: false,
+        supprimerTransport: false,
+        consulterLivraison: false,
+        ajouterLivraison: false,
+        modifierLivraison: false,
+        supprimerLivraison: false,
+        consulterFacture: false,
+        ajouterFacture: false,
+        modifierFacture: false,
+        supprimerFacture: false,
+        consulterEntretien: false,
+        ajouterEntretien: false,
+        modifierEntretien: false,
+        supprimerEntretien: false
     };
 }

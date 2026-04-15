@@ -56,11 +56,11 @@
                 </ng-template>
 
                 <ng-template #body let-p let-rowIndex="rowIndex">
-                    <tr [pSelectableRow]="p">
+                    <tr [pSelectableRow]="p" [ngStyle]="{'background-color': p.kmDetecte >= p.voitureKmMax ? 'red' : ''}">
                         <td>{{ p.dateEntretien | date:'dd/MM/yyyy' }}</td>
                         <td>{{ p.voitureNumVoiture }}</td>
                         <td>{{ p.kmDetecte }}</td>
-                        <td>{{ p.kmMax }}</td>
+                        <td>{{ p.voitureKmMax }}</td>
 
                         <td style="min-width: 7rem">
                             <div class="flex gap-2">

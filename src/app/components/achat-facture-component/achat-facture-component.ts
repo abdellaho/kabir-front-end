@@ -345,7 +345,7 @@ export class AchatFactureComponent {
 
                 this.openCloseDialogAjouterDetAchatFacture(true);
             }
-        }            
+        }
     }
 
     initDetAchatFactureFormInformation() {
@@ -391,14 +391,10 @@ export class AchatFactureComponent {
 
     calculerMntTtc() {
         this.achatFacture.mntTtc = 0;
-        if (this.listDetAchatFacture && this.listDetAchatFacture.length > 0) {
-            let total = this.listDetAchatFacture.reduce((acc, detAchatFacture) => acc + detAchatFacture.mantantTTC, 0);
+        if (this.listDetAchatFactureTVA && this.listDetAchatFactureTVA.length > 0) {
+            let total = this.listDetAchatFactureTVA.reduce((acc, detAchatFactureTVA) => acc + detAchatFactureTVA.mntTTC, 0);
             this.achatFacture.mntTtc = total;
         }
-
-        /*this.formGroup.patchValue({
-            totalMntProduit: this.achatFacture.mntTtc
-        });*/
     }
 
     validerProduits() {
@@ -434,7 +430,6 @@ export class AchatFactureComponent {
         this.achatFacture.tva20 = this.giveMeTotalMntTVA20(this.listDetAchatFacture);
         this.achatFacture.tva7 = this.giveMeTotalMntTVA7(this.listDetAchatFacture);
 
-        this.calculerMntTtc();
         this.openCloseDialogAjouterDetAchatFacture(false);
     }
 
@@ -472,7 +467,7 @@ export class AchatFactureComponent {
         mantantTTC = montant - montant * remiseAchat * 0.01;
 
         this.detAchatFacture.mantantTTC = mantantTTC;
-        this.formGroupDetAchatFacture.patchValue({ mantantTTC });
+        this.formGroupDetAchatFacture.patchValue({ mantantTTC: mantantTTC > 0 ? mantantTTC : null });
         this.formGroupDetAchatFacture.get('mantantTTC')?.disable();
 
         if (this.detAchatFacture.stock?.tva === 7) {
@@ -547,7 +542,6 @@ export class AchatFactureComponent {
     supprimerDetAchatFacture() {
         this.listDetAchatFacture = this.listDetAchatFacture.filter((detAchatFacture: DetAchatFacture) => detAchatFacture.stockId !== this.detAchatFacture.stockId);
         this.calculerTotal();
-        this.calculerMntTtc();
         this.formGroup.updateValueAndValidity();
         this.openCloseDialogSupprimerDetAchatFacture(false);
     }
@@ -745,6 +739,7 @@ export class AchatFactureComponent {
 
         if (!trvErreur) {
             this.achatFacture = this.mapFormGroupToObject(this.formGroup, this.achatFacture);
+            this.calculerMntTtc();
             this.listDetAchatFacture.forEach((detAchatFacture) => {
                 detAchatFacture.stock = null;
             });

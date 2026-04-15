@@ -160,12 +160,12 @@
 
                 <ng-template #emptymessage>
                     <tr>
-                        <td colspan="10">No Personnel found.</td>
+                        <td colspan="10">No Repertoire found.</td>
                     </tr>
                 </ng-template>
                 <ng-template #loadingbody>
                     <tr>
-                        <td colspan="10">Loading personnels data. Please wait.</td>
+                        <td colspan="10">Loading Repertoire data. Please wait.</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -205,6 +205,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="villeId" inputId="villeId" [options]="listVille"
+                                        [filter]="true" filterBy="nomVille" [resetFilterOnHide]="true"
                                         appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
                                         class="w-full" />
                                     <label for="villeId">{{ msg.components.repertoire.villeId }}</label>
@@ -295,6 +296,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelId"
+                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
                                         [options]="listPersonnel" appendTo="body" optionLabel="designation"
                                         optionValue="id" style="height: 30px;" class="w-full" />
                                     <label for="personnelId">{{ msg.components.repertoire.personnelId }}</label>
@@ -418,7 +420,7 @@
 
         <p-dialog [(visible)]="dialogImprimer" [style]="{ width: '300px', maxWidth: '100%' }"
             [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-            [header]="`${msg.components.absence.imprimer.label}`" [modal]="true" class="p-fluid"
+            [header]="`${msg.components.repertoire.imprimer}`" [modal]="true" class="p-fluid"
             [closable]="false">
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
@@ -428,6 +430,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="villeId" inputId="villeIdImprimer" [options]="listVille"
+                                        [filter]="true" filterBy="nomVille" [resetFilterOnHide]="true"
                                         appendTo="body" optionLabel="nomVille" optionValue="id" style="height: 30px;"
                                         class="w-full md:w-56" />
                                     <label for="villeIdImprimer">{{ msg.components.repertoire.villeId }}</label>
@@ -437,6 +440,7 @@
                             <div class="flex flex-col grow basis-0">
                                 <p-floatlabel class="w-full md:w-56" variant="on">
                                     <p-select formControlName="personnelId" inputId="personnelIdImprimer"
+                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
                                         [options]="listPersonnel" appendTo="body" optionLabel="designation"
                                         optionValue="id" style="height: 30px;" class="w-full md:w-56" />
                                     <label for="personnelIdImprimer">{{ msg.components.repertoire.personnelId }}</label>

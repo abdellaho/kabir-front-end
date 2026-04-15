@@ -52,7 +52,7 @@ export const APP_MESSAGES = {
             messageAddAreYouSure: 'Êtes-vous sûr de vouloir ajouter ce transport ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce transport ?',
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir supprimer ce transport ?',
-            messageDeleteAreYouSureAnnulerArchive: 'Êtes-vous sûr de vouloir annuler l\'archive de ce transport ?',
+            messageDeleteAreYouSureAnnulerArchive: "Êtes-vous sûr de vouloir annuler l'archive de ce transport ?",
             messageDeleteAreYouSureAnnulerCorbeille: 'Êtes-vous sûr de vouloir annuler la corbeille de ce transport ?',
             errors: {
                 designationRequired: 'Designation est obligatoire',
@@ -61,7 +61,7 @@ export const APP_MESSAGES = {
                 tel3Required: 'Tel 3 est obligatoire',
                 tel1AndTel2Identique: 'Tel 1 et Tel 2 sont identiques',
                 tel1AndTel3Identique: 'Tel 1 et Tel 3 sont identiques',
-                tel2AndTel3Identique: 'Tel 2 et Tel 3 sont identiques',
+                tel2AndTel3Identique: 'Tel 2 et Tel 3 sont identiques'
             }
         },
         achatEtranger: {
@@ -287,7 +287,7 @@ export const APP_MESSAGES = {
             tel1: 'Tel1',
             tel2: 'Tel2',
             adresse: 'Adresse',
-            salaire: 'Salaire',
+            salaire: 'Objectif',
             etatComptePersonnel: 'Etat',
             consulter: 'Consulter',
             ajouter: 'Ajouter',
@@ -364,6 +364,10 @@ export const APP_MESSAGES = {
             qtePVMin2: 'Taux % 2',
             qtePVMin3: 'Taux % 3',
             qtePVMin4: 'Taux % 4',
+            qtePVMin5: 'Taux % 5',
+            qtePVMin6: 'Taux % 6',
+            qtePVMin7: 'Taux % 7',
+            qtePVMin8: 'Taux % 8',
             remiseMax: 'R.Max',
             remiseMax1: 'Remise Max 1',
             remiseMax2: 'Remise Max 2',
@@ -415,7 +419,19 @@ export const APP_MESSAGES = {
                 prixCommercialMustBeGreatThanPattc: 'Prix Commercial doit être supérieur au P.A.TTC',
                 qtePVMin1MustBeGreaterThanqtePVMin2: 'Taux % 1 doit être supérieur au Taux % 2',
                 qtePVMin2MustBeGreaterThanqtePVMin3: 'Taux % 2 doit être supérieur au Taux % 3',
-                qtePVMin3MustBeGreaterThanqtePVMin4: 'Taux % 3 doit être supérieur au Taux % 4'
+                qtePVMin3MustBeGreaterThanqtePVMin4: 'Taux % 3 doit être supérieur au Taux % 4',
+                qtePVMin4MustBeGreaterThanqtePVMin5: 'Taux % 4 doit être supérieur au Taux % 5',
+                qtePVMin5MustBeGreaterThanqtePVMin6: 'Taux % 5 doit être supérieur au Taux % 6',
+                qtePVMin6MustBeGreaterThanqtePVMin7: 'Taux % 6 doit être supérieur au Taux % 7',
+                qtePVMin7MustBeGreaterThanqtePVMin8: 'Taux % 7 doit être supérieur au Taux % 8',
+                qtePVMin5Required: 'Champs obligatoire',
+                qtePVMin6Required: 'Champs obligatoire',
+                qtePVMin7Required: 'Champs obligatoire',
+                qtePVMin8Required: 'Champs obligatoire',
+                qtePVMin5MustBeGreaterThanPATTC: 'P.V min 5 doit être supérieur au P.A.TTC',
+                qtePVMin6MustBeGreaterThanPATTC: 'P.V min 6 doit être supérieur au P.A.TTC',
+                qtePVMin7MustBeGreaterThanPATTC: 'P.V min 7 doit être supérieur au P.A.TTC',
+                qtePVMin8MustBeGreaterThanPATTC: 'P.V min 8 doit être supérieur au P.A.TTC'
             }
         },
         stockDepot: {
@@ -474,6 +490,7 @@ export const APP_MESSAGES = {
             plafond: 'Plafond',
             typeImprimRepertoire: 'Type Impression',
             choisirPersonnel: 'Choisir Personnel',
+            imprimer: 'Imprimer',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce repertoire ?',
             messageDeleteAreYouSureArchive: 'Êtes-vous sûr de vouloir archiver ce repertoire ?',
             messageDeleteAreYouSureCorbeille: 'Êtes-vous sûr de vouloir placer ce repertoire dans la corbeille ?',

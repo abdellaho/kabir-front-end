@@ -134,7 +134,7 @@ export class StockComponent {
             { label: `${this.msg.buttons.consulter} ${this.msg.buttons.prixVentePlusRemise}`, icon: 'pi pi-print', command: () => this.imprimer(11) }
         ];
     }
-    
+
     clear(table: Table) {
         table.clear();
     }
@@ -163,6 +163,10 @@ export class StockComponent {
                 qtePVMin2: [null, [NegativeValidator]],
                 qtePVMin3: [null, [NegativeValidator]],
                 qtePVMin4: [null, [NegativeValidator]],
+                qtePVMin5: [null, [NegativeValidator]],
+                qtePVMin6: [null, [NegativeValidator]],
+                qtePVMin7: [null, [NegativeValidator]],
+                qtePVMin8: [null, [NegativeValidator]],
                 remiseMax1: [{ value: null, disabled: true }, [NegativeValidator]],
                 remiseMax2: [{ value: null, disabled: true }, [NegativeValidator]],
                 remiseMax3: [{ value: null, disabled: true }, [NegativeValidator]],
@@ -331,6 +335,10 @@ export class StockComponent {
                     qtePVMin2: returnValueOfNumberProperty(this.stock.qtePVMin2),
                     qtePVMin3: returnValueOfNumberProperty(this.stock.qtePVMin3),
                     qtePVMin4: returnValueOfNumberProperty(this.stock.qtePVMin4),
+                    qtePVMin5: returnValueOfNumberProperty(this.stock.qtePVMin5),
+                    qtePVMin6: returnValueOfNumberProperty(this.stock.qtePVMin6),
+                    qtePVMin7: returnValueOfNumberProperty(this.stock.qtePVMin7),
+                    qtePVMin8: returnValueOfNumberProperty(this.stock.qtePVMin8),
                     remiseMax1: returnValueOfNumberProperty(this.stock.remiseMax1),
                     remiseMax2: returnValueOfNumberProperty(this.stock.remiseMax2),
                     remiseMax3: returnValueOfNumberProperty(this.stock.remiseMax3),
@@ -497,6 +505,10 @@ export class StockComponent {
         stock.qtePVMin2 = formGroup.get('qtePVMin2')?.value ?? 0;
         stock.qtePVMin3 = formGroup.get('qtePVMin3')?.value ?? 0;
         stock.qtePVMin4 = formGroup.get('qtePVMin4')?.value ?? 0;
+        stock.qtePVMin5 = formGroup.get('qtePVMin5')?.value ?? 0;
+        stock.qtePVMin6 = formGroup.get('qtePVMin6')?.value ?? 0;
+        stock.qtePVMin7 = formGroup.get('qtePVMin7')?.value ?? 0;
+        stock.qtePVMin8 = formGroup.get('qtePVMin8')?.value ?? 0;
         stock.remiseMax1 = formGroup.get('remiseMax1')?.value ?? 0;
         stock.remiseMax2 = formGroup.get('remiseMax2')?.value ?? 0;
         stock.remiseMax3 = formGroup.get('remiseMax3')?.value ?? 0;

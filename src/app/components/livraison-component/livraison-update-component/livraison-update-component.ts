@@ -341,6 +341,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             this.onChangeMontantProduit();
             this.openCloseDialogStock(true);
         }
+
+        this.formGroup.patchValue({
+            stockId: 0
+        });
     }
 
     mapFormGroupStockToObject(formGroup: FormGroup, detailLivraison: DetLivraison): DetLivraison {

@@ -410,6 +410,90 @@
                   (onChange)="onChangeRoleSupprimer($event, 2)"></p-checkbox>
               </div>
             </div>
+
+            <!-- Transport Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.transport }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterTransport" [binary]="true" id="consulterTransport" inputId="consulterTransport"
+                  (onChange)="onChangeRoleConsulter($event, 3)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterTransport" [binary]="true" id="ajouterTransport" inputId="ajouterTransport"
+                  (onChange)="onChangeRoleAjouter($event, 3)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierTransport" [binary]="true" id="modifierTransport" inputId="modifierTransport"
+                  (onChange)="onChangeRoleModifier($event, 3)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerTransport" [binary]="true" id="supprimerTransport" inputId="supprimerTransport"
+                  (onChange)="onChangeRoleSupprimer($event, 3)"></p-checkbox>
+              </div>
+            </div>
+
+            <!-- Livraison Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.livraison }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterLivraison" [binary]="true" id="consulterLivraison" inputId="consulterLivraison"
+                  (onChange)="onChangeRoleConsulter($event, 4)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterLivraison" [binary]="true" id="ajouterLivraison" inputId="ajouterLivraison"
+                  (onChange)="onChangeRoleAjouter($event, 4)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierLivraison" [binary]="true" id="modifierLivraison" inputId="modifierLivraison"
+                  (onChange)="onChangeRoleModifier($event, 4)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerLivraison" [binary]="true" id="supprimerLivraison" inputId="supprimerLivraison"
+                  (onChange)="onChangeRoleSupprimer($event, 4)"></p-checkbox>
+              </div>
+            </div>
+
+            <!-- Facture Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.facture }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterFacture" [binary]="true" id="consulterFacture" inputId="consulterFacture"
+                  (onChange)="onChangeRoleConsulter($event, 5)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterFacture" [binary]="true" id="ajouterFacture" inputId="ajouterFacture"
+                  (onChange)="onChangeRoleAjouter($event, 5)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierFacture" [binary]="true" id="modifierFacture" inputId="modifierFacture"
+                  (onChange)="onChangeRoleModifier($event, 5)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerFacture" [binary]="true" id="supprimerFacture" inputId="supprimerFacture"
+                  (onChange)="onChangeRoleSupprimer($event, 5)"></p-checkbox>
+              </div>
+            </div>
+
+            <!-- Entretien Row -->
+            <div class="flex items-center border-b border-gray-200 py-2">
+              <div class="flex-1 font-semibold">{{ msg.menu.entretien }}</div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="consulterEntretien" [binary]="true" id="consulterEntretien" inputId="consulterEntretien"
+                  (onChange)="onChangeRoleConsulter($event, 6)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="ajouterEntretien" [binary]="true" id="ajouterEntretien" inputId="ajouterEntretien"
+                  (onChange)="onChangeRoleAjouter($event, 6)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="modifierEntretien" [binary]="true" id="modifierEntretien" inputId="modifierEntretien"
+                  (onChange)="onChangeRoleModifier($event, 6)"></p-checkbox>
+              </div>
+              <div class="flex-1 flex justify-center">
+                <p-checkbox formControlName="supprimerEntretien" [binary]="true" id="supprimerEntretien" inputId="supprimerEntretien"
+                  (onChange)="onChangeRoleSupprimer($event, 6)"></p-checkbox>
+              </div>
+            </div>
           </div>
         </div>
       </ng-template>

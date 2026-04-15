@@ -19,6 +19,10 @@ export interface Stock {
     qtePVMin2: number;
     qtePVMin3: number;
     qtePVMin4: number;
+    qtePVMin5: number;
+    qtePVMin6: number;
+    qtePVMin7: number;
+    qtePVMin8: number;
     prixVentMin1: number;
     prixVentMin2: number;
     prixVentMin3: number;
@@ -65,6 +69,10 @@ export function initObjectStock(): Stock {
         qtePVMin2: 0,
         qtePVMin3: 0,
         qtePVMin4: 0,
+        qtePVMin5: 0,
+        qtePVMin6: 0,
+        qtePVMin7: 0,
+        qtePVMin8: 0,
         prixVentMin1: 0,
         prixVentMin2: 0,
         prixVentMin3: 0,
