@@ -51,6 +51,7 @@ export interface Livraison {
     repertoireObservation: string;
     repertoireAdresse: string;
     repertoireTel1: string;
+    repertoireTel2: string;
     repertoireNbrOperationClient: number;
     repertoireIdOld: bigint | null;
 }
@@ -102,6 +103,7 @@ export function initObjectLivraison(): Livraison {
         repertoireObservation: '',
         repertoireAdresse: '',
         repertoireTel1: '',
+        repertoireTel2: '',
         repertoireNbrOperationClient: 0,
         repertoireIdOld: null,
         personnelAncien: null,

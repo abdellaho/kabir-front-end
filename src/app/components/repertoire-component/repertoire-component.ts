@@ -32,6 +32,8 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { RepertoireFormComponent } from './repertoire-form-component/repertoire-form-component';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -63,6 +65,7 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    ref: DynamicDialogRef | undefined;
     printItems: MenuItem[] = [];
     typeRepertoireImprim: number = 1;
     typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
@@ -97,8 +100,9 @@ export class RepertoireComponent {
         private personnelService: PersonnelService,
         private repertoireService: RepertoireService,
         private formBuilder: FormBuilder,
+        private dialogService: DialogService,
         private messageService: MessageService,
-        private loadingService: LoadingService,
+        private loadingService: LoadingService
     ) {}
 
     ngOnInit(): void {
@@ -154,6 +158,27 @@ export class RepertoireComponent {
             villeId: [BigInt(0)],
             personnelId: [BigInt(0)],
             typeImprimRepertoire: [0]
+        });
+    }
+
+    showAddRepertoire(repertoire: Repertoire) {
+        this.ref = this.dialogService.open(RepertoireFormComponent, {
+            header: `${this.msg.messages.miseAJour} ${this.msg.components.repertoire.label}`,
+            breakpoints: { '960px': '90vw' },
+            modal: true,
+            closable: false,
+            style: { width: '500px', maxWidth: '100%' },
+            data: {
+                villes: this.listVille,
+                personnel: this.listPersonnel,
+                repertoire
+            }
+        });
+
+        this.ref.onClose.subscribe((result) => {
+            if (result) {
+                this.listRepertoire = this.updateList(result.data, this.listRepertoire, result.operationType);
+            }
         });
     }
 
@@ -361,18 +386,27 @@ export class RepertoireComponent {
         return getElementFromMap(this.mapOfPersonnels, id);
     }
 
-    viderAjouter() {
+    viderAjouter1() {
         this.openCloseDialogAjouter(true);
         this.submitted = false;
         this.repertoire = initObjectRepertoire();
         this.initFormGroup();
     }
 
+    viderAjouter() {
+        this.showAddRepertoire(initObjectRepertoire());
+    }
+
+    recuppererModifier(repertoireEdit: Repertoire) {
+        this.showAddRepertoire(repertoireEdit);
+    }
+
     recupperer(operation: number, repertoireEdit: Repertoire) {
         if (repertoireEdit && repertoireEdit.id) {
             this.repertoire = repertoireEdit;
             if (operation === 1) {
-                this.formGroup.patchValue({
+                this.showAddRepertoire(repertoireEdit);
+                /*this.formGroup.patchValue({
                     typeRepertoire: this.repertoire.typeRepertoire,
                     designation: this.repertoire.designation,
                     villeId: this.repertoire.villeId,
@@ -386,7 +420,7 @@ export class RepertoireComponent {
                     plafond: this.repertoire.plafond !== 0 ? this.repertoire.plafond : null
                 });
 
-                this.openCloseDialogAjouter(true);
+                this.openCloseDialogAjouter(true);*/
             } else if (operation === 2) {
                 this.openCloseDialogSupprimer(true);
             } else if (operation === 3) {

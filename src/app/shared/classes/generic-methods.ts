@@ -9,6 +9,7 @@ import { TypeSearch } from '../enums/type-search';
 import { OperationType } from '../enums/operation-type';
 import { Facture } from '@/models/facture';
 import { HttpHeaders } from '@angular/common/http';
+import { Permission } from './other/permissions';
 
 export interface AllValidationErrors {
     control_name: string;
@@ -593,4 +594,8 @@ export function initObjectSearch(archiver: boolean, supprimer: boolean, type: Ty
     } else {
         return null;
     }
+}
+
+export function hasPermission(permissions: string[], listPermissions: string[]): boolean {
+    return listPermissions.some((permission) => permissions.includes(permission)) || permissions.includes(Permission.ALL);
 }

@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 import { LoadingService } from '@/shared/services/loading-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { initObjectStock, Stock } from '@/models/stock';
-import { ajusterMontants, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { ajusterMontants, hasPermission, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { OperationType } from '@/shared/enums/operation-type';
@@ -40,6 +40,11 @@ import { Etablissement, initObjectEtablissement } from '@/models/etablissement';
 import { EtablissementService } from '@/services/etablissement/etablissement-service';
 import { initObjectRepertoire, Repertoire } from '@/models/repertoire';
 import { StateService } from '@/state/state-service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Ville } from '@/models/ville';
+import { VilleService } from '@/services/ville/ville-service';
+import { RepertoireFormComponent } from '@/components/repertoire-component/repertoire-form-component/repertoire-form-component';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-livraison-update-component',
@@ -69,6 +74,9 @@ import { StateService } from '@/state/state-service';
     styleUrl: './livraison-update-component.scss'
 })
 export class LivraisonUpdateComponent implements OnInit, OnDestroy {
+    ref: DynamicDialogRef | undefined;
+    permissions: string[] = [];
+    hasPermissionAdmin: boolean = false;
     personnelCreationId: number | null = null;
     submitted: boolean = false;
     etablissement: Etablissement = initObjectEtablissement();
@@ -97,6 +105,8 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
     constructor(
         private livraisonService: LivraisonService,
+        private villeService: VilleService,
+        private dialogService: DialogService,
         private stateService: StateService,
         private formBuilder: FormBuilder,
         private dataService: DataService,
@@ -107,10 +117,13 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        this.permissions = this.stateService.getState().user?.permissions ?? [];
+        this.hasPermissionAdmin = hasPermission(this.permissions, [Permission.ALL]);
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
+
         this.submitted = false;
         this.initFormGroupStock();
         this.initFormGroup();
-        this.personnelCreationId = this.stateService.getState().user?.id || null;
 
         this.subscription = this.dataService.currentData$.subscribe((data) => {
             if (!data) {
@@ -246,13 +259,30 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 stockId: [0],
                 codeTransport: [''],
                 remarqueClient: [''],
-                repertoireDesignation: [{ value: '', disabled: true }],
-                repertoireTel1: [{ value: '', disabled: true }],
-                repertoireTel2: [{ value: '', disabled: true }],
-                repertoireAdresse: [{ value: '', disabled: true }]
+                repertoireDesignation: [''],
+                repertoireTel1: [''],
+                repertoireTel2: [''],
+                repertoireAdresse: ['']
             },
             { validators: LivraisonValidator({ getListDetLivraison: () => this.listDetLivraison }) }
         );
+        this.enableDisableInfoRepertoire();
+    }
+
+    enableDisableInfoRepertoire() {
+        if (this.hasPermissionAdmin) {
+            this.formGroup.get('repertoireDesignation')?.enable();
+            this.formGroup.get('repertoireTel1')?.enable();
+            this.formGroup.get('repertoireTel2')?.enable();
+            this.formGroup.get('repertoireAdresse')?.enable();
+        } else {
+            this.formGroup.get('repertoireDesignation')?.disable();
+            this.formGroup.get('repertoireTel1')?.disable();
+            this.formGroup.get('repertoireTel2')?.disable();
+            this.formGroup.get('repertoireAdresse')?.disable();
+        }
+
+        this.formGroup.updateValueAndValidity();
     }
 
     mapFormToLivraison() {
@@ -291,13 +321,6 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         this.dialogDeleteStock = openClose;
     }
 
-    disableRepertoireData() {
-        this.formGroup.get('repertoireDesignation')?.disable();
-        this.formGroup.get('repertoireTel1')?.disable();
-        this.formGroup.get('repertoireTel2')?.disable();
-        this.formGroup.get('repertoireAdresse')?.disable();
-    }
-
     onChangeIdRepertoire() {
         this.repertoireSelected = this.listRepertoire.find((repertoire) => repertoire.id === this.formGroup.get('repertoireId')?.value) || initObjectRepertoire();
 
@@ -310,7 +333,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 remarqueClient: this.repertoireSelected.observation
             });
 
-            this.disableRepertoireData();
+            this.enableDisableInfoRepertoire();
         } else {
             this.formGroup.patchValue({
                 repertoireDesignation: '',
@@ -320,7 +343,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 remarqueClient: ''
             });
 
-            this.disableRepertoireData();
+            this.enableDisableInfoRepertoire();
         }
     }
 
@@ -368,6 +391,20 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             }
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.stockId !== stockId);
+        }
+        return list;
+    }
+
+    updateListRepertoire(repertoire: Repertoire, list: Repertoire[], operationType: OperationType, id?: bigint): Repertoire[] {
+        if (operationType === OperationType.ADD) {
+            list = [...list, repertoire];
+        } else if (operationType === OperationType.MODIFY) {
+            let index = list.findIndex((x) => x.id === repertoire.id);
+            if (index > -1) {
+                list[index] = repertoire;
+            }
+        } else if (operationType === OperationType.DELETE) {
+            list = list.filter((x) => x.id !== id);
         }
         return list;
     }
@@ -510,6 +547,13 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         livraison.codeTransport = formGroup.get('codeTransport')?.value;
         livraison.repertoireObservation = formGroup.get('remarqueClient')?.value;
 
+        if (this.hasPermissionAdmin) {
+            livraison.repertoireDesignation = formGroup.get('repertoireDesignation')?.value;
+            livraison.repertoireTel1 = formGroup.get('repertoireTel1')?.value;
+            livraison.repertoireTel2 = formGroup.get('repertoireTel2')?.value;
+            livraison.repertoireAdresse = formGroup.get('repertoireAdresse')?.value;
+        }
+
         return livraison;
     }
 
@@ -623,5 +667,49 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
+    }
+
+    viderAjouterRepertoire() {
+        this.showAddRepertoire(initObjectRepertoire());
+    }
+
+    showAddRepertoire(repertoire: Repertoire) {
+        let listVille: Ville[] = [];
+        this.villeService.getVilles().subscribe({
+            next: (data) => {
+                listVille = data;
+
+                this.ref = this.dialogService.open(RepertoireFormComponent, {
+                    header: `${this.msg.messages.miseAJour} ${this.msg.components.repertoire.label}`,
+                    breakpoints: { '960px': '90vw' },
+                    modal: true,
+                    closable: false,
+                    style: { width: '500px', maxWidth: '100%' },
+                    data: {
+                        villes: listVille,
+                        personnel: this.listPersonnel,
+                        repertoire
+                    }
+                });
+
+                this.ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.listRepertoire = this.updateListRepertoire(result.data, this.listRepertoire, result.operationType);
+                    }
+                });
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.msg.summary.labelError,
+                    detail: this.msg.messages.messageErrorProduite
+                });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }
