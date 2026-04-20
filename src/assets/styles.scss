@@ -184,3 +184,7 @@ p-floatlabel.w-full p-select.custom-select > .p-select-label {
 p-floatlabel.w-full p-select.custom-select > .p-select-dropdown {
   flex: 0 0 auto !important;
 }
+
+.inherit-width {
+  width: inherit !important;
+}
