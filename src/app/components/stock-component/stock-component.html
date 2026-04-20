@@ -340,38 +340,40 @@
                             </div>
 
                             <div class="flex flex-col grow basis-0">
-                                <div class="flex flex-col gap-6">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1" class="w-full" [maxFractionDigits]="2"
-                                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin1Required'] || formGroup.get('qtePVMin1')?.errors?.['negative'] || formGroup.errors?.['qtePVMin1MustBeGreaterThanqtePVMin2']  }" />
-                                        <label for="qtePVMin1">{{ msg.components.stock.qtePVMin1 }}</label>
-                                    </p-floatlabel>
-                                    @if (formGroup.errors?.['qtePVMin1Required']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin1Required }}</p-message>
-                                    }
-                                    @if (formGroup.get('qtePVMin1')?.errors?.['negative']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
-                                    }
-                                    @if (formGroup.errors?.['qtePVMin1MustBeGreaterThanqtePVMin2']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin1MustBeGreaterThanqtePVMin2 }}</p-message>
-                                    }
-                                </div>
+                                <div class="flex gap-4 w-full">
+                                    <div class="flex flex-col gap-6 flex-1">
+                                        <p-floatlabel class="w-full" variant="on">
+                                            <p-input-number formControlName="qtePVMin1" inputId="qtePVMin1" class="w-full" [maxFractionDigits]="2"
+                                                [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin1Required'] || formGroup.get('qtePVMin1')?.errors?.['negative'] || formGroup.errors?.['qtePVMin1MustBeGreaterThanqtePVMin2']  }" />
+                                            <label for="qtePVMin1">{{ msg.components.stock.qtePVMin1 }}</label>
+                                        </p-floatlabel>
+                                        @if (formGroup.errors?.['qtePVMin1Required']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin1Required }}</p-message>
+                                        }
+                                        @if (formGroup.get('qtePVMin1')?.errors?.['negative']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
+                                        }
+                                        @if (formGroup.errors?.['qtePVMin1MustBeGreaterThanqtePVMin2']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin1MustBeGreaterThanqtePVMin2 }}</p-message>
+                                        }
+                                    </div>
 
-                                <div class="flex flex-col gap-6">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-input-number formControlName="qtePVMin5" inputId="qtePVMin5" class="w-full" [maxFractionDigits]="2"
-                                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin5Required'] || formGroup.get('qtePVMin5')?.errors?.['negative'] || formGroup.errors?.['qtePVMin5MustBeGreaterThanqtePVMin6'] }" />
-                                        <label for="qtePVMin5">{{ msg.components.stock.qtePVMin5 }}</label>
-                                    </p-floatlabel>
-                                    @if (formGroup.errors?.['qtePVMin5Required']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin5Required }}</p-message>
-                                    }
-                                    @if (formGroup.get('qtePVMin5')?.errors?.['negative']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
-                                    }
-                                    @if (formGroup.errors?.['qtePVMin5MustBeGreaterThanqtePVMin6']) {
-                                        <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin5MustBeGreaterThanqtePVMin6 }}</p-message>
-                                    }
+                                    <div class="flex flex-col gap-6 flex-1">
+                                        <p-floatlabel class="w-full" variant="on">
+                                            <p-input-number formControlName="qtePVMin5" inputId="qtePVMin5" class="w-full" [maxFractionDigits]="2"
+                                                [ngClass]="{ 'ng-invalid ng-dirty': formGroup.errors?.['qtePVMin5Required'] || formGroup.get('qtePVMin5')?.errors?.['negative'] || formGroup.errors?.['qtePVMin5MustBeGreaterThanqtePVMin6'] }" />
+                                            <label for="qtePVMin5">{{ msg.components.stock.qtePVMin5 }}</label>
+                                        </p-floatlabel>
+                                        @if (formGroup.errors?.['qtePVMin5Required']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin5Required }}</p-message>
+                                        }
+                                        @if (formGroup.get('qtePVMin5')?.errors?.['negative']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.messages.numberMustBeEqualZeroOrPositive }}</p-message>
+                                        }
+                                        @if (formGroup.errors?.['qtePVMin5MustBeGreaterThanqtePVMin6']) {
+                                            <p-message severity="error" variant="simple" size="small">{{ msg.components.stock.errors.qtePVMin5MustBeGreaterThanqtePVMin6 }}</p-message>
+                                        }
+                                    </div>
                                 </div>
                             </div>
 

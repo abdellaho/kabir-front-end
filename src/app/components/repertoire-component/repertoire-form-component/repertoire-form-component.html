@@ -143,8 +143,8 @@
         </div>
     </div>
 
-    <div class="flex justify-end gap-2 mt-4">
-        <button pButton [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="onClose()"></button>
+    <div class="flex justify-center gap-2 mt-4" style="flex-direction: row-reverse;">
+        <button pButton [label]="msg.buttons.fermer" icon="pi pi-times" class="p-button-outlined p-button-danger" (click)="onClose(null)"></button>
         <button pButton [label]="msg.buttons.valider" icon="pi pi-check" class="p-button-success" (click)="onValidate()" [disabled]="!formGroup.valid"></button>
     </div>
 </div>

@@ -57,6 +57,7 @@ import { RepertoireFormComponent } from './repertoire-form-component/repertoire-
         SplitButtonModule,
         Ripple
     ],
+    providers: [DialogService],
     templateUrl: './repertoire-component.html',
     styleUrl: './repertoire-component.scss'
 })

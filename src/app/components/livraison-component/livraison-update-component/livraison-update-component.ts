@@ -70,6 +70,7 @@ import { Permission } from '@/shared/classes/other/permissions';
         MessageModule,
         MultiSelectModule
     ],
+    providers: [DialogService],
     templateUrl: './livraison-update-component.html',
     styleUrl: './livraison-update-component.scss'
 })
@@ -693,8 +694,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 });
 
                 this.ref.onClose.subscribe((result) => {
+                    console.log('result', result);
                     if (result) {
-                        this.listRepertoire = this.updateListRepertoire(result.data, this.listRepertoire, result.operationType);
+                        let list: Repertoire[] = this.sortListRepertoire(this.updateListRepertoire(result.data, this.listRepertoire, result.operationType));
+                        this.listRepertoire = [initObjectRepertoire(), ...list];
                     }
                 });
             },
@@ -711,5 +714,9 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 this.loadingService.hide();
             }
         });
+    }
+
+    sortListRepertoire(listRepertoire: Repertoire[]): Repertoire[] {
+        return listRepertoire.sort((a, b) => a.designation.localeCompare(b.designation));
     }
 }

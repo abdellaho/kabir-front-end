@@ -36,23 +36,30 @@
 
             <div class="flex flex-col md:flex-row gap-2 w-full">
                 <div class="flex flex-col gap-4 w-full">
-                    <p-floatlabel variant="on" class="w-full">
-                        <p-select 
-                            formControlName="repertoireId" 
-                            inputId="repertoireId" 
-                            [options]="listRepertoire" [filter]="true"
-                            filterBy="designation"
-                            [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('repertoireId')?.invalid }"
-                            optionLabel="designation" 
-                            optionValue="id" appendTo="body"
-                            (onChange)="onChangeIdRepertoire()" 
-                            class="w-full custom-select"
-                            placeholder="{{ msg.components.livraison.selectRepertoire }}" 
-                        />
+                    <div class="flex gap-2 w-full items-end">
+                        <div class="flex-[9]">
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-select 
+                                    formControlName="repertoireId" 
+                                    inputId="repertoireId" 
+                                [options]="listRepertoire" [filter]="true"
+                                filterBy="designation"
+                                [ngClass]="{ 'ng-invalid ng-dirty': formGroup.get('repertoireId')?.invalid }"
+                                optionLabel="designation" 
+                                optionValue="id" appendTo="body"
+                                (onChange)="onChangeIdRepertoire()" 
+                                class="w-full custom-select"
+                                placeholder="{{ msg.components.livraison.selectRepertoire }}" 
+                            />
 
-                        <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
-                    </p-floatlabel>
-
+                            <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
+                        </p-floatlabel>
+                        </div>
+                        <div class="flex-[1] flex justify-center">
+                            <p-button (click)="viderAjouterRepertoire()" icon="pi pi-plus" severity="success" rounded [title]="`${msg.buttons.ajouter} ${msg.components.repertoire.label}`" />
+                        </div>
+                    </div>
+                    
                     @if (formGroup.errors?.['repertoireRequired']) {
                         <p-message severity="error" variant="simple" size="small">{{ msg.components.livraison.errors.repertoireRequired }}</p-message>
                     }

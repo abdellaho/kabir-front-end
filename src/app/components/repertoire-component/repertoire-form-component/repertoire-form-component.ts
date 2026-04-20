@@ -98,12 +98,19 @@ export class RepertoireFormComponent implements OnInit {
         }
     }
 
-    onValidate() {
-        this.miseAjour();
+    async onValidate() {
+        let result: boolean = await this.miseAjour();
+        if (result) {
+            this.onClose(this.repertoire);
+        }
     }
 
-    onClose() {
-        this.ref.close({ operationType: this.operationType, data: this.repertoire });
+    onClose(repertoire: Repertoire | null) {
+        if (repertoire) {
+            this.ref.close({ operationType: this.operationType, data: repertoire });
+        } else {
+            this.ref.close(null);
+        }
     }
 
     mapFormGroupToObject(formGroup: FormGroup, repertoire: Repertoire): Repertoire {
@@ -138,7 +145,80 @@ export class RepertoireFormComponent implements OnInit {
         }
     }
 
-    async miseAjour(): Promise<void> {
+    async miseAjour(): Promise<boolean> {
+        this.loadingService.show();
+
+        let repertoireEdit: Repertoire = { ...this.repertoire };
+        this.mapFormGroupToObject(this.formGroup, repertoireEdit);
+
+        let validationResponse: ValidationResponse = await this.checkIfRepertoireExists(repertoireEdit);
+
+        if (validationResponse.exists) {
+            this.handleValidationErrors(validationResponse);
+            this.loadingService.hide();
+            return false;
+        }
+
+        this.mapFormGroupToObject(this.formGroup, this.repertoire);
+
+        try {
+            let data: Repertoire;
+
+            if (this.repertoire.id) {
+                this.operationType = OperationType.MODIFY;
+                data = await firstValueFrom(
+                    this.repertoireService.update(this.repertoire.id, this.repertoire)
+                );
+            } else {
+                this.operationType = OperationType.ADD;
+                data = await firstValueFrom(
+                    this.repertoireService.create(this.repertoire)
+                );
+            }
+
+            this.repertoire = data;
+
+            this.messageService.add({
+                severity: 'success',
+                summary: this.msg.summary.labelSuccess,
+                detail: this.repertoire.id ? this.msg.messages.messageUpdateSuccess : this.msg.messages.messageAddSuccess
+            });
+
+            return true;
+
+        } catch (err) {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+            return false;
+
+        } finally {
+            this.loadingService.hide();
+        }
+    }
+
+    handleValidationErrors(validationResponse: ValidationResponse) {
+        if (validationResponse.errors['designation']) {
+            this.formGroup.get('designation')?.setErrors({ exist: true, message: validationResponse.errors['designation'] });
+        }
+        if (validationResponse.errors['tel1']) {
+            this.formGroup.get('tel1')?.setErrors({ exist: true, message: validationResponse.errors['tel1'] });
+        }
+        if (validationResponse.errors['tel2']) {
+            this.formGroup.get('tel2')?.setErrors({ exist: true, message: validationResponse.errors['tel2'] });
+        }
+        if (validationResponse.errors['tel3']) {
+            this.formGroup.get('tel3')?.setErrors({ exist: true, message: validationResponse.errors['tel3'] });
+        }
+        if (validationResponse.errors['ice']) {
+            this.formGroup.get('ice')?.setErrors({ exist: true, message: validationResponse.errors['ice'] });
+        }
+        this.formGroup.updateValueAndValidity();
+
+        this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.repertoire.label} ${this.msg.messages.messageExistDeja}` });
+    }
+
+    async miseAjour1(): Promise<boolean> {
+        let result: boolean = false;
         this.loadingService.show();
         let repertoireEdit: Repertoire = { ...this.repertoire };
         this.mapFormGroupToObject(this.formGroup, repertoireEdit);
@@ -153,12 +233,15 @@ export class RepertoireFormComponent implements OnInit {
                 this.repertoireService.update(this.repertoire.id, this.repertoire).subscribe({
                     next: (data) => {
                         this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
-                        this.onClose();
+                        this.repertoire = data;
+                        result = true;
+                        //this.onClose(data);
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+                        result = false;
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -168,12 +251,15 @@ export class RepertoireFormComponent implements OnInit {
                 this.repertoireService.create(this.repertoire).subscribe({
                     next: (data: Repertoire) => {
                         this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });
-                        this.onClose();
+                        this.repertoire = data;
+                        result = true;
+                        //this.onClose(data);
                     },
                     error: (err) => {
                         console.log(err);
                         this.loadingService.hide();
                         this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
+                        result = false;
                     },
                     complete: () => {
                         this.loadingService.hide();
@@ -181,6 +267,7 @@ export class RepertoireFormComponent implements OnInit {
                 });
             }
         } else {
+            result = false;
             if (validationResponse.errors['designation']) {
                 this.formGroup.get('designation')?.setErrors({ exist: true, message: validationResponse.errors['designation'] });
             }
@@ -201,5 +288,7 @@ export class RepertoireFormComponent implements OnInit {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.repertoire.label} ${this.msg.messages.messageExistDeja}` });
             this.loadingService.hide();
         }
+
+        return result;
     }
 }
