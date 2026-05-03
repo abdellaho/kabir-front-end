@@ -38,6 +38,7 @@ export class AuthSecurityService {
 
     getPermissionsOfUser(user: any): string[] {
         let permissions: string[] = [];
+        if (!user || !user.typePersonnel) return permissions;
         if (user.typePersonnel === 1) {
             permissions = [Permission.ALL];
         } else {
@@ -209,10 +210,10 @@ export class AuthSecurityService {
 
         return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.me, { refreshToken }, { headers }).pipe(
             map((response) => ({
-                id: response.user.id,
-                email: response.user.email,
-                role: response.user.role,
-                permissions: this.getPermissionsOfUser(response.user),
+                id: response?.user?.id,
+                email: response?.user?.email,
+                role: response?.user?.role,
+                permissions: this.getPermissionsOfUser(response?.user) || [],
                 token: this.getToken()
             }))
         );
@@ -317,12 +318,13 @@ export class AuthSecurityService {
     }
 
     private extractUserState(response: any): UserState {
+        console.log('response ', response);
         return {
-            id: response.user.id,
-            email: response.user.email,
-            role: response.user.role,
-            permissions: this.getPermissionsOfUser(response.user) || [],
-            token: response.token
+            id: response?.user?.id,
+            email: response?.user?.email,
+            role: response?.user?.role,
+            permissions: this.getPermissionsOfUser(response?.user) || [],
+            token: response?.token
         };
     }
 
