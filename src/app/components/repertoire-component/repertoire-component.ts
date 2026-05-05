@@ -34,6 +34,8 @@ import { initValidationResponse, ValidationResponse } from '@/shared/classes/res
 import { Ripple } from 'primeng/ripple';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { RepertoireFormComponent } from './repertoire-form-component/repertoire-form-component';
+import { Permission } from '@/shared/classes/other/permissions';
+import { StateService } from '@/state/state-service';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -94,6 +96,9 @@ export class RepertoireComponent {
     submitted: boolean = false;
     formGroup!: FormGroup;
     formGroupImprimer!: FormGroup;
+    canAdd: boolean = false;
+    canEdit: boolean = false;
+    canDelete: boolean = false;
     msg = APP_MESSAGES;
 
     constructor(
@@ -103,10 +108,12 @@ export class RepertoireComponent {
         private formBuilder: FormBuilder,
         private dialogService: DialogService,
         private messageService: MessageService,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private stateService: StateService
     ) {}
 
     ngOnInit(): void {
+        this.checkPermissions();
         this.repertoireInputSearch = '';
         this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
@@ -117,6 +124,15 @@ export class RepertoireComponent {
         this.getAllPersonnelSearch();
         this.initFormGroup();
         this.initFormGroupImprimer();
+    }
+
+    private checkPermissions(): void {
+        const user = this.stateService.getState().user;
+        const permissions = user?.permissions || [];
+
+        this.canAdd = permissions.includes(Permission.AJOUTER_REPERTOIRE) || permissions.includes(Permission.ALL);
+        this.canEdit = permissions.includes(Permission.MODIFIER_REPERTOIRE) || permissions.includes(Permission.ALL);
+        this.canDelete = permissions.includes(Permission.SUPPRIMER_REPERTOIRE) || permissions.includes(Permission.ALL);
     }
 
     initPrintItems() {

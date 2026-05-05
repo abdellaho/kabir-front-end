@@ -2,6 +2,16 @@ export const APP_MESSAGES = {
     locale: {
         default: 'en-US'
     },
+    login: {
+        bienvenueAuParamexApp: 'Bienvenue au Paramex',
+        loginToContinue: 'Se connecter pour continuer',
+        email: 'Login',
+        password: 'Mot de passe',
+        loginButton: 'Se connecter',
+        rememberMe: 'Se souvenir de moi',
+        createAnAccount: 'Créer un compte',
+        motDePasseOublie: 'Mot de passe oublié ?'
+    },
     search: {
         dateDebutDateFin: 'Date début - Date fin',
         dateDebut: 'Date début',

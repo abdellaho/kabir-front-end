@@ -434,8 +434,7 @@ export class PersonnelComponent implements OnInit {
         if (
             this.formGroup.get('email')?.value !== null &&
             this.formGroup.get('email')?.value.trim() !== '' &&
-            (this.formGroup.get('password')?.value === null || this.formGroup.get('password')?.value.trim() === '') &&
-            (this.personnel.password === null || this.personnel.password.trim() === '')
+            (this.formGroup.get('password')?.value === null || this.formGroup.get('password')?.value.trim() === '')
         ) {
             autoriser = false;
             this.messageService.add({
@@ -448,7 +447,7 @@ export class PersonnelComponent implements OnInit {
         }
 
         if (
-            ((this.personnel.password !== null && this.personnel.password.trim() !== '') || (this.formGroup.get('password')?.value !== null && this.formGroup.get('password')?.value.trim() !== '')) &&
+            (this.formGroup.get('password')?.value !== null && this.formGroup.get('password')?.value.trim() !== '') &&
             (this.formGroup.get('email')?.value === null || this.formGroup.get('email')?.value.trim() === '')
         ) {
             autoriser = false;

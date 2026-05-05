@@ -17,6 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { StateService } from '@/state/state-service';
 import { Erreur } from '@/shared/classes/erreur';
 import { ToastModule } from 'primeng/toast';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 
 @Component({
     selector: 'app-login-component',
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit {
     formGroup!: FormGroup;
     adminExist: boolean = false;
     loading: boolean = false;
+    msg = APP_MESSAGES;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -88,6 +90,7 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['/']);
                 },
                 error: (error: Erreur) => {
+                    console.log('error ', error);
                     //this.stateService.setState({ loading: false, error: error.message });
                     console.log('state', this.stateService.getState());
 
