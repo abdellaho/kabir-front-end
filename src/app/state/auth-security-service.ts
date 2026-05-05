@@ -9,7 +9,6 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { Erreur } from '@/shared/classes/erreur';
 import { Permission } from '@/shared/classes/other/permissions';
 import { Router } from '@angular/router';
-import { Personnel } from '@/models/personnel';
 
 @Injectable({
     providedIn: 'root'
