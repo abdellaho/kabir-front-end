@@ -37,6 +37,10 @@ export const APP_MESSAGES = {
         deconnexion: 'Déconnexion'
     },
     components: {
+        monCompte: {
+            login: 'Login',
+            password: 'Mot de passe'
+        },
         transport: {
             label: 'Transport',
             search: 'Rechercher',

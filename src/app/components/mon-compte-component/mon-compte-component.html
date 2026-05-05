@@ -1,0 +1,31 @@
+<p-toast></p-toast>
+
+<ng-container *ngIf="loading; else formContent">
+    <div class="skeleton-form">
+        <p-skeleton width="100%" height="48px" class="mb-2"></p-skeleton> <!-- Email input skeleton -->
+        <p-skeleton width="100%" height="48px" class="mb-2"></p-skeleton> <!-- Password input skeleton -->
+        <p-skeleton width="100%" height="44px"></p-skeleton> <!-- Login button skeleton -->
+    </div>
+</ng-container>
+
+<ng-template #formContent>
+    <div [formGroup]="formGroup" class="p-fluid">
+        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
+            <div class="flex flex-col items-center justify-center">
+                <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+                    <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+                        <div>
+                            <label for="login" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">{{ msg.components.monCompte.login }}</label>
+                            <input pInputText formControlName="login" id="login" type="text" [placeholder]="msg.components.monCompte.login" class="w-full md:w-120 mb-8" />
+
+                            <label for="password" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">{{ msg.components.monCompte.password }}</label>
+                            <p-password formControlName="password" id="password" [placeholder]="msg.components.monCompte.password" [toggleMask]="true" class="mb-4" [fluid]="true" [feedback]="false"></p-password>
+
+                            <p-button [label]="msg.buttons.save" styleClass="w-full" (click)="save()" [disabled]="!formGroup.valid"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

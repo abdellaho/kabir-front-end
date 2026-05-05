@@ -2,7 +2,6 @@ import { environment } from 'src/environments/environment';
 
 const BASE_URL = environment.production ? '/api' : 'http://localhost:8080/api';
 
-
 const ABSENCE = `absence`;
 const ACHAT_FACTURE = `achat-facture`;
 const ACHAT_ETRANGER = `achat-etranger`;
@@ -28,7 +27,6 @@ const STOCK_DEPOT = `stock-depot`;
 const VILLE = `ville`;
 const VOITURE = `voiture`;
 const PAYS = `pays`;
-
 
 export const ENDPOINTS = {
     ABSENCE: {
@@ -166,7 +164,7 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/${ENTRETIEN}/${id}`,
         exist: `${BASE_URL}/${ENTRETIEN}/exist`,
         search: `${BASE_URL}/${ENTRETIEN}/search`,
-        imprimer: `${BASE_URL}/${ENTRETIEN}/imprimer`,
+        imprimer: `${BASE_URL}/${ENTRETIEN}/imprimer`
     },
     ETABLISSEMENT: {
         getAll: `${BASE_URL}/${ETABLISSEMENT}`,
@@ -237,7 +235,8 @@ export const ENDPOINTS = {
             refresh: `${BASE_URL}/${PERSONNEL}/auth/refresh-token`,
             logout: `${BASE_URL}/${PERSONNEL}/auth/logout`,
             adminExist: `${BASE_URL}/${PERSONNEL}/auth/admin-exist`,
-            me: `${BASE_URL}/${PERSONNEL}/auth/me`
+            me: `${BASE_URL}/${PERSONNEL}/auth/me`,
+            monCompte: `${BASE_URL}/${PERSONNEL}/auth/mon-compte`
         }
     },
     PRIME: {
@@ -305,5 +304,5 @@ export const ENDPOINTS = {
         update: (id: bigint) => `${BASE_URL}/${VILLE}/${id}`,
         delete: (id: bigint) => `${BASE_URL}/${VILLE}/${id}`,
         exist: `${BASE_URL}/${VILLE}/exist`
-    },
+    }
 };

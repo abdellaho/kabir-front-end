@@ -66,6 +66,10 @@ export class PersonnelService {
         return this.http.get<boolean>(ENDPOINTS.PERSONNEL.auth.adminExist);
     }
 
+    monCompte(personnel: Personnel): Observable<Personnel> {
+        return this.http.post<Personnel>(ENDPOINTS.PERSONNEL.auth.monCompte, personnel);
+    }
+
     serialization(obj: Personnel | PersonnelSearch): any {
         return {
             ...obj,

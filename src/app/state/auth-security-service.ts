@@ -9,6 +9,7 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { Erreur } from '@/shared/classes/erreur';
 import { Permission } from '@/shared/classes/other/permissions';
 import { Router } from '@angular/router';
+import { Personnel } from '@/models/personnel';
 
 @Injectable({
     providedIn: 'root'
@@ -64,6 +65,54 @@ export class AuthSecurityService {
             }
             if (user.supprimerRepertoire) {
                 permissions.push(Permission.SUPPRIMER_REPERTOIRE);
+            }
+            if (user.consulterTransport) {
+                permissions.push(Permission.CONSULTER_TRANSPORT);
+            }
+            if (user.ajouterTransport) {
+                permissions.push(Permission.AJOUTER_TRANSPORT);
+            }
+            if (user.modifierTransport) {
+                permissions.push(Permission.MODIFIER_TRANSPORT);
+            }
+            if (user.supprimerTransport) {
+                permissions.push(Permission.SUPPRIMER_TRANSPORT);
+            }
+            if (user.consulterLivraison) {
+                permissions.push(Permission.CONSULTER_LIVRAISON);
+            }
+            if (user.ajouterLivraison) {
+                permissions.push(Permission.AJOUTER_LIVRAISON);
+            }
+            if (user.modifierLivraison) {
+                permissions.push(Permission.MODIFIER_LIVRAISON);
+            }
+            if (user.supprimerLivraison) {
+                permissions.push(Permission.SUPPRIMER_LIVRAISON);
+            }
+            if (user.consulterFacture) {
+                permissions.push(Permission.CONSULTER_FACTURE);
+            }
+            if (user.ajouterFacture) {
+                permissions.push(Permission.AJOUTER_FACTURE);
+            }
+            if (user.modifierFacture) {
+                permissions.push(Permission.MODIFIER_FACTURE);
+            }
+            if (user.supprimerFacture) {
+                permissions.push(Permission.SUPPRIMER_FACTURE);
+            }
+            if (user.consulterEntretien) {
+                permissions.push(Permission.CONSULTER_ENTRETIEN);
+            }
+            if (user.ajouterEntretien) {
+                permissions.push(Permission.AJOUTER_ENTRETIEN);
+            }
+            if (user.modifierEntretien) {
+                permissions.push(Permission.MODIFIER_ENTRETIEN);
+            }
+            if (user.supprimerEntretien) {
+                permissions.push(Permission.SUPPRIMER_ENTRETIEN);
             }
         }
         return permissions;
@@ -210,6 +259,7 @@ export class AuthSecurityService {
         return this.http.post<any>(ENDPOINTS.PERSONNEL.auth.me, { refreshToken }, { headers }).pipe(
             map((response) => ({
                 id: response.user.id,
+                personnel: response.user,
                 email: response.user.email,
                 role: response.user.role,
                 permissions: this.getPermissionsOfUser(response.user),
@@ -306,7 +356,7 @@ export class AuthSecurityService {
     }
 
     private storeAuthData(response: any): void {
-        const { token, refreshToken, expiresIn } = response;
+        const { token, refreshToken } = response;
 
         localStorage.setItem(this.TOKEN_KEY, token);
         localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
@@ -319,11 +369,28 @@ export class AuthSecurityService {
     private extractUserState(response: any): UserState {
         return {
             id: response.user.id,
+            personnel: response.user,
             email: response.user.email,
             role: response.user.role,
             permissions: this.getPermissionsOfUser(response.user) || [],
             token: response.token
         };
+    }
+
+    refreshUserState(response: any) {
+        const { token, user } = response;
+
+        const userState: UserState = {
+            id: Number(user.id) || 0,
+            personnel: user,
+            email: user.email || '',
+            role: user.role || '',
+            permissions: this.getPermissionsOfUser(user) || [],
+            token: token
+        };
+
+        this.stateService.setState({ user: userState, connected: true });
+        this.storeAuthData(response);
     }
 
     getToken(): string | null {

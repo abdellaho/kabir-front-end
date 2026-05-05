@@ -66,7 +66,7 @@ export class AppMenu implements OnInit {
                         label: this.msg.menu.transport,
                         icon: 'pi pi-fw pi-truck',
                         routerLink: ['/transport'],
-                        visible: hasPermission(this.permissions, [Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE])
+                        visible: hasPermission(this.permissions, [Permission.ALL, Permission.CONSULTER_TRANSPORT, Permission.AJOUTER_TRANSPORT, Permission.MODIFIER_TRANSPORT, Permission.SUPPRIMER_TRANSPORT])
                     }
                 ]
             },
@@ -95,11 +95,25 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.livraison, icon: 'pi pi-fw pi-truck', routerLink: ['/livraison'], visible: hasPermission(this.permissions, [Permission.ALL]) }]
+                items: [
+                    {
+                        label: this.msg.menu.livraison,
+                        icon: 'pi pi-fw pi-truck',
+                        routerLink: ['/livraison'],
+                        visible: hasPermission(this.permissions, [Permission.ALL, Permission.CONSULTER_LIVRAISON, Permission.AJOUTER_LIVRAISON, Permission.MODIFIER_LIVRAISON, Permission.SUPPRIMER_LIVRAISON])
+                    }
+                ]
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.facture, icon: 'pi pi-fw pi-file', routerLink: ['/facture'], visible: hasPermission(this.permissions, [Permission.ALL]) }]
+                items: [
+                    {
+                        label: this.msg.menu.facture,
+                        icon: 'pi pi-fw pi-file',
+                        routerLink: ['/facture'],
+                        visible: hasPermission(this.permissions, [Permission.ALL, Permission.CONSULTER_FACTURE, Permission.AJOUTER_FACTURE, Permission.MODIFIER_FACTURE, Permission.SUPPRIMER_FACTURE])
+                    }
+                ]
             },
             {
                 label: '',
@@ -115,7 +129,14 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
-                items: [{ label: this.msg.menu.entretien, icon: 'pi pi-fw pi-bookmark', routerLink: ['/entretien'], visible: hasPermission(this.permissions, [Permission.ALL]) }]
+                items: [
+                    {
+                        label: this.msg.menu.entretien,
+                        icon: 'pi pi-fw pi-bookmark',
+                        routerLink: ['/entretien'],
+                        visible: hasPermission(this.permissions, [Permission.ALL, Permission.CONSULTER_ENTRETIEN, Permission.AJOUTER_ENTRETIEN, Permission.MODIFIER_ENTRETIEN, Permission.SUPPRIMER_ENTRETIEN])
+                    }
+                ]
             },
             {
                 label: '',
