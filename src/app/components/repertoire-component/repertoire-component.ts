@@ -35,7 +35,8 @@ import { Ripple } from 'primeng/ripple';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { RepertoireFormComponent } from './repertoire-form-component/repertoire-form-component';
 import { Permission } from '@/shared/classes/other/permissions';
-import { StateService } from '@/state/state-service';
+import { initRole, Role } from '@/shared/classes/role';
+import { PermissionService } from '@/shared/services/permission-service';
 
 @Component({
     selector: 'app-repertoire-component',
@@ -68,6 +69,7 @@ export class RepertoireComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    utilisateurConnecte!: Personnel;
     ref: DynamicDialogRef | undefined;
     printItems: MenuItem[] = [];
     typeRepertoireImprim: number = 1;
@@ -96,9 +98,7 @@ export class RepertoireComponent {
     submitted: boolean = false;
     formGroup!: FormGroup;
     formGroupImprimer!: FormGroup;
-    canAdd: boolean = false;
-    canEdit: boolean = false;
-    canDelete: boolean = false;
+    role: Role = initRole();
     msg = APP_MESSAGES;
 
     constructor(
@@ -109,7 +109,7 @@ export class RepertoireComponent {
         private dialogService: DialogService,
         private messageService: MessageService,
         private loadingService: LoadingService,
-        private stateService: StateService
+        private permissionService: PermissionService
     ) {}
 
     ngOnInit(): void {
@@ -127,12 +127,9 @@ export class RepertoireComponent {
     }
 
     private checkPermissions(): void {
-        const user = this.stateService.getState().user;
-        const permissions = user?.permissions || [];
-
-        this.canAdd = permissions.includes(Permission.AJOUTER_REPERTOIRE) || permissions.includes(Permission.ALL);
-        this.canEdit = permissions.includes(Permission.MODIFIER_REPERTOIRE) || permissions.includes(Permission.ALL);
-        this.canDelete = permissions.includes(Permission.SUPPRIMER_REPERTOIRE) || permissions.includes(Permission.ALL);
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE);
+        this.utilisateurConnecte = personnel;
+        this.role = role;
     }
 
     initPrintItems() {

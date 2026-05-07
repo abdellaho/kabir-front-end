@@ -31,6 +31,10 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
+import { StateService } from '@/state/state-service';
+import { initRole, Role } from '@/shared/classes/role';
+import { Permission } from '@/shared/classes/other/permissions';
+import { PermissionService } from '@/shared/services/permission-service';
 
 @Component({
     selector: 'app-transport-component',
@@ -61,6 +65,7 @@ export class TransportComponent {
     //Tableau ---> Type(Pharmacie + Revendeur + Transport)* + Designation* + Ville* + ICE + Tel 1 + Tel2 + Tel 3 + Commercial + Commentaire + nbrBl
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
+    utilisateurConnecte!: Personnel;
     printItems: MenuItem[] = [];
     typeRepertoireImprim: number = 1;
     typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
@@ -88,6 +93,7 @@ export class TransportComponent {
     submitted: boolean = false;
     formGroup!: FormGroup;
     formGroupImprimer!: FormGroup;
+    role: Role = initRole();
     msg = APP_MESSAGES;
 
     constructor(
@@ -96,10 +102,12 @@ export class TransportComponent {
         private repertoireService: RepertoireService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private permissionService: PermissionService
     ) {}
 
     ngOnInit(): void {
+        this.checkPermissions();
         this.repertoireInputSearch = '';
         this.personnelIdSearch = BigInt(0);
         this.typeOfList = 0;
@@ -110,6 +118,12 @@ export class TransportComponent {
         this.getAllPersonnelSearch();
         this.initFormGroup();
         this.initFormGroupImprimer();
+    }
+
+    private checkPermissions(): void {
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_TRANSPORT, Permission.MODIFIER_TRANSPORT, Permission.SUPPRIMER_TRANSPORT);
+        this.utilisateurConnecte = personnel;
+        this.role = role;
     }
 
     initPrintItems() {
