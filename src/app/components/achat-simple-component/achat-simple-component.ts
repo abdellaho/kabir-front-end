@@ -29,6 +29,7 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { AchatSimpleRequest } from '@/shared/classes/achat-simple-request';
 import { OperationType } from '@/shared/enums/operation-type';
 import { AchatSimpleValidator } from '@/validators/achat-simple-validator';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
     selector: 'app-achat-simple-component',
@@ -273,7 +274,7 @@ export class AchatSimpleComponent {
             let stock: Stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
             detAchatSimple.stockDesignation = stock.designation;
             let montant: number = detAchatSimple.qte * detAchatSimple.prixAchat;
-            detAchatSimple.montant = montant - (montant * detAchatSimple.remise * 0.01);
+            detAchatSimple.montant = montant - montant * detAchatSimple.remise * 0.01;
 
             this.listDetAchatSimple.push(detAchatSimple);
 
@@ -381,7 +382,15 @@ export class AchatSimpleComponent {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);
         }
+
+        list = this.trier(list);
+
         return list;
+    }
+
+    trier(list: AchatSimple[]): AchatSimple[] {
+        if (list === null) return [];
+        return list.sort((a, b) => new Date(b.dateOperation).getTime() - new Date(a.dateOperation).getTime());
     }
 
     checkIfListIsNull() {
@@ -402,12 +411,27 @@ export class AchatSimpleComponent {
         return achatSimple;
     }
 
+    async checkIfExists(achatSimple: AchatSimple): Promise<boolean> {
+        try {
+            const existsObservable = this.achatSimpleService.exist(achatSimple).pipe(
+                catchError((error) => {
+                    console.error('Error in AchatSimple existence observable:', error);
+                    return of(false); // Gracefully handle observable errors by returning false
+                })
+            );
+            return await firstValueFrom(existsObservable);
+        } catch (error) {
+            console.error('Unexpected error checking if AchatSimple exists:', error);
+            return false;
+        }
+    }
+
     async miseAjour(): Promise<void> {
         this.submitted = true;
         this.loadingService.show();
         let stockDepotEdit: AchatSimple = { ...this.achatSimple };
         this.mapFormGroupToObject(this.formGroup, stockDepotEdit);
-        let trvErreur = false; // await this.checkIfExists(stockDepotEdit);
+        let trvErreur = await this.checkIfExists(stockDepotEdit);
 
         if (!trvErreur) {
             this.achatSimple = this.mapFormGroupToObject(this.formGroup, this.achatSimple);

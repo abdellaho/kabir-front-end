@@ -168,18 +168,15 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
                         <div class="col-span-1">
-                            <p-floatlabel variant="on" class="w-full">
-                                <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
-                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
-                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateReglement')?.invalid }" />
-                                <label for="dateReglement">{{ msg.components.achatFacture.dateReglement }}</label>
+                            <p-floatlabel class="w-full" variant="on">
+                                <p-select formControlName="stockId" inputId="stockId"
+                                    [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
+                                    [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
+                                    optionValue="id" style="height: 30px;" class="w-full" />
+                                <label for="stockId">{{ msg.components.achatFacture.stockId }}</label>
                             </p-floatlabel>
-
-                            @if (formGroup.errors?.['dateReglementRequired']) {
-                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementRequired }}</p-message>
-                            }
                         </div>
-                        
+
                         <div class="col-span-1">
                             <p-floatlabel class="w-full" variant="on">
                                 <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
@@ -199,13 +196,19 @@
                         </div>
 
                         <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <p-select formControlName="stockId" inputId="stockId"
-                                    [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
-                                    [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
-                                    optionValue="id" style="height: 30px;" class="w-full" />
-                                <label for="stockId">{{ msg.components.achatFacture.stockId }}</label>
+                            <p-floatlabel variant="on" class="w-full">
+                                <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
+                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateReglement')?.invalid }" />
+                                <label for="dateReglement">{{ msg.components.achatFacture.dateReglement }}</label>
                             </p-floatlabel>
+
+                            @if (formGroup.errors?.['dateReglementRequired']) {
+                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementRequired }}</p-message>
+                            }
+                            @if(formGroup.errors?.['dateReglementBeforeDateAF']){
+                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementBeforeDateAF }}</p-message>
+                            }
                         </div>
                     </div>
 

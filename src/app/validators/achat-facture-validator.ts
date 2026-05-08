@@ -12,9 +12,9 @@ export function AchatFactureValidator(): ValidatorFn {
         const dateAF = get('dateAF')?.value;
         const numeroFacExterne = get('numeroFacExterne')?.value;
         const dateReglement = get('dateReglement')?.value;
-        const typeReglment = get('typeReglment')?.value;
+        //const typeReglment = get('typeReglment')?.value;
         const fournisseurId = get('fournisseurId')?.value;
-        const numCheque = get('numCheque')?.value;
+        //const numCheque = get('numCheque')?.value;
 
         if (dateAF === null || dateAF === undefined || dateAF === '') {
             addError('dateAFRequired');
@@ -38,9 +38,9 @@ export function AchatFactureValidator(): ValidatorFn {
             addError('fournisseurIdRequired');
         }
 
-        if (typeReglment === 1 && (numCheque === null || numCheque === undefined || numCheque.trim() === '')) {
+        /*if (typeReglment === 1 && (numCheque === null || numCheque === undefined || numCheque.trim() === '')) {
             addError('numChequeRequired');
-        }
+        }*/
 
         return errors;
     };

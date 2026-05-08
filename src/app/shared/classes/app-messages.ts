@@ -475,10 +475,13 @@ export const APP_MESSAGES = {
             qteStock: 'Qte Stock',
             designationStock: 'Produit',
             uniteGratuite: 'Unite gratuite',
+            uniteGratuiteAbbreviation: 'U.G',
             remise: 'Remise',
             prixVente: 'Prix Vente',
             qte: 'Qte Achat',
+            qteAbbreviation: 'Q.Achat',
             prixAchat: 'Prix Achat',
+            prixAchatAbbreviation: 'P.Achat',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce achat simple ?',
             errors: {
                 fournisseurIdRequired: 'Fournisseur obligatoire',
@@ -833,6 +836,7 @@ export const APP_MESSAGES = {
             errors: {
                 dateAFRequired: 'Date Achat Facture est obligatoire',
                 dateReglementRequired: 'Date Réglement est obligatoire',
+                dateReglementBeforeDateAF: 'Date Réglement doit être après ou égale à la date Achat Facture',
                 numChequeRequired: 'Num Cheque est obligatoire',
                 qteacheterMustBeDifferentThan0: 'Qte Acheté doit être différent de 0'
             },
