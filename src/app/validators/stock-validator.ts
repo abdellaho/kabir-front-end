@@ -15,7 +15,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
         { r: get('prixVentMin4'), q: get('qtePVMin4'), key: 4 }
     ];
 
-    const tauxLevels = [
+    /*const tauxLevels = [
         { q: get('qtePVMin1'), key: 1 },
         { q: get('qtePVMin2'), key: 2 },
         { q: get('qtePVMin3'), key: 3 },
@@ -24,7 +24,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
         { q: get('qtePVMin6'), key: 6 },
         { q: get('qtePVMin7'), key: 7 },
         { q: get('qtePVMin8'), key: 8 }
-    ];
+    ];*/
 
     // List ranges for Montant/Prime
     const primeLevels = [
@@ -34,7 +34,7 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     ];
 
     // If missing fields, skip validator
-    if (remiseLevels.some((l) => !l.r || !l.q) || primeLevels.some((l) => !l.m || !l.p)) {
+    if (remiseLevels.some((l) => !l.r /*|| !l.q*/) || primeLevels.some((l) => !l.m || !l.p)) {
         return null;
     }
 
@@ -65,6 +65,10 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
         else if (valueB > 0 && (valueA === null || valueA === 0)) addError(`${keyA}Required`);
     };
 
+    const validateSingle = (value: number, key: string) => {
+        if (value > 0 && (value === null || value === 0)) addError(`${key}Required`);
+    };
+
     const validateAscending = (curr: number, next: number, keyCurr: string, keyNext: string) => {
         if (curr > 0 && next > 0 && curr >= next) {
             addError(`${keyNext}MustBeGreaterThan${keyCurr}`);
@@ -86,13 +90,14 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
     /* ------------------ Validate Remise/Qte ------------------ */
 
     remiseLevels.forEach((lvl, i) => {
-        validatePair(lvl.r!.value, lvl.q!.value, `prixVentMin${lvl.key}`, `qtePVMin${lvl.key}`);
+        validateSingle(lvl.r!.value, `prixVentMin${lvl.key}`);
+        //validatePair(lvl.r!.value, lvl.q!.value, `prixVentMin${lvl.key}`, `qtePVMin${lvl.key}`);
         validateWithPrixVenteTTC(lvl.r!.value, `prixVentMin${lvl.key}`);
 
         if (i < remiseLevels.length - 1) {
             const next = remiseLevels[i + 1];
             validateDescending(lvl.r!.value, next.r!.value, `prixVentMin${lvl.key}`, `prixVentMin${next.key}`);
-            validateDescending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
+            //validateDescending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
         }
     });
 
@@ -108,12 +113,12 @@ export const StockValidator: ValidatorFn = (control: AbstractControl): Validatio
         }
     });
 
-    tauxLevels.forEach((lvl, i) => {
+    /*tauxLevels.forEach((lvl, i) => {
         if (i < tauxLevels.length - 1) {
             const next = tauxLevels[i + 1];
             validateDescending(lvl.q!.value, next.q!.value, `qtePVMin${lvl.key}`, `qtePVMin${next.key}`);
         }
-    });
+    });*/
 
     return hasError ? errors : null;
 };

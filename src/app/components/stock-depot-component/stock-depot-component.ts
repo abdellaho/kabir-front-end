@@ -111,7 +111,7 @@ export class StockDepotComponent {
             {
                 dateOperation: [new Date(), [Validators.required]],
                 stockId: [BigInt(0)],
-                qte: [null],
+                qte: [null]
             },
             { validators: [StockDepotValidator({ getListDetStockDepot: () => this.listDetStockDepot })] }
         );
@@ -204,7 +204,7 @@ export class StockDepotComponent {
             if (!isExistStock) {
                 this.stock = this.listStock.find((stock: Stock) => stock.id === this.formGroup.get('stockId')?.value) || initObjectStock();
                 this.formGroup.patchValue({
-                    qte: null,
+                    qte: null
                 });
 
                 this.isValid = true;
@@ -216,7 +216,7 @@ export class StockDepotComponent {
         this.stock = initObjectStock();
         this.formGroup.patchValue({
             stockId: BigInt(0),
-            qte: null,
+            qte: null
         });
     }
 
@@ -336,6 +336,15 @@ export class StockDepotComponent {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);
         }
+
+        list = this.trier(list);
+
+        return list;
+    }
+
+    trier(list: StockDepot[]): StockDepot[] {
+        if (null == list) return [];
+        list.sort((a, b) => new Date(b.dateOperation).getTime() - new Date(a.dateOperation).getTime());
         return list;
     }
 

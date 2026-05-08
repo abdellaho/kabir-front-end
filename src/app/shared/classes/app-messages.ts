@@ -18,6 +18,7 @@ export const APP_MESSAGES = {
         dateFin: 'Date fin'
     },
     menu: {
+        monCompte: 'Mon Compte',
         ville: 'Ville',
         etablissement: 'Société',
         voiture: 'Voiture',

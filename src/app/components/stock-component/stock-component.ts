@@ -478,7 +478,15 @@ export class StockComponent {
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);
         }
+
+        list = this.trier(list);
+
         return list;
+    }
+
+    trier(list: Stock[]): Stock[] {
+        if (null == list) return [];
+        return list.sort((a, b) => a.designation.localeCompare(b.designation));
     }
 
     checkIfListIsNull() {

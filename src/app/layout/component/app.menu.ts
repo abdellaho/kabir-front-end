@@ -144,6 +144,10 @@ export class AppMenu implements OnInit {
             },
             {
                 label: '',
+                items: [{ label: this.msg.menu.monCompte, icon: 'pi pi-fw pi-user', routerLink: ['/mon-compte'], visible: true }]
+            },
+            {
+                label: '',
                 items: [{ label: this.msg.menu.deconnexion, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() }]
             }
             /* {

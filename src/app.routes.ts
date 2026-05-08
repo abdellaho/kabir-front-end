@@ -34,6 +34,7 @@ import { Access } from '@/pages/auth/access';
 import { ComptabiliteComponent } from '@/components/comptabilite-component/comptabilite-component';
 import { EntretienComponent } from '@/components/entretien-component/entretien-component';
 import { TransportComponent } from '@/components/transport-component/transport-component';
+import { MonCompteComponent } from '@/components/mon-compte-component/mon-compte-component';
 
 export const appRoutes: Routes = [
     {
@@ -78,6 +79,7 @@ export const appRoutes: Routes = [
                 canActivate: [AuthGuard],
                 data: { permission: [Permission.ALL, Permission.CONSULTER_REPERTOIRE, Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE] }
             },
+            { path: 'mon-compte', component: MonCompteComponent, canActivate: [AuthGuard], data: { permission: [Permission.ALL] } },
             { path: 'documentation', component: Documentation },
             { path: 'login', component: LoginComponent },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }

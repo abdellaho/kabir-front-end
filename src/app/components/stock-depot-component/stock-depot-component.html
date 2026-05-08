@@ -72,9 +72,9 @@
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
-                    <div class="card flex flex-col gap-4">
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex flex-col grow basis-0">
+                    <div class="card flex flex-col gap-1">
+                        <div class="flex flex-col md:flex-row gap-1">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel variant="on">
                                     <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
                                         [dateFormat]="msg.formats.date_Format_DDMMYY" required
@@ -88,7 +88,7 @@
                                 }
                             </div>
 
-                            <div class="flex flex-col grow basis-0">
+                            <div class="w-full md:w-2/4">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-select formControlName="stockId" inputId="stockId" class="w-full"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
@@ -97,12 +97,12 @@
                                 </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-col grow basis-0">
-                                    <p-floatlabel class="w-full" variant="on">
-                                        <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" />
-                                        <label for="qte">{{ msg.components.stockDepot.qte }}</label>
-                                    </p-floatlabel>
-                                </div>
+                            <div class="w-full md:w-1/4">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" />
+                                    <label for="qte">{{ msg.components.stockDepot.qte }}</label>
+                                </p-floatlabel>
+                            </div>
                         </div>
 
                         <div class="flex flex-wrap gap-6" style="justify-content: center;">
