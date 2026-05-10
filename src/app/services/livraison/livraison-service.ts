@@ -2,7 +2,7 @@ import { ENDPOINTS } from '@/config/endpoints';
 import { DetLivraison } from '@/models/det-livraison';
 import { Livraison } from '@/models/livraison';
 import { CommonSearchModel } from '@/search/common-search-model';
-import { getHeadersPDF, omit } from '@/shared/classes/generic-methods';
+import { getHeadersPDF, getHeadersSQL, omit } from '@/shared/classes/generic-methods';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -85,6 +85,10 @@ export class LivraisonService {
 
     imprimerClient(id: bigint): Observable<any> {
         return this.http.get<any>(ENDPOINTS.LIVRAISON.imprimerClient(id), { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    generateBackupSQL(): Observable<any> {
+        return this.http.get<any>(ENDPOINTS.LIVRAISON.generateBackupSQL, { headers: getHeadersSQL(), responseType: 'blob' as 'json' });
     }
 
     serializationLivraison(obj: Livraison): any {

@@ -90,7 +90,8 @@
 
                             <div class="w-full md:w-2/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-select formControlName="stockId" inputId="stockId" class="w-full"
+                                    <p-select formControlName="stockId" inputId="stockId" class="w-full custom-select" 
+                                        [filter]="true"  filterBy="designation"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
                                         optionValue="id" style="height: 30px;" />
                                     <label for="stockId">{{ msg.components.stockDepot.stockId }}</label>
@@ -99,7 +100,7 @@
 
                             <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" />
+                                    <p-inputNumber name="qte" id="qte" formControlName="qte" class="w-full" inputStyleClass="w-full" />
                                     <label for="qte">{{ msg.components.stockDepot.qte }}</label>
                                 </p-floatlabel>
                             </div>

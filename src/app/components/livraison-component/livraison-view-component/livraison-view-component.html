@@ -34,6 +34,9 @@
                                 <p-button [label]="msg.buttons.vider" (click)="initSearchLivraison()" icon="pi pi-times" severity="warn" [title]="msg.buttons.vider" />
                             </div>
 
+                            <div class="flex gap-2 flex-shrink-0">
+                                <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" />
+                            </div>
                         </div>
                     </div>
                 </ng-template>

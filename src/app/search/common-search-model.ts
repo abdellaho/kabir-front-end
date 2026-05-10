@@ -1,4 +1,5 @@
 export interface CommonSearchModel {
+    id: bigint | null;
     searchByDate: boolean;
     dateDebut: Date | null;
     dateFin: Date | null;
@@ -7,6 +8,7 @@ export interface CommonSearchModel {
     personnelId: bigint | null;
     operateurId: bigint | null;
     absence: boolean;
+    searchByMatinApresMidi: boolean;
     matin: boolean;
     apresMidi: boolean;
     etatcheque: number;
@@ -21,6 +23,7 @@ export interface CommonSearchModel {
 
 export function initCommonSearchModel(): CommonSearchModel {
     return {
+        id: null,
         searchByDate: false,
         dateDebut: null,
         dateFin: null,
@@ -29,6 +32,7 @@ export function initCommonSearchModel(): CommonSearchModel {
         personnelId: null,
         operateurId: null,
         absence: false,
+        searchByMatinApresMidi: false,
         matin: false,
         apresMidi: false,
         etatcheque: 0,

@@ -127,7 +127,7 @@ export class LivraisonViewComponent implements OnInit {
         commonSearch.numCheque = this.numChequeSearch;
         return commonSearch;
     }
-
+    
     searchLivraison() {
         this.listLivraison = [];
         this.loadingService.show();
@@ -623,6 +623,28 @@ export class LivraisonViewComponent implements OnInit {
                 console.log(err);
                 this.loadingService.hide();
                 this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    generateBackupSQL() {
+        this.loadingService.show();
+        this.livraisonService.generateBackupSQL().subscribe({
+            next: (res) => {
+                const blob = new Blob([res], { type: 'application/sql' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'backup.sql';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (error) => {
+                console.log(error);
+                this.loadingService.hide();
             },
             complete: () => {
                 this.loadingService.hide();

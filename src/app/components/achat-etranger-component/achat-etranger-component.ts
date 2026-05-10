@@ -18,7 +18,7 @@ import { initObjectStock, Stock } from '@/models/stock';
 import { Fournisseur, initObjectFournisseur } from '@/models/fournisseur';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { TypeSearch } from '@/shared/enums/type-search';
-import { arrayToMap, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
+import { arrayToMap, extractDecimalValue, getElementFromMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
 import { StockService } from '@/services/stock/stock-service';
 import { MessageService } from 'primeng/api';
 import { FournisseurService } from '@/services/fournisseur/fournisseur-service';
@@ -488,6 +488,10 @@ export class AchatEtrangerComponent {
         if (null == this.listAchatEtranger) {
             this.listAchatEtranger = [];
         }
+    }
+
+    calculerTaux(achatEtranger: AchatEtranger): number {
+        return achatEtranger.totalPaye / extractDecimalValue(achatEtranger.mntFacture);
     }
 
     mapFormGroupToObject(formGroup: FormGroup, achatEtranger: AchatEtranger): AchatEtranger {

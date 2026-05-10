@@ -479,7 +479,7 @@ export class AchatSimpleComponent {
                 });
             }
         } else {
-            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.stock.label} ${this.msg.messages.messageExistDeja}` });
+            this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: `${this.msg.components.achatSimple.errors.numBlExistDeja}` });
             this.loadingService.hide();
         }
     }

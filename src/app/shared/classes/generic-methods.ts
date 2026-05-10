@@ -24,8 +24,37 @@ export function getHeadersPDF(): HttpHeaders {
     return headers;
 }
 
+export function getHeadersSQL(): HttpHeaders {
+    let headers = new HttpHeaders();
+    headers = headers.set('Accept', 'application/sql');
+    return headers;
+}
+
 export interface FormGroupControls {
     [key: string]: AbstractControl;
+}
+
+export function extractDecimalValue(input: string): number {
+    if (!input) {
+        return 0;
+    }
+
+    // Replace comma with dot
+    let normalized = input.replace(",", ".");
+
+    // Keep only digits and dots
+    normalized = normalized.replace(/[^0-9.]/g, "");
+
+    // Keep only the first decimal separator
+    const firstDot = normalized.indexOf(".");
+
+    if (firstDot !== -1) {
+        normalized =
+            normalized.substring(0, firstDot + 1) +
+            normalized.substring(firstDot + 1).replace(/\./g, "");
+    }
+
+    return parseFloat(normalized) || 0;
 }
 
 export function getFormValidationErrors(controls: FormGroupControls): AllValidationErrors[] {

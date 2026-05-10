@@ -127,88 +127,90 @@
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <p-select formControlName="fournisseurId" inputId="fournisseurId" (onChange)="onChangeFournisseurId()"
-                                    [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
-                                    [options]="listFournisseur" appendTo="body" optionLabel="designation"
-                                    optionValue="id" style="height: 30px;" class="w-full" />
-                                <label for="fournisseurId">{{ msg.components.achatFacture.fournisseurId }}</label>
-                            </p-floatlabel>
+                    <div class="flex flex-col gap-2" style="margin-top: 1rem;">
+                        <div class="flex flex-row gap-1">
+                            <div class="w-full md:w-3/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="fournisseurId" inputId="fournisseurId" (onChange)="onChangeFournisseurId()"
+                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
+                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" class="w-full" />
+                                    <label for="fournisseurId">{{ msg.components.achatFacture.fournisseurId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <input pInputText formControlName="ice" inputId="ice" class="w-full" />
+                                    <label for="ice">{{ msg.components.achatFacture.fournisseurICE }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <input pInputText formControlName="numeroFacExterne" inputId="numeroFacExterne" class="w-full" />
+                                    <label for="numeroFacExterne">{{ msg.components.achatFacture.numeroFacExterne }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-date-picker id="dateAF" formControlName="dateAF" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full" inputStyleClass="w-full"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAF')?.invalid }" />
+                                    <label for="dateAF">{{ msg.components.achatFacture.dateAF }}</label>
+                                </p-floatlabel>
+
+                                @if (formGroup.errors?.['dateAFRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateAFRequired }}</p-message>
+                                }
+                            </div>
                         </div>
 
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <input pInputText formControlName="ice" inputId="ice" class="w-full" />
-                                <label for="ice">{{ msg.components.achatFacture.fournisseurICE }}</label>
-                            </p-floatlabel>
-                        </div>
+                        <div class="flex flex-row gap-1">
+                            <div class="w-full md:w-3/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="stockId" inputId="stockId"
+                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
+                                        [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
+                                        optionValue="id" style="height: 30px;" class="w-full custom-select" />
+                                    <label for="stockId">{{ msg.components.achatFacture.stockId }}</label>
+                                </p-floatlabel>
+                            </div>
 
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <input pInputText formControlName="numeroFacExterne" inputId="numeroFacExterne" class="w-full" />
-                                <label for="numeroFacExterne">{{ msg.components.achatFacture.numeroFacExterne }}</label>
-                            </p-floatlabel>
-                        </div>
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
+                                        appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;" class="w-full" />
+                                    <label for="typeReglment">{{ msg.components.achatFacture.typeReglment }}</label>
+                                </p-floatlabel>
+                            </div>
 
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <p-date-picker id="dateAF" formControlName="dateAF" appendTo="body"
-                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
-                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateAF')?.invalid }" />
-                                <label for="dateAF">{{ msg.components.achatFacture.dateAF }}</label>
-                            </p-floatlabel>
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <input pInputText id="numCheque" formControlName="numCheque" class="w-full" />
+                                    <label for="numCheque">{{ msg.components.achatFacture.numCheque }}</label>
+                                </p-floatlabel>
+                                @if (formGroup.errors?.['numChequeRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.numChequeRequired }}</p-message>
+                                }
+                            </div>
 
-                            @if (formGroup.errors?.['dateAFRequired']) {
-                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateAFRequired }}</p-message>
-                            }
-                        </div>
-                    </div>
+                            <div class="w-full md:w-1/6">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
+                                        [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full" inputStyleClass="w-full"
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateReglement')?.invalid }" />
+                                    <label for="dateReglement">{{ msg.components.achatFacture.dateReglement }}</label>
+                                </p-floatlabel>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <p-select formControlName="stockId" inputId="stockId"
-                                    [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
-                                    [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
-                                    optionValue="id" style="height: 30px;" class="w-full" />
-                                <label for="stockId">{{ msg.components.achatFacture.stockId }}</label>
-                            </p-floatlabel>
-                        </div>
-
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <p-select formControlName="typeReglment" inputId="typeReglment" [options]="typeReglements"
-                                    appendTo="body" optionLabel="label" optionValue="value" style="height: 30px;" class="w-full" />
-                                <label for="typeReglment">{{ msg.components.achatFacture.typeReglment }}</label>
-                            </p-floatlabel>
-                        </div>
-
-                        <div class="col-span-1">
-                            <p-floatlabel class="w-full" variant="on">
-                                <input pInputText id="numCheque" formControlName="numCheque" class="w-full" />
-                                <label for="numCheque">{{ msg.components.achatFacture.numCheque }}</label>
-                            </p-floatlabel>
-                            @if (formGroup.errors?.['numChequeRequired']) {
-                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.numChequeRequired }}</p-message>
-                            }
-                        </div>
-
-                        <div class="col-span-1">
-                            <p-floatlabel variant="on" class="w-full">
-                                <p-date-picker id="dateReglement" formControlName="dateReglement" appendTo="body"
-                                    [dateFormat]="msg.formats.date_Format_DDMMYY" required class="w-full"
-                                    [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateReglement')?.invalid }" />
-                                <label for="dateReglement">{{ msg.components.achatFacture.dateReglement }}</label>
-                            </p-floatlabel>
-
-                            @if (formGroup.errors?.['dateReglementRequired']) {
-                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementRequired }}</p-message>
-                            }
-                            @if(formGroup.errors?.['dateReglementBeforeDateAF']){
-                                <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementBeforeDateAF }}</p-message>
-                            }
+                                @if (formGroup.errors?.['dateReglementRequired']) {
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementRequired }}</p-message>
+                                }
+                                @if(formGroup.errors?.['dateReglementBeforeDateAF']){
+                                    <p-message severity="error" variant="simple" size="small">{{ msg.components.achatFacture.errors.dateReglementBeforeDateAF }}</p-message>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -216,8 +218,8 @@
                         <p-message severity="error" variant="simple" size="small">{{ msg.components.achatSimple.errors.listDetAchatSimpleRequired }}</p-message>
                     }
 
-                    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
-                        <div class="flex items-center gap-3 w-full">
+                    <div class="flex flex-wrap gap-1" style="margin-top: 1rem;">
+                        <div class="flex items-center gap-1 w-full">
                             <!-- Table -->
                             <div class="flex-1">
                                 <p-table #dtDetAchatFactureTVA size="small" class="p-datatable-sm my-custom-datatable"
@@ -275,22 +277,6 @@
                                     </tr>
                                     </ng-template>
 
-                                    <ng-template pTemplate="footer">
-                                        <tr>
-                                            <td></td>
-                                            <td class="font-bold p-3 pb-0">
-                                                {{ listDetAchatFactureTVA | sum:'mntHT' | number:'1.2-2' }}
-                                            </td>
-                                            <td class="font-bold p-3 pb-0">
-                                                {{ listDetAchatFactureTVA | sum:'mntTVA' | number:'1.2-2' }}
-                                            </td>
-                                            <td class="font-bold p-3 pb-0">
-                                                {{ listDetAchatFactureTVA | sum:'mntTTC' | number:'1.2-2' }}
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                    </ng-template>
-
                                     <ng-template pTemplate="emptymessage">
                                         <tr>
                                             <td colspan="8">No Achat Facture TVA found.</td>
@@ -311,7 +297,7 @@
                         </div>
                     </div>
                     
-                    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+                    <div class="flex flex-wrap gap-1" style="margin-top: 1rem;">
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatFacture" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
@@ -337,7 +323,7 @@
 
                                     <th pSortableColumn="unitegratuit" style="width: 8%">
                                         <div class="flex items-center gap-2">
-                                            {{ msg.components.achatFacture.detAchatFacture.unitegratuit }}
+                                            {{ msg.components.achatFacture.detAchatFacture.unitegratuitAbbreviation }}
                                             <p-sortIcon field="unitegratuit" />
                                         </div>
                                     </th>
@@ -351,7 +337,7 @@
                                     
                                     <th pSortableColumn="prixAchatTtc" style="width: 8%">
                                         <div class="flex items-center gap-2">
-                                            {{ msg.components.achatFacture.detAchatFacture.prixAchatTtc }}
+                                            {{ msg.components.achatFacture.detAchatFacture.prixAchatTtcAbbreviation }}
                                             <p-sortIcon field="prixAchatTtc" />
                                         </div>
                                     </th>

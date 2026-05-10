@@ -35,7 +35,6 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { DetAchatFactureTVA, initObjectDetAchatFactureTVA } from '@/models/det-achat-facture-tva';
 import { DetAchatFactureTVAValidator } from '@/validators/det-achat-facture-tva-validator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SumPipe } from '@/pipes/sum-pipe';
 
 @Component({
     selector: 'app-achat-facture-component',
@@ -57,7 +56,6 @@ import { SumPipe } from '@/pipes/sum-pipe';
         MessageModule,
         InputTextModule,
         ConfirmDialogModule,
-        SumPipe
     ],
     providers: [ConfirmationService],
     templateUrl: './achat-facture-component.html',

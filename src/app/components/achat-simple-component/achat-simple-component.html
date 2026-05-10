@@ -95,13 +95,23 @@
             <!-- Form content must go inside ng-template -->
             <ng-template pTemplate="content">
                 <div [formGroup]="formGroup" class="p-fluid">
-                    <div class="card flex flex-col gap-4">
-                        <div class="flex flex-row gap-6">
-                            <div class="flex flex-col grow flex-[1]">
+                    <div class="card flex flex-col gap-2">
+                        <div class="flex flex-row gap-1">
+                            <div class="w-full md:w-2/4">
+                                <p-floatlabel class="w-full" variant="on">
+                                    <p-select formControlName="fournisseurId" inputId="fournisseurId" class="w-full custom-select"
+                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
+                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
+                                        optionValue="id" style="height: 30px;" />
+                                    <label for="fournisseurId">{{ msg.components.achatSimple.fournisseurId }}</label>
+                                </p-floatlabel>
+                            </div>
+
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-date-picker id="dateOperation" formControlName="dateOperation" appendTo="body" class="w-full"
                                         [dateFormat]="msg.formats.date_Format_DDMMYY" required
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" />
+                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('dateOperation')?.invalid }" inputStyleClass="w-full"/>
                                     <label for="dateOperation">{{ msg.components.achatSimple.dateOperation }}</label>
                                 </p-floatlabel>
 
@@ -111,28 +121,18 @@
                                 }
                             </div>
 
-                            <div class="flex flex-col grow flex-[1]">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-select formControlName="fournisseurId" inputId="fournisseurId" class="w-full" 
-                                        [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
-                                        [options]="listFournisseur" appendTo="body" optionLabel="designation"
-                                        optionValue="id" style="height: 30px;" />
-                                    <label for="fournisseurId">{{ msg.components.achatSimple.fournisseurId }}</label>
-                                </p-floatlabel>
-                            </div>
-
-                            <div class="flex flex-col grow flex-[1]">
-                                <p-floatlabel class="w-full" variant="on">
-                                    <input pInputText id="numBlExterne" formControlName="numBlExterne" class="w-full"/>
+                                    <input pInputText id="numBlExterne" formControlName="numBlExterne" class="w-full" inputStyleClass="w-full"/>
                                     <label for="numBlExterne">{{ msg.components.achatSimple.numBlExterne }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
 
-                        <div class="flex flex-row gap-6">
-                            <div class="flex flex-col grow flex-[1]">
+                        <div class="flex flex-row gap-1">
+                            <div class="w-full md:w-2/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-select formControlName="stockId" inputId="stockId" class="w-full" 
+                                    <p-select formControlName="stockId" inputId="stockId" class="w-full custom-select"
                                         [filter]="true" filterBy="designation" [resetFilterOnHide]="true"
                                         [options]="listStock" appendTo="body" optionLabel="designation" (onChange)="onChangeIdStock()"
                                         optionValue="id" style="height: 30px;" />
@@ -140,40 +140,40 @@
                                 </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-col grow flex-[1]">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-input-number id="prixAchat" formControlName="prixAchat" [maxFractionDigits]="2" class="w-full" />
+                                    <p-input-number id="prixAchat" formControlName="prixAchat" [maxFractionDigits]="2" class="w-full" inputStyleClass="w-full" />
                                     <label for="prixAchat">{{ msg.components.achatSimple.prixAchat }}</label>
                                 </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-col grow flex-[1]">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-input-number id="remise" formControlName="remise" [maxFractionDigits]="2" class="w-full" [max]="100" />
+                                    <p-input-number id="remise" formControlName="remise" [maxFractionDigits]="2" class="w-full" inputStyleClass="w-full" [max]="100" />
                                     <label for="remise">{{ msg.components.achatSimple.remise }}</label>
                                 </p-floatlabel>
                             </div>
                         </div>
                         
-                        <div class="flex flex-row gap-6">
-                            <div class="flex flex-col grow flex-[1]">
+                        <div class="flex flex-row gap-1">
+                            <div class="w-full md:w-2/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-input-number id="qte" formControlName="qte" class="w-full" />
+                                    <p-input-number id="qte" formControlName="qte" class="w-full" inputStyleClass="w-full" />
                                     <label for="qte">{{ msg.components.achatSimple.qte }}</label>
                                 </p-floatlabel>
                             </div>
                                    
-                            <div class="flex flex-col grow flex-[1]">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
-                                    <p-input-number id="uniteGratuite" formControlName="uniteGratuite" class="w-full" />
+                                    <p-input-number id="uniteGratuite" formControlName="uniteGratuite" class="w-full" inputStyleClass="w-full" />
                                     <label for="uniteGratuite">{{ msg.components.achatSimple.uniteGratuite }}</label>
                                 </p-floatlabel>
                             </div>
 
-                            <div class="flex flex-col grow flex-[1]">
+                            <div class="w-full md:w-1/4">
                                 <p-floatlabel class="w-full" variant="on">
                                     <p-input-number id="montant" formControlName="montant" appendTo="body" [maxFractionDigits]="2" class="w-full"
-                                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montant')?.invalid }" />
+                                        inputStyleClass="w-full" [ngClass]="{ 'ng-invalid ng-dirty': submitted && formGroup.get('montant')?.invalid }" />
                                     <label for="montant">{{ msg.components.achatSimple.montant }}</label>
                                 </p-floatlabel>
                                 @if (formGroup.errors?.['montantRequired']) {
@@ -182,7 +182,7 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap gap-6" style="justify-content: center;">
+                        <div class="flex flex-wrap gap-1" style="justify-content: center;">
                             <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-check" class="p-button-success"
                                 (click)="validerDetAchatSimple()" [disabled]="disableButtonAjouterDetStockDepot()"></button>
                         </div>
@@ -192,7 +192,7 @@
                         <p-message severity="error" variant="simple" size="small">{{ msg.components.achatSimple.errors.listDetAchatSimpleRequired }}</p-message>
                     }
 
-                    <div class="flex flex-wrap gap-3" style="margin-top: 1rem;">
+                    <div class="flex flex-wrap gap-1" style="margin-top: 1rem;">
                         <p-table #dtDetStockDepot size="small" class="p-datatable-sm my-custom-datatable" [value]="listDetAchatSimple" dataKey="stockId" style="width: 100% !important;"
                             [rows]="10" 
                             sortMode="multiple" [showGridlines]="true" [paginator]="true"
@@ -209,42 +209,42 @@
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="prixAchat" style="width: 8%">
+                                    <th pSortableColumn="prixAchat" style="width: 10%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatSimple.prixAchatAbbreviation }}
                                             <p-sortIcon field="prixAchat" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="qte" style="width: 8%">
+                                    <th pSortableColumn="qte" style="width: 10%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatSimple.qteAbbreviation }}
                                             <p-sortIcon field="qte" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="uniteGratuite" style="width: 8%">
+                                    <th pSortableColumn="uniteGratuite" style="width: 10%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatSimple.uniteGratuiteAbbreviation }}
                                             <p-sortIcon field="uniteGratuite" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="remise" style="width: 8%">
+                                    <th pSortableColumn="remise" style="width: 10%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatSimple.remise }}
                                             <p-sortIcon field="remise" />
                                         </div>
                                     </th>
 
-                                    <th pSortableColumn="montant" style="width: 8%">
+                                    <th pSortableColumn="montant" style="width: 12%">
                                         <div class="flex items-center gap-2">
                                             {{ msg.components.achatSimple.montant }}
                                             <p-sortIcon field="montant" />
                                         </div>
                                     </th>
 
-                                    <th style="width: 5%"></th>
+                                    <th style="width: 3%"></th>
                                 </tr>
                             </ng-template>
 
@@ -256,7 +256,7 @@
                                     <td>{{ p.uniteGratuite }}</td>
                                     <td>{{ p.remise | number:'1.2-2' }}</td>
                                     <td>{{ p.montant | number:'1.2-2' }}</td>
-                                    <td style="width: 5%; min-width: 7rem">
+                                    <td>
                                         <div class="flex gap-2">
                                             <p-button (click)="recuppererDetAchatSimple(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                                         </div>

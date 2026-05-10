@@ -113,8 +113,10 @@ export const APP_MESSAGES = {
             detAchatEtranger: {
                 label: 'Détail Achat Etranger',
                 qteAchat: 'Qte Achat',
+                qteAchatAbbreviation: 'Q.Achat',
                 qteStockImport: 'Qte Stock Import',
-                prixAchat: 'Prix Achat'
+                prixAchat: 'Prix Achat',
+                prixAchatAbbreviation: 'P.Achat',
             }
         },
         bulletinPai: {
@@ -488,7 +490,8 @@ export const APP_MESSAGES = {
                 numBlExterneRequired: 'Numéro BL Externe obligatoire',
                 montantRequired: 'Montant obligatoire',
                 listDetAchatSimpleRequired: 'Liste des produits obligatoire',
-                dateOperationRequired: 'Date opération obligatoire'
+                dateOperationRequired: 'Date opération obligatoire',
+                numBlExistDeja: 'Numéro BL existe déjà'
             }
         },
         repertoire: {
@@ -568,6 +571,7 @@ export const APP_MESSAGES = {
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer ce livraison ?',
             selectStock: 'Sélectionner un produit',
             selectRepertoire: 'Sélectionner un client',
+            generateBackupSql: 'Générer Backup',
             repertoire: {
                 label: 'Client',
                 designation: 'Designation',
@@ -844,9 +848,12 @@ export const APP_MESSAGES = {
                 label: 'Produit',
                 qteacheter: 'Qte',
                 unitegratuit: 'Unite Gratuite',
+                unitegratuitAbbreviation: 'U.G',
                 mantantTTC: 'Montant',
                 qteFacturer: 'Qte Facturé',
+                qteFacturerAbbreviation: 'Q.Facturé',
                 prixAchatTtc: 'Prix Achat',
+                prixAchatTtcAbbreviation: 'P.Achat',
                 remiseAchat: 'Remise',
                 errors: {
                     qteAcheterMustBeDifferentThan0: 'Qte Acheté doit être différent de 0'

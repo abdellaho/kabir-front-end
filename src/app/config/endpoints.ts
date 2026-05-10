@@ -206,7 +206,8 @@ export const ENDPOINTS = {
         getLastNumLivraison: `${BASE_URL}/${LIVRAISON}/last-num-livraison`,
         searchByCommon: `${BASE_URL}/${LIVRAISON}/searchByCommon`,
         imprimerBonLivraison: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}`,
-        imprimerClient: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}/client`
+        imprimerClient: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}/client`,
+        generateBackupSQL: `${BASE_URL}/${LIVRAISON}/generate/backup-sql`
     },
     PAYS: {
         getAll: `${BASE_URL}/${PAYS}`,
