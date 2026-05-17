@@ -145,7 +145,7 @@ export class AbsenceComponent implements OnInit {
 
         this.absenceService.searchByCommon(commonSearchModel).subscribe({
             next: (data: Absence[]) => {
-                this.listAbsence = (data || []).map((a) => {
+                this.listAbsenceFixe = (data || []).map((a) => {
                     const dateAbsence = new Date(a.dateAbsence);
                     return {
                         ...a,

@@ -1,5 +1,6 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Ville } from '@/models/ville';
+import { getHeadersPDF } from '@/shared/classes/generic-methods';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -36,6 +37,10 @@ export class VilleService {
   exist(ville: Ville): Observable<boolean> {
     const obj = this.serialization(ville);
     return this.http.post<boolean>(ENDPOINTS.VILLE.exist, obj);
+  }
+
+  imprimer(): Observable<any> {
+    return this.http.get(ENDPOINTS.VILLE.imprimer, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
   }
 
   serialization(obj: Ville): any {

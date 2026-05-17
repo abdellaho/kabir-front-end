@@ -118,8 +118,10 @@
                     [title]="msg.buttons.archiver" />
                   <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded
                     [title]="msg.buttons.supprimer" [disabled]="!p.canDelete" />
-                  <p-button (click)="recupperer(7, p)" icon="pi pi-ban" severity="help" rounded
-                    [title]="msg.buttons.role" />
+                  @if (p.typePersonnel !== 1) {
+                    <p-button (click)="recupperer(7, p)" icon="pi pi-ban" severity="help" rounded
+                      [title]="msg.buttons.role" />
+                  }
                 }
                 
                 @if (typeOfList === 1) {

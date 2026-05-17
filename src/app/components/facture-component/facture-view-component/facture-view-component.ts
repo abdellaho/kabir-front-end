@@ -34,6 +34,7 @@ import { TypeSearch } from '@/shared/enums/type-search';
 import { OperationType } from '@/shared/enums/operation-type';
 import { DetFacture } from '@/models/det-facture';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
+import { LivraisonService } from '@/services/livraison/livraison-service';
 
 @Component({
     selector: 'app-facture-view-component',
@@ -62,6 +63,7 @@ export class FactureViewComponent implements OnInit {
         private factureService: FactureService,
         private repertoireService: RepertoireService,
         private stockService: StockService,
+        private livraisonService: LivraisonService,
         private dataService: DataService,
         private personnelService: PersonnelService,
         private router: Router,
@@ -357,5 +359,27 @@ export class FactureViewComponent implements OnInit {
             console.error('Unexpected error checking if absence exists:', error);
             return 1;
         }
+    }
+
+    generateBackupSQL() {
+        this.loadingService.show();
+        this.livraisonService.generateBackupSQL().subscribe({
+            next: (res) => {
+                const blob = new Blob([res], { type: 'application/sql' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'backup.sql';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (error) => {
+                console.log(error);
+                this.loadingService.hide();
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
     }
 }

@@ -304,6 +304,7 @@ export const ENDPOINTS = {
         create: `${BASE_URL}/${VILLE}`,
         update: (id: bigint) => `${BASE_URL}/${VILLE}/${id}`,
         delete: (id: bigint) => `${BASE_URL}/${VILLE}/${id}`,
-        exist: `${BASE_URL}/${VILLE}/exist`
+        exist: `${BASE_URL}/${VILLE}/exist`,
+        imprimer: `${BASE_URL}/${VILLE}/imprimer`
     }
 };

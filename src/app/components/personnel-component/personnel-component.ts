@@ -323,7 +323,23 @@ export class PersonnelComponent implements OnInit {
                     consulterRepertoire: this.personnel.consulterRepertoire ?? false,
                     ajouterRepertoire: this.personnel.ajouterRepertoire ?? false,
                     modifierRepertoire: this.personnel.modifierRepertoire ?? false,
-                    supprimerRepertoire: this.personnel.supprimerRepertoire ?? false
+                    supprimerRepertoire: this.personnel.supprimerRepertoire ?? false,
+                    consulterTransport: this.personnel.consulterTransport ?? false,
+                    ajouterTransport: this.personnel.ajouterTransport ?? false,
+                    modifierTransport: this.personnel.modifierTransport ?? false,
+                    supprimerTransport: this.personnel.supprimerTransport ?? false,
+                    consulterLivraison: this.personnel.consulterLivraison ?? false,
+                    ajouterLivraison: this.personnel.ajouterLivraison ?? false,
+                    modifierLivraison: this.personnel.modifierLivraison ?? false,
+                    supprimerLivraison: this.personnel.supprimerLivraison ?? false,
+                    consulterFacture: this.personnel.consulterFacture ?? false,
+                    ajouterFacture: this.personnel.ajouterFacture ?? false,
+                    modifierFacture: this.personnel.modifierFacture ?? false,
+                    supprimerFacture: this.personnel.supprimerFacture ?? false,
+                    consulterEntretien: this.personnel.consulterEntretien ?? false,
+                    ajouterEntretien: this.personnel.ajouterEntretien ?? false,
+                    modifierEntretien: this.personnel.modifierEntretien ?? false,
+                    supprimerEntretien: this.personnel.supprimerEntretien ?? false
                 });
                 this.openCloseDialogRole(true);
             }

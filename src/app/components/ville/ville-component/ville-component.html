@@ -8,6 +8,10 @@
             <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
             <input pInputText type="text" placeholder="{{ msg.components.ville.chercherParNomVille }}" (input)="searchVille()" [(ngModel)]="villeSearch" />
           </div>
+
+          <div class="my-2" style="margin-left: 1ch;">
+              <p-button severity="help" pRipple [label]="`${msg.buttons.consulter}`" icon="pi pi-print" (onClick)="imprimer()" class="mr-2" />
+          </div>
         </ng-template>
 
         <ng-template pTemplate="right">

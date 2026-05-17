@@ -241,4 +241,26 @@ export class VilleComponent implements OnInit {
 
         this.openCloseDialogSupprimer(false);
     }
+
+    imprimer() {
+        this.villeService.imprimer().subscribe({
+            next: (data) => {
+                const blob = new Blob([data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.msg.summary.labelError,
+                    detail: this.msg.messages.messageErrorProduite
+                });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
 }

@@ -8,6 +8,10 @@
                         <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus"
                             class="p-button-info mr-2" (click)="viderAjouter()"></button>
                     </div>
+
+                    <div class="flex gap-2 flex-shrink-0">
+                        <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" />
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
