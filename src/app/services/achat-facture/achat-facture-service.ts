@@ -4,6 +4,8 @@ import { ENDPOINTS } from '../../config/endpoints';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { getHeadersPDF } from '@/shared/classes/generic-methods';
+import { CommonSearchModel } from '@/search/common-search-model';
 
 @Injectable({
     providedIn: 'root'
@@ -46,5 +48,13 @@ export class AchatFactureService {
 
     exist(achatFacture: AchatFacture): Observable<boolean> {
         return this.http.post<boolean>(this.ENDPOINTS.exist, achatFacture);
+    }
+
+    imprimerAchatFacture(id: bigint): Observable<any> {
+        return this.http.get<any>(this.ENDPOINTS.imprimerAchatFacture(id), { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerByType(type: number, commonSearchModel: CommonSearchModel): Observable<any> {
+        return this.http.post<any>(this.ENDPOINTS.imprimerByType(type), commonSearchModel, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
     }
 }

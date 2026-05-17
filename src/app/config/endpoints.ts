@@ -60,7 +60,9 @@ export const ENDPOINTS = {
         delete: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/${id}`,
         search: `${BASE_URL}/${ACHAT_FACTURE}/search`,
         exist: `${BASE_URL}/${ACHAT_FACTURE}/exist`,
-        getLastNumAchatFacture: `${BASE_URL}/${ACHAT_FACTURE}/last-num-achat-facture`
+        getLastNumAchatFacture: `${BASE_URL}/${ACHAT_FACTURE}/last-num-achat-facture`,
+        imprimerAchatFacture: (id: bigint) => `${BASE_URL}/${ACHAT_FACTURE}/imprimer/${id}`,
+        imprimerByType: (type: number) => `${BASE_URL}/${ACHAT_FACTURE}/imprimer/type/${type}`
     },
     ACHAT_SIMPLE: {
         getAll: `${BASE_URL}/${ACHAT_SIMPLE}`,

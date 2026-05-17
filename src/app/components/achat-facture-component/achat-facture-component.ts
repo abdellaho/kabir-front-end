@@ -875,4 +875,26 @@ export class AchatFactureComponent {
             }
         });
     }
+
+    imprimerAchatFacture(id: bigint) {
+        this.loadingService.show();
+        this.achatFactureService.imprimerAchatFacture(id).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
 }

@@ -102,6 +102,7 @@
                             <div class="flex gap-2">
                                 <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
                                 <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                                <p-button (click)="imprimerAchatFacture(p.id)" icon="pi pi-print" severity="contrast" rounded [title]="msg.buttons.imprimer" />
                             </div>
                         </td>
                     </tr>
