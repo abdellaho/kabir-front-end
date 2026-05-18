@@ -75,7 +75,7 @@ import { Permission } from '@/shared/classes/other/permissions';
     styleUrl: './livraison-update-component.scss'
 })
 export class LivraisonUpdateComponent implements OnInit, OnDestroy {
-    ref: DynamicDialogRef | undefined;
+    ref: DynamicDialogRef | null = null;
     permissions: string[] = [];
     hasPermissionAdmin: boolean = false;
     personnelCreationId: number | null = null;
@@ -115,7 +115,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private etablissementService: EtablissementService,
         private loadingService: LoadingService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.permissions = this.stateService.getState().user?.permissions ?? [];
@@ -693,7 +693,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                     }
                 });
 
-                this.ref.onClose.subscribe((result) => {
+                this.ref?.onClose.subscribe((result) => {
                     console.log('result', result);
                     if (result) {
                         let list: Repertoire[] = this.sortListRepertoire(this.updateListRepertoire(result.data, this.listRepertoire, result.operationType));

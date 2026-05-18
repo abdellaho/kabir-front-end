@@ -70,7 +70,7 @@ export class RepertoireComponent {
     //Ajouter ---> Type* + Designation* + Ville* + Tel 1 + Tel2 + Tel 3 + ICE + Commentaire(Observation) + Commercial + Plafond
 
     utilisateurConnecte!: Personnel;
-    ref: DynamicDialogRef | undefined;
+    ref: DynamicDialogRef | null = null;
     printItems: MenuItem[] = [];
     typeRepertoireImprim: number = 1;
     typeRepertoireImprimPharmacie: { label: string; value: number }[] = [];
@@ -110,7 +110,7 @@ export class RepertoireComponent {
         private messageService: MessageService,
         private loadingService: LoadingService,
         private permissionService: PermissionService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.checkPermissions();
@@ -189,7 +189,7 @@ export class RepertoireComponent {
             }
         });
 
-        this.ref.onClose.subscribe((result) => {
+        this.ref?.onClose.subscribe((result) => {
             if (result) {
                 this.listRepertoire = this.updateList(result.data, this.listRepertoire, result.operationType);
             }

@@ -81,7 +81,7 @@ export class EtablissementComponent implements OnInit {
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.getAllVilles();
@@ -204,7 +204,7 @@ export class EtablissementComponent implements OnInit {
         etablissement.samedi = formGroup.get('samedi')?.value;
         etablissement.dimanche = formGroup.get('dimanche')?.value;
         etablissement.nom = formGroup.get('nom')?.value;
-        etablissement.paswordMail = formGroup.get('paswordMail')?.value;
+        etablissement.paswordMailFake = formGroup.get('paswordMail')?.value;
         etablissement.patente = formGroup.get('patente')?.value;
         etablissement.port = formGroup.get('port')?.value ?? 0;
         etablissement.pourcentageLiv = formGroup.get('pourcentageLiv')?.value;
