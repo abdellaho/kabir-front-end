@@ -17,6 +17,7 @@ export interface Personnel {
     canDelete: boolean;
     archiver: boolean;
     supprimer: boolean;
+    passwordReset: boolean;
     consulterStock: boolean;
     ajouterStock: boolean;
     modifierStock: boolean;
@@ -53,6 +54,7 @@ export function initObjectPersonnel(): Personnel {
         passwordFake: '',
         typePersonnel: 0,
         etatComptePersonnel: false,
+        passwordReset: false,
         tel1: '',
         tel2: '',
         adresse: '',
