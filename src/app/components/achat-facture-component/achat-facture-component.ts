@@ -35,6 +35,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { DetAchatFactureTVA, initObjectDetAchatFactureTVA } from '@/models/det-achat-facture-tva';
 import { DetAchatFactureTVAValidator } from '@/validators/det-achat-facture-tva-validator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 
 @Component({
     selector: 'app-achat-facture-component',
@@ -96,10 +97,13 @@ export class AchatFactureComponent {
     dialogAjouterDetAchatFactureTVA: boolean = false;
     dialogSupprimerDetAchatFacture: boolean = false;
     dialogAjouter: boolean = false;
+    dialogImprimer: boolean = false;
     submitted: boolean = false;
     formGroup!: FormGroup;
     formGroupDetAchatFacture!: FormGroup;
     formGroupDetAchatFactureTVA!: FormGroup;
+    formGroupImprimer!: FormGroup;
+    typeImpression: number = 0;
     msg = APP_MESSAGES;
     readonly BigInt = BigInt; // Expose BigInt to template
 
@@ -111,7 +115,7 @@ export class AchatFactureComponent {
         private fournisseurService: FournisseurService,
         private confirmationService: ConfirmationService,
         private loadingService: LoadingService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.fournisseurDesignationSearch = '';
@@ -143,6 +147,27 @@ export class AchatFactureComponent {
             },
             { validators: DetAchatFactureValidator({ stock: this.stock }) }
         );
+    }
+
+    initFormGroupImprimer(type: number) {
+        if (type === 2) {
+            this.formGroupImprimer = this.formBuilder.group({
+                dateDebut: [new Date()],
+                dateFin: [new Date()],
+                fournisseurId: [BigInt(0)]
+            });
+        } else if (type === 3) {
+            this.formGroupImprimer = this.formBuilder.group({
+                dateDebut: [new Date()],
+                dateFin: [new Date()],
+                stockId: [BigInt(0)]
+            });
+        } else {
+            this.formGroupImprimer = this.formBuilder.group({
+                dateDebut: [new Date()],
+                dateFin: [new Date()],
+            });
+        }
     }
 
     initFormGroupDetAchatFactureTVA() {
@@ -564,6 +589,10 @@ export class AchatFactureComponent {
         this.dialogAjouterDetAchatFactureTVA = openClose;
     }
 
+    openCloseDialogImprimer(openClose: boolean): void {
+        this.dialogImprimer = openClose;
+    }
+
     async getLastNumAchatFacture(): Promise<number> {
         let numAchat: number = 0;
 
@@ -897,4 +926,44 @@ export class AchatFactureComponent {
             }
         });
     }
+
+    viderImprimer(typeImpression: number) {
+        this.typeImpression = typeImpression;
+        this.initFormGroupImprimer(typeImpression);
+        this.openCloseDialogImprimer(true);
+    }
+
+    imprimer() {
+        let commonSearchModel: CommonSearchModel = initCommonSearchModel();
+        commonSearchModel.searchByDate = true;
+        commonSearchModel.dateDebut = this.formGroupImprimer.value.dateDebut;
+        commonSearchModel.dateFin = this.formGroupImprimer.value.dateFin;
+        if (this.typeImpression === 2) {
+            commonSearchModel.fournisseurId = this.formGroupImprimer.get('fournisseurId')?.value || BigInt(0);
+        } else if (this.typeImpression === 3) {
+            commonSearchModel.stockId = this.formGroupImprimer.get('stockId')?.value || BigInt(0);
+        }
+
+        this.loadingService.show();
+        this.achatFactureService.imprimerByType(this.typeImpression, commonSearchModel).subscribe({
+            next: (data) => {
+                const file = new Blob([data], { type: 'application/pdf' });
+                const fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                a.href = fileURL;
+                a.target = '_blank';
+                a.click();
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+
 }

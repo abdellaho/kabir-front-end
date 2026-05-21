@@ -1,5 +1,6 @@
 export interface CommonSearchModel {
     id: bigint | null;
+    stockId: bigint | null;
     searchByDate: boolean;
     dateDebut: Date | null;
     dateFin: Date | null;
@@ -24,6 +25,7 @@ export interface CommonSearchModel {
 export function initCommonSearchModel(): CommonSearchModel {
     return {
         id: null,
+        stockId: null,
         searchByDate: false,
         dateDebut: null,
         dateFin: null,

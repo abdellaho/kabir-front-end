@@ -27,7 +27,7 @@ import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
-import { arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { Repertoire } from '@/models/repertoire';
@@ -41,6 +41,9 @@ import { LivraisonRequest } from '@/shared/classes/livraison-request';
 import { FactureUpdateComponent } from '@/components/facture-component/facture-update-component/facture-update-component';
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { DatePickerModule } from 'primeng/datepicker';
+import { initRole, Role } from '@/shared/classes/role';
+import { PermissionService } from '@/shared/services/permission-service';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-livraison-view-component',
@@ -67,6 +70,7 @@ import { DatePickerModule } from 'primeng/datepicker';
     styleUrl: './livraison-view-component.scss'
 })
 export class LivraisonViewComponent implements OnInit {
+    utilisateurConnecte!: Personnel;
     rangeDateSearch: Date[] | null = null;
     repertoireIdSearch: bigint | null = null;
     personnelIdSearch: bigint | null = null;
@@ -85,6 +89,7 @@ export class LivraisonViewComponent implements OnInit {
     dialogSupprimer: boolean = false;
     dialogFacturer: boolean = false;
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
+    role: Role = initRole();
     msg = APP_MESSAGES;
 
     constructor(
@@ -94,16 +99,24 @@ export class LivraisonViewComponent implements OnInit {
         private stockService: StockService,
         private dataService: DataService,
         private personnelService: PersonnelService,
+        private permissionService: PermissionService,
         private router: Router,
         private messageService: MessageService,
         private loadingService: LoadingService
-    ) {}
+    ) { }
+
 
     ngOnInit(): void {
         this.initSearchLivraison();
         this.getAllStock();
         this.getAllPersonnel();
         this.getAllRepertoire();
+    }
+
+    private checkPermissions(): void {
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE);
+        this.utilisateurConnecte = personnel;
+        this.role = role;
     }
 
     initSearchValues() {
@@ -127,7 +140,7 @@ export class LivraisonViewComponent implements OnInit {
         commonSearch.numCheque = this.numChequeSearch;
         return commonSearch;
     }
-    
+
     searchLivraison() {
         this.listLivraison = [];
         this.loadingService.show();
@@ -326,10 +339,16 @@ export class LivraisonViewComponent implements OnInit {
     recupperer(operation: number, livraisonEdit: Livraison) {
         if (livraisonEdit && livraisonEdit.id) {
             this.livraison = livraisonEdit;
-            if (operation === 1) {
-                this.emitToPageUpdate(this.livraison);
+            let areInSameDate = areInTheSameDay(this.role, this.livraison.dateBl, new Date(), true);
+
+            if (!areInSameDate) {
+                this.messageService.add({ severity: 'warn', summary: this.msg.summary.labelError, detail: this.msg.messages.messageAreNotInSameDay });
             } else {
-                this.openCloseDialogSupprimer(true);
+                if (operation === 1) {
+                    this.emitToPageUpdate(this.livraison);
+                } else {
+                    this.openCloseDialogSupprimer(true);
+                }
             }
         } else {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });

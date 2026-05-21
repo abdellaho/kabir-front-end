@@ -928,7 +928,8 @@ export const APP_MESSAGES = {
         messageExistDeja: ' existe déjà',
         numberMustBeEqualZeroOrPositive: 'Ce champs doit supérieur ou égal 0',
         messageDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer ?',
-        messageDeleteCancel: 'Suppression annulée'
+        messageDeleteCancel: 'Suppression annulée',
+        messageAreNotInSameDay: 'Impossible d\'effectué l\'opération, Date de l\'enregistrement est différente de celle du systéme'
     },
     summary: {
         labelError: 'Erreur',
