@@ -828,6 +828,8 @@ export const APP_MESSAGES = {
             mntTtcTVA14: 'Mnt Ttc Tva 14',
             mntTtcTVA20: 'Mnt Ttc Tva 20',
             mntTtc: 'Mnt Ttc',
+            dateDebut: 'Date Début',
+            dateFin: 'Date Fin',
             totalMntProduit: 'Montant Total Produit',
             messageDeleteAreYouSure: 'Êtes-vous sûr de vouloir supprimer cet achat facture ?',
             detAchatFactureTVA: {
