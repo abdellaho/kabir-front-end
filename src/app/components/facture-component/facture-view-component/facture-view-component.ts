@@ -1,4 +1,4 @@
-import { arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { Component, OnInit } from '@angular/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -35,6 +35,9 @@ import { OperationType } from '@/shared/enums/operation-type';
 import { DetFacture } from '@/models/det-facture';
 import { filteredTypeReglement } from '@/shared/enums/type-reglement';
 import { LivraisonService } from '@/services/livraison/livraison-service';
+import { PermissionService } from '@/shared/services/permission-service';
+import { initRole, Role } from '@/shared/classes/role';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-facture-view-component',
@@ -58,6 +61,8 @@ export class FactureViewComponent implements OnInit {
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     dialogSupprimer: boolean = false;
     msg = APP_MESSAGES;
+    utilisateurConnecte!: Personnel;
+    role: Role = initRole();
 
     constructor(
         private factureService: FactureService,
@@ -65,6 +70,7 @@ export class FactureViewComponent implements OnInit {
         private stockService: StockService,
         private livraisonService: LivraisonService,
         private dataService: DataService,
+        private permissionService: PermissionService,
         private personnelService: PersonnelService,
         private router: Router,
         private messageService: MessageService,
@@ -72,10 +78,17 @@ export class FactureViewComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.checkPermissions();
         this.search();
         this.getAllStock();
         this.getAllPersonnel();
         this.getAllRepertoire();
+    }
+
+    private checkPermissions(): void {
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_FACTURE, Permission.MODIFIER_FACTURE, Permission.SUPPRIMER_FACTURE);
+        this.utilisateurConnecte = personnel;
+        this.role = role;
     }
 
     initObjectFournisseurSearch(archiver: boolean, supprimer: boolean): Fournisseur {
@@ -272,10 +285,16 @@ export class FactureViewComponent implements OnInit {
     recupperer(operation: number, livraisonEdit: Facture) {
         if (livraisonEdit && livraisonEdit.id) {
             this.facture = livraisonEdit;
-            if (operation === 1) {
-                this.emitToPageUpdate(this.facture);
+            let areInSameDate = areInTheSameDay(this.role, this.facture.sysDate, new Date(), true);
+            
+            if (!areInSameDate) {
+                this.messageService.add({ severity: 'warn', summary: this.msg.summary.labelError, detail: this.msg.messages.messageAreNotInSameDay });
             } else {
-                this.openCloseDialogSupprimer(true);
+                if (operation === 1) {
+                    this.emitToPageUpdate(this.facture);
+                } else {
+                    this.openCloseDialogSupprimer(true);
+                }
             }
         } else {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });

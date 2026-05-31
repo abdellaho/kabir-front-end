@@ -31,6 +31,8 @@ import { StateService } from '@/state/state-service';
 import { Permission } from '@/shared/classes/other/permissions';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { initObjectPrintRequest, PrintRequest } from '@/shared/classes/requests/print-request';
+import { PermissionService } from '@/shared/services/permission-service';
+import { initRole, Role } from '@/shared/classes/role';
 
 @Component({
     selector: 'app-stock-component',
@@ -95,17 +97,15 @@ export class StockComponent {
     typeProduits: { label: string; value: TypeProduit }[] = filteredTypeProduit;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
-    canAdd: boolean = false;
-    canEdit: boolean = false;
-    canDelete: boolean = false;
+    role: Role = initRole();
 
     constructor(
         private fournisseurService: FournisseurService,
         private stockService: StockService,
-        private stateService: StateService,
         private formBuilder: FormBuilder,
         private messageService: MessageService,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private permissionService: PermissionService
     ) {}
 
     ngOnInit(): void {
@@ -118,12 +118,8 @@ export class StockComponent {
     }
 
     private checkPermissions(): void {
-        const user = this.stateService.getState().user;
-        const permissions = user?.permissions || [];
-
-        this.canAdd = permissions.includes(Permission.AJOUTER_STOCK) || permissions.includes(Permission.ALL);
-        this.canEdit = permissions.includes(Permission.MODIFIER_STOCK) || permissions.includes(Permission.ALL);
-        this.canDelete = permissions.includes(Permission.SUPPRIMER_STOCK) || permissions.includes(Permission.ALL);
+        const { role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_STOCK, Permission.MODIFIER_STOCK, Permission.SUPPRIMER_STOCK);
+        this.role = role;
     }
 
     initPrintItems() {
@@ -316,7 +312,6 @@ export class StockComponent {
         if (stockEdit && stockEdit.id) {
             this.stock = stockEdit;
             if (operation === 1) {
-                console.log(this.stock);
                 this.formGroup.patchValue({
                     designation: this.stock.designation,
                     fournisseurId: this.stock.fournisseurId,

@@ -4,35 +4,37 @@
             <p-toast></p-toast>
             <p-toolbar class="mb-4">
                 <ng-template pTemplate="left" class="gap-2">
-                    <div class="my-2">
-                        @if(canAdd) {
+                    @if(role.canAdd) {
+                        <div class="my-2">
                             <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
-                        }
-                    </div>
+                        </div>
+                    }
+                    
+                    @if(role.isAdmin || role.isGerant) {
+                        <div class="my-2">
+                            <p-button pRipple [outlined]="typeOfList === 0 ? false : true" icon="pi pi-crown"
+                                [label]="msg.components.stock.label" severity="success" class="mr-2"
+                                (click)="listOfStock()"></p-button>
+                        </div>
 
-                    <div class="my-2">
-                        <p-button pRipple [outlined]="typeOfList === 0 ? false : true" icon="pi pi-crown"
-                            [label]="msg.components.stock.label" severity="success" class="mr-2"
-                            (click)="listOfStock()"></p-button>
-                    </div>
+                        <div class="my-2">
+                            <p-button pRipple [outlined]="typeOfList === 1 ? false : true" icon="pi pi-warehouse"
+                                [label]="msg.buttons.archive" severity="warn" class="mr-2"
+                                (click)="archiveListe()"></p-button>
+                        </div>
 
-                    <div class="my-2">
-                        <p-button pRipple [outlined]="typeOfList === 1 ? false : true" icon="pi pi-warehouse"
-                            [label]="msg.buttons.archive" severity="warn" class="mr-2"
-                            (click)="archiveListe()"></p-button>
-                    </div>
+                        <div class="my-2">
+                            <p-button pRipple [outlined]="typeOfList === 2 ? false : true" [label]="msg.buttons.corbeille"
+                                icon="pi pi-trash" severity="danger" class="mr-2" (click)="corbeilleListe()"></p-button>
+                        </div>
 
-                    <div class="my-2">
-                        <p-button pRipple [outlined]="typeOfList === 2 ? false : true" [label]="msg.buttons.corbeille"
-                            icon="pi pi-trash" severity="danger" class="mr-2" (click)="corbeilleListe()"></p-button>
-                    </div>
-
-                    <div class="my-2" style="margin-right: 1ch;">
-                        <p-button severity="help" pRipple [label]="`${msg.buttons.stockSimple}`" icon="pi pi-print" (onClick)="imprimer(2)" class="mr-2" />
-                        <p-button pRipple [label]="`${msg.buttons.stockGenerale}`" icon="pi pi-print" (onClick)="imprimer(1)" class="p-button-blueRoyal mr-2" />
-                        <p-button pRipple [label]="`${msg.buttons.prixInitial}`" icon="pi pi-print" (onClick)="imprimer(8)" class="p-button-bleuCiel mr-2" />
-                        <p-button pRipple [label]="`${msg.buttons.prixVentePlusRemise}`" icon="pi pi-print" (onClick)="imprimer(11)" class="p-button-rose mr-2" />
-                    </div>
+                        <div class="my-2" style="margin-right: 1ch;">
+                            <p-button severity="help" pRipple [label]="`${msg.buttons.stockSimple}`" icon="pi pi-print" (onClick)="imprimer(2)" class="mr-2" />
+                            <p-button pRipple [label]="`${msg.buttons.stockGenerale}`" icon="pi pi-print" (onClick)="imprimer(1)" class="p-button-blueRoyal mr-2" />
+                            <p-button pRipple [label]="`${msg.buttons.prixInitial}`" icon="pi pi-print" (onClick)="imprimer(8)" class="p-button-bleuCiel mr-2" />
+                            <p-button pRipple [label]="`${msg.buttons.prixVentePlusRemise}`" icon="pi pi-print" (onClick)="imprimer(11)" class="p-button-rose mr-2" />
+                        </div>
+                    }
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -167,16 +169,16 @@
                         <td>{{ p.fournisseurDesignation }}</td>
                         <td style="width: 10%; min-width: 7rem">
                             <div class="flex gap-2">
-                                @if(canEdit && typeOfList === 0) {
+                                @if(role.canModify && typeOfList === 0) {
                                     <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
                                     <p-button (click)="recupperer(3, p)" icon="pi pi-warehouse" severity="warn" rounded [title]="msg.buttons.archiver" />
                                 }
 
-                                @if(canDelete && typeOfList === 0) {
+                                @if(role.canDelete && typeOfList === 0) {
                                     <p-button (click)="recupperer(4, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer"  [disabled]="!p.canDelete" />
                                 }
 
-                                @if(canEdit) {
+                                @if(role.canModify) {
                                     @if (typeOfList === 1) {
                                         <p-button (click)="recupperer(5, p)" icon="pi pi-times-circle" severity="help" rounded [title]="msg.buttons.desarchiver" />
                                     }

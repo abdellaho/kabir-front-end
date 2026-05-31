@@ -31,7 +31,6 @@ import { arrayToMap, getElementFromMap } from '@/shared/classes/generic-methods'
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
 import { initValidationResponse, ValidationResponse } from '@/shared/classes/responses/repertoire-validation-response';
 import { Ripple } from 'primeng/ripple';
-import { StateService } from '@/state/state-service';
 import { initRole, Role } from '@/shared/classes/role';
 import { Permission } from '@/shared/classes/other/permissions';
 import { PermissionService } from '@/shared/services/permission-service';

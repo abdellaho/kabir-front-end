@@ -18,7 +18,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { arrayToMap, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { areInTheSameDay, arrayToMap, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -29,6 +29,10 @@ import { Entretien, initObjectEntretien } from '@/models/entretien';
 import { EntretienService } from '@/services/entretien/entretien-service';
 import { VoitureService } from '@/services/voiture/voiture-service';
 import { EntretienValidator } from '@/validators/entretien-validator';
+import { initRole, Role } from '@/shared/classes/role';
+import { PermissionService } from '@/shared/services/permission-service';
+import { Personnel } from '@/models/personnel';
+import { Permission } from '@/shared/classes/other/permissions';
 
 @Component({
     selector: 'app-entretien-component',
@@ -69,21 +73,31 @@ export class EntretienComponent implements OnInit {
     submitted: boolean = false;
     formGroup!: FormGroup;
     msg = APP_MESSAGES;
+    utilisateurConnecte!: Personnel;
+    role: Role = initRole();
 
     constructor(
         private entretienService: EntretienService,
         private voitureService: VoitureService,
         private stateService: StateService,
         private formBuilder: FormBuilder,
+        private permissionService: PermissionService,
         private messageService: MessageService,
         private loadingService: LoadingService
     ) {}
 
     ngOnInit(): void {
         this.personnelCreationId = this.stateService.getState().user?.id || null;
+        this.checkPermissions();
         this.getAllEntretien();
         this.getAllVoiture();
         this.initFormGroup();
+    }
+
+    private checkPermissions(): void {
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_ENTRETIEN, Permission.MODIFIER_ENTRETIEN, Permission.SUPPRIMER_ENTRETIEN);
+        this.utilisateurConnecte = personnel;
+        this.role = role;
     }
 
     clear(table: Table) {
@@ -197,28 +211,34 @@ export class EntretienComponent implements OnInit {
     async recupperer(operation: number, entretienEdit: Entretien) {
         if (entretienEdit && entretienEdit.id) {
             this.entretien = entretienEdit;
-            if (operation === 1) {
-                this.formGroup.patchValue({
-                    voitureId: this.entretien.voitureId,
-                    voitureKmMax: this.entretien.voitureKmMax,
-                    dateEntretien: new Date(this.entretien.dateEntretien) ?? new Date(),
-                    kmDetecte: this.entretien.kmDetecte,
-                    huile: this.entretien.huile,
-                    filtreHuile: this.entretien.filtreHuile,
-                    filtreCarburant: this.entretien.filtreCarburant,
-                    filtreAir: this.entretien.filtreAir,
-                    plaquetteAV: this.entretien.plaquetteAV,
-                    plaquetteAR: this.entretien.plaquetteAR,
-                    pneuAV: this.entretien.pneuAV,
-                    pneuAR: this.entretien.pneuAR,
-                    kitDistribution: this.entretien.kitDistribution,
-                    batterie: this.entretien.batterie
-                });
-
-                this.openCloseDialogAjouter(true);
+            let areInSameDate = areInTheSameDay(this.role, this.entretien.dateSys, new Date(), true);
+            
+            if (!areInSameDate) {
+                this.messageService.add({ severity: 'warn', summary: this.msg.summary.labelError, detail: this.msg.messages.messageAreNotInSameDay });
             } else {
-                this.openCloseDialogSupprimer(true);
-            }
+                if (operation === 1) {
+                    this.formGroup.patchValue({
+                        voitureId: this.entretien.voitureId,
+                        voitureKmMax: this.entretien.voitureKmMax,
+                        dateEntretien: new Date(this.entretien.dateEntretien) ?? new Date(),
+                        kmDetecte: this.entretien.kmDetecte,
+                        huile: this.entretien.huile,
+                        filtreHuile: this.entretien.filtreHuile,
+                        filtreCarburant: this.entretien.filtreCarburant,
+                        filtreAir: this.entretien.filtreAir,
+                        plaquetteAV: this.entretien.plaquetteAV,
+                        plaquetteAR: this.entretien.plaquetteAR,
+                        pneuAV: this.entretien.pneuAV,
+                        pneuAR: this.entretien.pneuAR,
+                        kitDistribution: this.entretien.kitDistribution,
+                        batterie: this.entretien.batterie
+                    });
+
+                    this.openCloseDialogAjouter(true);
+                } else {
+                    this.openCloseDialogSupprimer(true);
+                }
+        }
         } else {
             this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageError });
         }

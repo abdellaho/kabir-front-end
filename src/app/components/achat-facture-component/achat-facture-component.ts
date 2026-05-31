@@ -936,8 +936,8 @@ export class AchatFactureComponent {
     imprimer() {
         let commonSearchModel: CommonSearchModel = initCommonSearchModel();
         commonSearchModel.searchByDate = true;
-        commonSearchModel.dateDebut = this.formGroupImprimer.get('dateDebut')?.value;
-        commonSearchModel.dateFin = this.formGroupImprimer.get('dateFin')?.value;
+        commonSearchModel.dateDebut = mapToDateTimeBackEnd(this.formGroupImprimer.get('dateDebut')?.value);
+        commonSearchModel.dateFin = mapToDateTimeBackEnd(this.formGroupImprimer.get('dateFin')?.value);
         if (this.typeImpression === 2) {
             commonSearchModel.fournisseurId = this.formGroupImprimer.get('fournisseurId')?.value || BigInt(0);
         } else if (this.typeImpression === 3) {

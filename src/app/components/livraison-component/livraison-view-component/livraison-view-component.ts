@@ -107,6 +107,7 @@ export class LivraisonViewComponent implements OnInit {
 
 
     ngOnInit(): void {
+        this.checkPermissions();
         this.initSearchLivraison();
         this.getAllStock();
         this.getAllPersonnel();
@@ -339,7 +340,7 @@ export class LivraisonViewComponent implements OnInit {
     recupperer(operation: number, livraisonEdit: Livraison) {
         if (livraisonEdit && livraisonEdit.id) {
             this.livraison = livraisonEdit;
-            let areInSameDate = areInTheSameDay(this.role, this.livraison.dateBl, new Date(), true);
+            let areInSameDate = areInTheSameDay(this.role, this.livraison.sysDate, new Date(), true);
 
             if (!areInSameDate) {
                 this.messageService.add({ severity: 'warn', summary: this.msg.summary.labelError, detail: this.msg.messages.messageAreNotInSameDay });
