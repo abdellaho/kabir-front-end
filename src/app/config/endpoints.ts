@@ -182,7 +182,9 @@ export const ENDPOINTS = {
         create: `${BASE_URL}/${FACTURE}`,
         update: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
         delete: (id: bigint) => `${BASE_URL}/${FACTURE}/${id}`,
-        getLastNumFacture: `${BASE_URL}/${FACTURE}/last-num-facture`
+        getLastNumFacture: `${BASE_URL}/${FACTURE}/last-num-facture`,
+        imprimer: (id: bigint) => `${BASE_URL}/${FACTURE}/imprimer/${id}`,
+        imprimerEtat: `${BASE_URL}/${FACTURE}/imprimer/etat`
     },
     FOURNISSEUR: {
         getAll: `${BASE_URL}/${FOURNISSEUR}`,
@@ -209,6 +211,9 @@ export const ENDPOINTS = {
         searchByCommon: `${BASE_URL}/${LIVRAISON}/searchByCommon`,
         imprimerBonLivraison: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}`,
         imprimerClient: (id: bigint) => `${BASE_URL}/${LIVRAISON}/imprimer/${id}/client`,
+        imprimerEtat: `${BASE_URL}/${LIVRAISON}/imprimer/etat`,
+        imprimerNumCheque: `${BASE_URL}/${LIVRAISON}/imprimer/num-cheque`,
+        livrer: (id: bigint) => `${BASE_URL}/${LIVRAISON}/${id}/livrer`,
         generateBackupSQL: `${BASE_URL}/${LIVRAISON}/generate/backup-sql`
     },
     PAYS: {
@@ -239,7 +244,8 @@ export const ENDPOINTS = {
             logout: `${BASE_URL}/${PERSONNEL}/auth/logout`,
             adminExist: `${BASE_URL}/${PERSONNEL}/auth/admin-exist`,
             me: `${BASE_URL}/${PERSONNEL}/auth/me`,
-            monCompte: `${BASE_URL}/${PERSONNEL}/auth/mon-compte`
+            monCompte: `${BASE_URL}/${PERSONNEL}/auth/mon-compte`,
+            forgotPassword: `${BASE_URL}/${PERSONNEL}/auth/forgot-password`
         }
     },
     PRIME: {

@@ -26,6 +26,7 @@
         <ng-template #header>
           <tr>
             <th pSortableColumn="nomVille">{{ msg.components.ville.nomVille }}<p-sortIcon field="nomVille" /></th>
+            <th>{{ msg.components.ville.nbrRepertoire }}</th>
             <th>{{ msg.buttons.actions }}</th>
           </tr>
         </ng-template>
@@ -33,6 +34,10 @@
           <tr [pSelectableRow]="p">
             <td>
               {{ p.nomVille }}
+            </td>
+
+            <td>
+              {{ p.nbrRepertoire }}
             </td>
 
             <td style="width: 14%; min-width: 10rem">

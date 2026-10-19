@@ -20,7 +20,20 @@ export interface DetFacture {
     stockDesignation: string;
     stockPvttc: number;
     stockQteFacturer: number;
+    stockBenifice: number;
+    stockTva: number;
     stock?: Stock | null;
+    factureRepertoireDesignation: string;
+    factureRepertoireTel1: string;
+    factureRepertoireAdresse: string;
+    factureRepertoireIce: string;
+    factureRepertoireIfe: string;
+    factureTypePaiement: string;
+    factureMantantBFHT: number;
+    factureTva7Total: number;
+    factureTva20Total: number;
+    factureFacturer100: boolean;
+    factureDateReglement: Date | null;
 }
 
 export function initObjectDetFacture(): DetFacture {
@@ -43,6 +56,19 @@ export function initObjectDetFacture(): DetFacture {
         stockDesignation: '',
         stockPvttc: 0,
         stockQteFacturer: 0,
+        stockBenifice: 0,
+        stockTva: 0,
+        factureRepertoireDesignation: '',
+        factureRepertoireTel1: '',
+        factureRepertoireAdresse: '',
+        factureRepertoireIce: '',
+        factureRepertoireIfe: '',
+        factureTypePaiement: '',
+        factureMantantBFHT: 0,
+        factureTva7Total: 0,
+        factureTva20Total: 0,
+        factureFacturer100: false,
+        factureDateReglement: null,
         stock: null
     };
 }

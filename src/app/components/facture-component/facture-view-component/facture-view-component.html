@@ -16,6 +16,16 @@
                             <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" />
                         </div>
                     }
+
+                    @if(role.canModify) {
+                        <div class="flex gap-2 flex-shrink-0" style="display: none;">
+                            <p-button [label]="msg.buttons.consulterClient" (click)="viderConsulter(4)" icon="pi pi-print" severity="help" />
+                            <p-button [label]="msg.buttons.consulterCheque" (click)="viderConsulter(0)" icon="pi pi-print" severity="help" />
+                            <p-button [label]="msg.buttons.consulterTv" (click)="viderConsulter(1)" icon="pi pi-print" severity="help" />
+                            <p-button [label]="msg.buttons.consulterBilan" (click)="viderConsulter(2)" icon="pi pi-print" severity="help" />
+                            <p-button [label]="msg.buttons.consulterProduit" (click)="viderConsulter(3)" icon="pi pi-print" severity="help" />
+                        </div>
+                    }
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -191,6 +201,9 @@
                                 @if(role.canDelete) {
                                     <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
                                 }
+                                @if(role.canModify && areInTheSameDay(p.sysDate)) {
+                                    <p-button (click)="imprimerFacture(p)" icon="pi pi-print" severity="help" rounded [title]="msg.buttons.imprimer" />
+                                }
                             </div>
                         </td>
                     </tr>
@@ -227,3 +240,49 @@
         </p-dialog>
     </div>
 </div>
+
+<p-dialog [(visible)]="dialogConsulter" [header]="msg.components.facture.imprimer.label" [modal]="true"
+    [style]="{ width: '600px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }" [closable]="false">
+    <ng-template pTemplate="content">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="margin-top: 5px;">
+            <div class="flex flex-col">
+                <p-floatlabel variant="on">
+                    <p-datepicker inputId="dateDebutImpr" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" [readonlyInput]="true" [(ngModel)]="dateDebutImpr" class="w-full" />
+                    <label for="dateDebutImpr">{{ msg.components.facture.imprimer.dateDebut }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col">
+                <p-floatlabel variant="on">
+                    <p-datepicker inputId="dateFinImpr" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" [readonlyInput]="true" [(ngModel)]="dateFinImpr" class="w-full" />
+                    <label for="dateFinImpr">{{ msg.components.facture.imprimer.dateFin }}</label>
+                </p-floatlabel>
+            </div>
+
+            @if (typeImpression === 4) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="repertoireIdImpr" [(ngModel)]="repertoireIdImpr" [options]="listClientImpr" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="repertoireIdImpr">{{ msg.components.facture.imprimer.client }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+
+            @if (typeImpression === 3) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="stockIdImpr" [(ngModel)]="stockIdImpr" [options]="listProduitImpr" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="stockIdImpr">{{ msg.components.facture.imprimer.produit }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.components.facture.imprimer.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="openCloseDialogConsulter(false)"></button>
+        <button pButton pRipple [label]="msg.components.facture.imprimer.consulter" icon="pi pi-print" type="button"
+            class="p-button-success" (click)="imprimerEtat()"></button>
+    </ng-template>
+</p-dialog>

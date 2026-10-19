@@ -549,26 +549,19 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on" class="w-full">
+                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" (onBlur)="onChangeMontantProduit()" class="w-full" />
+                            <label for="qteLivrer">{{ msg.components.livraison.stock.qteLivrer }}</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex flex-col grow basis-0">
+                        <p-floatlabel variant="on" class="w-full">
                             <p-inputNumber formControlName="prixVente" id="prixVente" inputId="prixVente" (onBlur)="onChangeMontantProduit()" [maxFractionDigits]="2" class="w-full" />
                             <label for="prixVente">{{ msg.components.livraison.stock.prixVente }}</label>
                             
                             @if (formGroupStock.errors?.['prixVenteMustBeAtLeastEqualPrixVenteMin']) {
                                 <p-message severity="error" variant="simple" size="small">{{ msg.components.livraison.errors.prixVenteMustBeAtLeastEqualPrixVenteMin }}</p-message>
                             }
-                        </p-floatlabel>
-                    </div>
-
-                    <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="w-full">
-                            <p-inputNumber formControlName="prixVenteMin" id="prixVenteMin" inputId="prixVenteMin" [maxFractionDigits]="2" [ngClass]="'ng-invalid'" class="w-full" />
-                            <label for="prixVenteMin">{{ msg.components.livraison.stock.prixCommercial }}</label>
-                        </p-floatlabel>
-                    </div>
-
-                    <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on" class="w-full">
-                            <p-inputNumber formControlName="qteLivrer" id="qteLivrer" inputId="qteLivrer" [min]="1" (onBlur)="onChangeMontantProduit()" class="w-full" />
-                            <label for="qteLivrer">{{ msg.components.livraison.stock.qteLivrer }}</label>
                         </p-floatlabel>
                     </div>
 

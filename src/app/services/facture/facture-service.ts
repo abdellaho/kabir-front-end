@@ -1,6 +1,8 @@
 import { ENDPOINTS } from '@/config/endpoints';
 import { Facture } from '@/models/facture';
 import { FactureRequest } from '@/shared/classes/facture-request';
+import { getHeadersPDF } from '@/shared/classes/generic-methods';
+import { FacturePrintRequest } from '@/shared/classes/requests/facture-print-request';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -40,6 +42,14 @@ export class FactureService {
 
   delete(id: bigint): Observable<void> {
       return this.http.delete<void>(ENDPOINTS.FACTURE.delete(id));
+  }
+
+  imprimerFacture(id: bigint): Observable<any> {
+      return this.http.get<any>(ENDPOINTS.FACTURE.imprimer(id), { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+  }
+
+  imprimerEtat(facturePrintRequest: FacturePrintRequest): Observable<any> {
+      return this.http.post<any>(ENDPOINTS.FACTURE.imprimerEtat, facturePrintRequest, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
   }
 
   serialization(obj: FactureRequest): any {

@@ -1,0 +1,28 @@
+/* repertoire-form-component — form dialog MUST render one field per line.
+   Deliberately NOT flex/grid for the field wrappers: a plain block
+   layout cannot wrap into two columns, whatever utility classes are
+   (or are not) applied on a given browser/device. */
+:host ::ng-deep {
+  .repertoire-form-fields {
+    display: block !important;
+    width: 100%;
+
+    /* One row per field (label + input + message stacked) */
+    > div {
+      display: block !important;
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Field containers stay a vertical flex column (labels stack inside) */
+      > div {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+}

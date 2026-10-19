@@ -27,7 +27,7 @@ import { initObjectStock, Stock } from '@/models/stock';
 import { StockService } from '@/services/stock/stock-service';
 import { PersonnelService } from '@/services/personnel/personnel-service';
 import { initObjectPersonnel, Personnel } from '@/models/personnel';
-import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { RepertoireService } from '@/services/repertoire/repertoire-service';
 import { Repertoire } from '@/models/repertoire';
@@ -44,6 +44,11 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { initRole, Role } from '@/shared/classes/role';
 import { PermissionService } from '@/shared/services/permission-service';
 import { Permission } from '@/shared/classes/other/permissions';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { LivraisonPrintRequest, initObjectLivraisonPrintRequest } from '@/shared/classes/requests/livraison-print-request';
+import { initObjectPrintRequest, PrintRequest } from '@/shared/classes/requests/print-request';
+import { Ville } from '@/models/ville';
+import { VilleService } from '@/services/ville/ville-service';
 
 @Component({
     selector: 'app-livraison-view-component',
@@ -64,6 +69,7 @@ import { Permission } from '@/shared/classes/other/permissions';
         DatePickerModule,
         SelectModule,
         MessageModule,
+        RadioButtonModule,
         FactureUpdateComponent
     ],
     templateUrl: './livraison-view-component.html',
@@ -88,6 +94,27 @@ export class LivraisonViewComponent implements OnInit {
     mapOfRepertoire: Map<number, string> = new Map<number, string>();
     dialogSupprimer: boolean = false;
     dialogFacturer: boolean = false;
+    dialogConsulter: boolean = false;
+    typeImpression: number | null = null;
+    dateDebutImpr: Date | null = null;
+    dateFinImpr: Date | null = null;
+    repertoireIdImpr: number | null = 0;
+    personnelIdImpr: number | null = 0;
+    stockIdImpr: number | null = 0;
+    byBlOrProduit: number = 0;
+    listClientImpr: { id: number; designation: string }[] = [];
+    listProduitImpr: { id: number; designation: string }[] = [];
+    listClient2Impr: { id: number; designation: string }[] = [];
+    listVilleImpr: { id: number; nomVille: string }[] = [];
+    listReglerNonReglerImpr: { label: string; value: number }[] = [];
+    listVille: Ville[] = [];
+    reglerNonRegler: number = 0;
+    villeIdImpr: number = 0;
+    repertoireClientId2Impr: number = 0;
+    dialogNumCheque: boolean = false;
+    numChequeLibel: string = '';
+    dialogLivrer: boolean = false;
+    livrernonlivrer: number = 0;
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     role: Role = initRole();
     msg = APP_MESSAGES;
@@ -100,6 +127,7 @@ export class LivraisonViewComponent implements OnInit {
         private dataService: DataService,
         private personnelService: PersonnelService,
         private permissionService: PermissionService,
+        private villeService: VilleService,
         private router: Router,
         private messageService: MessageService,
         private loadingService: LoadingService
@@ -112,10 +140,11 @@ export class LivraisonViewComponent implements OnInit {
         this.getAllStock();
         this.getAllPersonnel();
         this.getAllRepertoire();
+        this.getAllVille();
     }
 
     private checkPermissions(): void {
-        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_REPERTOIRE, Permission.MODIFIER_REPERTOIRE, Permission.SUPPRIMER_REPERTOIRE);
+        const { personnel, role } = this.permissionService.getCurrentUserRole(Permission.AJOUTER_LIVRAISON, Permission.MODIFIER_LIVRAISON, Permission.SUPPRIMER_LIVRAISON);
         this.utilisateurConnecte = personnel;
         this.role = role;
     }
@@ -203,6 +232,18 @@ export class LivraisonViewComponent implements OnInit {
             next: (data: Repertoire[]) => {
                 this.listRepertoire = data;
                 this.mapOfRepertoire = arrayToMap(this.listRepertoire, 'id', ['designation'], ['']);
+            },
+            error: (error: any) => {
+                console.error(error);
+            }
+        });
+    }
+
+    getAllVille(): void {
+        this.listVille = [];
+        this.villeService.getVilles().subscribe({
+            next: (villes: Ville[]) => {
+                this.listVille = villes;
             },
             error: (error: any) => {
                 console.error(error);
@@ -610,12 +651,7 @@ export class LivraisonViewComponent implements OnInit {
         this.loadingService.show();
         this.livraisonService.imprimerBonLivraison(id).subscribe({
             next: (data) => {
-                const file = new Blob([data], { type: 'application/pdf' });
-                const fileURL = URL.createObjectURL(file);
-                var a = document.createElement('a');
-                a.href = fileURL;
-                a.target = '_blank';
-                a.click();
+                this.openPdfBlob(data);
             },
             error: (err) => {
                 console.log(err);
@@ -632,12 +668,167 @@ export class LivraisonViewComponent implements OnInit {
         this.loadingService.show();
         this.livraisonService.imprimerClient(id).subscribe({
             next: (data) => {
-                const file = new Blob([data], { type: 'application/pdf' });
-                const fileURL = URL.createObjectURL(file);
-                var a = document.createElement('a');
-                a.href = fileURL;
-                a.target = '_blank';
-                a.click();
+                this.openPdfBlob(data);
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    private openPdfBlob(data: any): void {
+        const file = new Blob([data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+    }
+
+    /***************************************** Consulter / Etats ********************************************/
+    viderConsulter(type: number): void {
+        this.typeImpression = type;
+        this.dateDebutImpr = null;
+        this.dateFinImpr = null;
+        this.repertoireIdImpr = 0;
+        this.personnelIdImpr = 0;
+        this.stockIdImpr = 0;
+        this.byBlOrProduit = 0;
+        this.reglerNonRegler = 0;
+        this.villeIdImpr = 0;
+        this.repertoireClientId2Impr = 0;
+        this.listClientImpr = [
+            { id: 0, designation: this.msg.components.livraison.imprimer.allClients },
+            ...this.listRepertoire.map((repertoire) => ({ id: Number(repertoire.id), designation: repertoire.designation }))
+        ];
+        this.listProduitImpr = [
+            { id: 0, designation: this.msg.components.livraison.imprimer.allProduits },
+            ...this.listStock.map((stock) => ({ id: Number(stock.id), designation: stock.designation }))
+        ];
+        this.listClient2Impr = [
+            { id: 0, designation: this.msg.components.livraison.imprimer.client },
+            ...this.listRepertoire.filter((repertoire) => repertoire.typeRepertoire === 0 || repertoire.typeRepertoire === 3).map((repertoire) => ({ id: Number(repertoire.id), designation: repertoire.designation }))
+        ];
+        this.listVilleImpr = [{ id: 0, nomVille: this.msg.buttons.tousLesVilles }, ...this.listVille.map((ville) => ({ id: Number(ville.id), nomVille: ville.nomVille }))];
+        this.listReglerNonReglerImpr = [
+            { label: this.msg.buttons.livraisonNonRegler, value: 0 },
+            { label: this.msg.buttons.livraisonRegler, value: 1 }
+        ];
+        this.dialogConsulter = true;
+    }
+
+    openCloseDialogConsulter(openClose: boolean): void {
+        this.dialogConsulter = openClose;
+    }
+
+    get mntChequeTotal(): number {
+        if (!this.numChequeSearch || this.numChequeSearch.trim() === '') {
+            return 0;
+        }
+        return this.listLivraison.reduce((total, livraison) => total + (livraison.mantantBL ?? 0), 0);
+    }
+
+    openCloseDialogNumCheque(openClose: boolean): void {
+        this.dialogNumCheque = openClose;
+        if (openClose) {
+            this.numChequeLibel = '';
+        }
+    }
+
+    imprimerParNumCheque(): void {
+        this.loadingService.show();
+        this.livraisonService.imprimerParNumCheque(this.numChequeLibel).subscribe({
+            next: (data) => {
+                this.openPdfBlob(data);
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    openCloseDialogLivrer(openClose: boolean, livraison?: Livraison): void {
+        if (openClose && livraison && livraison.id) {
+            this.livraison = livraison;
+            this.livrernonlivrer = livraison.livrernonlivrer;
+            this.dialogLivrer = true;
+        } else {
+            this.dialogLivrer = false;
+        }
+    }
+
+    livrerNonLivrer(): void {
+        if (this.livraison && this.livraison.id) {
+            this.loadingService.show();
+            this.livraisonService.livrer(this.livraison.id, this.livrernonlivrer).subscribe({
+                next: (data) => {
+                    this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageUpdateSuccess });
+                    this.openCloseDialogLivrer(false);
+                    this.searchLivraison();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loadingService.hide();
+                    this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+                },
+                complete: () => {
+                    this.loadingService.hide();
+                }
+            });
+        }
+    }
+
+    imprimerStockReel(): void {
+        this.loadingService.show();
+        const printRequest: PrintRequest = initObjectPrintRequest();
+        printRequest.type = 2;
+
+        this.stockService.imprimer(printRequest).subscribe({
+            next: (data) => {
+                this.openPdfBlob(data);
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    imprimerEtat(): void {
+        if (this.typeImpression === null) {
+            return;
+        }
+
+        this.loadingService.show();
+        const request: LivraisonPrintRequest = initObjectLivraisonPrintRequest();
+        request.type = this.typeImpression;
+        request.dateDebut = this.dateDebutImpr ? toLocalDate(mapToDateTimeBackEnd(this.dateDebutImpr)) : null;
+        request.dateFin = this.dateFinImpr ? toLocalDate(mapToDateTimeBackEnd(this.dateFinImpr)) : null;
+        request.repertoireId = this.repertoireIdImpr != null ? Number(this.repertoireIdImpr) : null;
+        request.personnelId = this.personnelIdImpr != null ? Number(this.personnelIdImpr) : null;
+        request.stockId = this.stockIdImpr != null ? Number(this.stockIdImpr) : null;
+        request.byBlOrProduit = this.byBlOrProduit;
+        request.reglerNonRegler = this.reglerNonRegler;
+        request.villeId = this.villeIdImpr != null ? Number(this.villeIdImpr) : null;
+        request.repertoireClientId2 = this.repertoireClientId2Impr != null ? Number(this.repertoireClientId2Impr) : null;
+
+        this.livraisonService.imprimerEtat(request).subscribe({
+            next: (data) => {
+                this.openPdfBlob(data);
             },
             error: (err) => {
                 console.log(err);
@@ -670,5 +861,10 @@ export class LivraisonViewComponent implements OnInit {
                 this.loadingService.hide();
             }
         });
+    }
+
+    areInTheSameDay(date: Date): boolean {
+        console.log('areInTheSameDay', this.role, date, new Date(), false);
+        return areInTheSameDay(this.role, date, new Date(), false);
     }
 }

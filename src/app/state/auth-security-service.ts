@@ -292,6 +292,10 @@ export class AuthSecurityService {
         );
     }
 
+    forgotPassword(login: string): Observable<string> {
+        return this.http.post(ENDPOINTS.PERSONNEL.auth.forgotPassword, { login }, { responseType: 'text' });
+    }
+
     logout() {
         if (this.inactivityTimer) {
             clearTimeout(this.inactivityTimer);

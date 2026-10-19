@@ -9,6 +9,7 @@ export interface AppState {
     loading: boolean;
     connected: boolean;
     error: string | null;
+    backendUnreachable: boolean;
     [key: string]: any;
 }
 
@@ -29,7 +30,8 @@ export class StateService {
         user: null,
         connected: false,
         loading: false,
-        error: null
+        error: null,
+        backendUnreachable: false
     };
 
     getInitialUserState(): UserState {

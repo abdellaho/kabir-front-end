@@ -1,0 +1,28 @@
+/* dialogAjouter — ONE single column of fields, one under the other.
+   Deliberately NOT flex/grid: a plain block layout cannot wrap into
+   two columns, whatever utility classes are (or are not) applied. */
+.card.dialog-ajouter-fields {
+    display: block !important;
+    width: 100%;
+
+    /* One wrapper per field → one line per field, full dialog width.
+       margin replaces the old flex `gap-4` spacing. */
+    > div {
+        display: block !important;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        /* The field container (label + input + messages) also full width.
+           It may stay `display:flex; flex-direction:column` — that is
+           vertical, which is exactly what we want. */
+        > div {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}

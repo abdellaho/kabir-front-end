@@ -21,6 +21,9 @@
         <p-tab [value]="5" class="flex items-center !gap-2">
             <span class="font-bold whitespace-nowrap">{{ msg.menu.voiture }}</span>
         </p-tab>
+        <p-tab [value]="6" class="flex items-center !gap-2">
+            <span class="font-bold whitespace-nowrap">{{ msg.menu.monCompte }}</span>
+        </p-tab>
         <ng-template #nexticon>
             <i class="pi pi-plus"></i>
         </ng-template>
@@ -43,6 +46,9 @@
         </p-tabpanel>
         <p-tabpanel [value]="5">
             <app-voiture-component *ngIf="loadedTabs.has(5)"></app-voiture-component>
+        </p-tabpanel>
+        <p-tabpanel [value]="6">
+            <app-mon-compte-component *ngIf="loadedTabs.has(6)"></app-mon-compte-component>
         </p-tabpanel>
     </p-tabpanels>
 </p-tabs>

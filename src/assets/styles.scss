@@ -46,6 +46,9 @@
   background: #f6f9ff70 !important;
 }
 
+.select-overlay-fit { max-width: calc(100vw - 2rem); }
+.select-overlay-fit .p-select-option-label { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
 /* bleuCiel */
 .p-button-bleuCiel .p-button {
     background: #0ea5e9;

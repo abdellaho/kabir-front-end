@@ -227,7 +227,6 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             mntReglement3: facture.mntReglement3,
             mntReglement4: facture.mntReglement4,
             mantantBF: facture.mantantBF,
-            personnelId: facture.personnelId,
             repertoireId: this.repertoireSelected?.id,
             repertoireDesignation: this.repertoireSelected?.designation || '',
             repertoireAdresse: this.repertoireSelected?.adresse || '',
@@ -242,10 +241,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         this.formGroupStock = this.formBuilder.group(
             {
                 designation: [{ value: this.stockSelected.designation, disabled: true }],
-                pattc: [{ value: this.stockSelected.pattc, disabled: true }],
+                //pattc: [{ value: this.stockSelected.pattc, disabled: true }],
                 pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
                 qteStock: [{ value: this.stockSelected.qteFacturer, disabled: true }],
-                prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
+                //prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
                 qteFacturer: [null, [Validators.required, Validators.min(1)]],
                 prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
                 remiseFacture: [null, [Validators.min(0), Validators.max(100)]],
@@ -282,7 +281,6 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 mntReglement2: [0],
                 mntReglement3: [0],
                 mntReglement4: [0],
-                personnelId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
                 repertoireId: [0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }],
                 stockId: [0],
                 repertoireDesignation: [{ value: '', disabled: true }],
@@ -320,7 +318,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         this.facture.mntReglement2 = this.formGroup.get('mntReglement2')?.value;
         this.facture.mntReglement3 = this.formGroup.get('mntReglement3')?.value;
         this.facture.mntReglement4 = this.formGroup.get('mntReglement4')?.value;
-        this.facture.personnelId = this.formGroup.get('personnelId')?.value;
+        //this.facture.personnelId = this.formGroup.get('personnelId')?.value;
         this.facture.repertoireId = this.formGroup.get('repertoireId')?.value;
     }
 
@@ -418,10 +416,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
 
                 this.formGroupStock.patchValue({
                     designation: this.stockSelected.designation,
-                    pattc: this.stockSelected.pattc,
+                    //pattc: this.stockSelected.pattc,
                     pvttc: this.stockSelected.pvttc,
                     qteStock: this.stockSelected.qteStock,
-                    prixVenteMin: getPrixVenteMin(this.stockSelected),
+                    //prixVenteMin: getPrixVenteMin(this.stockSelected),
                     prixVente: this.detFactureSelected.prixVente,
                     qteFacturer: this.detFactureSelected.qteFacturer,
                     remiseFacture: this.detFactureSelected.remiseFacture,
@@ -429,10 +427,10 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 });
 
                 this.formGroupStock.get('designation')?.disable();
-                this.formGroupStock.get('pattc')?.disable();
+                //this.formGroupStock.get('pattc')?.disable();
                 this.formGroupStock.get('pvttc')?.disable();
                 this.formGroupStock.get('qteStock')?.disable();
-                this.formGroupStock.get('prixVenteMin')?.disable();
+                //this.formGroupStock.get('prixVenteMin')?.disable();
                 this.formGroupStock.get('montantProduit')?.disable();
 
                 this.openCloseDialogStock(true);
@@ -480,7 +478,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             if (operation === 1) {
                 this.formGroupStock.patchValue({
                     designation: this.detFactureSelected.stock?.designation,
-                    pattc: this.detFactureSelected.stock?.pattc,
+                    //pattc: this.detFactureSelected.stock?.pattc,
                     qteStock: this.detFactureSelected.stock?.qteStock,
                     qteFacturer: this.detFactureSelected.qteFacturer,
                     prixVente: this.detFactureSelected.prixVente,
@@ -537,7 +535,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         facture.dateReglement2 = formGroup.get('dateReglement2')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement2')?.value) : null;
         facture.dateReglement3 = formGroup.get('dateReglement3')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement3')?.value) : null;
         facture.dateReglement4 = formGroup.get('dateReglement4')?.value ? mapToDateTimeBackEnd(formGroup.get('dateReglement4')?.value) : null;
-        facture.personnelId = formGroup.get('personnelId')?.value;
+        //facture.personnelId = formGroup.get('personnelId')?.value;
         facture.repertoireId = formGroup.get('repertoireId')?.value;
         facture.typeReglment = formGroup.get('typeReglment')?.value;
         facture.typeReglment2 = formGroup.get('typeReglment2')?.value;

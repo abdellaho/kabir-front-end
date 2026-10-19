@@ -73,7 +73,7 @@ export class VilleComponent implements OnInit {
     }
 
     getAllVilles(): void {
-        this.villeService.getVilles().subscribe({
+        this.villeService.getVillesWithCount().subscribe({
             next: (data: Ville[]) => {
                 this.listVilleConstante = data;
                 this.listVille = data;
@@ -131,7 +131,9 @@ export class VilleComponent implements OnInit {
         } else if (operationType === OperationType.MODIFY) {
             let index = list.findIndex((x) => x.id === ville.id);
             if (index > -1) {
-                list[index] = ville;
+                // POST/PATCH responses come from VilleMapper.toVilleDTO(), which never
+                // computes the opt-in count, so keep the already-loaded value.
+                list[index] = { ...ville, nbrRepertoire: list[index].nbrRepertoire };
             }
         } else if (operationType === OperationType.DELETE) {
             list = list.filter((x) => x.id !== id);

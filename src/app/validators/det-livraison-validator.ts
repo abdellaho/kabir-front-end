@@ -24,7 +24,7 @@ export function DetLivraisonValidator(config: { stock: Stock }): ValidatorFn {
             addError("prixVenteMustBeAtLeastEqualPrixVenteMin");
         }
 
-        if(remiseLivraison?.value > remiseMax) {
+        if(remiseLivraison?.value !== 100 && remiseLivraison?.value > remiseMax) {
             addError("remiseLivraisonMustBeAtMostEqualRemiseMax");
         }
 

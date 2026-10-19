@@ -221,7 +221,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             {
                 designation: [{ value: this.stockSelected.designation, disabled: true }],
                 qteStock: [{ value: this.stockSelected.qteStock, disabled: true }],
-                prixVenteMin: [{ value: this.stockSelected.prixVentMin2 || 0, disabled: true }],
+                //prixVenteMin: [{ value: this.stockSelected.prixVentMin2 || 0, disabled: true }],
                 qteLivrer: [null, [Validators.required, Validators.min(1)]],
                 prixVente: [this.stockSelected.pvttc, [Validators.min(0)]],
                 remiseLivraison: [null, [Validators.min(0), Validators.max(100)]],
@@ -421,7 +421,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 this.formGroupStock.patchValue({
                     designation: this.stockSelected.designation,
                     qteStock: this.stockSelected.qteStock,
-                    prixVenteMin: this.stockSelected.prixVentMin2 || 0,
+                    //prixVenteMin: this.stockSelected.prixVentMin2 || 0,
                     prixVente: this.detLivraisonSelected.prixVente,
                     qteLivrer: this.detLivraisonSelected.qteLivrer,
                     remiseLivraison: this.detLivraisonSelected.remiseLivraison,
@@ -430,7 +430,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
 
                 this.formGroupStock.get('designation')?.disable();
                 this.formGroupStock.get('qteStock')?.disable();
-                this.formGroupStock.get('prixVenteMin')?.disable();
+                //this.formGroupStock.get('prixVenteMin')?.disable();
                 this.formGroupStock.get('montantProduit')?.disable();
 
                 this.openCloseDialogStock(true);
@@ -476,7 +476,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
             if (operation === 1) {
                 this.formGroupStock.patchValue({
                     designation: this.detLivraisonSelected.stock?.designation,
-                    prixVenteMin: this.detLivraisonSelected.stock?.prixVentMin2 || 0,
+                    //prixVenteMin: this.detLivraisonSelected.stock?.prixVentMin2 || 0,
                     qteStock: this.detLivraisonSelected.stock?.qteStock,
                     qteLivrer: this.detLivraisonSelected.qteLivrer,
                     prixVente: this.detLivraisonSelected.prixVente,

@@ -1,0 +1,28 @@
+/* ------------------------------------------------------------------
+   Custom "medium" table size — sits BETWEEN PrimeNG's default and small.
+
+   PrimeNG (Nora preset) cell paddings:
+     default : 0.75rem 1rem   (12px / 16px)
+     small   : 0.375rem 0.5rem (6px  / 8px)
+     medium  : 0.5rem 0.75rem  (8px  / 12px)  <-- this file
+
+   Applied by putting class="p-datatable-md" on <p-table>
+   (instead of size="small" / class="p-datatable-sm").
+
+   To tune the look, only the two padding values below need to change.
+   ------------------------------------------------------------------ */
+
+:host ::ng-deep {
+  // Header / body / footer cells = row height
+  .p-datatable-md .p-datatable-thead > tr > th,
+  .p-datatable-md .p-datatable-tbody > tr > td,
+  .p-datatable-md .p-datatable-tfoot > tr > td {
+    padding: 0.25rem 0.75rem;
+  }
+
+  // Table header / footer containers (toolbar above, paginator below)
+  .p-datatable-md .p-datatable-header,
+  .p-datatable-md .p-datatable-footer {
+    padding: 0.25rem 0.75rem;
+  }
+}

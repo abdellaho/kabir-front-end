@@ -16,6 +16,10 @@ export class VilleService {
     return this.http.get<Ville[]>(ENDPOINTS.VILLE.getAll);
   }
 
+  getVillesWithCount(): Observable<Ville[]> {
+    return this.http.get<Ville[]>(`${ENDPOINTS.VILLE.getAll}?withCount=true`);
+  }
+
   getVilleById(id: bigint): Observable<Ville> {
     return this.http.get<Ville>(ENDPOINTS.VILLE.getById(id));
   }
@@ -44,8 +48,9 @@ export class VilleService {
   }
 
   serialization(obj: Ville): any {
+    const { nbrRepertoire, ...rest } = obj;   // derived, read-only, GET-only
     return {
-      ...obj,
+      ...rest,
       id: obj.id?.toString(),
     };
   }

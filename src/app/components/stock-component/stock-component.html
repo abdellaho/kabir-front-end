@@ -41,7 +41,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt size="small" class="p-datatable-sm" [value]="listStock" dataKey="id" [rows]="20"
+            <p-table #dt class="p-datatable-md" [value]="listStock" dataKey="id" [rows]="20"
                 selectionMode="multiple" [(selection)]="listStockSelected"
                 [rowHover]="true" [showGridlines]="true" [paginator]="true"
                 [globalFilterFields]="['designation', 'qteStock', 'qteFacturer', 'qteStockImport', 'pattc', 'pvttc', 'prixCommercial', 'prixVentMin1', 'remiseMax1', 'benifice', 'fournisseurDesignation']"

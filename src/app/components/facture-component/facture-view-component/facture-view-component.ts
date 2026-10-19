@@ -1,4 +1,4 @@
-import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd } from '@/shared/classes/generic-methods';
+import { areInTheSameDay, arrayToMap, initObjectSearch, mapToDateTimeBackEnd, toLocalDate } from '@/shared/classes/generic-methods';
 import { Component, OnInit } from '@angular/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 import { MessageModule } from 'primeng/message';
 import { Facture, initObjectFacture } from '@/models/facture';
 import { Repertoire } from '@/models/repertoire';
@@ -38,10 +39,11 @@ import { LivraisonService } from '@/services/livraison/livraison-service';
 import { PermissionService } from '@/shared/services/permission-service';
 import { initRole, Role } from '@/shared/classes/role';
 import { Permission } from '@/shared/classes/other/permissions';
+import { FacturePrintRequest, initObjectFacturePrintRequest } from '@/shared/classes/requests/facture-print-request';
 
 @Component({
     selector: 'app-facture-view-component',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, SelectModule, MessageModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule, ButtonModule, DialogModule, FloatLabelModule, InputNumberModule, DatePickerModule, SelectModule, MessageModule],
     templateUrl: './facture-view-component.html',
     styleUrl: './facture-view-component.scss'
 })
@@ -60,6 +62,14 @@ export class FactureViewComponent implements OnInit {
     mapOfRepertoireICE: Map<number, string> = new Map<number, string>();
     typeReglements: { label: string; value: number }[] = filteredTypeReglement;
     dialogSupprimer: boolean = false;
+    dialogConsulter: boolean = false;
+    typeImpression: number | null = null;
+    dateDebutImpr: Date | null = null;
+    dateFinImpr: Date | null = null;
+    stockIdImpr: number | null = 0;
+    repertoireIdImpr: number | null = 0;
+    listClientImpr: { id: number; designation: string }[] = [];
+    listProduitImpr: { id: number; designation: string }[] = [];
     msg = APP_MESSAGES;
     utilisateurConnecte!: Personnel;
     role: Role = initRole();
@@ -395,6 +405,90 @@ export class FactureViewComponent implements OnInit {
             error: (error) => {
                 console.log(error);
                 this.loadingService.hide();
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    imprimerFacture(facture: Facture): void {
+        if (!areInTheSameDay(this.role, facture.sysDate, new Date(), true)) {
+            this.messageService.add({ severity: 'warn', summary: this.msg.summary.labelError, detail: this.msg.messages.messageAreNotInSameDay });
+            return;
+        }
+
+        this.loadingService.show();
+        this.factureService.imprimerFacture(facture.id!).subscribe({
+            next: (data) => {
+                this.openPdfBlob(data);
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
+            },
+            complete: () => {
+                this.loadingService.hide();
+            }
+        });
+    }
+
+    private openPdfBlob(data: any): void {
+        const file = new Blob([data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+    }
+
+    areInTheSameDay(date: Date): boolean {
+        return areInTheSameDay(this.role, date, new Date(), true);
+    }
+
+    viderConsulter(type: number): void {
+        this.typeImpression = type;
+        this.dateDebutImpr = null;
+        this.dateFinImpr = null;
+        this.stockIdImpr = 0;
+        this.repertoireIdImpr = 0;
+        this.listClientImpr = [
+            { id: 0, designation: this.msg.components.facture.imprimer.allClients },
+            ...this.listRepertoire.map((repertoire) => ({ id: Number(repertoire.id), designation: repertoire.designation }))
+        ];
+        this.listProduitImpr = [
+            { id: 0, designation: this.msg.components.facture.imprimer.allProduits },
+            ...this.listStock.map((stock) => ({ id: Number(stock.id), designation: stock.designation }))
+        ];
+        this.dialogConsulter = true;
+    }
+
+    openCloseDialogConsulter(openClose: boolean): void {
+        this.dialogConsulter = openClose;
+    }
+
+    imprimerEtat(): void {
+        if (this.typeImpression === null) {
+            return;
+        }
+
+        this.loadingService.show();
+        const request: FacturePrintRequest = initObjectFacturePrintRequest();
+        request.type = this.typeImpression;
+        request.dateDebut = this.dateDebutImpr ? toLocalDate(mapToDateTimeBackEnd(this.dateDebutImpr)) : null;
+        request.dateFin = this.dateFinImpr ? toLocalDate(mapToDateTimeBackEnd(this.dateFinImpr)) : null;
+        request.stockId = this.stockIdImpr != null ? Number(this.stockIdImpr) : null;
+        request.repertoireId = this.repertoireIdImpr != null ? Number(this.repertoireIdImpr) : null;
+
+        this.factureService.imprimerEtat(request).subscribe({
+            next: (data) => {
+                this.openPdfBlob(data);
+            },
+            error: (err) => {
+                console.log(err);
+                this.loadingService.hide();
+                this.messageService.add({ severity: 'error', summary: this.msg.summary.labelError, detail: this.msg.messages.messageErrorProduite });
             },
             complete: () => {
                 this.loadingService.hide();

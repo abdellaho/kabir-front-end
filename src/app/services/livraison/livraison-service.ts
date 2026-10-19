@@ -4,6 +4,7 @@ import { Livraison } from '@/models/livraison';
 import { CommonSearchModel } from '@/search/common-search-model';
 import { getHeadersPDF, getHeadersSQL, omit } from '@/shared/classes/generic-methods';
 import { LivraisonRequest } from '@/shared/classes/livraison-request';
+import { LivraisonPrintRequest } from '@/shared/classes/requests/livraison-print-request';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -85,6 +86,18 @@ export class LivraisonService {
 
     imprimerClient(id: bigint): Observable<any> {
         return this.http.get<any>(ENDPOINTS.LIVRAISON.imprimerClient(id), { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerEtat(livraisonPrintRequest: LivraisonPrintRequest): Observable<any> {
+        return this.http.post<any>(ENDPOINTS.LIVRAISON.imprimerEtat, livraisonPrintRequest, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    imprimerParNumCheque(numCheque: string): Observable<any> {
+        return this.http.post<any>(ENDPOINTS.LIVRAISON.imprimerNumCheque, { numCheque }, { headers: getHeadersPDF(), responseType: 'blob' as 'json' });
+    }
+
+    livrer(id: bigint, livrernonlivrer: number): Observable<Livraison> {
+        return this.http.patch<Livraison>(ENDPOINTS.LIVRAISON.livrer(id), { livrernonlivrer });
     }
 
     generateBackupSQL(): Observable<any> {

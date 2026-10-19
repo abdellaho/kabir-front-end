@@ -1,8 +1,9 @@
 // http-error.interceptor.ts
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { Erreur } from '@/shared/classes/erreur';
+import { APP_MESSAGES } from '@/shared/classes/app-messages';
 import { StateService } from '@/state/state-service';
 
 interface BackendError {
@@ -17,16 +18,27 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const stateService = inject(StateService);
 
     return next(req).pipe(
+        tap(() => {
+            // Any successful request means the backend is reachable again.
+            if (stateService.getState().backendUnreachable) {
+                stateService.setState({ backendUnreachable: false });
+            }
+        }),
         catchError((error: HttpErrorResponse) => {
             const appError = parseBackendError(error);
-            console.log('appError', appError);
+
+            // status 0 means the backend could not be reached (no HTTP response).
+            if (error.status === 0) {
+                appError.message = APP_MESSAGES.messages.backendUnreachable;
+            }
 
             // Update global state
             stateService.setState({
                 error: appError.message,
                 loading: false,
                 timestamp: appError.timestamp,
-                path: appError.path
+                path: appError.path,
+                ...(error.status === 0 ? { backendUnreachable: true } : {})
             });
 
             // Log for debugging (remove in production)

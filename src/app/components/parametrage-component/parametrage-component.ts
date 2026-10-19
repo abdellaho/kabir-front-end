@@ -8,10 +8,11 @@ import { FournisseurComponent } from '@/components/fournisseur-component/fournis
 import { VoitureComponent } from '@/components/voiture-component/voiture-component';
 import { PrimeComponent } from '@/components/prime-component/prime-component';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { MonCompteComponent } from '../mon-compte-component/mon-compte-component';
 
 @Component({
     selector: 'app-parametrage-component',
-    imports: [CommonModule, TabsModule, EtablissementComponent, VilleComponent, PersonnelComponent, FournisseurComponent, VoitureComponent, PrimeComponent],
+    imports: [CommonModule, TabsModule, EtablissementComponent, VilleComponent, PersonnelComponent, FournisseurComponent, VoitureComponent, PrimeComponent, MonCompteComponent],
     templateUrl: './parametrage-component.html',
     styleUrl: './parametrage-component.scss'
 })

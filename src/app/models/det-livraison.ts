@@ -17,6 +17,8 @@ export interface DetLivraison {
     livraisonDateBl: Date | null;
     livraisonRepertoireDesignation: string;
     livraisonRepertoireTel1: string;
+    livraisonRepertoireTel2: string;
+    livraisonRepertoireIce: string;
     livraisonRepertoireAdresse: string;
     livraison?: Livraison | null;
     stockId: bigint | null;
@@ -46,6 +48,8 @@ export function initObjectDetLivraison(): DetLivraison {
         livraisonDateBl: null,
         livraisonRepertoireDesignation: '',
         livraisonRepertoireTel1: '',
+        livraisonRepertoireTel2: '',
+        livraisonRepertoireIce: '',
         livraisonRepertoireAdresse: '',
         livraison: null,
         stockId: null,

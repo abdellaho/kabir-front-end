@@ -18,17 +18,20 @@ import { StateService } from '@/state/state-service';
 import { Erreur } from '@/shared/classes/erreur';
 import { ToastModule } from 'primeng/toast';
 import { APP_MESSAGES } from '@/shared/classes/app-messages';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-login-component',
-    imports: [AppFloatingConfigurator, PasswordModule, CheckboxModule, InputTextModule, ButtonModule, RippleModule, SkeletonModule, ToastModule, CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [AppFloatingConfigurator, PasswordModule, CheckboxModule, InputTextModule, ButtonModule, RippleModule, SkeletonModule, ToastModule, DialogModule, CommonModule, ReactiveFormsModule, FormsModule],
     templateUrl: './login-component.html',
     styleUrl: './login-component.scss'
 })
 export class LoginComponent implements OnInit {
     formGroup!: FormGroup;
+    forgotFormGroup!: FormGroup;
     adminExist: boolean = false;
     loading: boolean = false;
+    displayForgotPassword = false;
     msg = APP_MESSAGES;
 
     constructor(
@@ -73,6 +76,39 @@ export class LoginComponent implements OnInit {
             email: [null, [Validators.required]],
             password: [null, [Validators.required, Validators.minLength(1)]],
             rememberMe: [false]
+        });
+        this.forgotFormGroup = this.formBuilder.group({
+            login: [null, [Validators.required]]
+        });
+    }
+
+    showForgotPasswordDialog() {
+        this.displayForgotPassword = true;
+        this.forgotFormGroup.reset();
+    }
+
+    sendForgotPassword() {
+        const login = this.forgotFormGroup.get('login')?.value;
+        if (!login) {
+            return;
+        }
+        this.authService.forgotPassword(login).subscribe({
+            next: (response) => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: this.msg.summary.labelInfo,
+                    detail: this.msg.login.forgotPasswordMessage
+                });
+                this.displayForgotPassword = false;
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: this.msg.summary.labelInfo,
+                    detail: this.msg.login.forgotPasswordMessage
+                });
+                this.displayForgotPassword = false;
+            }
         });
     }
 

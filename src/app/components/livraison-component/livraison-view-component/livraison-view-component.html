@@ -2,40 +2,62 @@
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
-            <p-toolbar class="mb-4">
+            <p-toolbar class="mb-4" style="padding: 0.2rem 0.7rem !important;">
                 <ng-template pTemplate="left">
-                    <!-- First div: fixed width (just the button) -->
-                    <div class="my-2 flex-shrink-0">
-                        <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info mr-2" (click)="viderAjouter()"></button>
-                    </div>
+                    <div class="flex flex-col gap-2 w-full">
+                        <!-- Row 1: Ajouter + Filters + Search/Vider + Backup -->
+                        <div class="w-full">
+                            <div class="flex flex-wrap items-end gap-2">
+                                @if (role.canAdd) {
+                                    <button pButton pRipple [label]="msg.buttons.ajouter" icon="pi pi-plus" class="p-button-info flex-shrink-0 h-9" (click)="viderAjouter()"></button>
+                                }
 
-                    <!-- Second div: stretches to fill remaining space, wraps on small screens -->
-                    <div class="my-2 flex-1 min-w-0">
-                        <div class="flex flex-wrap gap-2">
-                            <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" (onSelect)="searchLivraison()" (onClear)="searchLivraison()" [readonlyInput]="true" [placeholder]="msg.search.dateDebutDateFin" class="flex-1 min-w-40" />
+                                <p-datepicker [(ngModel)]="rangeDateSearch" selectionMode="range" (onSelect)="searchLivraison()" (onClear)="searchLivraison()" [readonlyInput]="true" [placeholder]="msg.search.dateDebutDateFin" class="min-w-48" inputStyleClass="h-9" />
 
-                            <p-floatlabel variant="on" class="flex-1 min-w-32">
-                                <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" class="w-full" (onBlur)="searchLivraison()" />
-                                <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
-                            </p-floatlabel>
+                                <p-floatlabel variant="on" class="min-w-36">
+                                    <input pInputText [(ngModel)]="numChequeSearch" id="numCheque" inputId="numCheque" class="w-full h-9" (onBlur)="searchLivraison()" />
+                                    <label for="numCheque">{{ msg.components.livraison.numCheque }}</label>
+                                </p-floatlabel>
 
-                            <p-floatlabel variant="on" class="flex-1 min-w-40">
-                                <p-select [(ngModel)]="repertoireIdSearch" (onChange)="searchLivraison()" inputId="repertoireId" [options]="listRepertoire" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
-                                <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
-                            </p-floatlabel>
+                                <p-floatlabel variant="on" class="min-w-44">
+                                    <p-select [(ngModel)]="repertoireIdSearch" (onChange)="searchLivraison()" inputId="repertoireId" [options]="listRepertoire" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" [style]="{'height': '2.25rem'}" />
+                                    <label for="repertoireId">{{ msg.components.livraison.repertoireId }}</label>
+                                </p-floatlabel>
 
-                            <p-floatlabel variant="on" class="flex-1 min-w-40">
-                                <p-select [(ngModel)]="personnelIdSearch" (onChange)="searchLivraison()" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
-                                <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
-                            </p-floatlabel>
+                                <p-floatlabel variant="on" class="min-w-44">
+                                    <p-select [(ngModel)]="personnelIdSearch" (onChange)="searchLivraison()" inputId="personnelId" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" [style]="{'height': '2.25rem'}" />
+                                    <label for="personnelId">{{ msg.components.livraison.personnelId }}</label>
+                                </p-floatlabel>
 
-                            <div class="flex gap-2 flex-shrink-0">
-                                <p-button [label]="msg.buttons.search" (click)="searchLivraison()" icon="pi pi-search" severity="contrast" [title]="msg.buttons.search" />
-                                <p-button [label]="msg.buttons.vider" (click)="initSearchLivraison()" icon="pi pi-times" severity="warn" [title]="msg.buttons.vider" />
+                                <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+                                    <p-button [label]="msg.buttons.search" (click)="searchLivraison()" icon="pi pi-search" severity="contrast" [title]="msg.buttons.search" styleClass="h-9" />
+                                    <p-button [label]="msg.buttons.vider" (click)="initSearchLivraison()" icon="pi pi-times" severity="warn" [title]="msg.buttons.vider" styleClass="h-9" />
+                                </div>
+
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" styleClass="h-9" />
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="flex gap-2 flex-shrink-0">
-                                <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" />
+                        <!-- Row 2: Print buttons (centered) -->
+                        <div class="w-full">
+                            <div class="flex flex-wrap gap-2 justify-center items-center">
+                                <p-button [label]="msg.buttons.stockReel" (click)="imprimerStockReel()" icon="pi pi-print" severity="help" class="p-button-bleuCiel" />
+                                @if (role.isAdmin) {
+                                    <p-button [hidden]="true" [label]="msg.buttons.consulterClient" (click)="viderConsulter(3)" icon="pi pi-print" severity="help" />
+                                    <p-button [label]="msg.buttons.consulterCommercial" (click)="viderConsulter(0)" icon="pi pi-print" severity="help" class="p-button-blueRoyal" />
+                                    <p-button [label]="msg.buttons.consulterProduit" (click)="viderConsulter(1)" icon="pi pi-print" severity="help" class="p-button-rose" />
+                                
+                                    <p-button [label]="msg.buttons.consulterRegle" (click)="viderConsulter(4)" icon="pi pi-print" severity="warn" />
+                                    <p-button [label]="msg.buttons.consulter" (click)="viderConsulter(5)" icon="pi pi-print" severity="warn" />
+                                    <p-button [hidden]="true" [label]="msg.buttons.consulterVilles" (click)="viderConsulter(2)" icon="pi pi-print" severity="warn" />
+                                    <p-button [hidden]="true" [label]="msg.buttons.consulterClientProduit" (click)="viderConsulter(6)" icon="pi pi-print" severity="danger" />
+                                    <p-button [hidden]="true" [label]="msg.buttons.consulterCheque" (click)="openCloseDialogNumCheque(true)" icon="pi pi-print" severity="warn" />
+                                    @if (mntChequeTotal > 0) {
+                                        <span class="font-bold align-self-center">{{ mntChequeTotal | number:'1.2-2' }}</span>
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -53,21 +75,21 @@
 
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="codeBl" style="width: 7%">
+                        <th pSortableColumn="codeBl" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.codeBl }}
                                 <p-sortIcon field="codeBl" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="dateBl" style="width: 7%">
+                        <th pSortableColumn="dateBl" style="width: 6%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.dateBl }}
                                 <p-sortIcon field="dateBl" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="repertoireDesignation" style="width: 24%">
+                        <th pSortableColumn="repertoireDesignation" style="width: 29%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.repertoireId }}
                                 <p-sortIcon field="repertoireDesignation" />
@@ -121,14 +143,14 @@
                             </div>
                         </th>
 
-                        <th pSortableColumn="repertoireNbrOperationClient" style="width: 4%">
+                        <th pSortableColumn="repertoireNbrOperationClient" style="width: 3%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.TBl }}
                                 <p-sortIcon field="repertoireNbrOperationClient" />
                             </div>
                         </th>
 
-                        <th pSortableColumn="reglerNonRegler" style="width: 5%">
+                        <th pSortableColumn="reglerNonRegler" style="width: 3%">
                             <div class="flex items-center gap-2">
                                 {{ msg.components.livraison.etat }}
                                 <p-sortIcon field="reglerNonRegler" />
@@ -143,7 +165,7 @@
                     <tr [pSelectableRow]="p">
                         <td>{{ p.codeBl }}</td>
                         <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ p.repertoireDesignation }}</td>
+                        <td [style]="p.livrernonlivrer === 2 ? 'background-color: red;' : (p.livrernonlivrer === 0 ? 'background-color: yellow;' : '')">{{ p.repertoireDesignation }}</td>
                         <td>{{ p.personnelDesignation }}</td>
 
                         <td>
@@ -222,13 +244,21 @@
                         
                         <td style="width: 10%; min-width: 7rem">
                         <div class="flex gap-2">
-                            <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
-                            <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
-                            @if (p.facturer === false) {
+                            @if (role.canModify && areInTheSameDay(p.sysDate)) {
+                                <p-button (click)="recupperer(1, p)" icon="pi pi-pencil" severity="success" rounded [title]="msg.buttons.modifier" />
+                            }
+                            @if (role.canDelete && areInTheSameDay(p.sysDate)) {
+                                <p-button (click)="recupperer(2, p)" icon="pi pi-trash" severity="danger" rounded [title]="msg.buttons.supprimer" />
+                            }
+                            
+                            @if (p.facturer === false && role.canModify && areInTheSameDay(p.sysDate)) {
                                 <p-button (click)="viderAjouterFacture(p)" icon="pi pi-file" severity="info" rounded [title]="msg.buttons.facturer" />
                             }
                             <p-button (click)="imprimerBonLivraison(p.id)" icon="pi pi-print" severity="help" rounded [title]="msg.buttons.imprimer" />
                             <p-button (click)="imprimerClient(p.id)" icon="pi pi-print" severity="contrast" rounded [title]="msg.buttons.imprimer" />
+                            @if (role.isAdmin) {
+                                <p-button (click)="openCloseDialogLivrer(true, p)" icon="pi pi-undo" severity="secondary" rounded [title]="msg.buttons.livrer" />
+                            }
                         </div>
                         </td>
                     </tr>
@@ -272,4 +302,150 @@
             <app-facture-update-component [factureData]="factureData" (onSaveSuccess)="onFactureSaved()" (onClose)="dialogFacturer = false"></app-facture-update-component>
         </div>
     }
+</p-dialog>
+
+<p-dialog [(visible)]="dialogConsulter" [header]="msg.components.livraison.imprimer.label" [modal]="true"
+    [style]="{ width: '600px', maxWidth: '100%' }" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }" [closable]="false">
+    <ng-template pTemplate="content">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="margin-top: 5px;">
+            <div class="flex flex-col">
+                <p-floatlabel variant="on">
+                    <p-datepicker inputId="dateDebutImpr" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" [readonlyInput]="true" [(ngModel)]="dateDebutImpr" class="w-full" />
+                    <label for="dateDebutImpr">{{ msg.components.livraison.imprimer.dateDebut }}</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="flex flex-col">
+                <p-floatlabel variant="on">
+                    <p-datepicker inputId="dateFinImpr" appendTo="body" [dateFormat]="msg.formats.date_Format_DDMMYY" [readonlyInput]="true" [(ngModel)]="dateFinImpr" class="w-full" />
+                    <label for="dateFinImpr">{{ msg.components.livraison.imprimer.dateFin }}</label>
+                </p-floatlabel>
+            </div>
+
+            @if (typeImpression === 3) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="repertoireIdImpr" [(ngModel)]="repertoireIdImpr" [options]="listClientImpr" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="repertoireIdImpr">{{ msg.components.livraison.imprimer.client }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+
+            @if (typeImpression === 0) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="personnelIdImpr" [(ngModel)]="personnelIdImpr" [options]="listPersonnel" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="personnelIdImpr">{{ msg.components.livraison.imprimer.commercial }}</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="flex align-items-center gap-4">
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="byBl" name="byBlOrProduit" [value]="0" [(ngModel)]="byBlOrProduit"></p-radio-button>
+                        <label for="byBl" class="ml-2">{{ msg.components.livraison.imprimer.parBl }}</label>
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="byProduit" name="byBlOrProduit" [value]="1" [(ngModel)]="byBlOrProduit"></p-radio-button>
+                        <label for="byProduit" class="ml-2">{{ msg.components.livraison.imprimer.parProduit }}</label>
+                    </div>
+                </div>
+            }
+
+            @if (typeImpression === 1) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="stockIdImpr" [(ngModel)]="stockIdImpr" [options]="listProduitImpr" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="stockIdImpr">{{ msg.components.livraison.imprimer.produit }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+
+            @if (typeImpression === 2) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="villeIdImpr" [(ngModel)]="villeIdImpr" [options]="listVilleImpr" appendTo="body" optionLabel="nomVille" optionValue="id" class="w-full" />
+                        <label for="villeIdImpr">{{ msg.components.ville.label }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+
+            @if (typeImpression === 44) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="reglerNonRegler" [(ngModel)]="reglerNonRegler" [options]="listReglerNonReglerImpr" appendTo="body" optionLabel="label" optionValue="value" class="w-full" />
+                        <label for="reglerNonRegler">{{ msg.components.livraison.imprimer.label }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+
+            @if (typeImpression === 6) {
+                <div class="flex flex-col">
+                    <p-floatlabel variant="on">
+                        <p-select inputId="repertoireClientId2Impr" [(ngModel)]="repertoireClientId2Impr" [options]="listClient2Impr" appendTo="body" optionLabel="designation" optionValue="id" class="w-full" />
+                        <label for="repertoireClientId2Impr">{{ msg.buttons.client }}</label>
+                    </p-floatlabel>
+                </div>
+            }
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.components.livraison.imprimer.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="openCloseDialogConsulter(false)"></button>
+        <button pButton pRipple [label]="msg.components.livraison.imprimer.consulter" icon="pi pi-print" type="button"
+            class="p-button-success" [disabled]="(typeImpression === 0 && !personnelIdImpr) || (typeImpression === 6 && !repertoireClientId2Impr)" (click)="imprimerEtat()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dialogNumCheque" [header]="msg.buttons.consulterCheque" [modal]="true"
+    [style]="{ width: '450px', maxWidth: '100%' }" [breakpoints]="{ '640px': '95vw' }" [closable]="false">
+    <ng-template pTemplate="content">
+        <div class="grid grid-cols-1 gap-4" style="margin-top: 5px;">
+            <div class="flex flex-col">
+                <p-floatlabel variant="on">
+                    <input pInputText id="numChequeLibel" inputId="numChequeLibel" [(ngModel)]="numChequeLibel" class="w-full" />
+                    <label for="numChequeLibel">{{ msg.buttons.libeReg }}</label>
+                </p-floatlabel>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.components.livraison.imprimer.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="openCloseDialogNumCheque(false)"></button>
+        <button pButton pRipple [label]="msg.components.livraison.imprimer.consulter" icon="pi pi-print" type="button"
+            class="p-button-success" (click)="imprimerParNumCheque()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dialogLivrer" [header]="msg.buttons.livrer" [modal]="true"
+    [style]="{ width: '450px', maxWidth: '100%' }" [breakpoints]="{ '640px': '95vw' }" [closable]="false">
+    <ng-template pTemplate="content">
+        <div class="grid grid-cols-1 gap-4" style="margin-top: 5px;">
+            <div class="flex flex-col gap-2">
+                <span>{{ msg.components.livraison.label }}</span>
+                <div class="flex align-items-center gap-4">
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="livrerOui" name="livrernonlivrer" [value]="1" [(ngModel)]="livrernonlivrer"></p-radio-button>
+                        <label for="livrerOui" class="ml-2">{{ msg.buttons.oui }}</label>
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="livrerNon" name="livrernonlivrer" [value]="0" [(ngModel)]="livrernonlivrer"></p-radio-button>
+                        <label for="livrerNon" class="ml-2">{{ msg.buttons.non }}</label>
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="livrerRetour" name="livrernonlivrer" [value]="2" [(ngModel)]="livrernonlivrer"></p-radio-button>
+                        <label for="livrerRetour" class="ml-2">{{ msg.buttons.retour }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="msg.buttons.fermer" icon="pi pi-times" type="button"
+            class="p-button-outlined p-button-danger" (click)="openCloseDialogLivrer(false)"></button>
+        <button pButton pRipple [label]="msg.buttons.valider" icon="pi pi-check" type="button"
+            class="p-button-success" (click)="livrerNonLivrer()"></button>
+    </ng-template>
 </p-dialog>
