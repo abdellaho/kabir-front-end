@@ -227,7 +227,7 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
                 remiseLivraison: [null, [Validators.min(0), Validators.max(100)]],
                 montantProduit: [{ value: 0, disabled: true }]
             },
-            { validators: DetLivraisonValidator({ stock: this.stockSelected }) }
+            { validators: DetLivraisonValidator({ getStock: () => this.stockSelected }) }
         );
     }
 
@@ -414,9 +414,10 @@ export class LivraisonUpdateComponent implements OnInit, OnDestroy {
         if (detLivraisonEdit && detLivraisonEdit.stockId) {
             this.detLivraisonSelected = structuredClone(detLivraisonEdit);
             if (operation === 1) {
-                this.initFormGroupStock();
                 this.stockSelected = this.listStock.find((x) => x.id === this.detLivraisonSelected.stockId) || initObjectStock();
                 this.detLivraisonSelected.stock = structuredClone(this.stockSelected);
+
+                this.initFormGroupStock();
 
                 this.formGroupStock.patchValue({
                     designation: this.stockSelected.designation,

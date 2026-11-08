@@ -242,7 +242,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
             {
                 designation: [{ value: this.stockSelected.designation, disabled: true }],
                 //pattc: [{ value: this.stockSelected.pattc, disabled: true }],
-                pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
+                //pvttc: [{ value: this.stockSelected.pvttc, disabled: true }],
                 qteStock: [{ value: this.stockSelected.qteFacturer, disabled: true }],
                 //prixVenteMin: [{ value: getPrixVenteMin(this.stockSelected), disabled: true }],
                 qteFacturer: [null, [Validators.required, Validators.min(1)]],
@@ -250,7 +250,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
                 remiseFacture: [null, [Validators.min(0), Validators.max(100)]],
                 montantProduit: [{ value: 0, disabled: true }]
             },
-            { validators: DetFactureValidator({ stock: this.stockSelected }) }
+            { validators: DetFactureValidator({ getStock: () => this.stockSelected }) }
         );
     }
 
@@ -410,14 +410,15 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
         if (detFactureEdit && detFactureEdit.stockId) {
             this.detFactureSelected = structuredClone(detFactureEdit);
             if (operation === 1) {
-                this.initFormGroupStock();
                 this.stockSelected = this.listStock.find((x) => x.id === this.detFactureSelected.stockId) || initObjectStock();
                 this.detFactureSelected.stock = structuredClone(this.stockSelected);
+
+                this.initFormGroupStock();
 
                 this.formGroupStock.patchValue({
                     designation: this.stockSelected.designation,
                     //pattc: this.stockSelected.pattc,
-                    pvttc: this.stockSelected.pvttc,
+                    //pvttc: this.stockSelected.pvttc,
                     qteStock: this.stockSelected.qteStock,
                     //prixVenteMin: getPrixVenteMin(this.stockSelected),
                     prixVente: this.detFactureSelected.prixVente,
@@ -428,7 +429,7 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
 
                 this.formGroupStock.get('designation')?.disable();
                 //this.formGroupStock.get('pattc')?.disable();
-                this.formGroupStock.get('pvttc')?.disable();
+                //this.formGroupStock.get('pvttc')?.disable();
                 this.formGroupStock.get('qteStock')?.disable();
                 //this.formGroupStock.get('prixVenteMin')?.disable();
                 this.formGroupStock.get('montantProduit')?.disable();
@@ -443,9 +444,12 @@ export class FactureUpdateComponent implements OnInit, OnDestroy {
     }
 
     onChangeMontantProduit() {
-        this.formGroupStock.patchValue({
-            montantProduit: this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteFacturer')?.value || 0)
-        });
+        let montant: number = this.formGroupStock.get('prixVente')?.value * (this.formGroupStock.get('qteFacturer')?.value || 0);
+        let remise: number = this.formGroupStock.get('remiseFacture')?.value || 0;
+        // Legacy parity (FactureActionBeans L2236-2245): "/ 100" is exact at remise 100,
+        // "* 0.01" leaves a -0.00 residue. facturer100 lines bill full price (L3023-3026).
+        let montantProduit: number = this.facture.facturer100 && remise === 100 ? montant : montant - (montant * remise) / 100;
+        this.formGroupStock.patchValue({ montantProduit });
         this.formGroupStock.get('montantProduit')?.disable();
     }
 

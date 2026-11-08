@@ -403,7 +403,7 @@ export class StockComponent {
                 this.formGroup.get('pvttc')?.value !== 0 &&
                 this.formGroup.get('pvttc')?.value !== null
             ) {
-                remiseMax1 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin1')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
+                remiseMax1 = (this.formGroup.get('prixVentMin1')?.value - this.formGroup.get('pvttc')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
             this.formGroup.patchValue({ remiseMax1 });
@@ -419,7 +419,7 @@ export class StockComponent {
                 this.formGroup.get('pvttc')?.value !== 0 &&
                 this.formGroup.get('pvttc')?.value !== null
             ) {
-                remiseMax2 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin2')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
+                remiseMax2 = (this.formGroup.get('prixVentMin2')?.value - this.formGroup.get('pvttc')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
             this.formGroup.patchValue({ remiseMax2 });
@@ -435,7 +435,7 @@ export class StockComponent {
                 this.formGroup.get('pvttc')?.value !== 0 &&
                 this.formGroup.get('pvttc')?.value !== null
             ) {
-                remiseMax3 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin3')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
+                remiseMax3 = (this.formGroup.get('prixVentMin3')?.value - this.formGroup.get('pvttc')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
             this.formGroup.patchValue({ remiseMax3 });
@@ -451,7 +451,7 @@ export class StockComponent {
                 this.formGroup.get('pvttc')?.value !== 0 &&
                 this.formGroup.get('pvttc')?.value !== null
             ) {
-                remiseMax4 = (this.formGroup.get('pvttc')?.value - this.formGroup.get('prixVentMin4')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
+                remiseMax4 = (this.formGroup.get('prixVentMin4')?.value - this.formGroup.get('pvttc')?.value) / (this.formGroup.get('pvttc')?.value * 0.01);
             }
 
             this.formGroup.patchValue({ remiseMax4 });

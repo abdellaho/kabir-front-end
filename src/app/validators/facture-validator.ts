@@ -41,7 +41,7 @@ export function FactureValidator(conf: { getListDetFacture: () => DetFacture[] }
 
         const mantantBL: number = getValue('mantantBL');
         const dateBF = getValue('dateBF');
-        const hasMantantBL = mantantBL > 0;
+        //const hasMantantBL = mantantBL > 0;
         let totalMntReglement: number = 0;
 
         // Validate each payment
@@ -66,7 +66,7 @@ export function FactureValidator(conf: { getListDetFacture: () => DetFacture[] }
                     if (dateReglement1 < dateBlFormat) {
                         addError('dateReglementMustEqualOrAfterDateBl');
                     }
-                    validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+                    //validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
                     validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
                 }
                 return;
@@ -87,7 +87,7 @@ export function FactureValidator(conf: { getListDetFacture: () => DetFacture[] }
                     addError(`dateReglement${reg.suffix}MustBeAfterDateReglement${prevReg!.suffix}`);
                 }
 
-                validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+                //validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
                 validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
             } else if (nextReg && getValue(nextReg.date)) {
                 // Next payment filled without this one
@@ -116,7 +116,7 @@ export function FactureValidator(conf: { getListDetFacture: () => DetFacture[] }
     };
 }
 
-function validateAmount(suffix: string, amount: number, hasMantantBL: boolean, addError: (key: string) => void): void {
+/*function validateAmount(suffix: string, amount: number, hasMantantBL: boolean, addError: (key: string) => void): void {
     const fieldName = suffix ? `mntReglement${suffix}` : 'mntReglement';
 
     if (hasMantantBL) {
@@ -126,7 +126,7 @@ function validateAmount(suffix: string, amount: number, hasMantantBL: boolean, a
     } else if (amount < 0) {
         addError(`${fieldName}MustBeAtLeastEqualZero`);
     }
-}
+}*/
 
 function validateNumCheque(suffix: string, typeReglement: number, numCheque: string, addError: (key: string) => void): void {
     const fieldName = suffix ? `numCheque${suffix}` : 'numCheque';

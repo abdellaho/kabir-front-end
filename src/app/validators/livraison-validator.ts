@@ -40,7 +40,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
 
         const mantantBL: number = getValue('mantantBL');
         const dateBl = getValue('dateBl');
-        const hasMantantBL = mantantBL > 0;
+        //const hasMantantBL = mantantBL > 0;
         let totalMntReglement: number = 0;
 
         // Validate each payment
@@ -65,7 +65,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
                     if (dateReglement1 < dateBlFormat) {
                         addError('dateReglementMustEqualOrAfterDateBl');
                     }
-                    validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+                    //validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
                     validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
                 }
                 return;
@@ -86,7 +86,7 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
                     addError(`dateReglement${reg.suffix}MustBeAfterDateReglement${prevReg!.suffix}`);
                 }
 
-                validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
+                //validateAmount(reg.suffix, mntValue, hasMantantBL, addError);
                 validateNumCheque(reg.suffix, typeReglementValue, numChequeValue, addError);
             } else if (nextReg && getValue(nextReg.date)) {
                 // Next payment filled without this one
@@ -118,13 +118,13 @@ export function LivraisonValidator(conf: { getListDetLivraison: () => DetLivrais
 function validateAmount(suffix: string, amount: number, hasMantantBL: boolean, addError: (key: string) => void): void {
     const fieldName = suffix ? `mntReglement${suffix}` : 'mntReglement';
 
-    if (hasMantantBL) {
+    /*if (hasMantantBL) {
         if (amount <= 0) {
             addError(`${fieldName}MustBeBiggerThanZero`);
         }
     } else if (amount < 0) {
         addError(`${fieldName}MustBeAtLeastEqualZero`);
-    }
+    }*/
 }
 
 function validateNumCheque(suffix: string, typeReglement: number, numCheque: string, addError: (key: string) => void): void {

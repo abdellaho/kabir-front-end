@@ -512,8 +512,13 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="pvttc" id="pvttc" inputId="pvttc" [minFractionDigits]="2" />
-                            <label for="pvttc">{{ msg.components.facture.stock.pvttc }}</label>
+                            <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" [min]="1" (onBlur)="onChangeMontantProduit()" />
+                            <label for="qteFacturer">{{ msg.components.facture.stock.qteFacturer }}</label>
+
+                            @if (formGroupStock.errors?.['qteFacturerMustBeDifferentFromZero']) {
+                                <p-message severity="error" variant="simple" size="small">{{
+                                msg.components.facture.errors.qteFacturerMustBeDifferentFromZero }}</p-message>
+                            }
                         </p-floatlabel>
                     </div>
 
@@ -531,19 +536,7 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="qteFacturer" id="qteFacturer" inputId="qteFacturer" [min]="1" (onBlur)="onChangeMontantProduit()" />
-                            <label for="qteFacturer">{{ msg.components.facture.stock.qteFacturer }}</label>
-
-                            @if (formGroupStock.errors?.['qteFacturerMustBeDifferentFromZero']) {
-                                <p-message severity="error" variant="simple" size="small">{{
-                                msg.components.facture.errors.qteFacturerMustBeDifferentFromZero }}</p-message>
-                            }
-                        </p-floatlabel>
-                    </div>
-
-                    <div class="flex flex-col grow basis-0">
-                        <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="remiseFacture" id="remiseFacture" inputId="remiseFacture" [minFractionDigits]="2" />
+                            <p-inputNumber formControlName="remiseFacture" id="remiseFacture" inputId="remiseFacture" (onBlur)="onChangeMontantProduit()" [minFractionDigits]="2" />
                             <label for="remiseFacture">{{ msg.components.facture.stock.remiseFacture }}</label>
                         </p-floatlabel>
 
@@ -555,7 +548,7 @@
 
                     <div class="flex flex-col grow basis-0">
                         <p-floatlabel variant="on">
-                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" [minFractionDigits]="2" />
+                            <p-inputNumber formControlName="montantProduit" id="montantProduit" inputId="montantProduit" [minFractionDigits]="2" [maxFractionDigits]="2" />
                             <label for="montantProduit">{{ msg.components.facture.stock.montantProduit }}</label>
                         </p-floatlabel>
                     </div>

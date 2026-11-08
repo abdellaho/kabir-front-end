@@ -845,16 +845,28 @@ export class LivraisonViewComponent implements OnInit {
         this.loadingService.show();
         this.livraisonService.generateBackupSQL().subscribe({
             next: (res) => {
-                const blob = new Blob([res], { type: 'application/sql' });
+                /*const blob = new Blob([res], { type: 'application/sql' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'backup.sql';
                 a.click();
-                window.URL.revokeObjectURL(url);
+                window.URL.revokeObjectURL(url);*/
+                this.messageService.add({
+                    severity: 'success',
+                    summary: this.msg.summary.labelSuccess,
+                    closable: true,
+                    detail: this.msg.messages.backupSuccess
+                });
             },
             error: (error) => {
                 console.log(error);
+                this.messageService.add({
+                    severity: 'error',
+                    closable: true,
+                    summary: this.msg.summary.labelError,
+                    detail: this.msg.messages.backupError
+                });
                 this.loadingService.hide();
             },
             complete: () => {

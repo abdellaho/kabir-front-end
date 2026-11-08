@@ -36,6 +36,7 @@ import { DetAchatFactureTVA, initObjectDetAchatFactureTVA } from '@/models/det-a
 import { DetAchatFactureTVAValidator } from '@/validators/det-achat-facture-tva-validator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CommonSearchModel, initCommonSearchModel } from '@/search/common-search-model';
+import { StateService } from '@/state/state-service';
 
 @Component({
     selector: 'app-achat-facture-component',
@@ -105,6 +106,7 @@ export class AchatFactureComponent {
     formGroupImprimer!: FormGroup;
     typeImpression: number = 0;
     msg = APP_MESSAGES;
+    personnelCreationId: number | null = null;
     readonly BigInt = BigInt; // Expose BigInt to template
 
     constructor(
@@ -113,11 +115,14 @@ export class AchatFactureComponent {
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private fournisseurService: FournisseurService,
+        private stateService: StateService,
         private confirmationService: ConfirmationService,
         private loadingService: LoadingService
     ) { }
 
     ngOnInit(): void {
+        this.personnelCreationId = this.stateService.getState().user?.id || null;
+
         this.fournisseurDesignationSearch = '';
         this.search();
         this.getAllStock();
@@ -794,6 +799,7 @@ export class AchatFactureComponent {
                     }
                 });
             } else {
+                achatFactureRequest.achatFacture.operateurId = BigInt(this.personnelCreationId || 0);
                 this.achatFactureService.create(achatFactureRequest).subscribe({
                     next: (data: AchatFacture) => {
                         this.messageService.add({ severity: 'success', summary: this.msg.summary.labelSuccess, closable: true, detail: this.msg.messages.messageAddSuccess });

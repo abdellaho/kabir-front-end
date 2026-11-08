@@ -2,10 +2,9 @@ import { Stock } from '@/models/stock';
 import { getPrixVenteMin, getRemiseMax } from '@/shared/classes/generic-methods';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function DetLivraisonValidator(config: { stock: Stock }): ValidatorFn {
-    const { stock } = config;
-
+export function DetLivraisonValidator(config: { getStock: () => Stock }): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+        const stock = config.getStock();
         let errors: any = {};
         let hasError = false;
 
@@ -20,7 +19,9 @@ export function DetLivraisonValidator(config: { stock: Stock }): ValidatorFn {
         let prixVenteMin: number = getPrixVenteMin(stock);
         let remiseMax: number = getRemiseMax(stock);
 
-        if(prixVente?.value < prixVenteMin) {
+        // Legacy parity (LivraisonActionBeans.controleRemise): the price rule only
+        // runs when the user actually changed the price away from the stock's pvttc.
+        if(prixVente?.value !== stock.pvttc && prixVente?.value < prixVenteMin) {
             addError("prixVenteMustBeAtLeastEqualPrixVenteMin");
         }
 

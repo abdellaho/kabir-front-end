@@ -4,7 +4,7 @@
  * 0 = Consulter Commercial, 1 = Consulter Produit, 2 = Consulter Villes,
  * 3 = Consulter Client, 4 = Consulter Client + Regle / Non Regle,
  * 5 = Consulter (journalier commercial), 6 = Consulter Client + Produit.
- * `byBlOrProduit`: 0 = par BL, 1 = par Produit.
+ * `byBlOrProduit`: 0 = par BL, 1 = par Produit, 2 = par Type, 3 = par Commission.
  * Dates must be sent as `yyyy-MM-dd` strings (backend `LocalDate`).
  */
 export interface LivraisonPrintRequest {

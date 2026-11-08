@@ -37,19 +37,21 @@
                                 <div class="flex items-center gap-2 flex-shrink-0">
                                     <p-button [label]="msg.components.livraison.generateBackupSql" (click)="generateBackupSQL()" icon="pi pi-database" severity="success" styleClass="h-9" />
                                 </div>
+
+                                <p-button [label]="msg.buttons.stockReel" (click)="imprimerStockReel()" icon="pi pi-print" severity="help" class="p-button-bleuCiel" />
+                                @if (role.isAdmin) {
+                                    <p-button [label]="msg.buttons.consulterProduit" (click)="viderConsulter(1)" icon="pi pi-print" severity="help" class="p-button-rose" />
+                                    <p-button [label]="msg.buttons.consulterRegle" (click)="viderConsulter(4)" icon="pi pi-print" severity="warn" />
+                                }
                             </div>
                         </div>
 
                         <!-- Row 2: Print buttons (centered) -->
                         <div class="w-full">
                             <div class="flex flex-wrap gap-2 justify-center items-center">
-                                <p-button [label]="msg.buttons.stockReel" (click)="imprimerStockReel()" icon="pi pi-print" severity="help" class="p-button-bleuCiel" />
                                 @if (role.isAdmin) {
                                     <p-button [hidden]="true" [label]="msg.buttons.consulterClient" (click)="viderConsulter(3)" icon="pi pi-print" severity="help" />
                                     <p-button [label]="msg.buttons.consulterCommercial" (click)="viderConsulter(0)" icon="pi pi-print" severity="help" class="p-button-blueRoyal" />
-                                    <p-button [label]="msg.buttons.consulterProduit" (click)="viderConsulter(1)" icon="pi pi-print" severity="help" class="p-button-rose" />
-                                
-                                    <p-button [label]="msg.buttons.consulterRegle" (click)="viderConsulter(4)" icon="pi pi-print" severity="warn" />
                                     <p-button [label]="msg.buttons.consulter" (click)="viderConsulter(5)" icon="pi pi-print" severity="warn" />
                                     <p-button [hidden]="true" [label]="msg.buttons.consulterVilles" (click)="viderConsulter(2)" icon="pi pi-print" severity="warn" />
                                     <p-button [hidden]="true" [label]="msg.buttons.consulterClientProduit" (click)="viderConsulter(6)" icon="pi pi-print" severity="danger" />
@@ -165,7 +167,7 @@
                     <tr [pSelectableRow]="p">
                         <td>{{ p.codeBl }}</td>
                         <td>{{ p.dateBl | date:'dd/MM/yyyy' }}</td>
-                        <td [style]="p.livrernonlivrer === 2 ? 'background-color: red;' : (p.livrernonlivrer === 0 ? 'background-color: yellow;' : '')">{{ p.repertoireDesignation }}</td>
+                        <td [style]="p.livrernonlivrer === 2 ? 'color: red;' : (p.livrernonlivrer === 0 ? 'color: yellow;' : '')">{{ p.repertoireDesignation }}</td>
                         <td>{{ p.personnelDesignation }}</td>
 
                         <td>
@@ -347,6 +349,14 @@
                     <div class="flex align-items-center">
                         <p-radio-button inputId="byProduit" name="byBlOrProduit" [value]="1" [(ngModel)]="byBlOrProduit"></p-radio-button>
                         <label for="byProduit" class="ml-2">{{ msg.components.livraison.imprimer.parProduit }}</label>
+                    </div>
+                    <div class="flex align-items-center" style="display: none;">
+                        <p-radio-button [hidden]="true" inputId="byType" name="byBlOrProduit" [value]="2" [(ngModel)]="byBlOrProduit"></p-radio-button>
+                        <label for="byType" class="ml-2">{{ msg.components.livraison.imprimer.parType }}</label>
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-radio-button inputId="byCommission" name="byBlOrProduit" [value]="3" [(ngModel)]="byBlOrProduit"></p-radio-button>
+                        <label for="byCommission" class="ml-2">{{ msg.components.livraison.imprimer.parCommission }}</label>
                     </div>
                 </div>
             }

@@ -2,10 +2,9 @@ import { Stock } from '@/models/stock';
 import { getPrixVenteMin, getRemiseMax } from '@/shared/classes/generic-methods';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function DetFactureValidator(config: { stock: Stock }): ValidatorFn {
-    const { stock } = config;
-
+export function DetFactureValidator(config: { getStock: () => Stock }): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+        const stock = config.getStock();
         let errors: any = {};
         let hasError = false;
 
@@ -21,11 +20,14 @@ export function DetFactureValidator(config: { stock: Stock }): ValidatorFn {
         let prixVenteMin: number = getPrixVenteMin(stock);
         let remiseMax: number = getRemiseMax(stock);
 
-        if (prixVente?.value < prixVenteMin) {
+        // Deliberate deviation from legacy FactureActionBeans.controleRemise (no such
+        // guard there): align the invoice dialog with LivraisonActionBeans.controleRemise
+        // (L4844-4848) - an untouched price (== pvttc) must not be flagged.
+        if (prixVente?.value !== stock.pvttc && prixVente?.value < prixVenteMin) {
             addError('prixVenteMustBeAtLeastEqualPrixVenteMin');
         }
 
-        if (remiseFacture?.value > remiseMax) {
+        if (remiseFacture?.value !== 100 && remiseFacture?.value > remiseMax) {
             addError('remiseFactureMustBeAtMostEqualRemiseMax');
         }
 

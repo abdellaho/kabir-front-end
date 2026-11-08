@@ -21,6 +21,7 @@ export interface AchatFacture {
     fournisseurId: bigint | null;
     fournisseurDesignation: string;
     fournisseurIce: string;
+    operateurId?: bigint | null;
 }
 
 export function initObjectAchatFacture(): AchatFacture {
@@ -46,6 +47,7 @@ export function initObjectAchatFacture(): AchatFacture {
         mantantTotTTC: 0,
         fournisseurId: null,
         fournisseurDesignation: '',
-        fournisseurIce: ''
+        fournisseurIce: '',
+        operateurId: null
     };
 }
